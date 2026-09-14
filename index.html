@@ -5,9 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7D5BE6">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Gestão de tarefas">
-<link rel="manifest" href='data:application/manifest+json,{"name":"Gestão de tarefas","short_name":"Tarefas","display":"standalone","start_url":".","background_color":"%23FFFDF7","theme_color":"%237D5BE6","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 rx=%2722%27 fill=%27%237D5BE6%27/%3E%3Ctext x=%2750%27 y=%2768%27 font-size=%2756%27 text-anchor=%27middle%27%3E%F0%9F%8E%92%3C/text%3E%3C/svg%3E","sizes":"any","type":"image/svg+xml"}]}'>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Gestão de tarefas: 7º ano D</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
 <style>
@@ -195,7 +198,9 @@
     .aulas span{font-size:14px;padding:5px 12px}
     .body{padding:14px 16px 16px}
     .box h3{font-size:17px}
-    .tx{font-size:17px}
+    .tx{font-size:17px;display:inline}
+    .tg{display:inline;margin:0 6px 0 0;vertical-align:1px}
+    .tg .st,.tg .dchip,.tg .bang{vertical-align:2px;margin-right:4px}
     .st,.dchip{font-size:12px}
     .fab{width:72px;height:72px;font-size:32px;right:28px;bottom:28px}
     .sheet{max-width:760px;border-radius:28px 28px 0 0;padding:6px 24px 28px}
@@ -618,6 +623,7 @@ document.getElementById('fab').addEventListener('click',openMain);
 render();
 let remSeen=false; try{remSeen=!!sessionStorage.getItem('rem-shown');sessionStorage.setItem('rem-shown','1');}catch(e){}
 if(!remSeen) setTimeout(openReminder,350);
+if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
 </body>
 </html>
