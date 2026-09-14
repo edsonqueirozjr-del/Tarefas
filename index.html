@@ -180,6 +180,14 @@
   .spark{position:fixed;width:9px;height:9px;border-radius:50%;pointer-events:none;z-index:99;animation:fly .8s ease-out forwards}
   @keyframes fly{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
   @keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+  .users{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .uopt{border:2px solid var(--line);background:#fff;border-radius:18px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:900;font-size:16px;color:var(--ink)}
+  .uopt .av{font-size:38px;line-height:1}
+  .uopt small{font-weight:700;color:var(--soft);font-size:11px}
+  .uopt:active{transform:scale(.95);border-color:var(--ink)}
+  .who{text-align:center;margin:-2px 0 10px}
+  .who span{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800}
+  .who small{color:var(--soft);font-weight:700}
   .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-weight:800;font-size:14px;z-index:70;opacity:0;transition:opacity .25s;pointer-events:none}
   .toast.on{opacity:1}
   /* ===== Tablet (Galaxy Tab S9 FE) ===== */
@@ -230,6 +238,7 @@
 <body>
 <div class="wrap">
   <h1>Gestão de tarefas 🎒</h1>
+  <div class="who" id="who"></div>
   <div class="prog" id="prog"></div>
   <div class="sticky">
     <div class="filters" id="fType"></div>
@@ -242,7 +251,29 @@
 <div class="veil" id="veil"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
+/* ================= SINCRONIZAÇÃO (Firebase) =================
+   Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
+   Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
+const FIREBASE = {
+  apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
+  authDomain: "tarefas-8231d.firebaseapp.com",
+  databaseURL: "https://tarefas-8231d-default-rtdb.firebaseio.com",
+  projectId: "tarefas-8231d",
+  storageBucket: "tarefas-8231d.firebasestorage.app",
+  messagingSenderId: "1006015019457",
+  appId: "1:1006015019457:web:96044fb908d131a1749740"
+};
+/* Família e usuários. Troque os códigos (PIN) aqui quando quiser. */
+const FAMILIA = "queiroz";
+const USERS = [
+  { id:'maria',  nome:'Maria',  emoji:'👧', pin:'1234', papel:'aluna' },
+  { id:'edson',  nome:'Edson',  emoji:'👨', pin:'2026', papel:'responsavel' },
+  { id:'thaysa', nome:'Thaysa', emoji:'👩', pin:'2025', papel:'responsavel' }
+];
+
 /* ================= DADOS =================
    Para incluir um roteiro novo: acrescente um objeto em SEED_WEEKS.
    O progresso (feito / fazendo / observações / dia movido / mais importante)
@@ -314,9 +345,10 @@ const SEED_WEEKS = [
 
 /* ================= ARMAZENAMENTO ================= */
 const KEY='minha-semana-7D-v1';
+let cloudRef=null, cloudReady=false, lastPushed='', pushTimer=null, cloudOnline=false;
 let mem=null;
 function load(){ try{const s=localStorage.getItem(KEY); if(s) return JSON.parse(s);}catch(e){} return mem||{weeks:{}}; }
-function save(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} }
+function save(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} cloudPush(); }
 let DB=load();
 SEED_WEEKS.forEach(w=>{
   const seedTasks={};
@@ -342,6 +374,67 @@ const weekIds=()=>Object.keys(DB.weeks).sort();
 let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(i=>i<=weekIdFor(TODAY)).pop() || weekIds()[0]);
 const openState={};
 let fType='all', fSubj='all';
+
+/* ================= NUVEM ================= */
+const CLOUD_ON = !!FIREBASE.apiKey && typeof firebase!=='undefined';
+const famCode=FAMILIA;
+let USER=null; try{const u=localStorage.getItem(KEY+'-user'); USER=USERS.find(x=>x.id===u)||null;}catch(e){}
+const isAluna=()=>!USER||USER.papel==='aluna';
+function cloudStart(){
+  if(!CLOUD_ON||!USER) return;
+  if(!firebase.apps.length) firebase.initializeApp(FIREBASE);
+  const db=firebase.database();
+  db.ref('.info/connected').on('value',sn=>{cloudOnline=!!sn.val(); updateSyncBadge();});
+  cloudRef=db.ref('familias/'+famCode);
+  cloudRef.on('value',sn=>{
+    const remote=sn.val();
+    if(!remote||!remote.weeks){ cloudReady=true; cloudPush(true); return; }
+    const changed=mergeRemote(remote); cloudReady=true;
+    if(changed){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} render(); refreshReminder(); }
+    cloudPush(); // envia o que só existe aqui (ex.: semana nova)
+  });
+}
+function mergeRemote(remote){
+  let changed=false;
+  Object.keys(remote.weeks).forEach(id=>{
+    const rw=remote.weeks[id], lw=DB.weeks[id];
+    if(!lw){ DB.weeks[id]=rw; changed=true; return; }
+    const local={}; lw.days.forEach(d=>d.tasks.forEach(t=>local[t.id]=t));
+    (rw.days||[]).forEach(d=>(d.tasks||[]).forEach(rt=>{
+      const lt=local[rt.id]; if(!lt) return;
+      if((rt.u||0)>(lt.u||0)){ lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
+    }));
+  });
+  return changed;
+}
+function cloudPush(now){
+  if(!cloudRef||!cloudReady) return;
+  clearTimeout(pushTimer);
+  const doIt=()=>{ const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.set(JSON.parse(json)).catch(()=>{}); };
+  if(now) doIt(); else pushTimer=setTimeout(doIt,400);
+}
+function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b) return;
+  if(!CLOUD_ON) b.textContent=''; else b.textContent=cloudOnline?'☁️ Sincronizado':'📴 Sem internet. Vai sincronizar depois'; }
+function openLogin(after){
+  show(`<h2>👋 Quem é você? <button class="x" style="visibility:${USER?'visible':'hidden'}">✕</button></h2>
+    <div class="users">${USERS.map(u=>`<button class="uopt" data-u="${u.id}"><span class="av">${u.emoji}</span><span>${u.nome}</span><small>${u.papel==='aluna'?'faz as tarefas':'acompanha'}</small></button>`).join('')}</div>
+    <div id="pinBox" style="display:none;margin-top:12px">
+      <p class="quiet" id="pinWho" style="margin:0 0 8px"></p>
+      <input id="pinTxt" type="password" inputmode="numeric" maxlength="8" placeholder="Código" style="width:100%;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:22px;letter-spacing:6px;text-align:center">
+      <div class="row"><button class="opt" id="pinBack">Voltar</button><button class="opt primary" id="pinOk">Entrar</button></div>
+    </div>`);
+  let pick=null;
+  const usersEl=sheet.querySelector('.users'), pinBox=document.getElementById('pinBox');
+  sheet.querySelectorAll('.uopt').forEach(b=>b.addEventListener('click',()=>{pick=USERS.find(u=>u.id===b.dataset.u);usersEl.style.display='none';pinBox.style.display='block';
+    document.getElementById('pinWho').textContent=pick.emoji+' '+pick.nome+', digite seu código:';document.getElementById('pinTxt').value='';document.getElementById('pinTxt').focus();}));
+  document.getElementById('pinBack').addEventListener('click',()=>{usersEl.style.display='';pinBox.style.display='none';});
+  const enter=()=>{const v=document.getElementById('pinTxt').value.trim(); if(v!==pick.pin){vibrate([40,40,40]);toast('Código errado. Tenta de novo');return;}
+    USER=pick; try{localStorage.setItem(KEY+'-user',USER.id);}catch(e){}
+    if(cloudRef){cloudRef.off();cloudRef=null;cloudReady=false;lastPushed='';}
+    cloudStart(); hide(); render(); vibrate(20); toast('Oi, '+USER.nome+'! '+USER.emoji); if(after) setTimeout(after,300);};
+  document.getElementById('pinOk').addEventListener('click',enter);
+  document.getElementById('pinTxt').addEventListener('keydown',e=>{if(e.key==='Enter')enter();});
+}
 
 /* ================= RENDER ================= */
 const fmt=d=>{const [y,m,dd]=d.split('-');return dd+'/'+m;};
@@ -369,6 +462,7 @@ function renderFilters(){
 }
 function render(){
   const w=DB.weeks[current];
+  document.getElementById('who').innerHTML = USER ? `<span>${USER.emoji} ${USER.nome} <small>${USER.papel==='aluna'?'':'· acompanhando'}</small></span>` : '';
   { const hs=allTasks(w).filter(t=>t.type===H); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
     document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas · <span class="pct">${pct}%</span>${pct===100?' 🎉':''}</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`; }
   renderFilters();
@@ -428,7 +522,7 @@ function taskHtml(t,inImp){
     <div class="sw sw-l">${t.status==='doing'?'↩ Reabrir':'⏳ Fazendo'}</div>
     <div class="tin">
       <div class="t"><div class="tg">${dchip}${subj}${status}</div><div class="tx">${t.text}</div>
-        ${t.note?`<span class="note">💬 ${esc(t.note)}</span>`:''}</div>
+        ${t.note?`<span class="note">💬 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
     </div>
   </div>`;
 }
@@ -445,7 +539,7 @@ function setStatus(id,status,el){
   const t=findTask(id); const w=DB.weeks[current];
   const dayEl=document.querySelector(`.day[data-date="${w.days.find(d=>d.k===t.day).date}"]`);
   const wasComplete=dayEl&&dayEl.classList.contains('complete');
-  t.status=status; save();
+  t.status=status; t.u=Date.now(); save();
   if(status==='done'){vibrate(40);const r=el.querySelector('.tin').getBoundingClientRect();sparks(r.left+24,r.top+r.height/2,colorOf(el.closest('.day')||el.closest('.imp')||el.closest('.rw')||el));}
   if(status==='doing'){vibrate(20);}
   const complete=allTasks(w).filter(x=>x.day===t.day).every(x=>x.status==='done');
@@ -454,6 +548,7 @@ function setStatus(id,status,el){
     for(let k=0;k<6;k++)setTimeout(()=>sparks(window.innerWidth*Math.random(),120+Math.random()*200,c),k*90);}
 }
 function swipeAction(id,dir,el){
+  if(!isAluna()){ el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast('Só a Maria marca as tarefas 😉'); return; }
   const t=findTask(id);
   const status = dir>0 ? (t.status==='done'?'todo':'done') : (t.status==='doing'?'todo':'doing');
   setStatus(id,status,el);
@@ -516,10 +611,10 @@ function openMenu(id){
    ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
     const a=b.dataset.a;
-    if(a==='imp'){t.important=!t.important;save();hide();render();vibrate(20);toast(t.important?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');if(t.important)window.scrollTo({top:0,behavior:'smooth'});}
+    if(a==='imp'){t.important=!t.important;t.u=Date.now();save();hide();render();vibrate(20);toast(t.important?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');if(t.important)window.scrollTo({top:0,behavior:'smooth'});}
     if(a==='move') openMove(id);
     if(a==='note') openNote(id);
-    if(a==='delnote'){t.note='';save();hide();render();toast('Observação apagada');}
+    if(a==='delnote'){t.note='';t.u=Date.now();save();hide();render();toast('Observação apagada');}
   }));
 }
 function openMove(id){
@@ -527,7 +622,7 @@ function openMove(id){
   show(`<h2>📆 Mudar para qual dia? <button class="x">✕</button></h2>
    ${w.days.map(d=>`<button class="opt ${d.k===t.day?'d':''}" style="--c:${dayCss(d.k)}" data-k="${d.k}"><span class="ic">${d.k===t.day?'📍':'📆'}</span>${DAYMETA[d.k][0]} ${fmt(d.date)}${d.k===t.day?' <small>(está aqui)</small>':''}${d.k===t.origin&&d.k!==t.day?' <small>(dia de antes)</small>':''}</button>`).join('')}`);
   sheet.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click',()=>{
-    t.day=b.dataset.k; save(); hide(); openState[w.days.find(d=>d.k===t.day).date]=true; render(); vibrate(20); toast('Mudou para '+DAYMETA[t.day][0]);
+    t.day=b.dataset.k; t.u=Date.now(); save(); hide(); openState[w.days.find(d=>d.k===t.day).date]=true; render(); vibrate(20); toast('Mudou para '+DAYMETA[t.day][0]);
   }));
 }
 function openNote(id){
@@ -537,7 +632,7 @@ function openNote(id){
    <div class="row"><button class="opt" id="noteCancel">Cancelar</button><button class="opt primary" id="noteSave">Salvar</button></div>`);
   document.getElementById('noteTxt').focus();
   document.getElementById('noteCancel').addEventListener('click',hide);
-  document.getElementById('noteSave').addEventListener('click',()=>{t.note=document.getElementById('noteTxt').value.trim();save();hide();render();vibrate(20);toast(t.note?'Observação salva':'Observação apagada');});
+  document.getElementById('noteSave').addEventListener('click',()=>{t.note=document.getElementById('noteTxt').value.trim();t.noteBy=USER?USER.nome:'';t.u=Date.now();save();hide();render();vibrate(20);toast(t.note?'Observação salva':'Observação apagada');});
 }
 function openMain(){
   show(`<h2>☰ Menu <button class="x">✕</button></h2>
@@ -594,12 +689,14 @@ function reminderHtml(){
   const doing=allTasks(w).filter(t=>t.status==='doing'&&!secs[0][1].includes(t));
   if(doing.length) secs.push(['⏳ O que você está fazendo', doing]);
   const total=secs.reduce((a,[,l])=>a+l.length,0);
-  return `<div class="rem"><h2>${greet}! 👋 <button class="x">✕</button></h2>
+  const nome=USER?', '+USER.nome:''; const dica=isAluna()?'Arrasta para a direita quando terminar. Arrasta para a esquerda se ainda está fazendo.':'Você está acompanhando as tarefas da Maria. Segura em uma tarefa para deixar uma observação.';
+  return `<div class="rem"><h2>${greet}${nome}! 👋 <button class="x">✕</button></h2>
     ${total?secs.filter(([,l])=>l.length).map(([h,l])=>`<div class="sec"><h3>${h}</h3>${l.map(t=>`<div class="rw" style="--c:${dayCss(t.day)}">${taskHtml(t,true)}</div>`).join('')}</div>`).join(''):'<div class="ok">Tudo em dia! 🎉<br><small class="quiet">Não tem nada para fazer agora.</small></div>'}
-    <p class="quiet" style="margin:4px 0 10px;font-size:13px;text-align:center">Arrasta para a direita quando terminar. Arrasta para a esquerda se ainda está fazendo.</p>
+    <p class="quiet" style="margin:4px 0 10px;font-size:13px;text-align:center">${dica}</p>
     <button class="opt primary" id="remGo" style="justify-content:center">Vamos lá! 💪</button></div>`;
 }
 function hintFirst(){
+  if(!isAluna()) return;
   const first=sheet.querySelector('.rem .task'); if(!first) return;
   setTimeout(()=>{ if(!first.isConnected) return; first.classList.add('hint');
     const stop=()=>{first.classList.remove('hint');};
@@ -622,7 +719,8 @@ function refreshReminder(){
 document.getElementById('fab').addEventListener('click',openMain);
 render();
 let remSeen=false; try{remSeen=!!sessionStorage.getItem('rem-shown');sessionStorage.setItem('rem-shown','1');}catch(e){}
-if(!remSeen) setTimeout(openReminder,350);
+if(CLOUD_ON && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
+else { cloudStart(); if(!remSeen) setTimeout(openReminder,350); }
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
 </body>
