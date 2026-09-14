@@ -231,6 +231,22 @@
   .msg.me .reacts{justify-content:flex-end}
   .react{border:2px solid var(--line);background:#fff;border-radius:999px;padding:1px 8px;font-size:13px;font-weight:800;color:var(--ink);line-height:1.5}
   .react.mine{border-color:var(--sex);background:#E8F1FC}
+  .popwrap{position:fixed;inset:0;z-index:80}
+  .rpill{position:fixed;background:#26243A;border-radius:999px;padding:6px 8px;display:flex;gap:2px;box-shadow:0 10px 24px rgba(0,0,0,.28);animation:pop .25s cubic-bezier(.36,1.6,.5,1);max-width:calc(100vw - 24px);overflow-x:auto;scrollbar-width:none}
+  .rpill::-webkit-scrollbar{display:none}
+  .rpill button{border:0;background:transparent;font-size:26px;width:40px;height:40px;border-radius:50%;flex:none;transition:transform .12s}
+  .rpill button:active,.rpill button.mine{background:rgba(255,255,255,.18);transform:scale(1.15)}
+  .rpill button.more{color:#fff;font-size:24px;background:rgba(255,255,255,.14)}
+  .pmenu{position:fixed;background:#fff;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.25);min-width:170px;overflow:hidden;animation:pop .25s cubic-bezier(.36,1.6,.5,1)}
+  .pmenu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:#fff;padding:12px 16px;font-size:16px;font-weight:800;color:var(--ink);text-align:left}
+  .pmenu button+button{border-top:1px solid var(--line)}
+  .pmenu button.danger{color:#B3261E}
+  .msg.focus .b{box-shadow:0 0 0 3px var(--sex)}
+  .msgs.dim .msg:not(.focus){opacity:.35}
+  .editbar{display:none;align-items:center;gap:8px;background:#E8F1FC;border-left:4px solid var(--sex);border-radius:10px;padding:6px 10px;margin-top:8px;font-size:13px;color:var(--soft)}
+  .editbar.on{display:flex}
+  .editbar b{color:var(--ink)}
+  .editbar button{margin-left:auto;border:0;background:transparent;font-size:18px;color:var(--soft)}
   .rrow{display:flex;gap:6px;justify-content:space-between;margin:4px 0 12px}
   .rrow button{border:0;background:#F2F0FA;border-radius:14px;font-size:26px;flex:1;padding:8px 0;transition:transform .15s}
   .rrow button:active{transform:scale(1.2)}
@@ -308,7 +324,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='2.8';
+const APP_VERSION='2.9';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -564,34 +580,37 @@ function bindMsgs(){
 }
 function toggleReact(k,e){ if(!famRef||!USER) return; const m=CHAT.find(x=>x.k===k); const mine=m&&m.reacts&&m.reacts[e]&&m.reacts[e][USER.id];
   famRef.child('chat/'+k+'/reacts/'+e+'/'+USER.id)[mine?'remove':'set'](true); vibrate(15); }
-let chatDraft='';
+let editingKey=null;
+function closePop(){ const w=document.querySelector('.popwrap'); if(w) w.remove(); const m=document.getElementById('msgs'); if(m){m.classList.remove('dim'); m.querySelectorAll('.msg.focus').forEach(x=>x.classList.remove('focus'));} }
 function openMsgMenu(k){
   const m=CHAT.find(x=>x.k===k); if(!m) return; const me=USER&&m.by===USER.id;
-  chatDraft=document.getElementById('chatTxt')?document.getElementById('chatTxt').value:'';
-  show(`<h2>💬 Mensagem <button class="x">✕</button></h2>
-    <p class="quiet" style="margin:0 0 10px"><b>${esc(uname(m.by))}:</b> ${esc(m.text||'')}</p>
-    <div class="rrow">${REACTS.map(e=>`<button data-r="${e}">${e}</button>`).join('')}</div>
-    ${me?`<button class="opt" id="mEdit"><span class="ic">✏️</span>Editar</button><button class="opt danger" id="mDel"><span class="ic">🗑️</span>Apagar</button>`:''}
-    <button class="opt" id="mBack"><span class="ic">↩</span>Voltar para a conversa</button>`);
-  const back=()=>{openChat(); const i=document.getElementById('chatTxt'); if(i){i.value=chatDraft;}};
-  sheet.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);back();}));
-  sheet.querySelector('.x').addEventListener('click',back,{once:true});
-  document.getElementById('mBack').addEventListener('click',back);
+  closePop();
+  const msgs=document.getElementById('msgs'); const el=msgs.querySelector(`.msg[data-k="${k}"]`); if(!el) return;
+  el.classList.add('focus'); msgs.classList.add('dim');
+  const r=el.querySelector('.b').getBoundingClientRect();
+  const wrap=document.createElement('div'); wrap.className='popwrap';
+  const mine=e=>m.reacts&&m.reacts[e]&&USER&&m.reacts[e][USER.id];
+  wrap.innerHTML=`<div class="rpill" id="rpill">${REACTS.map(e=>`<button data-r="${e}" class="${mine(e)?'mine':''}">${e}</button>`).join('')}<button class="more" data-more="1">＋</button></div>
+    ${me?`<div class="pmenu" id="pmenu"><button data-a="edit">✏️ Editar</button><button data-a="del" class="danger">🗑️ Apagar</button></div>`:''}`;
+  document.body.appendChild(wrap);
+  const pill=wrap.querySelector('#rpill'), menu=wrap.querySelector('#pmenu');
+  const place=()=>{ const pw=pill.offsetWidth, ph=pill.offsetHeight;
+    let top=r.top-ph-10; if(top<70) top=r.bottom+10;
+    let left=me? r.right-pw : r.left; left=Math.max(12,Math.min(left,window.innerWidth-pw-12));
+    pill.style.top=top+'px'; pill.style.left=left+'px';
+    if(menu){ const mh=menu.offsetHeight, mw=menu.offsetWidth; let mt=(top<r.top)? r.bottom+10 : top+ph+10; if(mt+mh>window.innerHeight-20) mt=r.top-mh-10-ph-10;
+      menu.style.top=Math.max(70,mt)+'px'; menu.style.left=Math.max(12,Math.min(me?r.right-mw:r.left,window.innerWidth-mw-12))+'px'; } };
+  place();
+  wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
+  wrap.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);closePop();}));
+  wrap.querySelector('[data-more]').addEventListener('click',()=>{ pill.innerHTML=EMOJIS.map(e=>`<button data-r="${e}">${e}</button>`).join(''); pill.style.maxWidth='calc(100vw - 24px)';
+    pill.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);closePop();})); place(); });
   if(me){
-    document.getElementById('mEdit').addEventListener('click',()=>{
-      show(`<h2>✏️ Editar mensagem <button class="x">✕</button></h2><textarea id="edTxt" maxlength="500">${esc(m.text||'')}</textarea>
-        <div class="row"><button class="opt" id="edCancel">Cancelar</button><button class="opt primary" id="edSave">Salvar</button></div>`);
-      document.getElementById('edTxt').focus();
-      document.getElementById('edCancel').addEventListener('click',back); sheet.querySelector('.x').addEventListener('click',back,{once:true});
-      document.getElementById('edSave').addEventListener('click',()=>{const v=document.getElementById('edTxt').value.trim(); if(!v) return;
-        famRef.child('chat/'+k).update({text:v,edited:true}); vibrate(15); back();});
-    });
-    document.getElementById('mDel').addEventListener('click',()=>{
-      show(`<h2>🗑️ Apagar mensagem? <button class="x">✕</button></h2><p class="quiet" style="margin:0 0 12px">Ela some para todo mundo.</p>
-        <div class="row"><button class="opt" id="dCancel">Cancelar</button><button class="opt" id="dOk" style="background:#B3261E;color:#fff">Apagar</button></div>`);
-      document.getElementById('dCancel').addEventListener('click',back); sheet.querySelector('.x').addEventListener('click',back,{once:true});
-      document.getElementById('dOk').addEventListener('click',()=>{famRef.child('chat/'+k).remove(); vibrate([30,30]); toast('Mensagem apagada'); back();});
-    });
+    menu.querySelector('[data-a=edit]').addEventListener('click',()=>{ closePop(); editingKey=k; const inp=document.getElementById('chatTxt'); inp.value=m.text||'';
+      const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Editando:</b> '+esc((m.text||'').slice(0,50)); inp.focus(); });
+    menu.querySelector('[data-a=del]').addEventListener('click',()=>{ menu.innerHTML='<button data-a="yes" class="danger">🗑️ Apagar para todos</button><button data-a="no">Cancelar</button>';
+      menu.querySelector('[data-a=yes]').addEventListener('click',()=>{famRef.child('chat/'+k).remove(); vibrate([30,30]); toast('Mensagem apagada'); closePop();});
+      menu.querySelector('[data-a=no]').addEventListener('click',closePop); });
   }
 }
 function openChat(){
@@ -599,11 +618,15 @@ function openChat(){
   show(`<div class="chat"><h2>💬 Conversa da família <button class="x">✕</button></h2>
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
+    <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
     <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">😊</button><input id="chatTxt" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" aria-label="Enviar">➤</button></div>
     <p class="quiet" style="margin:6px 0 0;text-align:center;font-size:12px">Segura numa mensagem para reagir, editar ou apagar.</p></div>`);
-  markRead(); scrollMsgs(); bindMsgs();
+  markRead(); scrollMsgs(); bindMsgs(); editingKey=null;
   const inp=document.getElementById('chatTxt');
+  const cancelEdit=()=>{editingKey=null;document.getElementById('editbar').classList.remove('on');inp.value='';};
+  document.getElementById('editCancel').addEventListener('click',cancelEdit);
   const send=()=>{ const v=inp.value.trim(); if(!v) return;
+    if(editingKey){ famRef.child('chat/'+editingKey).update({text:v,edited:true}); cancelEdit(); vibrate(15); return; }
     famRef.child('chat').push({by:USER.id,text:v,t:firebase.database.ServerValue.TIMESTAMP}); inp.value=''; inp.focus(); vibrate(15); };
   document.getElementById('chatSend').addEventListener('click',send);
   inp.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
@@ -768,7 +791,7 @@ let scrollY0=0;
 function show(html){sheet.classList.toggle('chatsheet',/class="chat"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
   if(!veil.classList.contains('on')){scrollY0=window.scrollY;document.body.classList.add('locked');document.body.style.top=(-scrollY0)+'px';}
   veil.classList.add('on');sheet.scrollTop=0;sheet.querySelector('.x')?.addEventListener('click',hide);}
-function hide(){veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
+function hide(){closePop();veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
 // arrastar para baixo fecha (só começa depois de 14px de arrasto vertical para baixo)
 let ty=0,tx=0,dy=0,armed=false,dragging=false,t0=0;
 sheet.addEventListener('touchstart',e=>{armed=sheet.scrollTop<=0 && !e.target.closest('.nodrag');dragging=false;dy=0;ty=e.touches[0].clientY;tx=e.touches[0].clientX;t0=Date.now();},{passive:true});
