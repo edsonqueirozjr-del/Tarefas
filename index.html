@@ -89,6 +89,12 @@
   .task.show-r .sw-r,.task.show-l .sw-l{opacity:1}
   .tin{position:relative;display:flex;gap:10px;align-items:center;padding:9px 8px;background:var(--tbg,#fff);transition:transform .25s ease;will-change:transform}
   .task.drag .tin{transition:none}
+  .task.hint .tin{animation:hintswipe 3.2s ease-in-out 1}
+  .task.hint .sw-r{animation:hintr 3.2s ease-in-out 1}
+  .task.hint .sw-l{animation:hintl 3.2s ease-in-out 1}
+  @keyframes hintswipe{0%,8%{transform:translateX(0)}30%,40%{transform:translateX(96px)}55%,62%{transform:translateX(0)}78%,86%{transform:translateX(-96px)}100%{transform:translateX(0)}}
+  @keyframes hintr{0%,8%{opacity:0}18%,48%{opacity:1}58%,100%{opacity:0}}
+  @keyframes hintl{0%,62%{opacity:0}72%,94%{opacity:1}100%{opacity:0}}
   .task.pressing .tin{background:rgba(0,0,0,.04)}
   .bring .task{--tbg:var(--bring)} .home .task{--tbg:var(--home)} .imp .task{--tbg:#fff}
   .task.doing{--tbg:var(--doing)}
@@ -589,9 +595,17 @@ function reminderHtml(){
     <p class="quiet" style="margin:4px 0 10px;font-size:13px;text-align:center">Arrasta para a direita quando terminar. Arrasta para a esquerda se ainda está fazendo.</p>
     <button class="opt primary" id="remGo" style="justify-content:center">Vamos lá! 💪</button></div>`;
 }
+function hintFirst(){
+  const first=sheet.querySelector('.rem .task'); if(!first) return;
+  setTimeout(()=>{ if(!first.isConnected) return; first.classList.add('hint');
+    const stop=()=>{first.classList.remove('hint');};
+    first.addEventListener('touchstart',stop,{once:true,passive:true}); first.addEventListener('mousedown',stop,{once:true});
+    first.addEventListener('animationend',()=>first.classList.remove('hint'),{once:true});
+  },600);
+}
 function openReminder(){
   const html=reminderHtml(); if(!html) return;
-  show(html); bindTasks(sheet);
+  show(html); bindTasks(sheet); hintFirst();
   document.getElementById('remGo').addEventListener('click',()=>{hide();vibrate(20);});
 }
 function refreshReminder(){
