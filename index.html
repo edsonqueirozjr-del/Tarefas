@@ -293,7 +293,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='2.6';
+const APP_VERSION='2.7';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -467,7 +467,7 @@ function cloudPush(now){
 }
 function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b) return;
   if(!CLOUD_CFG) b.textContent='Versão '+APP_VERSION; else if(!CLOUD_ON) b.textContent='⚠️ Não consegui carregar a nuvem (Firebase). Confira a internet e abra de novo. Versão '+APP_VERSION; else if(cloudErr) b.textContent='⚠️ Sem permissão no banco ('+cloudErr+'). Publique as regras no Firebase.'; else b.textContent=(cloudReady?(cloudOnline?'☁️ Sincronizado':'📴 Sem internet. Vai sincronizar depois'):'⏳ Conectando…')+' · v'+APP_VERSION; }
-function openLogin(after){
+function openLogin(after,preId){
   show(`<h2>👋 Quem é você? <button class="x" style="visibility:${USER?'visible':'hidden'}">✕</button></h2>
     <div class="users">${USERS.map(u=>`<button class="uopt" data-u="${u.id}"><span class="av">${avatarHtml(u)}</span><span>${u.nome}</span><small>${u.papel==='aluna'?'faz as tarefas':'acompanha'}</small></button>`).join('')}</div>
     <div id="pinBox" style="display:none;margin-top:12px">
@@ -480,6 +480,7 @@ function openLogin(after){
   sheet.querySelectorAll('.uopt').forEach(b=>b.addEventListener('click',()=>{pick=USERS.find(u=>u.id===b.dataset.u);usersEl.style.display='none';pinBox.style.display='block';
     document.getElementById('pinWho').textContent=pick.emoji+' '+pick.nome+', digite seu código:';document.getElementById('pinTxt').value='';document.getElementById('pinTxt').focus();}));
   document.getElementById('pinBack').addEventListener('click',()=>{usersEl.style.display='';pinBox.style.display='none';});
+  if(preId){ const b=sheet.querySelector('.uopt[data-u="'+preId+'"]'); if(b) b.click(); }
   const enter=()=>{const v=document.getElementById('pinTxt').value.trim(); if(v!==pick.pin){vibrate([40,40,40]);toast('Código errado. Tenta de novo');return;}
     USER=pick; try{localStorage.setItem(KEY+'-user',USER.id);}catch(e){}
     if(famRef){famRef.child('online').off();famRef.child('perfis').off();famRef.child('chat').off();}
@@ -495,15 +496,18 @@ function avatarHtml(u){ const f=PERFIS[u.id]&&PERFIS[u.id].foto; return f?`<img 
 function renderFam(){
   const el=document.getElementById('fam'); if(!el||!USER) return;
   el.innerHTML=USERS.map(u=>{const on=!!ONLINE[u.id]; return `<button class="p ${on?'on':''} ${u.id===USER.id?'me':''}" data-u="${u.id}" title="${on?'online':'offline'}"><span class="avw"><span class="av">${avatarHtml(u)}</span><i class="dot"></i></span><span>${u.nome}${u.id===USER.id?' (você)':''}</span></button>`;}).join('');
-  el.querySelectorAll('.p').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.u===USER.id) openFoto(); else toast(uname(b.dataset.u)+(ONLINE[b.dataset.u]?' está online 🟢':' está offline')); }));
+  el.querySelectorAll('.p').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.u===USER.id) openFoto(); else openLogin(null,b.dataset.u); }));
 }
 function openFoto(){
-  show(`<h2>📷 Minha foto <button class="x">✕</button></h2>
+  show(`<h2>${USER.emoji} ${USER.nome} <button class="x">✕</button></h2>
     <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
       <span class="av" style="width:120px;height:120px;border-radius:50%;overflow:hidden;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:56px;border:3px solid var(--line)">${avatarHtml(USER)}</span>
       <button class="opt primary" id="fotoPick" style="justify-content:center;max-width:320px">Escolher foto ou tirar uma</button>
       ${PERFIS[USER.id]&&PERFIS[USER.id].foto?'<button class="opt danger" id="fotoDel" style="justify-content:center;max-width:320px">Tirar a foto</button>':''}
+      <button class="opt" id="fotoSwap" style="justify-content:center;max-width:320px">👤 Trocar de usuário</button>
+      <p class="quiet" style="margin:0;font-size:13px;text-align:center">Dica: toque na foto de outra pessoa lá em cima para entrar como ela.</p>
     </div>`);
+  document.getElementById('fotoSwap').addEventListener('click',()=>openLogin());
   document.getElementById('fotoPick').addEventListener('click',()=>document.getElementById('fotoFile').click());
   const del=document.getElementById('fotoDel'); if(del) del.addEventListener('click',()=>{ if(famRef) famRef.child('perfis/'+USER.id+'/foto').remove(); hide(); toast('Foto removida'); });
 }
@@ -746,9 +750,7 @@ function openMain(){
    ${CLOUD_CFG?`<button class="opt" data-m="chat"><span class="ic">💬</span>Conversa da família${n?` <span class="st" style="background:#E4443F;color:#fff">${n} nova${n>1?'s':''}</span>`:''}</button>`:''}
    <button class="opt" data-m="tt"><span class="ic">📅</span>Aulas da semana</button>
    <button class="opt" data-m="wk"><span class="ic">🗂️</span>Semanas e histórico</button>
-   ${CLOUD_CFG?`<button class="opt" data-m="foto"><span class="ic">📷</span>Minha foto</button>
-   <button class="opt" data-m="user"><span class="ic">${USER?USER.emoji:'👤'}</span>Trocar de usuário${USER?` <small class="quiet">(agora: ${USER.nome})</small>`:''}</button>
-   <p class="quiet" id="syncBadge" style="margin:4px 0 0;text-align:center;font-size:13px"></p>`:''}`);
+   ${CLOUD_CFG?`<p class="quiet" id="syncBadge" style="margin:4px 0 0;text-align:center;font-size:13px"></p>`:''}`);
   updateSyncBadge();
   sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='tt')openTimetable(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='user')openLogin(); if(m==='chat')openChat();}));
 }
