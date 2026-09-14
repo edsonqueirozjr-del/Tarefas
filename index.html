@@ -324,7 +324,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='2.9';
+const APP_VERSION='3.1';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -359,52 +359,84 @@ const TIMETABLE = {
 };
 const DAYMETA = {dom:['Domingo','--dom'],seg:['Segunda','--seg'],ter:['Terça','--ter'],qua:['Quarta','--qua'],qui:['Quinta','--qui'],sex:['Sexta','--sex']};
 const B='bring', H='home';
-const T=(type,subj,text,important)=>({type,subj,text,important:!!important});
+const T=(type,subj,text,important,skip)=>({type,subj,text,important:!!important,skip:!!skip});
+const X=(type,subj,text)=>T(type,subj,text,0,1); // item repetido, escondido
 
 const SEED_WEEKS = [
+ {
+  id:'2026-09-06', label:'7 a 11 de setembro', roteiro:'Roteiro 14 · semana 1 · 7º ano D',
+  topics:'📖 Português: contos de mistério e de terror (capítulo 8).<br>➕ Matemática: porcentagem, acréscimos e descontos.<br>🏛️ História: por que o Brasil plantou cana e o engenho de açúcar.<br>🌎 Geografia: a Região Centro-Oeste.<br>🔬 Ciências: fim do reino Animalia com bingo e começo dos biomas.<br>🇬🇧 Inglês: Chapter 6 (They made it).<br>🇪🇸 Espanhol: rotina alimentar e tabelas.<br>🤔 Filosofia: as várias formas de amizade.<br>🎨 Arte: Land Art.<br>🌱 Projeto de Vida: atitude empreendedora.',
+  days:[
+   {k:'dom',date:'2026-09-06',tasks:[
+     T(H,'pdv','Pensar nas atitudes empreendedoras que você teve nas últimas duas semanas e anotar no caderno'),
+     T(H,'mat','Começar a Lista 7 de Matemática. Entrega na sexta 11/09')]},
+   {k:'seg',date:'2026-09-07',feriado:'7 de Setembro',tasks:[
+     T(H,'pdv','Terminar as anotações sobre atitudes empreendedoras para compartilhar amanhã'),
+     T(H,'mat','Continuar a Lista 7 de Matemática')]},
+   {k:'ter',date:'2026-09-08',tasks:[
+     T(B,'pdv','Caderno com as anotações sobre atitudes empreendedoras',1),
+     T(H,'esp','Deixar o caderno de Espanhol em ordem, com as atividades das últimas aulas. A professora vai revisar amanhã e vale <b>30 pontos</b>',1),
+     T(H,'mat','Continuar a Lista 7 de Matemática')]},
+   {k:'qua',date:'2026-09-09',tasks:[
+     T(B,'esp','Caderno de Espanhol em ordem. Vale <b>30 pontos</b>',1),
+     T(H,'cie','Separar um brinde para o bingo de amanhã (de 10 a 30 reais): papelaria, chocolate, brinquedo ou jogo',1),
+     T(H,'geo','Fazer a tarefa da <b>página 89</b>'),
+     T(H,'esp','Ler e interpretar a <b>página 13</b>'),
+     T(H,'mat','Continuar a Lista 7 de Matemática')]},
+   {k:'qui',date:'2026-09-10',tasks:[
+     T(B,'cie','Brinde para o bingo do reino Animalia 🎁',1),
+     T(B,'art','Pode levar cola e tesoura para a Land Art'),
+     T(H,'mat','Terminar a Lista 7 de Matemática. Entrega amanhã!',1),
+     T(H,'fil','Fazer os exercícios 1 e 2 (páginas 65 e 66)')]},
+   {k:'sex',date:'2026-09-11',tasks:[
+     T(B,'mat','Lista 7 de Matemática pronta para entregar',1),
+     T(H,'cie','Separar o material do cartaz dos biomas: cartolina, canetinhas e figuras'),
+     T(H,'pdv','Anotar informações do seu pet para a aula de terça')]}
+  ]
+ },
  {
   id:'2026-09-13', label:'14 a 18 de setembro', roteiro:'Roteiro 14 · 7º ano D',
   topics:'📖 Português: contos de mistério e de terror, concordância verbal e o verbo "ser".<br>➕ Matemática: porcentagem e juros simples.<br>🏛️ História: o engenho de açúcar e a sociedade colonial.<br>🌎 Geografia: a Região Centro-Oeste do Brasil.<br>🔬 Ciências: os biomas brasileiros.<br>🇬🇧 Inglês: Chapter 6 (They made it).<br>🇪🇸 Espanhol: aumentativos e diminutivos.<br>🤔 Filosofia: como nasce uma amizade.<br>🎨 Arte: Land Art, arte feita com coisas da natureza.<br>🌱 Projeto de Vida: Mundo dos Pets.',
   days:[
    {k:'dom',date:'2026-09-13',tasks:[
      T(H,'cie','Separar o material do cartaz dos biomas: cartolina, canetinhas e figuras'),
-     T(H,'mat','Conferir se a Lista 7 de Matemática já foi entregue')]},
+     X(H,'mat','Conferir se a Lista 7 de Matemática já foi entregue')]},
    {k:'seg',date:'2026-09-14',tasks:[
      T(B,'cie','Material do cartaz dos biomas. Hoje é a aula de preparar o cartaz'),
-     T(B,'mat','Lista 7 de Matemática, se ainda não entregou. Era para 11/09'),
+     X(B,'mat','Lista 7 de Matemática, se ainda não entregou. Era para 11/09'),
      T(H,'pdv','Anotar no caderno informações do seu pet: nome, idade, o que come, o que gosta de fazer. Pode levar uma foto 🐾'),
      T(H,'ing','Terminar as atividades de Inglês que ficaram sem acabar na sala (Chapter 6)'),
      T(H,'mat','Começar a ler as páginas 80 a 88 do livro de Matemática (Investimentos)')]},
    {k:'ter',date:'2026-09-15',tasks:[
      T(B,'pdv','Informações do seu bichinho de estimação para compartilhar na aula 🐶🐱',1),
-     T(B,'ing','Atividades de Inglês terminadas'),
+     X(B,'ing','Atividades de Inglês terminadas'),
      T(H,'cie','Treinar a apresentação dos biomas em voz alta. Vale <b>50 pontos</b>!',1),
      T(H,'edf','Escrever o Hino Nacional em papel almaço, com capricho'),
      T(H,'esp','Ler e interpretar a <b>página 13</b>. A professora vai corrigir amanhã'),
-     T(H,'geo','Conferir se a <b>página 89</b> está feita'),
+     X(H,'geo','Conferir se a <b>página 89</b> está feita'),
      T(H,'mat','Continuar a leitura de Matemática (páginas 80 a 88)')]},
    {k:'qua',date:'2026-09-16',tasks:[
      T(B,'cie','Cartaz dos biomas e apresentação bem treinada. Vale <b>50 pontos</b>!',1),
      T(B,'edf','Hino Nacional escrito em papel almaço. A professora marcou 18/09, mas na sexta não tem Ed. Física',1),
-     T(B,'esp','Página 13 feita'),
-     T(B,'geo','Página 89 feita'),
+     X(B,'esp','Página 13 feita'),
+     X(B,'geo','Página 89 feita'),
      T(H,'his','Fazer a tarefa da <b>página 52</b>'),
      T(H,'geo','Fazer a tarefa da <b>página 95</b>'),
      T(H,'fil','Conferir os exercícios 1 e 2 (páginas 65 e 66)'),
      T(H,'ing','Acabar o que sobrou da sala (Language Organizer)')]},
    {k:'qui',date:'2026-09-17',tasks:[
-     T(B,'his','Página 52 feita'),
-     T(B,'geo','Página 95 feita'),
-     T(B,'fil','Exercícios 1 e 2 feitos'),
+     X(B,'his','Página 52 feita'),
+     X(B,'geo','Página 95 feita'),
+     X(B,'fil','Exercícios 1 e 2 feitos'),
      T(B,'cie','Cartaz dos biomas de novo. As apresentações continuam'),
      T(B,'art','Hoje vamos criar arte com folhas, gravetos e pedras 🍂. Pode levar cola e tesoura'),
      T(H,'mat','Terminar a leitura de Matemática (páginas 80 a 88). Amanhã é a correção das tarefas'),
      T(H,'por','Terminar a atividade "Aprimorando" que começou na sala'),
      T(H,'ing','Acabar o que sobrou da sala')]},
    {k:'sex',date:'2026-09-18',tasks:[
-     T(B,'mat','Leitura de Matemática feita (páginas 80 a 88)'),
-     T(B,'por','Atividade "Aprimorando" terminada'),
-     T(B,'ing','Inglês em dia'),
+     X(B,'mat','Leitura de Matemática feita (páginas 80 a 88)'),
+     X(B,'por','Atividade "Aprimorando" terminada'),
+     X(B,'ing','Inglês em dia'),
      T(H,'esp','Interpretar os textos das <b>páginas 15, 16, 17 e 18</b>. É para quarta 23/09'),
      T(H,'fil','Fazer os exercícios 3 e 4 da <b>página 70</b>. É para quinta 24/09')]}
   ]
@@ -428,7 +460,8 @@ SEED_WEEKS.forEach(w=>{
     DB.weeks[w.id]=copy;
   } else { // migração: atualiza texto/matéria/importante sem perder progresso
     const sw=DB.weeks[w.id]; sw.label=w.label; sw.roteiro=w.roteiro; sw.topics=w.topics; delete sw.alerts;
-    sw.days.forEach(d=>d.tasks.forEach(t=>{const s=seedTasks[t.id]; if(!s) return; t.text=s.text; t.subj=s.subj; if(t.important===undefined) t.important=s.important;}));
+    sw.days.forEach(d=>d.tasks.forEach(t=>{const s=seedTasks[t.id]; if(!s) return; t.text=s.text; t.subj=s.subj; t.skip=!!s.skip; if(t.important===undefined) t.important=s.important;}));
+    sw.days.forEach(d=>{const sd=w.days.find(x=>x.k===d.k); if(sd&&sd.feriado) d.feriado=sd.feriado;});
   }
 });
 Object.values(DB.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{ if(!t.u && (t.status!=='todo'||t.note||t.day!==t.origin)) t.u=1; })));
@@ -516,7 +549,7 @@ function openLogin(after,preId){
     USER=pick; try{localStorage.setItem(KEY+'-user',USER.id);}catch(e){}
     if(famRef){famRef.child('online').off();famRef.child('perfis').off();famRef.child('chat').off();}
     if(cloudRef){cloudRef.off();cloudRef=null;cloudReady=false;lastPushed='';}
-    cloudStart(); hide(); render(); vibrate(20); toast('Oi, '+USER.nome+'! '+USER.emoji); if(after) setTimeout(after,300);};
+    cloudStart(); hide(); render(); vibrate(20); toast('Oi, '+USER.nome+'! '+USER.emoji); startReminders(); if(after) setTimeout(after,300);};
   document.getElementById('pinOk').addEventListener('click',enter);
   document.getElementById('pinTxt').addEventListener('keydown',e=>{if(e.key==='Enter')enter();});
 }
@@ -641,7 +674,7 @@ function markRead(){ const last=CHAT[CHAT.length-1]; if(last&&(last.t||0)>lastRe
 /* ================= RENDER ================= */
 const fmt=d=>{const [y,m,dd]=d.split('-');return dd+'/'+m;};
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-function allTasks(w){return w.days.flatMap(d=>d.tasks);}
+function allTasks(w){return w.days.flatMap(d=>d.tasks).filter(t=>!t.skip);}
 function pass(t){ const st = fType==='late' ? (t.status!=='done'&&taskPassed(t)) : (fType==='all' || (t.status===fType && !(t.status==='todo'&&taskPassed(t)))); return st && (fSubj==='all' || t.subj===fSubj); }
 const addDays=(dIso,n)=>{const d=new Date(dIso+'T12:00:00');d.setDate(d.getDate()+n);return iso(d);};
 function boxPassed(w,d,type){
@@ -696,14 +729,14 @@ function render(){
       const passed=boxPassed(w,d,type);
       return `<div class="box ${type} ${passed?'past':''}"><h3>${title}${now}</h3>${list.length?list.map(t=>taskHtml(t,false)).join(''):`<div class="empty">${emptyTxt}</div>`}</div>`;
     };
-    const bx=(d.k==='dom'?'':box(B,'🎒 Levar para a escola','Nada para levar hoje 🙂'))+box(H,d.k==='sex'?'🏠 Fazer no fim de semana':'🏠 Fazer em casa para amanhã','Nada para fazer em casa 🎉');
+    const bx=((d.k==='dom'||d.feriado)?'':box(B,'🎒 Levar para a escola','Nada para levar hoje 🙂'))+box(H,d.k==='sex'?'🏠 Fazer no fim de semana':'🏠 Fazer em casa para amanhã','Nada para fazer em casa 🎉');
     const boxes=bx?`<div class="boxes ${d.k==='dom'?'one':''}">${bx}</div>`:'';
     html+=`<details class="day ${past&&!isToday?'past':''} ${isToday?'today':''} ${complete?'complete':''}" style="--c:var(${cv})" data-date="${d.date}" ${open?'open':''}>
       <summary><div class="dl"><span class="n">${name}</span><span class="d">${fmt(d.date)}</span></div>
         <div class="tags">${cntTag}${isToday?'<span class="tag">HOJE</span>':''}${isTomorrow?'<span class="tag">AMANHÃ</span>':''}${complete?'<span class="tag">🎉 Tudo feito!</span>':''}</div>
         <span class="arrow">▼</span></summary>
       <div class="body">
-        <div class="aulas">${(TIMETABLE.days[d.k]||[]).map(k=>`<span>${SUBJ[k]}</span>`).join('')||'<span>😴 Sem aula</span>'}</div>
+        <div class="aulas">${d.feriado?`<span>🎉 Feriado: ${d.feriado}</span>`:((TIMETABLE.days[d.k]||[]).map(k=>`<span>${SUBJ[k]}</span>`).join('')||'<span>😴 Sem aula</span>')}</div>
         ${boxes||'<div class="empty">Nada aqui com esse filtro.</div>'}
       </div></details>`;
   });
@@ -923,10 +956,29 @@ function refreshReminder(){
 }
 document.getElementById('fab').addEventListener('click',openMain);
 document.addEventListener('contextmenu',e=>{ if(!e.target.closest('input,textarea')) e.preventDefault(); });
+
+/* ================= LEMBRETES (notificações locais) =================
+   Funciona enquanto o app estiver aberto ou em segundo plano recente.
+   A cada hora, das 13h às 21h, avisa a Maria do que falta para amanhã. */
+const NOTIF_H1=13, NOTIF_H2=21;
+let notifTimer=null;
+function pendingTomorrow(){ const w=DB.weeks[current]; if(!w) return []; const idx=w.days.findIndex(d=>d.date===TODAY); if(idx<0) return [];
+  const d=w.days[idx]; return allTasks(w).filter(t=>t.day===d.k&&t.type===H&&t.status!=='done'); }
+async function askNotif(){ if(!('Notification' in window)) return false; if(Notification.permission==='granted') return true; if(Notification.permission==='denied') return false;
+  try{ const r=await Notification.requestPermission(); return r==='granted'; }catch(e){ return false; } }
+async function notify(title,body){ if(!('Notification' in window)||Notification.permission!=='granted') return;
+  try{ const reg=await navigator.serviceWorker?.getRegistration(); if(reg) return reg.showNotification(title,{body,icon:'icon-192.png',badge:'icon-192.png',tag:'lembrete',renotify:true,vibrate:[80,40,80]}); new Notification(title,{body,icon:'icon-192.png'}); }catch(e){}
+}
+function hourlyReminder(){ if(!USER||USER.papel!=='aluna') return; const h=new Date().getHours(); if(h<NOTIF_H1||h>NOTIF_H2) return;
+  const key=KEY+'-notif-'+TODAY+'-'+h; try{ if(localStorage.getItem(key)) return; localStorage.setItem(key,'1'); }catch(e){}
+  const p=pendingTomorrow(); if(!p.length) return;
+  const first=p[0].text.replace(/<[^>]+>/g,''); notify('🎒 Ainda falta '+p.length+' tarefa'+(p.length>1?'s':'')+' para amanhã', first+(p.length>1?' e mais '+(p.length-1):'')); }
+function startReminders(){ clearInterval(notifTimer); if(!USER||USER.papel!=='aluna') return; askNotif().then(ok=>{ if(!ok) return; hourlyReminder(); notifTimer=setInterval(hourlyReminder,60*1000); }); }
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyReminder(); });
 render();
 let remSeen=false; try{remSeen=!!sessionStorage.getItem('rem-shown');sessionStorage.setItem('rem-shown','1');}catch(e){}
 if(CLOUD_CFG && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
-else { cloudStart(); if(!remSeen) setTimeout(openReminder,350); }
+else { cloudStart(); startReminders(); if(!remSeen) setTimeout(openReminder,350); }
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
 </body>
