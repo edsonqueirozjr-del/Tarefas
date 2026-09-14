@@ -19,7 +19,9 @@
     --dom:#8A8A9A; --seg:#FF8A3D; --ter:#2EB88A; --qua:#E0479E; --qui:#8E5BE0; --sex:#2F8FE0; --fab:#26243A; --gold:#D9A21B;
     --bring:#FFF3C4; --home:#E3F5EC; --alert:#FFE1DD; --doing:#FFE9B3; --amber:#E9C46A; --imp:#E4443F;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+  body{user-select:none;-webkit-user-select:none}
+  input,textarea{user-select:text;-webkit-user-select:text}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:Nunito,"Segoe UI",system-ui,sans-serif;font-weight:600;font-size:17px;line-height:1.4}
   .wrap{max-width:560px;margin:0 auto;padding:20px 16px 120px}
   h1{font-size:28px;font-weight:900;margin:0 0 6px;line-height:1.1;text-align:center}
@@ -223,6 +225,19 @@
   .chatin input{flex:1;border:2px solid var(--line);border-radius:999px;padding:10px 14px;font:inherit;font-size:16px}
   .chatin button{width:46px;height:46px;border-radius:50%;border:0;background:var(--sex);color:#fff;font-size:20px;flex:none}
   .chat .empty{color:var(--soft);text-align:center;margin:auto;font-size:16px;line-height:1.5}
+  .msg .b i.ed{font-style:normal;font-size:11px;opacity:.6;margin-left:4px}
+  .msg.pressing .b{filter:brightness(.92)}
+  .reacts{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+  .msg.me .reacts{justify-content:flex-end}
+  .react{border:2px solid var(--line);background:#fff;border-radius:999px;padding:1px 8px;font-size:13px;font-weight:800;color:var(--ink);line-height:1.5}
+  .react.mine{border-color:var(--sex);background:#E8F1FC}
+  .rrow{display:flex;gap:6px;justify-content:space-between;margin:4px 0 12px}
+  .rrow button{border:0;background:#F2F0FA;border-radius:14px;font-size:26px;flex:1;padding:8px 0;transition:transform .15s}
+  .rrow button:active{transform:scale(1.2)}
+  .picker{display:none;flex-wrap:wrap;gap:4px;padding:8px 4px 0;max-height:120px;overflow:auto}
+  .picker.on{display:flex}
+  .picker button{border:0;background:#F7F5FC;border-radius:10px;font-size:24px;width:44px;height:40px}
+  .chatin .emo{background:#F2F0FA;color:var(--ink);font-size:22px}
   .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-weight:800;font-size:14px;z-index:70;opacity:0;transition:opacity .25s;pointer-events:none}
   .toast.on{opacity:1}
   /* ===== Tablet (Galaxy Tab S9 FE) ===== */
@@ -293,7 +308,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='2.7';
+const APP_VERSION='2.8';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -434,7 +449,7 @@ function cloudStart(){
   db.ref('.info/connected').on('value',sn=>{ if(sn.val()){ meRef.onDisconnect().remove(); meRef.set({t:firebase.database.ServerValue.TIMESTAMP}); } });
   famRef.child('online').on('value',sn=>{ ONLINE=sn.val()||{}; renderFam(); });
   famRef.child('perfis').on('value',sn=>{ PERFIS=sn.val()||{}; try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){} renderFam(); refreshChat(); });
-  famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; const prevLen=CHAT.length; CHAT=Object.keys(v).sort().map(k=>v[k]);
+  famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; const prevLen=CHAT.length; CHAT=Object.keys(v).sort().map(k=>({k,...v[k]}));
     updateChatBadge(); refreshChat();
     const last=CHAT[CHAT.length-1]; if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && !sheet.querySelector('.chat')){ vibrate([30,30,30]); toast('💬 '+uname(last.by)+': '+last.text.slice(0,60)); } });
   cloudRef.on('value',sn=>{
@@ -525,24 +540,78 @@ let lastRead=0; try{lastRead=+localStorage.getItem(KEY+'-read')||0;}catch(e){}
 function unread(){ return USER?CHAT.filter(m=>m.by!==USER.id&&(m.t||0)>lastRead).length:0; }
 function updateChatBadge(){ const b=document.getElementById('chatBadge'); const n=unread(); b.textContent=n>9?'9+':n; b.classList.toggle('on',n>0); }
 function fmtT(t){ const d=new Date(t||0); const hoje=iso(d)===TODAY; return (hoje?'':fmt(iso(d))+' ')+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+const REACTS=['👍','❤️','😂','😮','😢','🎉','🔥','🙏'];
+const EMOJIS=['😀','😂','🥰','😎','🤔','😅','😴','🤩','😭','🙄','😉','🥳','👍','👏','🙏','💪','👀','🤝','❤️','💛','💙','💜','🔥','✨','⭐','🎉','🎈','🍕','🍦','🐶','🐱','🐾','📚','✏️','🎒','🏫','⏰','✅','❌','💬'];
+function reactsHtml(m){ const r=m.reacts||{}; const ks=Object.keys(r).filter(e=>r[e]&&Object.keys(r[e]).length); if(!ks.length) return '';
+  return `<div class="reacts">${ks.map(e=>`<button class="react ${USER&&r[e][USER.id]?'mine':''}" data-r="${e}" data-k="${m.k}">${e} ${Object.keys(r[e]).length}</button>`).join('')}</div>`; }
 function chatHtml(){
   if(!CHAT.length) return '<div class="empty">Ainda não tem mensagens.<br>Manda um oi! 👋</div>';
   return CHAT.map(m=>{const u=USERS.find(x=>x.id===m.by)||{emoji:'👤',nome:m.by,id:m.by}; const me=USER&&m.by===USER.id;
-    return `<div class="msg ${me?'me':''}"><span class="av">${avatarHtml(u)}</span><div class="b"><b>${esc(u.nome)}</b>${esc(m.text||'')}<small>${fmtT(m.t)}</small></div></div>`;}).join('');
+    return `<div class="msg ${me?'me':''}" data-k="${m.k}"><span class="av">${avatarHtml(u)}</span><div><div class="b"><b>${esc(u.nome)}</b>${esc(m.text||'')}<small>${fmtT(m.t)}${m.edited?'<i class="ed">(editada)</i>':''}</small></div>${reactsHtml(m)}</div></div>`;}).join('');
+}
+function bindMsgs(){
+  const box=document.getElementById('msgs'); if(!box) return;
+  box.querySelectorAll('.react').forEach(b=>b.addEventListener('click',()=>toggleReact(b.dataset.k,b.dataset.r)));
+  box.querySelectorAll('.msg').forEach(el=>{
+    let timer=null,sx=0,sy=0;
+    const start=(x,y)=>{sx=x;sy=y;el.classList.add('pressing');timer=setTimeout(()=>{el.classList.remove('pressing');vibrate(30);openMsgMenu(el.dataset.k);},450);};
+    const cancel=()=>{clearTimeout(timer);el.classList.remove('pressing');};
+    el.addEventListener('touchstart',e=>start(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+    el.addEventListener('touchmove',e=>{if(Math.abs(e.touches[0].clientX-sx)>10||Math.abs(e.touches[0].clientY-sy)>10)cancel();},{passive:true});
+    el.addEventListener('touchend',cancel); el.addEventListener('touchcancel',cancel);
+    el.addEventListener('mousedown',e=>{if(e.button===0)start(e.clientX,e.clientY);}); el.addEventListener('mouseup',cancel); el.addEventListener('mouseleave',cancel);
+  });
+}
+function toggleReact(k,e){ if(!famRef||!USER) return; const m=CHAT.find(x=>x.k===k); const mine=m&&m.reacts&&m.reacts[e]&&m.reacts[e][USER.id];
+  famRef.child('chat/'+k+'/reacts/'+e+'/'+USER.id)[mine?'remove':'set'](true); vibrate(15); }
+let chatDraft='';
+function openMsgMenu(k){
+  const m=CHAT.find(x=>x.k===k); if(!m) return; const me=USER&&m.by===USER.id;
+  chatDraft=document.getElementById('chatTxt')?document.getElementById('chatTxt').value:'';
+  show(`<h2>💬 Mensagem <button class="x">✕</button></h2>
+    <p class="quiet" style="margin:0 0 10px"><b>${esc(uname(m.by))}:</b> ${esc(m.text||'')}</p>
+    <div class="rrow">${REACTS.map(e=>`<button data-r="${e}">${e}</button>`).join('')}</div>
+    ${me?`<button class="opt" id="mEdit"><span class="ic">✏️</span>Editar</button><button class="opt danger" id="mDel"><span class="ic">🗑️</span>Apagar</button>`:''}
+    <button class="opt" id="mBack"><span class="ic">↩</span>Voltar para a conversa</button>`);
+  const back=()=>{openChat(); const i=document.getElementById('chatTxt'); if(i){i.value=chatDraft;}};
+  sheet.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);back();}));
+  sheet.querySelector('.x').addEventListener('click',back,{once:true});
+  document.getElementById('mBack').addEventListener('click',back);
+  if(me){
+    document.getElementById('mEdit').addEventListener('click',()=>{
+      show(`<h2>✏️ Editar mensagem <button class="x">✕</button></h2><textarea id="edTxt" maxlength="500">${esc(m.text||'')}</textarea>
+        <div class="row"><button class="opt" id="edCancel">Cancelar</button><button class="opt primary" id="edSave">Salvar</button></div>`);
+      document.getElementById('edTxt').focus();
+      document.getElementById('edCancel').addEventListener('click',back); sheet.querySelector('.x').addEventListener('click',back,{once:true});
+      document.getElementById('edSave').addEventListener('click',()=>{const v=document.getElementById('edTxt').value.trim(); if(!v) return;
+        famRef.child('chat/'+k).update({text:v,edited:true}); vibrate(15); back();});
+    });
+    document.getElementById('mDel').addEventListener('click',()=>{
+      show(`<h2>🗑️ Apagar mensagem? <button class="x">✕</button></h2><p class="quiet" style="margin:0 0 12px">Ela some para todo mundo.</p>
+        <div class="row"><button class="opt" id="dCancel">Cancelar</button><button class="opt" id="dOk" style="background:#B3261E;color:#fff">Apagar</button></div>`);
+      document.getElementById('dCancel').addEventListener('click',back); sheet.querySelector('.x').addEventListener('click',back,{once:true});
+      document.getElementById('dOk').addEventListener('click',()=>{famRef.child('chat/'+k).remove(); vibrate([30,30]); toast('Mensagem apagada'); back();});
+    });
+  }
 }
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
   show(`<div class="chat"><h2>💬 Conversa da família <button class="x">✕</button></h2>
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
-    <div class="chatin"><input id="chatTxt" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" aria-label="Enviar">➤</button></div></div>`);
-  markRead(); scrollMsgs();
-  const send=()=>{ const inp=document.getElementById('chatTxt'); const v=inp.value.trim(); if(!v) return;
+    <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
+    <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">😊</button><input id="chatTxt" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" aria-label="Enviar">➤</button></div>
+    <p class="quiet" style="margin:6px 0 0;text-align:center;font-size:12px">Segura numa mensagem para reagir, editar ou apagar.</p></div>`);
+  markRead(); scrollMsgs(); bindMsgs();
+  const inp=document.getElementById('chatTxt');
+  const send=()=>{ const v=inp.value.trim(); if(!v) return;
     famRef.child('chat').push({by:USER.id,text:v,t:firebase.database.ServerValue.TIMESTAMP}); inp.value=''; inp.focus(); vibrate(15); };
   document.getElementById('chatSend').addEventListener('click',send);
-  document.getElementById('chatTxt').addEventListener('keydown',e=>{if(e.key==='Enter')send();});
-  setTimeout(()=>document.getElementById('chatTxt').focus(),300);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
+  document.getElementById('emoBtn').addEventListener('click',()=>{document.getElementById('picker').classList.toggle('on');});
+  sheet.querySelectorAll('#picker button').forEach(b=>b.addEventListener('click',()=>{inp.value+=b.dataset.e;inp.focus();}));
+  setTimeout(()=>inp.focus(),300);
 }
-function refreshChat(){ const m=document.getElementById('msgs'); if(!m) return; const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); if(atBottom) scrollMsgs(); markRead(); }
+function refreshChat(){ const m=document.getElementById('msgs'); if(!m) return; const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); bindMsgs(); if(atBottom) scrollMsgs(); markRead(); }
 function scrollMsgs(){ const m=document.getElementById('msgs'); if(m) setTimeout(()=>{m.scrollTop=m.scrollHeight;},50); }
 function markRead(){ const last=CHAT[CHAT.length-1]; if(last&&(last.t||0)>lastRead){ lastRead=last.t; try{localStorage.setItem(KEY+'-read',String(lastRead));}catch(e){} } updateChatBadge(); }
 
@@ -830,6 +899,7 @@ function refreshReminder(){
   document.getElementById('remGo').addEventListener('click',()=>{hide();vibrate(20);});
 }
 document.getElementById('fab').addEventListener('click',openMain);
+document.addEventListener('contextmenu',e=>{ if(!e.target.closest('input,textarea')) e.preventDefault(); });
 render();
 let remSeen=false; try{remSeen=!!sessionStorage.getItem('rem-shown');sessionStorage.setItem('rem-shown','1');}catch(e){}
 if(CLOUD_CFG && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
