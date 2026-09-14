@@ -345,7 +345,7 @@ const SEED_WEEKS = [
 
 /* ================= ARMAZENAMENTO ================= */
 const KEY='minha-semana-7D-v1';
-let cloudRef=null, cloudReady=false, lastPushed='', pushTimer=null, cloudOnline=false;
+let cloudRef=null, cloudReady=false, lastPushed='', pushTimer=null, cloudOnline=false, cloudErr='';
 let mem=null;
 function load(){ try{const s=localStorage.getItem(KEY); if(s) return JSON.parse(s);}catch(e){} return mem||{weeks:{}}; }
 function save(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} cloudPush(); }
@@ -362,6 +362,7 @@ SEED_WEEKS.forEach(w=>{
     sw.days.forEach(d=>d.tasks.forEach(t=>{const s=seedTasks[t.id]; if(!s) return; t.text=s.text; t.subj=s.subj; if(t.important===undefined) t.important=s.important;}));
   }
 });
+Object.values(DB.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{ if(!t.u && (t.status!=='todo'||t.note||t.day!==t.origin)) t.u=1; })));
 save();
 
 /* ================= ESTADO ================= */
@@ -387,12 +388,12 @@ function cloudStart(){
   db.ref('.info/connected').on('value',sn=>{cloudOnline=!!sn.val(); updateSyncBadge();});
   cloudRef=db.ref('familias/'+famCode);
   cloudRef.on('value',sn=>{
-    const remote=sn.val();
+    cloudErr=''; const remote=sn.val();
     if(!remote||!remote.weeks){ cloudReady=true; cloudPush(true); return; }
     const changed=mergeRemote(remote); cloudReady=true;
     if(changed){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} render(); refreshReminder(); }
     cloudPush(); // envia o que só existe aqui (ex.: semana nova)
-  });
+  },err=>{ cloudErr=err&&err.code||'erro'; updateSyncBadge(); toast('Sem permissão no banco. Confira as regras do Firebase.'); });
 }
 function mergeRemote(remote){
   let changed=false;
@@ -402,7 +403,8 @@ function mergeRemote(remote){
     const local={}; lw.days.forEach(d=>d.tasks.forEach(t=>local[t.id]=t));
     (rw.days||[]).forEach(d=>(d.tasks||[]).forEach(rt=>{
       const lt=local[rt.id]; if(!lt) return;
-      if((rt.u||0)>(lt.u||0)){ lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
+      const diff = rt.status!==lt.status || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day || !!rt.important!==!!lt.important;
+      if(diff && ((rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){ lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
     }));
   });
   return changed;
@@ -410,11 +412,11 @@ function mergeRemote(remote){
 function cloudPush(now){
   if(!cloudRef||!cloudReady) return;
   clearTimeout(pushTimer);
-  const doIt=()=>{ const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.set(JSON.parse(json)).catch(()=>{}); };
+  const doIt=()=>{ const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.set(JSON.parse(json)).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
   if(now) doIt(); else pushTimer=setTimeout(doIt,400);
 }
 function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b) return;
-  if(!CLOUD_ON) b.textContent=''; else b.textContent=cloudOnline?'☁️ Sincronizado':'📴 Sem internet. Vai sincronizar depois'; }
+  if(!CLOUD_ON) b.textContent=''; else if(cloudErr) b.textContent='⚠️ Sem permissão no banco ('+cloudErr+'). Publique as regras no Firebase.'; else b.textContent=cloudReady?(cloudOnline?'☁️ Sincronizado':'📴 Sem internet. Vai sincronizar depois'):'⏳ Conectando…'; }
 function openLogin(after){
   show(`<h2>👋 Quem é você? <button class="x" style="visibility:${USER?'visible':'hidden'}">✕</button></h2>
     <div class="users">${USERS.map(u=>`<button class="uopt" data-u="${u.id}"><span class="av">${u.emoji}</span><span>${u.nome}</span><small>${u.papel==='aluna'?'faz as tarefas':'acompanha'}</small></button>`).join('')}</div>
