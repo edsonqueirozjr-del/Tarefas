@@ -24,10 +24,10 @@
   .prog{margin:4px 0 14px}
   .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:14px;color:var(--soft);margin-bottom:6px}
   .prog .row b{color:var(--ink);font-size:16px}
-  .prog .bar{height:14px;border-radius:999px;background:#EEEBF5;overflow:hidden;position:relative}
+  .prog .bar{height:22px;border-radius:999px;background:#EEEBF5;overflow:hidden;position:relative}
   .prog .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--seg),var(--ter),var(--sex));transition:width .6s cubic-bezier(.4,0,.2,1);position:relative}
   .prog .bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.45),transparent 70%);animation:shine 2.6s ease-in-out infinite}
-  .prog .pct{font-weight:900}
+  .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
   .prog .done .bar i{background:linear-gradient(90deg,var(--ter),var(--gold))}
   .nav{display:none}
   .nav b{color:var(--ink)}
@@ -37,8 +37,7 @@
   .sticky{position:sticky;top:0;z-index:20;background:var(--paper);margin:0 -16px 10px;padding:8px 16px 0;box-shadow:0 10px 12px -10px rgba(38,36,58,.18)}
   .filters{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 6px;margin:0 -16px 2px;scrollbar-width:none}
   .filters::-webkit-scrollbar{display:none}
-  .chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;margin:0 -16px 0;padding-left:16px;padding-right:16px;scrollbar-width:none}
-  .chips::-webkit-scrollbar{display:none}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 8px;margin:0}
   .chip{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:800;white-space:nowrap;flex:none;transition:transform .15s}
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink);transform:scale(1.04)}
   .chip.on.todo{background:var(--sex);border-color:var(--sex)}.chip.on.doing{background:#D89A00;border-color:#D89A00}.chip.on.done{background:var(--ter);border-color:var(--ter)}.chip.on.late{background:#B3261E;border-color:#B3261E}
@@ -163,9 +162,9 @@
   .tt .c:active{transform:scale(.94)}
   .tt .c b{font-size:20px;line-height:1}
   .tt .c span{font-size:9.5px;font-weight:800;color:var(--ink);line-height:1.05;text-align:center;overflow-wrap:anywhere}
-  .tt .c.today{background:color-mix(in srgb,var(--dc) 14%,#fff);border-color:var(--dc)}
-  .tt .c.today span{color:var(--dc)}
-  .tt .c.tom{background:color-mix(in srgb,var(--dc) 8%,#fff);border-color:color-mix(in srgb,var(--dc) 45%,#fff)}
+  .tt .c.past,.tt .dh.past{opacity:.38}
+  .tt .c.tom{background:color-mix(in srgb,var(--dc) 14%,#fff);border-color:var(--dc)}
+  .tt .c.tom span{color:var(--dc)}
   .tt.pick .c{opacity:.28}
   .tt.pick .c.hit{opacity:1;background:var(--ink);border-color:var(--ink);transform:scale(1.04)}
   .tt.pick .c.hit span{color:#fff}
@@ -185,17 +184,16 @@
     body{font-size:18px}
     .wrap{max-width:840px;padding:28px 28px 130px}
     h1{font-size:36px;margin-bottom:10px}
-    .prog .row{font-size:16px} .prog .row b{font-size:19px} .prog .bar{height:16px}
+    .prog .row{font-size:17px} .prog .row b{font-size:20px} .prog .bar{height:26px} .prog .pct{font-size:26px}
     .sticky{margin:0 -28px 12px;padding:10px 28px 0}
-    .filters,.chips{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
+    .filters{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
     .chip{font-size:15px;padding:8px 16px}
+    .filters{overflow:visible}
+    .filters .chip{flex:1;text-align:center}
     .dl .n{font-size:28px} .dl .d{font-size:17px} .tag{font-size:13px;padding:5px 12px}
     .imp summary .n{font-size:28px}
     .aulas span{font-size:14px;padding:5px 12px}
     .body{padding:14px 16px 16px}
-    .boxes{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
-    .boxes .box{margin-top:0}
-    .boxes.one{grid-template-columns:1fr}
     .box h3{font-size:17px}
     .tx{font-size:17px}
     .st,.dchip{font-size:12px}
@@ -387,7 +385,7 @@ function render(){
     const isToday=d.date===TODAY, isTomorrow=d.date===tomorrowDate, past=d.date<TODAY;
     const homePend=tasksAll.filter(t=>t.type===H&&t.status!=='done').length;
     const homePassed=boxPassed(w,d,H);
-    const cntTag=homePend?(homePassed?`<span class="tag no">${homePend} não feita${homePend>1?'s':''}</span>`:`<span class="tag">${homePend} para fazer</span>`):'';
+    const cntTag=homePend?(homePassed?`<span class="tag no">${homePend} esquecida${homePend>1?'s':''}</span>`:`<span class="tag">${homePend} para fazer</span>`):'';
     if(filtering && !tasksAll.some(pass)) return;   // com filtro ativo, dia sem resultado não aparece
     const open = openState[d.date]!==undefined ? openState[d.date] : (isToday || filtering);
     const box=(type,title,emptyTxt)=>{
@@ -419,7 +417,7 @@ function taskHtml(t,inImp){
   const dchip = inImp ? `<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
   const subj = `<span class="st sj">${SUBJ[t.subj]}</span>`;
   const late=t.status!=='done'&&taskPassed(t);
-  const status=(late?'<span class="bang late" title="Passou e não foi feito">!</span><span class="st no">✗ Não feito</span>':'')+(t.status==='doing'?'<span class="st">⏳ Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">✓ Feito</span>':'')+moved;
+  const status=(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(t.status==='doing'?'<span class="st">⏳ Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">✓ Feito</span>':'')+moved;
   return `<div class="task ${t.status} ${late?'late':''}" data-id="${t.id}">
     <div class="sw sw-r">${t.status==='done'?'↩ Reabrir':'✓ Concluído'}</div>
     <div class="sw sw-l">${t.status==='doing'?'↩ Reabrir':'⏳ Fazendo'}</div>
@@ -550,8 +548,9 @@ function openTimetable(){
   const ks=['seg','ter','qua','qui','sex'];
   const SHORT={cie:'Ciências',por:'Português',mat:'Matemát.',rel:'Religião',edf:'Ed. Física',ing:'Inglês',pdv:'Proj. Vida',geo:'Geografia',his:'História',esp:'Espanhol',art:'Arte',fil:'Filosofia'};
   const col=k=>getComputedStyle(document.documentElement).getPropertyValue(DAYMETA[k][1]).trim();
-  const mark=k=>k===todayK?'today':(k===tomK?'tom':'');
-  let g=`<div class="h"></div>`+ks.map(k=>`<div class="dh" style="background:${dayCss(k)}">${DAYMETA[k][0].slice(0,3)}${k===todayK?'<small>hoje</small>':k===tomK?'<small>amanhã</small>':''}</div>`).join('');
+  const idx=k=>keys.indexOf(k);
+  const mark=k=>k===tomK?'tom':(idx(k)<=idx(todayK)?'past':'');
+  let g=`<div class="h"></div>`+ks.map(k=>`<div class="dh ${mark(k)}" style="background:${dayCss(k)}">${DAYMETA[k][0].slice(0,3)}${k===tomK?'<small>amanhã</small>':k===todayK?'<small>hoje</small>':''}</div>`).join('');
   TIMETABLE.hours.forEach((h,i)=>{g+=`<div class="h">${h}</div>`+ks.map(k=>{const sk=TIMETABLE.days[k][i];const em=SUBJ[sk].split(' ')[0];
     return `<div class="c ${mark(k)}" data-sk="${sk}" style="--dc:${col(k)}"><b>${em}</b><span>${SHORT[sk]}</span></div>`;}).join('');});
   show(`<h2>📅 Aulas do ${TIMETABLE.turma} <button class="x">✕</button></h2><div class="tt" id="tt">${g}</div><p class="ttnote" id="ttnote">Toca em uma matéria para ver todos os dias dela.</p>`);
