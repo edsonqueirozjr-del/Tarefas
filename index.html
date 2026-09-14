@@ -188,6 +188,37 @@
   .who{text-align:center;margin:-2px 0 10px}
   .who span{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800}
   .who small{color:var(--soft);font-weight:700}
+  /* família / presença */
+  .fam{display:flex;justify-content:center;gap:14px;margin:2px 0 12px}
+  .fam .p{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;font-weight:800;color:var(--soft);border:0;background:none;padding:0}
+  .fam .p .av{width:46px;height:46px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:24px;position:relative;border:3px solid var(--line);overflow:hidden}
+  .fam .p .av img{width:100%;height:100%;object-fit:cover}
+  .fam .p .av::after{content:"";position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;background:#B9B6C6;border:2px solid #fff}
+  .fam .p.on .av::after{background:#2EB88A;box-shadow:0 0 0 3px rgba(46,184,138,.25)}
+  .fam .p.on{color:var(--ink)}
+  .fam .p.me .av{border-color:var(--ink)}
+  .fam .p:not(.on) .av{filter:grayscale(.6);opacity:.75}
+  .uopt .av{width:56px;height:56px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#F2F0FA}
+  .uopt .av img{width:100%;height:100%;object-fit:cover}
+  /* conversa */
+  .chatfab{bottom:calc(88px + env(safe-area-inset-bottom));background:var(--sex);width:54px;height:54px;font-size:24px}
+  .badge{position:absolute;top:-4px;right:-4px;background:#E4443F;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
+  .badge.on{display:flex}
+  .chat{display:flex;flex-direction:column;height:70vh}
+  .msgs{flex:1;overflow:auto;padding:4px 2px;display:flex;flex-direction:column;gap:8px;overscroll-behavior:contain}
+  .msg{display:flex;gap:8px;align-items:flex-end;max-width:85%}
+  .msg.me{align-self:flex-end;flex-direction:row-reverse}
+  .msg .av{width:30px;height:30px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:16px;overflow:hidden;flex:none}
+  .msg .av img{width:100%;height:100%;object-fit:cover}
+  .msg .b{background:#F2F0FA;border-radius:16px 16px 16px 4px;padding:8px 12px;font-size:16px;line-height:1.3}
+  .msg.me .b{background:var(--sex);color:#fff;border-radius:16px 16px 4px 16px}
+  .msg .b small{display:block;font-size:11px;opacity:.7;margin-top:2px}
+  .msg .b b{display:block;font-size:12px;color:var(--soft);margin-bottom:2px}
+  .msg.me .b b{display:none}
+  .chatin{display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line);margin-top:8px}
+  .chatin input{flex:1;border:2px solid var(--line);border-radius:999px;padding:10px 14px;font:inherit;font-size:16px}
+  .chatin button{width:46px;height:46px;border-radius:50%;border:0;background:var(--sex);color:#fff;font-size:20px;flex:none}
+  .chat .empty{color:var(--soft);text-align:center;margin:auto}
   .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-weight:800;font-size:14px;z-index:70;opacity:0;transition:opacity .25s;pointer-events:none}
   .toast.on{opacity:1}
   /* ===== Tablet (Galaxy Tab S9 FE) ===== */
@@ -211,6 +242,7 @@
     .tg .st,.tg .dchip,.tg .bang{vertical-align:2px;margin-right:4px}
     .st,.dchip{font-size:12px}
     .fab{width:72px;height:72px;font-size:32px;right:28px;bottom:28px}
+    .chatfab{width:60px;height:60px;font-size:26px;bottom:112px}
     .sheet{max-width:760px;border-radius:28px 28px 0 0;padding:6px 24px 28px}
     .sheet h2{font-size:24px}
     .opt{font-size:19px;padding:16px}
@@ -238,7 +270,7 @@
 <body>
 <div class="wrap">
   <h1>Gestão de tarefas 🎒</h1>
-  <div class="who" id="who"></div>
+  <div class="fam" id="fam"></div>
   <div class="prog" id="prog"></div>
   <div class="sticky">
     <div class="filters" id="fType"></div>
@@ -247,7 +279,9 @@
   <div id="app"></div>
 </div>
 
+<button class="fab chatfab" id="chatFab" aria-label="Conversa">💬<span class="badge" id="chatBadge"></span></button>
 <button class="fab" id="fab" aria-label="Menu">☰</button>
+<input type="file" id="fotoFile" accept="image/*" style="display:none">
 <div class="veil" id="veil"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
 
@@ -257,7 +291,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='2.2';
+const APP_VERSION='2.3';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -346,7 +380,8 @@ const SEED_WEEKS = [
 
 /* ================= ARMAZENAMENTO ================= */
 const KEY='minha-semana-7D-v1';
-let cloudRef=null, cloudReady=false, lastPushed='', pushTimer=null, cloudOnline=false, cloudErr='';
+let cloudRef=null, famRef=null, cloudReady=false, lastPushed='', pushTimer=null, cloudOnline=false, cloudErr='';
+let ONLINE={}, PERFIS={}, CHAT=[]; try{PERFIS=JSON.parse(localStorage.getItem(KEY+'-perfis')||'{}');}catch(e){}
 let mem=null;
 function load(){ try{const s=localStorage.getItem(KEY); if(s) return JSON.parse(s);}catch(e){} return mem||{weeks:{}}; }
 function save(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} cloudPush(); }
@@ -388,7 +423,18 @@ function cloudStart(){
   if(!firebase.apps.length) firebase.initializeApp(FIREBASE);
   const db=firebase.database();
   db.ref('.info/connected').on('value',sn=>{cloudOnline=!!sn.val(); updateSyncBadge();});
-  cloudRef=db.ref('familias/'+famCode);
+  famRef=db.ref('familias/'+famCode);
+  cloudRef=famRef.child('dados');
+  // migração: versão anterior gravava as semanas na raiz da família
+  famRef.child('weeks').once('value',sn=>{ if(sn.val()){ cloudRef.once('value',d=>{ if(!d.val()){ cloudRef.set({weeks:sn.val()}).then(()=>famRef.child('weeks').remove()); } }); } });
+  // presença
+  const meRef=famRef.child('online/'+USER.id);
+  db.ref('.info/connected').on('value',sn=>{ if(sn.val()){ meRef.onDisconnect().remove(); meRef.set({t:firebase.database.ServerValue.TIMESTAMP}); } });
+  famRef.child('online').on('value',sn=>{ ONLINE=sn.val()||{}; renderFam(); });
+  famRef.child('perfis').on('value',sn=>{ PERFIS=sn.val()||{}; try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){} renderFam(); refreshChat(); });
+  famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; const prevLen=CHAT.length; CHAT=Object.keys(v).sort().map(k=>v[k]);
+    updateChatBadge(); refreshChat();
+    const last=CHAT[CHAT.length-1]; if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && !sheet.querySelector('.chat')){ vibrate([30,30,30]); toast('💬 '+uname(last.by)+': '+last.text.slice(0,60)); } });
   cloudRef.on('value',sn=>{
     cloudErr=''; const remote=sn.val();
     if(!remote||!remote.weeks){ cloudReady=true; cloudPush(true); return; }
@@ -421,7 +467,7 @@ function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b)
   if(!CLOUD_CFG) b.textContent='Versão '+APP_VERSION; else if(!CLOUD_ON) b.textContent='⚠️ Não consegui carregar a nuvem (Firebase). Confira a internet e abra de novo. Versão '+APP_VERSION; else if(cloudErr) b.textContent='⚠️ Sem permissão no banco ('+cloudErr+'). Publique as regras no Firebase.'; else b.textContent=(cloudReady?(cloudOnline?'☁️ Sincronizado':'📴 Sem internet. Vai sincronizar depois'):'⏳ Conectando…')+' · v'+APP_VERSION; }
 function openLogin(after){
   show(`<h2>👋 Quem é você? <button class="x" style="visibility:${USER?'visible':'hidden'}">✕</button></h2>
-    <div class="users">${USERS.map(u=>`<button class="uopt" data-u="${u.id}"><span class="av">${u.emoji}</span><span>${u.nome}</span><small>${u.papel==='aluna'?'faz as tarefas':'acompanha'}</small></button>`).join('')}</div>
+    <div class="users">${USERS.map(u=>`<button class="uopt" data-u="${u.id}"><span class="av">${avatarHtml(u)}</span><span>${u.nome}</span><small>${u.papel==='aluna'?'faz as tarefas':'acompanha'}</small></button>`).join('')}</div>
     <div id="pinBox" style="display:none;margin-top:12px">
       <p class="quiet" id="pinWho" style="margin:0 0 8px"></p>
       <input id="pinTxt" type="password" inputmode="numeric" maxlength="8" placeholder="Código" style="width:100%;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:22px;letter-spacing:6px;text-align:center">
@@ -434,11 +480,66 @@ function openLogin(after){
   document.getElementById('pinBack').addEventListener('click',()=>{usersEl.style.display='';pinBox.style.display='none';});
   const enter=()=>{const v=document.getElementById('pinTxt').value.trim(); if(v!==pick.pin){vibrate([40,40,40]);toast('Código errado. Tenta de novo');return;}
     USER=pick; try{localStorage.setItem(KEY+'-user',USER.id);}catch(e){}
+    if(famRef){famRef.child('online').off();famRef.child('perfis').off();famRef.child('chat').off();}
     if(cloudRef){cloudRef.off();cloudRef=null;cloudReady=false;lastPushed='';}
     cloudStart(); hide(); render(); vibrate(20); toast('Oi, '+USER.nome+'! '+USER.emoji); if(after) setTimeout(after,300);};
   document.getElementById('pinOk').addEventListener('click',enter);
   document.getElementById('pinTxt').addEventListener('keydown',e=>{if(e.key==='Enter')enter();});
 }
+
+/* ================= FAMÍLIA / FOTO / CONVERSA ================= */
+const uname=id=>(USERS.find(u=>u.id===id)||{nome:id}).nome;
+function avatarHtml(u){ const f=PERFIS[u.id]&&PERFIS[u.id].foto; return f?`<img src="${f}" alt="">`:u.emoji; }
+function renderFam(){
+  const el=document.getElementById('fam'); if(!el||!USER) return;
+  el.innerHTML=USERS.map(u=>{const on=!!ONLINE[u.id]; return `<button class="p ${on?'on':''} ${u.id===USER.id?'me':''}" data-u="${u.id}" title="${on?'online':'offline'}"><span class="av">${avatarHtml(u)}</span><span>${u.nome}${u.id===USER.id?' (você)':''}</span></button>`;}).join('');
+  el.querySelectorAll('.p').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.u===USER.id) openFoto(); else toast(uname(b.dataset.u)+(ONLINE[b.dataset.u]?' está online 🟢':' está offline')); }));
+}
+function openFoto(){
+  show(`<h2>📷 Minha foto <button class="x">✕</button></h2>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+      <span class="av" style="width:120px;height:120px;border-radius:50%;overflow:hidden;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:56px;border:3px solid var(--line)">${avatarHtml(USER)}</span>
+      <button class="opt primary" id="fotoPick" style="justify-content:center;max-width:320px">Escolher foto ou tirar uma</button>
+      ${PERFIS[USER.id]&&PERFIS[USER.id].foto?'<button class="opt danger" id="fotoDel" style="justify-content:center;max-width:320px">Tirar a foto</button>':''}
+    </div>`);
+  document.getElementById('fotoPick').addEventListener('click',()=>document.getElementById('fotoFile').click());
+  const del=document.getElementById('fotoDel'); if(del) del.addEventListener('click',()=>{ if(famRef) famRef.child('perfis/'+USER.id+'/foto').remove(); hide(); toast('Foto removida'); });
+}
+document.getElementById('fotoFile').addEventListener('change',ev=>{
+  const f=ev.target.files[0]; ev.target.value=''; if(!f) return;
+  const img=new Image(); const url=URL.createObjectURL(f);
+  img.onload=()=>{ const S=160; const c=document.createElement('canvas'); c.width=S; c.height=S; const x=c.getContext('2d');
+    const m=Math.min(img.width,img.height); x.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S);
+    const data=c.toDataURL('image/jpeg',.82); URL.revokeObjectURL(url);
+    if(famRef) famRef.child('perfis/'+USER.id).update({foto:data,nome:USER.nome}); else { PERFIS[USER.id]={foto:data}; renderFam(); }
+    hide(); vibrate(20); toast('Foto atualizada 📷'); };
+  img.src=url;
+});
+let lastRead=0; try{lastRead=+localStorage.getItem(KEY+'-read')||0;}catch(e){}
+function unread(){ return USER?CHAT.filter(m=>m.by!==USER.id&&(m.t||0)>lastRead).length:0; }
+function updateChatBadge(){ const b=document.getElementById('chatBadge'); const n=unread(); b.textContent=n>9?'9+':n; b.classList.toggle('on',n>0); }
+function fmtT(t){ const d=new Date(t||0); const hoje=iso(d)===TODAY; return (hoje?'':fmt(iso(d))+' ')+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function chatHtml(){
+  if(!CHAT.length) return '<div class="empty">Ainda não tem mensagens.<br>Manda um oi! 👋</div>';
+  return CHAT.map(m=>{const u=USERS.find(x=>x.id===m.by)||{emoji:'👤',nome:m.by,id:m.by}; const me=USER&&m.by===USER.id;
+    return `<div class="msg ${me?'me':''}"><span class="av">${avatarHtml(u)}</span><div class="b"><b>${esc(u.nome)}</b>${esc(m.text||'')}<small>${fmtT(m.t)}</small></div></div>`;}).join('');
+}
+function openChat(){
+  if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
+  show(`<div class="chat"><h2>💬 Conversa da família <button class="x">✕</button></h2>
+    <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
+    <div class="chatin"><input id="chatTxt" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" aria-label="Enviar">➤</button></div></div>`);
+  markRead(); scrollMsgs();
+  const send=()=>{ const inp=document.getElementById('chatTxt'); const v=inp.value.trim(); if(!v) return;
+    famRef.child('chat').push({by:USER.id,text:v,t:firebase.database.ServerValue.TIMESTAMP}); inp.value=''; inp.focus(); vibrate(15); };
+  document.getElementById('chatSend').addEventListener('click',send);
+  document.getElementById('chatTxt').addEventListener('keydown',e=>{if(e.key==='Enter')send();});
+  setTimeout(()=>document.getElementById('chatTxt').focus(),300);
+}
+function refreshChat(){ const m=document.getElementById('msgs'); if(!m) return; const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); if(atBottom) scrollMsgs(); markRead(); }
+function scrollMsgs(){ const m=document.getElementById('msgs'); if(m) setTimeout(()=>{m.scrollTop=m.scrollHeight;},50); }
+function markRead(){ const last=CHAT[CHAT.length-1]; if(last&&(last.t||0)>lastRead){ lastRead=last.t; try{localStorage.setItem(KEY+'-read',String(lastRead));}catch(e){} } updateChatBadge(); }
+document.getElementById('chatFab').addEventListener('click',openChat);
 
 /* ================= RENDER ================= */
 const fmt=d=>{const [y,m,dd]=d.split('-');return dd+'/'+m;};
@@ -466,7 +567,7 @@ function renderFilters(){
 }
 function render(){
   const w=DB.weeks[current];
-  document.getElementById('who').innerHTML = USER ? `<span>${USER.emoji} ${USER.nome} <small>${USER.papel==='aluna'?'':'· acompanhando'}</small></span>` : '';
+  renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
     document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas · <span class="pct">${pct}%</span>${pct===100?' 🎉':''}</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`; }
   renderFilters();
@@ -596,7 +697,7 @@ function show(html){sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.
 function hide(){veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
 // arrastar para baixo fecha (só começa depois de 14px de arrasto vertical para baixo)
 let ty=0,tx=0,dy=0,armed=false,dragging=false,t0=0;
-sheet.addEventListener('touchstart',e=>{armed=sheet.scrollTop<=0;dragging=false;dy=0;ty=e.touches[0].clientY;tx=e.touches[0].clientX;t0=Date.now();},{passive:true});
+sheet.addEventListener('touchstart',e=>{armed=sheet.scrollTop<=0 && !e.target.closest('.nodrag');dragging=false;dy=0;ty=e.touches[0].clientY;tx=e.touches[0].clientX;t0=Date.now();},{passive:true});
 sheet.addEventListener('touchmove',e=>{if(!armed)return;const y=e.touches[0].clientY-ty,x=e.touches[0].clientX-tx;
   if(!dragging){ if(y>14&&Math.abs(y)>Math.abs(x)*1.5){dragging=true;sheet.classList.add('drag');sheet.classList.remove('snap');} else if(y<-6||Math.abs(x)>14){armed=false;} return; }
   dy=Math.max(0,y);e.preventDefault();sheet.style.transform='translateY('+dy+'px)';},{passive:false});
@@ -723,6 +824,7 @@ function refreshReminder(){
 document.getElementById('fab').addEventListener('click',openMain);
 render();
 let remSeen=false; try{remSeen=!!sessionStorage.getItem('rem-shown');sessionStorage.setItem('rem-shown','1');}catch(e){}
+if(!CLOUD_CFG) document.getElementById('chatFab').style.display='none';
 if(CLOUD_CFG && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
 else { cloudStart(); if(!remSeen) setTimeout(openReminder,350); }
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
