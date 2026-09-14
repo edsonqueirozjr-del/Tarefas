@@ -257,6 +257,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
+const APP_VERSION='2.2';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -377,7 +378,8 @@ const openState={};
 let fType='all', fSubj='all';
 
 /* ================= NUVEM ================= */
-const CLOUD_ON = !!FIREBASE.apiKey && typeof firebase!=='undefined';
+const CLOUD_CFG = !!FIREBASE.apiKey;
+const CLOUD_ON = CLOUD_CFG && typeof firebase!=='undefined';
 const famCode=FAMILIA;
 let USER=null; try{const u=localStorage.getItem(KEY+'-user'); USER=USERS.find(x=>x.id===u)||null;}catch(e){}
 const isAluna=()=>!USER||USER.papel==='aluna';
@@ -416,7 +418,7 @@ function cloudPush(now){
   if(now) doIt(); else pushTimer=setTimeout(doIt,400);
 }
 function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b) return;
-  if(!CLOUD_ON) b.textContent=''; else if(cloudErr) b.textContent='⚠️ Sem permissão no banco ('+cloudErr+'). Publique as regras no Firebase.'; else b.textContent=cloudReady?(cloudOnline?'☁️ Sincronizado':'📴 Sem internet. Vai sincronizar depois'):'⏳ Conectando…'; }
+  if(!CLOUD_CFG) b.textContent='Versão '+APP_VERSION; else if(!CLOUD_ON) b.textContent='⚠️ Não consegui carregar a nuvem (Firebase). Confira a internet e abra de novo. Versão '+APP_VERSION; else if(cloudErr) b.textContent='⚠️ Sem permissão no banco ('+cloudErr+'). Publique as regras no Firebase.'; else b.textContent=(cloudReady?(cloudOnline?'☁️ Sincronizado':'📴 Sem internet. Vai sincronizar depois'):'⏳ Conectando…')+' · v'+APP_VERSION; }
 function openLogin(after){
   show(`<h2>👋 Quem é você? <button class="x" style="visibility:${USER?'visible':'hidden'}">✕</button></h2>
     <div class="users">${USERS.map(u=>`<button class="uopt" data-u="${u.id}"><span class="av">${u.emoji}</span><span>${u.nome}</span><small>${u.papel==='aluna'?'faz as tarefas':'acompanha'}</small></button>`).join('')}</div>
@@ -721,7 +723,7 @@ function refreshReminder(){
 document.getElementById('fab').addEventListener('click',openMain);
 render();
 let remSeen=false; try{remSeen=!!sessionStorage.getItem('rem-shown');sessionStorage.setItem('rem-shown','1');}catch(e){}
-if(CLOUD_ON && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
+if(CLOUD_CFG && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
 else { cloudStart(); if(!remSeen) setTimeout(openReminder,350); }
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
