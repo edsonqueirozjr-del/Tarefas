@@ -1399,8 +1399,8 @@ document.fonts&&document.fonts.ready&&document.fonts.ready.then(()=>marcaTopo())
 function fmtSeen(t){ const d=new Date(t||0); const di=iso(d); const hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
   if(di===TODAY) return 'visto hoje '+hm; if(di===addDays(TODAY,-1)) return 'visto ontem '+hm; return 'visto '+fmt(di)+' às '+hm; }
 function fmtT(t){ const d=new Date(t||0); const hoje=iso(d)===TODAY; return (hoje?'':fmt(iso(d))+' ')+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
-const REACTS=['👍','❤️','😂','😮','😢','🎉','🔥','🙏'];
-const EMOJIS=['😀','😂','🥰','😎','🤔','😅','😴','🤩','😭','🙄','😉','🥳','👍','👏','🙏','💪','👀','🤝','❤️','💛','💙','💜','🔥','✨','⭐','🎉','🎈','🍕','🍦','🐶','🐱','🐾','📚','✏️','🎒','🏫','⏰','✅','❌','💬'];
+const REACTS=['🐸','👍','❤️','😂','😮','😢','🎉','🔥','🙏'];
+const EMOJIS=['🐸','😀','😂','🥰','😎','🤔','😅','😴','🤩','😭','🙄','😉','🥳','👍','👏','🙏','💪','👀','🤝','❤️','💛','💙','💜','🔥','✨','⭐','🎉','🎈','🍕','🍦','🐶','🐱','🐾','📚','✏️','🎒','🏫','⏰','✅','❌','💬'];
 function reactsHtml(m){ const r=m.reacts||{}; const ks=Object.keys(r).filter(e=>r[e]&&Object.keys(r[e]).length); if(!ks.length) return '';
   return `<div class="reacts">${ks.map(e=>`<button class="react ${USER&&r[e][USER.id]?'mine':''}" data-r="${e}" data-k="${m.k}">${e} ${Object.keys(r[e]).length}</button>`).join('')}</div>`; }
 function dayLabel(d){ if(d===TODAY) return 'Hoje'; if(d===addDays(TODAY,-1)) return 'Ontem';
@@ -1414,7 +1414,7 @@ const EMO_ANIM=[
   ['wave',  '👋🤚✋🖐'],
   ['flicker','🔥💥⚡'],
   ['twinkle','⭐🌟✨💫🌠'],
-  ['bounce','👍👏🙌💪👌🤝'],
+  ['bounce','👍👏🙌💪👌🤝🐸'],
   ['party', '🎉🎊🥳🎈🏆🏅'],
   ['cry',   '😢😭😥😔'],
   ['shake', '😡🤬😠😱😨'],
