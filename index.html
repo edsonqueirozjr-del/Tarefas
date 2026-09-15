@@ -828,12 +828,12 @@
   @keyframes splashIn{from{transform:scale(.7) translateY(18px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
   @media(prefers-reduced-motion:reduce){.splash img{animation:none}}
   /* sapinho da Maria */
-  .task .sapo{position:absolute;right:44px;bottom:2px;font-size:22px;line-height:1;pointer-events:none;z-index:3;transform-origin:50% 100%;animation:sapoPula 1.8s ease-in-out forwards;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
-  .task .sapo img{display:block;width:64px;height:64px;object-fit:contain;image-rendering:auto}
+  .sapo{position:fixed;z-index:400;font-size:22px;line-height:1;pointer-events:none;transform-origin:50% 100%;animation:sapoPula 1.8s ease-in-out forwards;filter:drop-shadow(0 3px 4px rgba(0,0,0,.22))}
+  .sapo img{display:block;width:72px;height:72px;object-fit:contain}
   .sapo-h{display:inline-block;vertical-align:middle;margin-left:2px;line-height:1}
   .sapo-h img{display:block;width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
   @keyframes sapoPula{0%{transform:translateY(8px) scale(.6);opacity:0}10%{transform:translateY(0) scale(1);opacity:1}25%{transform:translateY(-14px) scaleX(1.05)}40%{transform:translateY(0) scale(1.1,.85)}55%{transform:translateY(-10px)}70%{transform:translateY(0) scale(1.08,.9)}82%{transform:translateY(-5px)}92%{transform:translateY(0);opacity:1}100%{transform:translateY(0) scale(.6);opacity:0}}
-  @media(prefers-reduced-motion:reduce){.task .sapo{animation:sapoSimples 1.4s ease-out forwards}}
+  @media(prefers-reduced-motion:reduce){.sapo{animation:sapoSimples 1.4s ease-out forwards}}
   @keyframes sapoSimples{0%{opacity:0}15%,80%{opacity:1}100%{opacity:0}}
 </style>
 </head>
@@ -1675,9 +1675,6 @@ function zumbido(nome){
 }
 function chamarAtencao(){
   if(!famRef||!USER) return;
-  const falta=Math.ceil((15000-(Date.now()-lastNudge))/1000);
-  if(falta>0){ toast('Calma 😅 espera '+falta+' s para chamar de novo'); return; }
-  lastNudge=Date.now();
   const msg={by:USER.id,text:'',t:firebase.database.ServerValue.TIMESTAMP,att:{kind:'nudge',name:'Atenção'}};
   famRef.child('chat').push(msg).then(()=>zumbido('')).catch(()=>toast('Não consegui chamar'));
 }
@@ -2073,11 +2070,15 @@ const SOUND=true;
 // Pedido da Maria: um sapinho que aparece pulando do lado da tarefa quando ela toca nela.
 const SAPO=true;
 function sapinho(el){
-  if(!SAPO||!el||el.querySelector('.sapo')) return;
+  if(!SAPO||!el||el._sapo) return; el._sapo=true;
+  // fica fora do card (que corta o que passa da borda) e por cima de tudo, inclusive da tarefa de cima
+  const r=el.getBoundingClientRect(), T=72;
   const sp=document.createElement('span'); sp.className='sapo'; sp.setAttribute('aria-hidden','true');
-  const im=new Image(); im.src='sapinho-pulo.webp?v=1'; im.alt=''; im.decoding='async'; im.onerror=()=>{ im.remove(); sp.textContent='🐸'; }; sp.appendChild(im);
-  el.appendChild(sp); SFX.pop();
-  sp.addEventListener('animationend',()=>sp.remove(),{once:true}); setTimeout(()=>sp.remove(),2200);
+  sp.style.left=Math.max(4,r.right-44-T)+'px'; sp.style.top=Math.max(4,r.bottom-T-2)+'px';
+  const im=new Image(); im.src='sapinho-pulo.webp?v=2'; im.alt=''; im.decoding='async'; im.onerror=()=>{ im.remove(); sp.textContent='🐸'; }; sp.appendChild(im);
+  document.body.appendChild(sp); SFX.pop();
+  const fim=()=>{ sp.remove(); el._sapo=false; };
+  sp.addEventListener('animationend',fim,{once:true}); setTimeout(fim,2200);
 }
 let AC=null;
 function tone(seq){ if(!SOUND) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume();
@@ -2262,7 +2263,7 @@ veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 
 function openMenu(id){
   const t=findTask(id); if(!t) return; if(t.type===B){openMove(id);return;}
-  show(`<h2>📝 Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=1" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
+  show(`<h2>📝 Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=2" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
    <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
    <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
    ${isAluna()?`<button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
