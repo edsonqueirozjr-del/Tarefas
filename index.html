@@ -230,14 +230,21 @@
   .badge.on{display:flex}
   .sheet.chatsheet{display:flex;flex-direction:column;height:min(94dvh,780px);max-height:none;overflow:hidden;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
   .chatsheet .grip{margin:4px auto 6px}
-  .chatsheet{padding-left:0;padding-right:0;padding-top:0}
-  .chatsheet>.grip{background:rgba(38,36,58,.18);margin:6px auto 4px}
+  .chatsheet{padding-left:0;padding-right:0;padding-top:0;position:relative}
+  .chatsheet>.grip{position:absolute;left:50%;transform:translateX(-50%);top:6px;background:rgba(255,255,255,.75);z-index:2;margin:0}
   .chat{padding:0 14px}
-  .chathead{margin:-6px -14px 10px;padding:10px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));border-radius:24px 24px 26px 26px;color:#fff;box-shadow:0 6px 14px -8px rgba(0,0,0,.35)}
+  .chathead{margin:0 -14px 10px;padding:16px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));border-radius:24px 24px 26px 26px;color:#fff;box-shadow:0 6px 14px -8px rgba(0,0,0,.35)}
   .chatsheet .grip{margin-top:0}
   .chat h2{font-size:19px;margin:0 0 6px;color:#fff}
   .chat h2 .gear,.chat h2 .x{background:rgba(255,255,255,.25);color:#fff}
   .chat h2 .gear:active,.chat h2 .x:active{background:rgba(255,255,255,.4)}
+  .cfbar{display:none;gap:8px;align-items:center;margin:8px 0 0}
+  .cfbar.on{display:flex}
+  .cfbar input{flex:1;min-width:0;border:0;border-radius:999px;padding:9px 14px;font:inherit;font-size:15px;background:rgba(255,255,255,.92);color:var(--ink)}
+  .cfbar input:focus{outline:none}
+  .cfbar button{border:0;background:rgba(255,255,255,.25);color:#fff;border-radius:999px;width:36px;height:36px;font-size:16px;font-weight:900;flex:none}
+  .cfbar .cnt{color:#fff;font-size:12px;font-weight:900;white-space:nowrap}
+  .msg .b mark{background:#FFE9A8;color:#2E2352;border-radius:4px;padding:0 2px}
   .chatwho{font-size:12px;margin:0;display:flex;gap:6px;flex-wrap:wrap}
   .chatwho span{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.22);border-radius:999px;padding:3px 10px;color:#fff;font-weight:700}
   .chatwho b{font-weight:900}
@@ -245,7 +252,7 @@
   .chatwho i.on{background:#7CF5C0;box-shadow:0 0 0 3px rgba(124,245,192,.3)}
   .chat{flex:1;min-height:0;display:flex;flex-direction:column}
   .chat h2{flex:none}
-  .msgs{flex:1;min-height:0;overflow:auto;padding:12px 10px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;overscroll-behavior:contain;background:#F7F5FC;border-radius:22px;border:2px solid rgba(38,36,58,.06)}
+  .msgs{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 10px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;background:#F7F5FC;border-radius:22px;border:2px solid rgba(38,36,58,.06)}
   .msg{display:flex;gap:8px;align-items:flex-end;max-width:85%}
   .msg.me{align-self:flex-end;flex-direction:row-reverse}
   .msg .av{width:46px;height:46px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex:none;border:3px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18)}
@@ -313,6 +320,7 @@
   .chatin{flex:none;display:flex;gap:8px;padding-top:8px;margin-top:4px}
   .daygrp{border:0;margin:0;flex:none}
   .msgs>*{flex:none}
+  .msgs::before{content:"";margin-top:auto}
   .daygrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:2px auto 8px;background:rgba(38,36,58,.08);border-radius:999px;padding:5px 14px;font-size:12px;font-weight:900;color:var(--ink);width:fit-content;max-width:100%}
   .daygrp>summary::-webkit-details-marker{display:none}
   .daygrp>summary .arw{font-size:10px;opacity:.7;transition:transform .2s}
@@ -526,7 +534,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='6.9';
+const APP_VERSION='7.1';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -946,9 +954,14 @@ function msgHtml(m,i,arr){
   const tick=me?`<span class="tick ${seenAll?'seen':''}" title="${seenAll?'Visto por todos':seenAny?'Visto por alguém':'Enviada'}">${seenAny?'✓✓':'✓'}</span>`:'';
   const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${SUBJ[m.reply.task.subj]||''} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${(me&&THEME==='lilas')?'#8E5BE0':(u.cor||'#8A8A9A')}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><b>${esc(u.nome)}</b>${q}${att}${esc(m.text||'')}<small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></div>${reactsHtml(m)}</div></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${(me&&THEME==='lilas')?'#8E5BE0':(u.cor||'#8A8A9A')}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><b>${esc(u.nome)}</b>${q}${att}${chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')}<small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></div>${reactsHtml(m)}</div></div>`;
 }
 function chatHtml(){
+  if(chatQ.length>=2){ const ql=chatQ.toLowerCase();
+    const hits=CHAT.filter(m=>(m.text||'').toLowerCase().includes(ql)||(m.att&&(m.att.name||'').toLowerCase().includes(ql)));
+    if(!hits.length) return '<div class="empty">Nenhuma mensagem com<br><b>“'+esc(chatQ)+'”</b></div>';
+    return hits.map((m,i,arr)=>`<div class="daysep">${dayLabel(iso(new Date(m.t||0)))}</div>`+msgHtml(m,i,arr)).join('');
+  }
   if(!CHAT.length) return '<div class="empty">Ainda não tem mensagens.<br>Manda um oi! 👋</div>';
   const groups=[]; CHAT.forEach(m=>{ const d=iso(new Date(m.t||0)); const g=groups[groups.length-1]; if(g&&g.d===d) g.msgs.push(m); else groups.push({d,msgs:[m]}); });
   return groups.map(g=>{ const inner=g.msgs.map((m,i,arr)=>msgHtml(m,i,arr)).join('');
@@ -975,7 +988,7 @@ function bindMsgs(){
 }
 function toggleReact(k,e){ if(!famRef||!USER) return; const m=CHAT.find(x=>x.k===k); const mine=m&&m.reacts&&m.reacts[e]&&m.reacts[e][USER.id];
   famRef.child('chat/'+k+'/reacts/'+e+'/'+USER.id)[mine?'remove':'set'](true); vibrate(15); SFX.pop(); }
-let editingKey=null, replyTo=null, chatOpenDays={};
+let editingKey=null, replyTo=null, chatOpenDays={}, chatQ='';
 function fmtSize(b){ return b>1048576?(b/1048576).toFixed(1)+' MB':b>1024?Math.round(b/1024)+' KB':b+' B'; }
 function msgPreview(m){ return m.att?(m.att.kind==='img'?'📷 Foto':'📎 '+(m.att.name||'Arquivo'))+(m.text?' · '+m.text:''):(m.text||''); }
 function openAtt(k){
@@ -1010,21 +1023,6 @@ function applyPref(){
   const col=BGCOL[CHATPREF.bg]||BGCOL.lilas; const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);}
   const ci=sheet.querySelector('.chatin'); if(ci){ci.style.setProperty('--c1',col[0]);ci.style.setProperty('--c2',col[1]);}
   pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg; m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
-function openChatSearch(){
-  show(`<h2>🔎 Buscar na conversa <button class="x">✕</button></h2>
-    <div class="srch"><input id="cfTxt" placeholder="Procurar mensagem…" autocomplete="off"></div>
-    <div class="res" id="cfRes"><p class="none">Escreve para procurar.</p></div>`);
-  const inp=document.getElementById('cfTxt'), res=document.getElementById('cfRes');
-  const run=()=>{ const q=inp.value.trim(); if(q.length<2){ res.innerHTML='<p class="none">Escreve pelo menos 2 letras.</p>'; return; }
-    const ql=q.toLowerCase(); const hits=CHAT.filter(m=>(m.text||'').toLowerCase().includes(ql)||(m.att&&(m.att.name||'').toLowerCase().includes(ql))).reverse();
-    if(!hits.length){ res.innerHTML='<p class="none">Nenhuma mensagem com “'+esc(q)+'”.</p>'; return; }
-    res.innerHTML=hits.slice(0,60).map(m=>`<button class="hit" data-k="${m.k}"><b>${esc(uname(m.by))} · ${fmtT(m.t)}</b>${hl(msgPreview(m),q)}</button>`).join('');
-    res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ const k=b.dataset.k; const m=CHAT.find(x=>x.k===k); if(m) chatOpenDays[iso(new Date(m.t||0))]=true;
-      openChat(); setTimeout(()=>{ const box=document.getElementById('msgs'); const el=box&&box.querySelector(`.msg[data-k="${k}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1400); } },250); }));
-  };
-  inp.addEventListener('input',run); setTimeout(()=>inp.focus(),300);
-  sheet.querySelector('.x').addEventListener('click',()=>openChat(),{once:true});
-}
 function openChatLook(){
   const BGS=[['lilas','#F7F5FC'],['claro','#FFFFFF'],['verde','#E6F6EE'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
   const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
@@ -1090,7 +1088,7 @@ function openMsgMenu(k){
 }
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
-  show(`<div class="chat"><div class="chathead"><h2>💬 Conversa da família <button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div></div>
+  show(`<div class="chat"><div class="chathead"><h2>💬 Conversa da família <button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem…" autocomplete="off"><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
@@ -1098,7 +1096,14 @@ function openChat(){
     </div>`);
   applyPref(); markRead(); scrollMsgs(); bindMsgs(); editingKey=null; replyTo=null;
   document.getElementById('chatLook').addEventListener('click',openChatLook);
-  document.getElementById('chatFind').addEventListener('click',openChatSearch);
+  const bar=document.getElementById('cfBar'), cft=document.getElementById('cfTxt'), cnt=document.getElementById('cfCnt');
+  if(chatQ){ bar.classList.add('on'); cft.value=chatQ; }
+  const upd=()=>{ chatQ=cft.value.trim(); const box=document.getElementById('msgs'); box.innerHTML=chatHtml(); bindMsgs(); applyPref();
+    if(chatQ.length>=2){ cnt.textContent=box.querySelectorAll('.msg').length+' achadas'; box.scrollTop=box.scrollHeight; } else { cnt.textContent=''; scrollMsgs(); } };
+  cft.addEventListener('input',upd);
+  document.getElementById('cfClose').addEventListener('click',()=>{ chatQ=''; cft.value=''; bar.classList.remove('on'); upd(); });
+  document.getElementById('chatFind').addEventListener('click',()=>{ const on=!bar.classList.contains('on'); bar.classList.toggle('on',on); vibrate(15);
+    if(on){ setTimeout(()=>cft.focus(),150); } else { chatQ=''; cft.value=''; upd(); } });
   document.getElementById('attBtn').addEventListener('click',()=>document.getElementById('attFile').click());
   const inp=document.getElementById('chatTxt');
   const cancelEdit=()=>{ if(editingKey) inp.value=''; editingKey=null; replyTo=null; document.getElementById('editbar').classList.remove('on'); };
