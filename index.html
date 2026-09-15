@@ -574,7 +574,7 @@
   body .chatsheet .chatin #chatSend{background:linear-gradient(135deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--c2,#8E5BE0) 24%,transparent)}
   .chatsheet button:focus-visible,.chatsheet summary:focus-visible,.chatsheet .cfbar input:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
   @media(hover:hover){body .chatsheet .chat h2 button:hover{background:rgba(255,255,255,.3)}.chatsheet .chatin button:hover{transform:translateY(-1px)}}
-  @media(min-width:600px){body .sheet.chatsheet{border-radius:28px;margin-bottom:16px;height:min(88dvh,780px)}}
+  @media(min-width:600px){body .sheet.chatsheet{border-radius:28px 28px 0 0;margin-bottom:0;height:min(88dvh,780px)} .veil:has(.chatsheet){align-items:flex-end}}
   @media(max-width:380px){
     .chatsheet .chathead{padding:23px 12px 14px}
     .chatsheet .chat h2{font-size:17px;gap:5px}
@@ -1525,14 +1525,7 @@ const SONS=[
   {ico:'🏆',nome:'Vit\u00f3ria',tipo:'fx',fx:'vitoria'},
   {ico:'😱',nome:'Suspense',tipo:'fx',fx:'suspense'},
   {ico:'🚨',nome:'Sirene',tipo:'fx',fx:'sirene'},
-  {ico:'📯',nome:'Buzina',tipo:'fx',fx:'buzina'},
-  {ico:'🗣\ufe0f',nome:'"Vai fazer a tarefa, vai!"',tipo:'fala',texto:'Vai fazer a tarefa, vai!'},
-  {ico:'🗣\ufe0f',nome:'"T\u00e1 esperando o qu\u00ea?"',tipo:'fala',texto:'T\u00e1 esperando o qu\u00ea?'},
-  {ico:'🗣\ufe0f',nome:'"M\u00e3\u00e3\u00e3e!"',tipo:'fala',texto:'M\u00e3\u00e3\u00e3\u00e3e!'},
-  {ico:'🗣\ufe0f',nome:'"Sem tarefa, sem celular"',tipo:'fala',texto:'Sem tarefa, sem celular.'},
-  {ico:'🗣\ufe0f',nome:'"Parab\u00e9ns, voc\u00ea \u00e9 demais!"',tipo:'fala',texto:'Parab\u00e9ns, voc\u00ea \u00e9 demais!'},
-  {ico:'🗣\ufe0f',nome:'"Al\u00f4? Algu\u00e9m a\u00ed?"',tipo:'fala',texto:'Al\u00f4? Algu\u00e9m a\u00ed?'},
-  {ico:'🗣\ufe0f',nome:'"Eu j\u00e1 fiz a minha!"',tipo:'fala',texto:'Eu j\u00e1 fiz a minha, e voc\u00ea?'}
+  {ico:'📯',nome:'Buzina',tipo:'fx',fx:'buzina'}
 ];
 const FX_REA=[
   {fx:'sapo',ico:'🐸',nome:'Sapo coaxando'},
@@ -1626,7 +1619,14 @@ function falar(txt,el){
   if(el){ el.classList.add('playing'); u.onend=u.onerror=()=>el.classList.remove('playing'); }
   speechSynthesis.speak(u);
 }
-function ouvirSom(i){ const x=SONS[i]; if(!x) return; if(x.tipo==='fx') playFx(x.fx); else falar(x.texto); vibrate(10); }
+function fxTocando(name){ return !!(FXEL&&FXEL._nome===name&&!FXEL.paused&&!FXEL.ended); }
+function pararFx(){ if(FXEL){ try{FXEL.pause();}catch(e){} FXEL=null; } document.querySelectorAll('[data-ap-play].tocando,[data-fxp].tocando').forEach(b=>{ b.classList.remove('tocando'); b.textContent='▶'; }); }
+function alternaFx(name,btn){
+  if(fxTocando(name)){ pararFx(); return; }
+  pararFx(); playFx(name); if(FXEL){ FXEL._nome=name; const el=FXEL; el.addEventListener('ended',()=>{ if(FXEL===el) pararFx(); }); }
+  if(btn){ btn.classList.add('tocando'); btn.textContent='⏸'; }
+}
+function ouvirSom(i,btn){ const x=SONS[i]; if(!x) return; if(x.tipo==='fx') alternaFx(x.fx,btn); else falar(x.texto); vibrate(10); }
 function enviarSom(i){
   const x=SONS[i]; if(!x||!famRef||!USER) return;
   if(x.tipo==='fala'){ const msg={by:USER.id,text:'',t:firebase.database.ServerValue.TIMESTAMP,att:{kind:'fala',name:'Fala',texto:x.texto}}; if(replyTo) msg.reply=replyTo;
@@ -1634,7 +1634,7 @@ function enviarSom(i){
   toast('Enviando '+x.nome+'\u2026');
   renderFx(x.fx).then(({blob,dur})=>sendAudio(blob,dur)).catch(()=>toast('N\u00e3o consegui montar o som'));
 }
-function audPanel(on){ const p=document.getElementById('audPanel'); if(!p) return; const abre=on===undefined?!p.classList.contains('on'):!!on; p.classList.toggle('on',abre); if(abre){ const pk=document.getElementById('picker'); if(pk) pk.classList.remove('on'); scrollMsgs(); } }
+function audPanel(on){ const p=document.getElementById('audPanel'); if(!p) return; const abre=on===undefined?!p.classList.contains('on'):!!on; p.classList.toggle('on',abre); if(!abre) pararFx(); if(abre){ const pk=document.getElementById('picker'); if(pk) pk.classList.remove('on'); scrollMsgs(); } }
 const RECMAX=10;
 let REC=null, recChunks=[], recT0=0, recTimer=null, AUDPLAY=null, recPausedAt=0, recPausedTotal=0, RECDONE=null, recPrev=null, recAuto=false, recLocked=false;
 // tempo realmente gravado, descontando as pausas
@@ -1902,9 +1902,8 @@ function openChat(){
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="audpanel nodrag" id="audPanel">
-      <div class="aph"><span>💡 Dica: áudios prontos para mandar</span><button id="apClose" aria-label="Fechar">✕</button></div>
+      <div class="aph"><span>💡 Áudios prontos · segura o 🎤 para gravar o seu</span><button id="apClose" aria-label="Fechar">✕</button></div>
       <div class="apgrid">${SONS.map((x,i)=>`<div class="apitem"><span class="apn">${x.ico} ${esc(x.nome)}</span><button data-ap-play="${i}" aria-label="Ouvir">▶</button><button data-ap-send="${i}" class="go" aria-label="Enviar">➤</button></div>`).join('')}</div>
-      <button class="aprec" id="apRec">🎙️ Gravar o meu (até 10 s)</button>
     </div>
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
@@ -1924,8 +1923,7 @@ function openChat(){
     if(on){ setTimeout(()=>cft.focus(),150); } else { chatQ=''; cft.value=''; upd(); } });
   document.getElementById('attBtn').addEventListener('click',()=>document.getElementById('attFile').click());
   document.getElementById('apClose').addEventListener('click',()=>audPanel(false));
-  document.getElementById('apRec').addEventListener('click',()=>{ audPanel(false); startRec(); });
-  sheet.querySelectorAll('[data-ap-play]').forEach(b=>b.addEventListener('click',()=>ouvirSom(+b.dataset.apPlay)));
+  sheet.querySelectorAll('[data-ap-play]').forEach(b=>b.addEventListener('click',()=>ouvirSom(+b.dataset.apPlay,b)));
   sheet.querySelectorAll('[data-ap-send]').forEach(b=>b.addEventListener('click',()=>{ enviarSom(+b.dataset.apSend); audPanel(false); }));
   if('speechSynthesis' in window) speechSynthesis.getVoices();
   document.getElementById('recCancel').addEventListener('click',descartaRec);
@@ -2387,7 +2385,7 @@ function openTaskAudio(id){
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div class="alist">${FX_REA.map(x=>`<div class="apitem ${mine&&mine.a===x.fx?'on':''}"><span class="apn">${x.ico} ${x.nome}</span><button data-fxp="${x.fx}" aria-label="Ouvir">▶</button><button data-fxs="${x.fx}" data-nome="${x.nome}" class="go" aria-label="Mandar">✓</button></div>`).join('')}</div>
     ${mine&&mine.a?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu áudio</button>':''}`);
-  sheet.querySelectorAll('[data-fxp]').forEach(b=>b.addEventListener('click',()=>{ playFx(b.dataset.fxp); vibrate(10); }));
+  sheet.querySelectorAll('[data-fxp]').forEach(b=>b.addEventListener('click',()=>{ alternaFx(b.dataset.fxp,b); vibrate(10); }));
   sheet.querySelectorAll('[data-fxs]').forEach(b=>b.addEventListener('click',()=>{ playFx(b.dataset.fxs); writeTaskReaction(id,'🔊',{a:b.dataset.fxs,an:b.dataset.nome}); }));
   const del=document.getElementById('reaDel'); if(del) del.addEventListener('click',()=>{ writeTaskReaction(id,null); });
 }
