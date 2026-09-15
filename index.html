@@ -135,7 +135,7 @@
   .task.off .star{opacity:.25}
   .task.done .t{opacity:1}
   .st.ok{background:#DDF3E8;color:#1E7A55}
-  .st{display:inline-block;font-size:11px;font-weight:900;background:var(--amber);color:#4a3800;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
+  .st{display:inline-block;font-size:12px;font-weight:900;background:var(--amber);color:#4a3800;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
   .st.mv{background:#DCD3FF;color:#3B2A8F}
   .tg{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
   .tg .st,.tg .dchip{margin:0;vertical-align:0}
@@ -241,7 +241,7 @@
   .who small{color:var(--soft);font-weight:700}
   /* família / presença */
   .fam{display:flex;justify-content:center;gap:22px;margin:2px 0 12px}
-  .fam .p{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:14px;font-weight:800;color:var(--soft);border:0;background:none;padding:0}
+  .fam .p{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:15px;font-weight:800;color:var(--soft);border:0;background:none;padding:0}
   .fam .p .avw{position:relative}
   .fam .p .av{width:64px;height:64px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid var(--line);overflow:hidden}
   .fam .p .av img{width:100%;height:100%;object-fit:cover}
@@ -384,7 +384,7 @@
   .msg .b small .tick.seen{color:#8fe3ff}
   .msg.flash .b{animation:flashb 1.2s}
   @keyframes flashb{0%,60%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:none}}
-  .fam .p small{font-size:11px;font-weight:700;color:var(--soft);line-height:1}
+  .fam .p small{font-size:12px;font-weight:700;color:var(--soft);line-height:1}
   .msg .b.emo{font-size:30px !important;line-height:1.15;padding:6px 12px 4px}
   .msg.me .b>b{display:none !important}
   .msg.me .b small{color:rgba(255,255,255,.85);opacity:1}
@@ -468,7 +468,7 @@
     .tx{font-size:17px;display:inline}
     .tg{display:inline;margin:0 6px 0 0;vertical-align:1px}
     .tg .st,.tg .dchip,.tg .bang{vertical-align:2px;margin-right:4px}
-    .st,.dchip{font-size:12px}
+    .st{font-size:13px} .dchip{font-size:12px}
     .fabs{right:28px;bottom:28px}
     .fab{width:72px;height:72px;font-size:32px}
     .sheet{max-width:760px;border-radius:28px 28px 0 0;padding:6px 24px 28px}
@@ -515,11 +515,11 @@
     background:rgba(255,255,255,.17);color:#fff;box-shadow:none;font-size:17px;
     transition:background .18s,transform .18s;
   }
-  .chatsheet .chatwho{gap:6px;font-size:11px}
+  .chatsheet .chatwho{gap:6px;font-size:12px}
   .chatsheet .chatwho span{padding:5px 9px;background:rgba(40,17,75,.16);font-weight:700}
   .chatsheet .msgs{padding:20px 16px;gap:12px;scrollbar-width:thin;scrollbar-color:#D7C8EC transparent}
   .chatsheet .msg .b{padding:10px 14px 8px;line-height:1.45;box-shadow:0 2px 8px rgba(63,39,100,.06)}
-  .chatsheet .daygrp>summary,.chatsheet .daysep{font-weight:700;font-size:11px;padding:6px 12px}
+  .chatsheet .daygrp>summary,.chatsheet .daysep{font-weight:700;font-size:12px;padding:6px 12px}
   .chatsheet .chatin{
     gap:8px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));
     background:color-mix(in srgb,var(--c2,#8E5BE0) 5%,#fff);
@@ -616,14 +616,14 @@
   .summary-center strong{font-size:46px;line-height:1.05;letter-spacing:-2px;color:var(--ink)}
   .summary-center span{font-size:13px;color:var(--soft);line-height:1.4;margin-top:5px}
   .summary-legend{display:flex;flex-direction:column;gap:6px;min-width:0}
-  .summary-state{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;width:100%;border:1px solid transparent;background:transparent;border-radius:12px;padding:10px;color:var(--ink);text-align:left;font-size:14px;font-weight:800}
+  .summary-state{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;width:100%;border:1px solid transparent;background:transparent;border-radius:12px;padding:10px;color:var(--ink);text-align:left;font-size:15px;font-weight:800}
   .summary-state i{width:10px;height:10px;border-radius:50%;background:var(--state)}
-  .summary-state small{display:block;color:var(--soft);font-size:12px;font-weight:600;margin-top:1px}
-  .summary-state strong{font-size:19px;font-variant-numeric:tabular-nums}
+  .summary-state small{display:block;color:var(--soft);font-size:13px;font-weight:600;margin-top:1px}
+  .summary-state strong{font-size:20px;font-variant-numeric:tabular-nums}
   .summary-state[aria-pressed=true]{background:#fff;border-color:var(--state);box-shadow:0 3px 10px rgba(38,36,58,.05)}
   .summary-state:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   .summary-note{font-size:12px;color:var(--soft);line-height:1.5;margin:12px 2px 16px}
-  .summary-detail h3{font-size:16px;margin:0 0 8px}
+  .summary-detail h3{font-size:16px;margin:16px 0 8px}
   .summary-item{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 13px;margin:6px 0;color:var(--ink);font-size:14px;line-height:1.45}
   .summary-item small{display:block;color:var(--soft);font-size:12px;margin-bottom:4px}
   .summary-empty{padding:18px;text-align:center;color:var(--soft);font-size:14px}
@@ -636,6 +636,8 @@
   .filter-search:active{background:#E8E4F2}
   .filter-search:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   @media print{.filter-row{display:none}}
+  .tag.complete-tag{font-size:13px}
+  @media(min-width:700px){.tag.complete-tag{font-size:14px}}
 </style>
 </head>
 <body>
@@ -1495,7 +1497,7 @@ function render(){
     const boxes=bx?`<div class="boxes one">${bx}</div>`:'';
     html+=`<details class="day ${past&&!isToday?'past':''} ${isToday?'today':''} ${complete?'complete':''}" style="--c:var(${cv})" data-date="${d.date}" ${open?'open':''}>
       <summary><div class="dl"><span class="n">${name}</span><span class="d">${fmt(d.date)}</span></div>
-        <div class="tags">${cntTag}${isToday?'<span class="tag">HOJE</span>':''}${isTomorrow?'<span class="tag">AMANHÃ</span>':''}${complete?'<span class="tag">Tudo feito!</span>':''}</div>
+        <div class="tags">${cntTag}${isToday?'<span class="tag">HOJE</span>':''}${isTomorrow?'<span class="tag">AMANHÃ</span>':''}${complete?'<span class="tag complete-tag">Tudo feito!</span>':''}</div>
         <span class="arrow">▼</span></summary>
       <div class="body">
         <div class="aulas">${d.feriado?`<span>🎉 Feriado: ${d.feriado}</span>`:((TIMETABLE.days[d.k]||[]).map(k=>`<span>${subjectVisual(SUBJ[k])}</span>`).join('')||'<span>😴 Sem aula</span>')}</div>
@@ -1984,7 +1986,6 @@ function openSummary(){
       </div>
       <div class="summary-legend">${data.map(d=>`<button class="summary-state" data-select="${d.key}" style="--state:${d.color}" aria-pressed="false"><i aria-hidden="true"></i><span>${d.label}<small>${pct(d.tasks.length)}% do total</small></span><strong>${d.tasks.length}</strong></button>`).join('')}</div>
     </div>
-    <p class="summary-note">${total?'Toque em uma fatia ou em um estado para ver as tarefas.':'Ainda não há tarefas nesta semana.'} Tarefas pendentes com prazo vencido entram apenas em “Esquecido”. Canceladas não contam no progresso.</p>
     <div class="summary-detail" id="summaryDetail"></div>`);
   let selected=null;
   const select=key=>{
