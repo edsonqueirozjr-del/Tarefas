@@ -29,10 +29,10 @@
   .wrap{max-width:560px;margin:0 auto;padding:20px 16px 72px}
   h1{font-size:26px;font-weight:900;margin:0 0 6px;line-height:1.1;text-align:center}
   button{font-family:inherit;cursor:pointer}
-  .prog{margin:4px 0 14px}
+  .prog{margin:-10px 0 14px}
   .top .prog{margin:0 0 4px}
-  .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:14px;color:var(--soft);margin-bottom:4px;line-height:1.3}
-  .prog .row b{color:var(--ink);font-size:16px}
+  .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:13px;color:var(--soft);margin-bottom:4px;line-height:1.3}
+  .prog .row b{color:var(--ink);font-size:15px}
   .prog .bar{height:30px;border-radius:999px;background:#EDE7F7;overflow:hidden;position:relative;box-shadow:inset 0 1px 3px rgba(63,39,100,.10)}
   .prog .bar i{display:block;height:100%;border-radius:999px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width .6s cubic-bezier(.4,0,.2,1)}
   .prog .bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 38%,rgba(255,255,255,.42) 50%,transparent 62%);animation:progshine 3.2s ease-in-out infinite}
@@ -56,7 +56,7 @@
   .nav button{border:2px solid var(--line);background:#fff;border-radius:999px;width:36px;height:36px;font-size:18px;font-weight:900;color:var(--ink)}
   .nav button:disabled{opacity:.35}
   /* filtros (fixos ao rolar) */
-  .top{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--lilas-bg),var(--lilas-bg2));border-bottom:1px solid var(--lilas-line);margin:-20px -16px 22px;padding:20px 16px 6px;box-shadow:0 10px 14px -10px rgba(63,39,100,.22)}
+  .top{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--lilas-bg),var(--lilas-bg2));border-bottom:1px solid var(--lilas-line);margin:-20px -16px 22px;padding:12px 16px 6px;box-shadow:0 10px 14px -10px rgba(63,39,100,.22)}
   .top h1{color:var(--lilas-ink)}
   .top h1{margin-bottom:8px}
   .top .top-title{margin-bottom:8px}
@@ -493,8 +493,8 @@
     body{font-size:18px}
     .wrap{max-width:840px;padding:28px 28px 84px}
     h1{font-size:34px;margin-bottom:10px}
-    .prog .row{font-size:17px} .prog .row b{font-size:20px} .prog .bar{height:26px} .prog .pct{font-size:26px}
-    .top{margin:-28px -28px 26px;padding:30px 28px 8px}
+    .prog .row{font-size:16px} .prog .row b{font-size:19px} .prog .bar{height:32px} .prog .pct{font-size:26px}
+    .top{margin:-28px -28px 26px;padding:20px 28px 8px}
     .filters{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
     .chip{font-size:15px;padding:8px 16px}
     .filters{overflow:visible}
@@ -856,7 +856,7 @@
 <div class="splash" id="splash" aria-hidden="true"><img src="bailarina.gif" alt="" decoding="async" draggable="false" onerror="this.closest('.splash').remove()"></div>
 <div class="wrap">
   <div class="top">
-    <div class="top-title"><h1>🎒 Gestão de tarefas</h1>
+    <div class="top-title"><h1>Gestão de tarefas</h1>
       <div class="topacts">
         <button class="fab reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="heart-icon" aria-hidden="true">💛</span><span class="badge" id="reaBadge"></span></button>
       </div>
@@ -2767,6 +2767,11 @@ function hourlyReminder(){ if(!USER||USER.papel!=='aluna') return; const h=new D
   const first=p[0].text.replace(/<[^>]+>/g,''); notify('🎒 Ainda falta '+p.length+' tarefa'+(p.length>1?'s':'')+' para amanhã', first+(p.length>1?' e mais '+(p.length-1):'')); }
 function startReminders(){ clearInterval(notifTimer); askNotif(); if(!USER||USER.papel!=='aluna') return; askNotif().then(ok=>{ if(!ok) return; hourlyReminder(); notifTimer=setInterval(hourlyReminder,60*1000); }); }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyReminder(); });
+// Barra de progresso: no celular (tela estreita) ela rola junto; no tablet/PC fica congelada com o topo
+(()=>{ const mq=matchMedia('(max-width:599px)');
+  const ajusta=()=>{ const pr=document.getElementById('prog'), top=document.querySelector('.top'); if(!pr||!top) return;
+    if(mq.matches){ if(pr.parentNode===top) top.after(pr); } else { if(pr.parentNode!==top) top.appendChild(pr); } posicionaFrase(); };
+  (mq.addEventListener?mq.addEventListener('change',ajusta):mq.addListener(ajusta)); ajusta(); })();
 window.addEventListener('resize',()=>posicionaFrase());
 render();
 // Botão "voltar" do Android: fecha o que estiver aberto em vez de sair do app; na tela inicial, dois toques e pergunta
