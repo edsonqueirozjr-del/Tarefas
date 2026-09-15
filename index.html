@@ -266,10 +266,12 @@
   .msg.flash .b{animation:flashb 1.2s}
   @keyframes flashb{0%,60%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:none}}
   .fam .p small{font-size:10px;font-weight:700;color:var(--soft);line-height:1}
-  .msg .b.emo{font-size:30px;line-height:1.15;padding:6px 12px 4px}
-  .msg .b.emo b{display:block}
-  .chatin input{flex:1;border:2px solid var(--line);border-radius:999px;padding:10px 14px;font:inherit;font-size:16px}
-  .chatin button{width:46px;height:46px;border-radius:50%;border:0;background:var(--sex);color:#fff;font-size:20px;flex:none}
+  .msg .b.emo{font-size:30px !important;line-height:1.15;padding:6px 12px 4px}
+  .msg.me .b>b{display:none !important}
+  .msg.me .b small{color:rgba(255,255,255,.85);opacity:1}
+  .chatin>button{flex:none}
+  .chatin input{flex:1;min-width:0;border:2px solid var(--line);border-radius:999px;padding:10px 14px;font:inherit;font-size:16px}
+  .chatin button{width:44px;height:44px;border-radius:50%;border:0;background:var(--sex);color:#fff;font-size:20px;flex:none}
   .chat .empty{color:var(--soft);text-align:center;margin:auto;font-size:16px;line-height:1.5}
   .msg .b i.ed{font-style:normal;font-size:11px;opacity:.6;margin-left:4px}
   .msg.pressing .b{filter:brightness(.92)}
@@ -379,7 +381,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='4.0';
+const APP_VERSION='4.2';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -619,7 +621,10 @@ const uname=id=>(USERS.find(u=>u.id===id)||{nome:id}).nome;
 function avatarHtml(u){ const f=PERFIS[u.id]&&PERFIS[u.id].foto; return f?`<img src="${f}" alt="">`:u.emoji; }
 function renderFam(){
   const el=document.getElementById('fam'); if(!el||!USER) return;
-  el.innerHTML=USERS.map(u=>{const on=!!ONLINE[u.id]; const ls=PERFIS[u.id]&&PERFIS[u.id].lastSeen; const sub=on?'online':(ls?fmtSeen(ls):'ainda não entrou');
+  el.innerHTML=USERS.map(u=>{const on=!!ONLINE[u.id];
+    // última vez: o maior entre o registro de presença, a última leitura do chat e a última mensagem enviada
+    let ls=Math.max(PERFIS[u.id]&&PERFIS[u.id].lastSeen||0, READS[u.id]||0, ...CHAT.filter(m=>m.by===u.id).map(m=>m.t||0));
+    const sub=on?'online':(ls?fmtSeen(ls):'');
     return `<button class="p ${on?'on':''} ${u.id===USER.id?'me':''}" data-u="${u.id}"><span class="avw"><span class="av">${avatarHtml(u)}</span><i class="dot"></i></span><span>${u.nome}${u.id===USER.id?' (você)':''}</span><small>${sub}</small></button>`;}).join('');
   el.querySelectorAll('.p').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.u===USER.id) openFoto(); else openLogin(null,b.dataset.u); }));
 }
@@ -716,12 +721,17 @@ function sendAttachment(f){
 document.getElementById('attFile').addEventListener('change',ev=>{ const f=ev.target.files[0]; ev.target.value=''; sendAttachment(f); });
 let CHATPREF={bg:'lilas',font:'nunito',size:'m',foto:''}; try{Object.assign(CHATPREF,JSON.parse(localStorage.getItem(KEY+'-chatpref')||'{}'));}catch(e){}
 function savePref(){ try{localStorage.setItem(KEY+'-chatpref',JSON.stringify(CHATPREF));}catch(e){} applyPref(); }
-function applyPref(){ const c=sheet.querySelector('.chat'), m=document.getElementById('msgs'); if(!c||!m) return;
-  c.className='chat f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className='msgs nodrag bg-'+CHATPREF.bg; m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }
+function applyPref(){
+  const pairs=[[sheet.querySelector('.chat:not(#lookPrev)'),document.getElementById('msgs')],[document.getElementById('lookPrev'),document.getElementById('lookMsgs')]];
+  pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg; m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
 function openChatLook(){
   const BGS=[['lilas','#F7F5FC'],['claro','#fff'],['verde','#E6F6EE'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
   const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
   show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
+    <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px"><div class="msgs" id="lookMsgs" style="min-height:0;padding:10px 8px">
+      <div class="msg" style="--uc:#E0479E"><span class="av">${avatarHtml(USERS[0])}</span><div><div class="b"><b>Maria</b>Oi! Assim fica o balão dela 😊<small>20:41</small></div></div></div>
+      <div class="msg me" style="--uc:${USER.cor||'#2F8FE0'}"><span class="av">${avatarHtml(USER)}</span><div><div class="b">E assim fica o seu<small>20:42 <span class="tick seen">✓✓</span></small></div></div></div>
+    </div></div>
     <p class="quiet" style="margin:0 0 4px"><b>Plano de fundo</b></p>
     <div class="sw2">${BGS.map(([k,c])=>`<button data-bg="${k}" class="${CHATPREF.bg===k?'on':''}" style="background:${c};background-size:14px 14px" title="${k}"></button>`).join('')}
       <button data-bg="foto" class="${CHATPREF.bg==='foto'?'on':''}" style="font-size:22px;${CHATPREF.foto?`background:url(${CHATPREF.foto}) center/cover`:''}">${CHATPREF.foto?'':'📷'}</button></div>
@@ -731,6 +741,7 @@ function openChatLook(){
     <div class="sw2">${[['p','Pequena'],['m','Média'],['g','Grande']].map(([k,n])=>`<button data-s="${k}" class="fnt ${CHATPREF.size===k?'on':''}">${n}</button>`).join('')}</div>
     <p class="quiet" style="margin:0;font-size:13px">Essas escolhas valem só neste aparelho.</p>
     <button class="opt primary" id="lookOk" style="justify-content:center;margin-top:12px">Pronto</button>`);
+  applyPref();
   const mark=(sel,attr,val)=>sheet.querySelectorAll(sel).forEach(b=>b.classList.toggle('on',b.dataset[attr]===val));
   sheet.querySelectorAll('[data-bg]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.bg==='foto'&&!CHATPREF.foto){ document.getElementById('bgFile').click(); return; } CHATPREF.bg=b.dataset.bg; savePref(); mark('[data-bg]','bg',CHATPREF.bg); }));
   sheet.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{ CHATPREF.font=b.dataset.f; savePref(); mark('[data-f]','f',CHATPREF.font); }));
