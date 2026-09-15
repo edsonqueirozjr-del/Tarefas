@@ -40,13 +40,7 @@
   .nav button:disabled{opacity:.35}
   /* filtros (fixos ao rolar) */
   .top{position:sticky;top:0;z-index:20;background:var(--paper);margin:0 -16px 22px;padding:10px 16px 6px;box-shadow:0 10px 12px -10px rgba(38,36,58,.18)}
-  .top h1{margin-bottom:0}
-  .h1row{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
-  .bell{position:absolute;right:0;border:2px solid var(--line);background:#fff;border-radius:50%;width:44px;height:44px;font-size:20px;display:none;align-items:center;justify-content:center;overflow:visible}
-  .bell.on{display:flex}
-  .bell.ring{animation:ring2 1.8s ease-in-out infinite;border-color:#E9A227}
-  @keyframes ring2{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(12deg)}80%{transform:rotate(-10deg)}90%{transform:rotate(6deg)}}
-  .bell .badge{top:-4px;right:-4px}
+  .top h1{margin-bottom:8px}
   .top .fam{margin-bottom:8px}
   .filters{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 6px;margin:8px -16px 2px;scrollbar-width:none}
   .filters::-webkit-scrollbar{display:none}
@@ -179,7 +173,8 @@
   .next{background:#fff;border:3px dashed var(--line);border-radius:22px;padding:14px 16px}
   .next h2{margin:0 0 6px;font-size:19px;font-weight:900}
   /* flutuante */
-  .fab{position:fixed;overflow:visible;isolation:isolate;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;width:62px;height:62px;border-radius:50%;border:0;background:var(--fab);color:#fff;font-size:28px;box-shadow:0 8px 20px rgba(38,36,58,.28);display:flex;align-items:center;justify-content:center;transition:transform .2s}
+  .fabs{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .fab{position:static;overflow:visible;isolation:isolate;width:62px;height:62px;border-radius:50%;border:0;background:var(--fab);color:#fff;font-size:28px;box-shadow:0 8px 20px rgba(38,36,58,.28);display:flex;align-items:center;justify-content:center;transition:transform .2s}
   .fab:active{transform:scale(.92)}
   /* sheet */
   .veil{position:fixed;inset:0;background:rgba(38,36,58,.45);display:none;z-index:60;align-items:flex-end;justify-content:center}
@@ -246,8 +241,8 @@
   .uopt .av{width:56px;height:56px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#F2F0FA}
   .uopt .av img{width:100%;height:100%;object-fit:cover}
   /* conversa */
-  .chatfab{bottom:calc(16px + 62px + 12px + env(safe-area-inset-bottom));background:var(--sex);z-index:61;touch-action:none;transition:transform .15s}
-  .reafab{bottom:calc(16px + 124px + 24px + env(safe-area-inset-bottom));background:#E9A227;z-index:62;display:none}
+  .chatfab{background:var(--sex)}
+  .reafab{background:#E9A227;display:none}
   .reafab.on{display:flex}
   .reafab.pulse{animation:reap 1.6s ease-in-out infinite}
   @keyframes reap{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
@@ -257,34 +252,27 @@
   .realist .em{font-size:28px;line-height:1;flex:none}
   .realist .tx2{font-size:15px;font-weight:700;line-height:1.3}
   .realist .tx2 b{display:block;font-size:12px;color:var(--soft);margin-bottom:2px}
-  .chatfab.moving{transform:scale(1.14);box-shadow:0 14px 28px rgba(38,36,58,.45)}
   .badge{position:absolute;top:-4px;right:-4px;z-index:5;background:#E4443F;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
   .badge.on{display:flex}
-  .sheet.chatsheet{display:flex;flex-direction:column;height:min(94dvh,780px);max-height:none;overflow:hidden;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .sheet.chatsheet{display:flex;flex-direction:column;height:min(92dvh,780px);max-height:none}
   .chatsheet .grip{margin:4px auto 6px}
-  .chatsheet{padding-left:0;padding-right:0;padding-top:0;position:relative}
-  .chatsheet>.grip{position:absolute;left:50%;transform:translateX(-50%);top:7px;background:rgba(255,255,255,.65);z-index:2;margin:0;width:38px;height:4px}
-  .chat{padding:0 12px}
-  .chathead{margin:0 -14px 10px;padding:16px 16px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
-  .chatsheet .grip{margin-top:0}
-  .chat h2{font-size:19px;margin:0 0 6px;color:#fff}
-  .chat h2 .gear,.chat h2 .x{background:rgba(255,255,255,.25);color:#fff}
-  .chat h2 .gear:active,.chat h2 .x:active{background:rgba(255,255,255,.4)}
-  .cfbar{display:none;gap:8px;align-items:center;margin:8px 0 0}
-  .cfbar.on{display:flex}
-  .cfbar input{flex:1;min-width:0;border:0;border-radius:999px;padding:9px 14px;font:inherit;font-size:15px;background:rgba(255,255,255,.92);color:var(--ink)}
-  .cfbar input:focus{outline:none}
-  .cfbar button{border:0;background:rgba(255,255,255,.25);color:#fff;border-radius:999px;width:36px;height:36px;font-size:16px;font-weight:900;flex:none}
-  .cfbar .cnt{color:#fff;font-size:12px;font-weight:900;white-space:nowrap}
-  .msg .b mark{background:#FFE9A8;color:#2E2352;border-radius:4px;padding:0 2px}
+  .chatsheet{padding:0;position:relative;overflow:hidden}
+  .chatsheet>.grip{position:absolute;left:50%;transform:translateX(-50%);top:7px;background:rgba(255,255,255,.65);z-index:3;margin:0;width:38px;height:4px}
+  .chat{height:100%;display:flex;flex-direction:column;min-height:0}
+  .chathead{flex:none;padding:18px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
+  .chat h2{font-size:19px;margin:0 0 8px;color:#fff;display:flex;align-items:center;gap:8px}
+  .chat h2 .gear,.chat h2 .x{background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:18px;flex:none;display:flex;align-items:center;justify-content:center}
+  .chat h2 .gear.find{margin-left:auto}
+  .chat h2 .x{margin-left:0}
   .chatwho{font-size:12px;margin:0;display:flex;gap:6px;flex-wrap:wrap}
+  .cfbar{margin:8px 0 0}
   .chatwho span{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.22);border-radius:999px;padding:3px 10px;color:#fff;font-weight:700}
   .chatwho b{font-weight:900}
   .chatwho i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);display:inline-block}
   .chatwho i.on{background:#7CF5C0;box-shadow:0 0 0 3px rgba(124,245,192,.3)}
   .chat{flex:1;min-height:0;display:flex;flex-direction:column}
   .chat h2{flex:none}
-  .msgs{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 10px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;background:#F7F5FC;border-radius:18px;border:0}
+  .msgs{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 12px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;background:#F7F5FC}
   .msg{display:flex;gap:8px;align-items:flex-end;max-width:85%}
   .msg.me{align-self:flex-end;flex-direction:row-reverse}
   .msg .av{width:46px;height:46px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex:none;border:3px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18)}
@@ -328,6 +316,8 @@
   .sw2 .fnt{width:100%;min-width:0;aspect-ratio:auto;height:44px;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px;font-weight:800;color:var(--ink);background:#F7F5FC}
   .sw2 .fnt.on::after{display:none}
   .looklbl{margin:0 0 6px;font-weight:900;font-size:15px}
+  #lookPrev{height:auto!important}
+  #lookPrev .msgs{border-radius:14px}
   #lookPrev .msg .av{width:34px;height:34px;font-size:18px}
   #lookPrev .msg .b{font-size:13px}
   .sheet{overflow-x:hidden}
@@ -352,7 +342,7 @@
   .msg .b small{display:block;font-size:10px;opacity:.7;margin-top:2px;text-align:right}
   .msg .b b{display:block;font-size:11.5px;color:var(--soft);margin-bottom:1px;font-weight:900}
   .msg.me .b b{display:none}
-  .chatin{flex:none;display:flex;gap:8px;padding:8px 0 0;margin-top:6px}
+  .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line)}
   .daygrp{border:0;margin:0;flex:none}
   .msgs>*{flex:none}
   .msgs::before{content:"";margin-top:auto}
@@ -401,14 +391,14 @@
   .pmenu button.danger{color:#B3261E}
   .msg.focus .b{box-shadow:0 0 0 3px var(--sex)}
   .msgs.dim .msg:not(.focus){opacity:.35}
-  .editbar{display:none;align-items:center;gap:8px;background:#E8F1FC;border-left:4px solid var(--sex);border-radius:10px;padding:6px 10px;margin-top:8px;font-size:13px;color:var(--soft)}
+  .editbar{display:none;align-items:center;gap:8px;background:#E8F1FC;border-left:4px solid var(--sex);padding:8px 12px;font-size:13px;color:var(--soft);flex:none}
   .editbar.on{display:flex}
   .editbar b{color:var(--ink)}
   .editbar button{margin-left:auto;border:0;background:transparent;font-size:18px;color:var(--soft)}
   .rrow{display:flex;gap:6px;justify-content:space-between;margin:4px 0 12px}
   .rrow button{border:0;background:#F2F0FA;border-radius:14px;font-size:26px;flex:1;padding:8px 0;transition:transform .15s}
   .rrow button:active{transform:scale(1.2)}
-  .picker{display:none;flex-wrap:wrap;gap:4px;padding:8px 4px 0;max-height:150px;overflow:auto;flex:none}
+  .picker{display:none;flex-wrap:wrap;gap:4px;padding:10px 12px 0;max-height:150px;overflow:auto;flex:none;background:#fff;border-top:1px solid var(--line)}
   .picker.on{display:flex}
   .picker button{border:0;background:#F7F5FC;border-radius:10px;font-size:24px;width:44px;height:40px}
   .chatin .emo{background:#F2F0FA;color:var(--ink);font-size:22px}
@@ -452,8 +442,8 @@
     .tg{display:inline;margin:0 6px 0 0;vertical-align:1px}
     .tg .st,.tg .dchip,.tg .bang{vertical-align:2px;margin-right:4px}
     .st,.dchip{font-size:12px}
-    .fab{width:72px;height:72px;font-size:32px;right:28px;bottom:28px}
-    .chatfab{bottom:112px}
+    .fabs{right:28px;bottom:28px}
+    .fab{width:72px;height:72px;font-size:32px}
     .sheet{max-width:760px;border-radius:28px 28px 0 0;padding:6px 24px 28px}
     .sheet h2{font-size:24px}
     .opt{font-size:19px;padding:16px}
@@ -546,7 +536,7 @@
 <body>
 <div class="wrap">
   <div class="top">
-    <div class="h1row"><h1>Gestão de tarefas 🎒</h1><button class="bell" id="bell" aria-label="Carinhos">🔔<span class="badge" id="bellBadge"></span></button></div>
+    <h1>Gestão de tarefas 🎒</h1>
     <div class="fam" id="fam"></div>
   </div>
   <div class="prog" id="prog"></div>
@@ -555,9 +545,11 @@
   <div id="app"></div>
 </div>
 
-<button class="fab reafab" id="reaFab" aria-label="Carinhos">💛<span class="badge" id="reaBadge"></span></button>
-<button class="fab chatfab" id="chatFab" aria-label="Conversa">💬<span class="badge" id="chatBadge"></span></button>
-<button class="fab" id="fab" aria-label="Menu">☰</button>
+<div class="fabs" id="fabs">
+  <button class="fab reafab" id="reaFab" aria-label="Carinhos">💛<span class="badge" id="reaBadge"></span></button>
+  <button class="fab chatfab" id="chatFab" aria-label="Conversa">💬<span class="badge" id="chatBadge"></span></button>
+  <button class="fab" id="fab" aria-label="Menu">☰</button>
+</div>
 <input type="file" id="fotoFile" accept="image/*" style="display:none">
 <input type="file" id="bgFile" accept="image/*" style="display:none">
 <input type="file" id="attFile" style="display:none">
@@ -571,7 +563,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='8.1';
+const APP_VERSION='8.4';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -1416,8 +1408,7 @@ function reaNew(){ return allReacts().filter(r=>(r.t||0)>reaSeen).length; }
 function updateReaFab(){ const list=allReacts(); const n=reaNew(); const show=isAluna()&&list.length>0;
   const f=document.getElementById('reaFab'); if(f){ f.classList.toggle('on',show); f.classList.toggle('pulse',n>0);
     const b=document.getElementById('reaBadge'); b.textContent=n>9?'9+':n; b.classList.toggle('on',n>0); }
-  const bl=document.getElementById('bell'); if(bl){ bl.classList.toggle('on',show); bl.classList.toggle('ring',n>0);
-    const bb=document.getElementById('bellBadge'); bb.textContent=n>9?'9+':n; bb.classList.toggle('on',n>0); } }
+}
 function openReacts(){
   const list=allReacts();
   show(`<h2>💛 Carinhos que você recebeu <button class="x">✕</button></h2>
@@ -1585,24 +1576,8 @@ function refreshReminder(){
   document.getElementById('remGo').addEventListener('click',()=>{hide();vibrate(20);});
 }
 document.getElementById('reaFab').addEventListener('click',openReacts);
-document.getElementById('bell').addEventListener('click',openReacts);
 document.getElementById('fab').addEventListener('click',openMain);
-(function(){ // botão da conversa pode ser arrastado para qualquer canto da tela
-  const b=document.getElementById('chatFab'); let sx=0,sy=0,moved=false,drag=false,ox=0,oy=0;
-  function place(x,y){ const m=8,w=b.offsetWidth,h=b.offsetHeight;
-    x=Math.max(m,Math.min(window.innerWidth-w-m,x)); y=Math.max(m,Math.min(window.innerHeight-h-m,y));
-    b.style.left=x+'px'; b.style.top=y+'px'; b.style.right='auto'; b.style.bottom='auto'; }
-  try{ const p=JSON.parse(localStorage.getItem(KEY+'-fabpos')||'null'); if(p) place(p.x,p.y); }catch(e){}
-  b.addEventListener('pointerdown',e=>{ e.preventDefault(); const r=b.getBoundingClientRect(); sx=e.clientX; sy=e.clientY; ox=e.clientX-r.left; oy=e.clientY-r.top; moved=false; drag=true; try{b.setPointerCapture(e.pointerId);}catch(err){} });
-  b.addEventListener('pointermove',e=>{ if(!drag) return; e.preventDefault(); if(!moved&&(Math.abs(e.clientX-sx)>5||Math.abs(e.clientY-sy)>5)){ moved=true; b.classList.add('moving'); vibrate(15); }
-    if(moved) place(e.clientX-ox,e.clientY-oy); },{passive:false});
-  b.addEventListener('touchmove',e=>{ if(drag) e.preventDefault(); },{passive:false});
-  const end=()=>{ if(!drag) return; drag=false; b.classList.remove('moving');
-    if(moved){ const r=b.getBoundingClientRect(); try{localStorage.setItem(KEY+'-fabpos',JSON.stringify({x:r.left,y:r.top}));}catch(e){} } };
-  b.addEventListener('pointerup',end); b.addEventListener('pointercancel',end);
-  b.addEventListener('click',e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); moved=false; return; } openChat(); });
-  window.addEventListener('resize',()=>{ const r=b.getBoundingClientRect(); if(b.style.left) place(r.left,r.top); });
-})();
+document.getElementById('chatFab').addEventListener('click',openChat);
 if(!CLOUD_CFG) document.getElementById('chatFab').style.display='none';
 setInterval(()=>{ if(!document.hidden) renderFam(); },60*1000);
 document.addEventListener('pointerdown',()=>{ if(SOUND&&!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(AC&&AC.state==='suspended') AC.resume(); },{once:false,passive:true});
