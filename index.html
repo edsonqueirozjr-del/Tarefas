@@ -75,10 +75,10 @@
   
   /* importantes */
   .imp{background:#fff;border:3px solid var(--gold);border-radius:22px;margin-bottom:18px;--c:var(--gold);overflow:hidden}
-  .imp summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--gold);color:#fff}
+  .imp summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;background:color-mix(in srgb,var(--gold) 14%,#fff);color:#7A4E0C}
   .imp summary .n{font-size:23px;font-weight:900;line-height:1}
   .imp summary::-webkit-details-marker{display:none}
-  .imp summary .cnt{margin-left:auto;background:#fff;color:var(--gold);border-radius:999px;padding:4px 10px;font-size:14px;font-weight:900;white-space:nowrap;line-height:1.2;letter-spacing:0;font-family:inherit}
+  .imp summary .cnt{margin-left:auto;background:var(--gold);color:#fff;border-radius:999px;padding:4px 10px;font-size:14px;font-weight:900;white-space:nowrap;line-height:1.2;letter-spacing:0;font-family:inherit}
   .imp summary .arrow{font-size:14px;opacity:.85;transition:transform .2s}
   .imp[open] summary .arrow{transform:rotate(180deg)}
   .imp .ib{padding:0 14px 12px}
@@ -307,6 +307,43 @@
   .chathead{flex:none;padding:18px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
   .chat h2{font-size:20px;margin:0 0 8px;color:#fff;display:flex;align-items:center;gap:8px}
   .chat h2 .gear,.chat h2 .x{background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:18px;flex:none;display:flex;align-items:center;justify-content:center}
+  /* emojis animados nas mensagens (so transform: o tamanho da letra nao muda) */
+  .msg .b .em{display:inline-block;transform-origin:50% 60%;animation-duration:2.2s;animation-timing-function:ease-in-out;animation-iteration-count:infinite;will-change:transform}
+  .msg .b .em.beat{animation-name:emBeat;animation-duration:1.3s}
+  .msg .b .em.wink{animation-name:emWink;animation-duration:3s}
+  .msg .b .em.laugh{animation-name:emLaugh;animation-duration:.9s}
+  .msg .b .em.wave{animation-name:emWave;animation-duration:1.6s;transform-origin:70% 75%}
+  .msg .b .em.flicker{animation-name:emFlicker;animation-duration:.7s}
+  .msg .b .em.twinkle{animation-name:emTwinkle;animation-duration:1.8s}
+  .msg .b .em.bounce{animation-name:emBounce;animation-duration:1.4s}
+  .msg .b .em.party{animation-name:emParty;animation-duration:1.2s}
+  .msg .b .em.cry{animation-name:emCry;animation-duration:2.4s}
+  .msg .b .em.shake{animation-name:emShake;animation-duration:.5s}
+  .msg .b .em.sway{animation-name:emSway;animation-duration:3.2s}
+  .msg .b .em.think{animation-name:emThink;animation-duration:2.6s}
+  .msg .b .em.spin{animation-name:emSpin;animation-duration:4s;animation-timing-function:linear}
+  .msg .b .em.idle{animation-name:emIdle;animation-duration:2.8s}
+  @keyframes emBeat{0%,100%{transform:scale(1)}14%{transform:scale(.86)}28%{transform:scale(1)}42%{transform:scale(.9)}70%{transform:scale(1)}}
+  @keyframes emWink{0%,88%,100%{transform:scaleY(1)}92%{transform:scaleY(.15)}96%{transform:scaleY(1)}}
+  @keyframes emLaugh{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg) translateY(1px)}75%{transform:rotate(9deg) translateY(-1px)}}
+  @keyframes emWave{0%,100%{transform:rotate(0)}15%{transform:rotate(16deg)}30%{transform:rotate(-8deg)}45%{transform:rotate(14deg)}60%{transform:rotate(-4deg)}75%{transform:rotate(0)}}
+  @keyframes emFlicker{0%,100%{transform:scaleY(1) skewX(0)}30%{transform:scaleY(.92) skewX(-4deg)}60%{transform:scaleY(.97) skewX(4deg)}}
+  @keyframes emTwinkle{0%,100%{transform:rotate(0) scale(1);opacity:1}50%{transform:rotate(20deg) scale(.82);opacity:.7}}
+  @keyframes emBounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-3px)}50%{transform:translateY(0)}65%{transform:translateY(-1.5px)}80%{transform:translateY(0)}}
+  @keyframes emParty{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+  @keyframes emCry{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+  @keyframes emShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-2px)}40%{transform:translateX(2px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+  @keyframes emSway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+  @keyframes emThink{0%,100%{transform:rotate(0)}40%{transform:rotate(-8deg) translateY(-1px)}70%{transform:rotate(4deg)}}
+  @keyframes emSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @keyframes emIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+  @media(prefers-reduced-motion:reduce){.msg .b .em{animation:none!important}}
+  /* Abertura: a bailarina dança por cima do app (fundo transparente) e some sozinha */
+  .splash{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:rgba(246,241,253,.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:1;transition:opacity .6s ease}
+  .splash img{max-width:min(78vw,420px);max-height:70vh;object-fit:contain;filter:drop-shadow(0 14px 28px rgba(63,39,100,.25));animation:splashIn .7s cubic-bezier(.36,1.4,.5,1) both}
+  .splash.off{opacity:0;pointer-events:none}
+  @keyframes splashIn{from{transform:scale(.7) translateY(18px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+  @media(prefers-reduced-motion:reduce){.splash img{animation:none}}
   .chat h2 .gear.find{margin-left:auto}
   @keyframes msnshake{0%,100%{transform:translate(0,0)}10%{transform:translate(-9px,4px)}20%{transform:translate(8px,-6px)}30%{transform:translate(-7px,-4px)}40%{transform:translate(9px,5px)}50%{transform:translate(-8px,6px)}60%{transform:translate(7px,-5px)}70%{transform:translate(-6px,3px)}80%{transform:translate(5px,-3px)}90%{transform:translate(-3px,2px)}}
   body.shake{animation:msnshake .8s cubic-bezier(.36,.07,.19,.97) both}
@@ -451,6 +488,14 @@
   .recbar button{border:0;border-radius:999px;padding:7px 12px;font:inherit;font-size:12px;font-weight:900;flex:none}
   .recbar .rcancel{background:#fff;color:#8E2A2A;border:1px solid #F0BDB9}
   .recbar .rok{background:#D93A34;color:#fff}
+  .recbar .rpause{background:#fff;color:#8E2A2A;border:1px solid #F0BDB9}
+  .recbar.pausado{background:#F6F1FD;border-top-color:var(--lilas-line);color:var(--lilas-ink)}
+  .recbar.pausado .rdot{background:var(--lilas);animation:none}
+  .recbar.pausado .rlbl::after{content:" (pausado)";font-weight:700;opacity:.8}
+  .recbar.pausado .rpause{background:var(--lilas);color:#fff;border-color:var(--lilas)}
+  .recbar.pausado .rcancel{color:var(--lilas-ink);border-color:var(--lilas-line)}
+  .recbar.pausado .rok{background:var(--lilas)}
+  .recbar.pausado.fim .rnum{animation:none;color:var(--lilas-ink)}
   .recbar.fim{background:#FBDAD8}
   .recbar.fim .rnum{color:#B3261E;animation:recnum .5s ease-in-out infinite}
   @keyframes recpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
@@ -764,6 +809,7 @@
 </style>
 </head>
 <body>
+<div class="splash" id="splash" aria-hidden="true"><img src="bailarina.gif" alt="" decoding="async" onerror="this.closest('.splash').remove()"></div>
 <div class="wrap">
   <div class="top">
     <div class="top-title"><h1>🎒 Gestão de tarefas</h1>
@@ -957,7 +1003,11 @@ function weekIdFor(dateIso){ const d=new Date(dateIso+'T12:00:00'); d.setDate(d.
 const weekIds=()=>Object.keys(DB.weeks).sort();
 let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(i=>i<=weekIdFor(TODAY)).pop() || weekIds()[0]);
 const openState={};
-let fType='all', fSubj='all', fQ='', subjOpen=false, subjAnim=null;
+let fType='all', fSubj='all', fQ='', subjOpen=false, subjAnim=null, filtroTocado=false;
+function hojeTemFaltaFazer(){ const w=DB.weeks[current]; const d=w&&w.days.find(x=>x.date===TODAY); if(!d) return false;
+  return allTasks(w).some(t=>t.type===H&&t.day===d.k&&t.status==='todo'&&!t.off&&!taskPassed(t)); }
+// enquanto ninguem mexe nos filtros, o app escolhe sozinho (e acompanha o que chega da nuvem)
+function filtroPadrao(){ if(filtroTocado) return; fType=hojeTemFaltaFazer()?'todo':'all'; }
 
 /* ================= NUVEM ================= */
 const CLOUD_CFG = !!FIREBASE.apiKey;
@@ -1118,7 +1168,7 @@ function openSearch(q0){
     if(!hits.length){ res.innerHTML='<p class="none">Não achei nada com “'+esc(q)+'”.</p>'; return; }
     res.innerHTML=hits.slice(0,60).map(h=>{ const d=DB.weeks[h.w].days.find(x=>x.k===h.t.day); const est=h.t.off?'🚫':(h.t.status==='done'?'✓':(h.t.status==='doing'?'⏳':'📝'));
       return `<button class="hit" data-w="${h.w}" data-id="${h.t.id}"><b>${est} ${subjectVisual(SUBJ[h.t.subj]||'')} · ${DAYMETA[h.t.day][0]} ${d?fmt(d.date):''} · ${DB.weeks[h.w].label}</b>${hl(h.txt,q)}</button>`; }).join('');
-    res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; fType='all';fSubj='all'; fQ=''; { const bar=document.getElementById('searchBar'),bt=document.getElementById('filterSearch'),qi=document.getElementById('qTxt'),qa=document.getElementById('qAll'); if(bar){bar.classList.remove('on');bt.classList.remove('on');qi.value='';qa.classList.remove('on');} } const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
+    res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; fType='all';fSubj='all'; fQ=''; filtroTocado=true; { const bar=document.getElementById('searchBar'),bt=document.getElementById('filterSearch'),qi=document.getElementById('qTxt'),qa=document.getElementById('qAll'); if(bar){bar.classList.remove('on');bt.classList.remove('on');qi.value='';qa.classList.remove('on');} } const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
       const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
       setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500); } },200); }));
   };
@@ -1322,6 +1372,24 @@ function reactsHtml(m){ const r=m.reacts||{}; const ks=Object.keys(r).filter(e=>
 function dayLabel(d){ if(d===TODAY) return 'Hoje'; if(d===addDays(TODAY,-1)) return 'Ontem';
   const dt=new Date(d+'T12:00:00'); const dias=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
   const diff=(new Date(TODAY+'T12:00:00')-dt)/86400000; return (diff<7? dias[dt.getDay()]+', ':'')+fmt(d); }
+// Emojis das mensagens ganham vida: cada familia tem um movimento, sempre no mesmo tamanho.
+const EMO_ANIM=[
+  ['beat',  '❤️🧡💛💚💙💜🖤🤍🤎💖💗💓💞💕❣️💘💝😍🥰😘💋'],
+  ['wink',  '😉😜😝🤪😏'],
+  ['laugh', '😂🤣😆😅😄😃'],
+  ['wave',  '👋🤚✋🖐'],
+  ['flicker','🔥💥⚡'],
+  ['twinkle','⭐🌟✨💫🌠'],
+  ['bounce','👍👏🙌💪👌🤝'],
+  ['party', '🎉🎊🥳🎈🏆🏅'],
+  ['cry',   '😢😭😥😔'],
+  ['shake', '😡🤬😠😱😨'],
+  ['sway',  '🙄😴💤😐😑'],
+  ['think', '🤔🧐🤨'],
+  ['spin',  '🌞🌈🎵🎶🟣🟢']
+];
+function emoClass(e){ const base=e.replace(/[\ufe0f\u200d]/g,'').replace(/[\u{1F3FB}-\u{1F3FF}]/gu,''); for(const [c,set] of EMO_ANIM){ if(set.includes(base[0]+(base[1]||''))||set.includes(base)) return c; } return 'idle'; }
+function animaEmojis(html){ if(!html) return ''; return html.replace(/(\p{Extended_Pictographic}(?:\ufe0f|\p{Emoji_Modifier}|\u200d\p{Extended_Pictographic})*)/gu,e=>`<span class="em ${emoClass(e)}">${e}</span>`); }
 function msgHtml(m,i,arr){
   const u=USERS.find(x=>x.id===m.by)||{emoji:'👤',nome:m.by,id:m.by,cor:'#7A6B9B'}; const me=USER&&m.by===USER.id;
   if(m.att&&m.att.kind==='nudge'){ const hm0=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
@@ -1333,7 +1401,7 @@ function msgHtml(m,i,arr){
   const tick=me?`<span class="tick ${seenAll?'seen':''}" title="${seenAll?'Visto por todos':seenAny?'Visto por alguém':'Enviada'}">${seenAny?'✓✓':'✓'}</span>`:'';
   const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')}</div>${reactsHtml(m)}</div></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||''))}</div>${reactsHtml(m)}</div></div>`;
 }
 function chatHtml(){
   if(chatQ.length>=2){ const ql=chatQ.toLowerCase();
@@ -1480,7 +1548,9 @@ function enviarSom(i){
 }
 function audPanel(on){ const p=document.getElementById('audPanel'); if(!p) return; const abre=on===undefined?!p.classList.contains('on'):!!on; p.classList.toggle('on',abre); if(abre){ const pk=document.getElementById('picker'); if(pk) pk.classList.remove('on'); scrollMsgs(); } }
 const RECMAX=10;
-let REC=null, recChunks=[], recT0=0, recTimer=null, AUDPLAY=null;
+let REC=null, recChunks=[], recT0=0, recTimer=null, AUDPLAY=null, recPausedAt=0, recPausedTotal=0;
+// tempo realmente gravado, descontando as pausas
+function recElapsed(){ return (Date.now()-recT0-recPausedTotal-(recPausedAt?Date.now()-recPausedAt:0))/1000; }
 function fmtDur(s){ s=Math.max(0,Math.round(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function micOk(){ return !!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder); }
 function updSendBtn(){ const b=document.getElementById('chatSend'), i=document.getElementById('chatTxt'); if(!b||!i) return;
@@ -1489,6 +1559,7 @@ function updSendBtn(){ const b=document.getElementById('chatSend'), i=document.g
 function recBar(on){
   const b=document.getElementById('recBar'); if(b){ b.classList.toggle('on',on); b.classList.remove('fim'); }
   const t=document.getElementById('recTime'); if(t&&on) t.textContent=RECMAX;
+  const pb=document.getElementById('recPause'); if(pb){ pb.textContent='⏸ Pausar'; pb.setAttribute('aria-label','Pausar gravação'); }
   updSendBtn();
 }
 async function startRec(){
@@ -1504,18 +1575,23 @@ async function startRec(){
   recChunks=[]; REC._cancel=false;
   REC.ondataavailable=e=>{ if(e.data&&e.data.size) recChunks.push(e.data); };
   REC.onstop=()=>{ stream.getTracks().forEach(t=>t.stop()); clearInterval(recTimer); recBar(false);
-    const dur=Math.min(RECMAX,(Date.now()-recT0)/1000), cancelou=REC&&REC._cancel; REC=null;
+    const dur=Math.min(RECMAX,recElapsed()), cancelou=REC&&REC._cancel; REC=null; recPausedAt=0; recPausedTotal=0;
     if(cancelou){ toast('Gravação descartada'); return; }
     if(!recChunks.length){ toast('Não gravou nada'); return; }
     if(dur<1){ toast('Muito curtinho — segura mais um pouco'); return; }
     sendAudio(new Blob(recChunks,{type:recChunks[0].type||mime||'audio/webm'}),dur); };
-  REC.start(); recT0=Date.now(); recBar(true); vibrate(20);
+  REC.start(); recT0=Date.now(); recPausedAt=0; recPausedTotal=0; recBar(true); vibrate(20);
   recTimer=setInterval(()=>{
-    const resta=Math.max(0,RECMAX-(Date.now()-recT0)/1000);
+    const resta=Math.max(0,RECMAX-recElapsed());
     const t=document.getElementById('recTime'); if(t) t.textContent=Math.ceil(resta);
     const b=document.getElementById('recBar'); if(b) b.classList.toggle('fim',resta<=3);
     const a=document.getElementById('recArc'); if(a) a.style.setProperty('--p',(resta/RECMAX*100)+'%');
     if(resta<=0){ toast('10 segundos — enviando'); stopRec(false); } },100);
+}
+function togglePauseRec(){
+  if(!REC) return; const b=document.getElementById('recBar'), pb=document.getElementById('recPause');
+  if(REC.state==='recording'){ try{REC.pause();}catch(e){return;} recPausedAt=Date.now(); if(b) b.classList.add('pausado'); if(pb){ pb.textContent='▶ Continuar'; pb.setAttribute('aria-label','Continuar gravação'); } vibrate(10); }
+  else if(REC.state==='paused'){ try{REC.resume();}catch(e){return;} recPausedTotal+=Date.now()-recPausedAt; recPausedAt=0; if(b) b.classList.remove('pausado'); if(pb){ pb.textContent='⏸ Pausar'; pb.setAttribute('aria-label','Pausar gravação'); } vibrate(10); }
 }
 function stopRec(cancelar){ if(!REC) return; REC._cancel=!!cancelar; try{REC.stop();}catch(e){ REC=null; clearInterval(recTimer); recBar(false); } }
 function sendAudio(blob,dur){
@@ -1721,7 +1797,7 @@ function openChat(){
     </div>
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
-    <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg">s</span><button class="rcancel" id="recCancel">Descartar</button><button class="rok" id="recSend">Enviar ➤</button></div>
+    <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg">s</span><button class="rcancel" id="recCancel">Descartar</button><button class="rpause" id="recPause" aria-label="Pausar gravação">⏸ Pausar</button><button class="rok" id="recSend">Enviar ➤</button></div>
     <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">😊</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button><input id="chatTxt" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
     </div>`);
   applyPref(); markRead(); scrollMsgs(); bindMsgs(); editingKey=null; replyTo=null;
@@ -1742,6 +1818,7 @@ function openChat(){
   sheet.querySelectorAll('[data-ap-send]').forEach(b=>b.addEventListener('click',()=>{ enviarSom(+b.dataset.apSend); audPanel(false); }));
   if('speechSynthesis' in window) speechSynthesis.getVoices();
   document.getElementById('recCancel').addEventListener('click',()=>stopRec(true));
+  document.getElementById('recPause').addEventListener('click',togglePauseRec);
   document.getElementById('recSend').addEventListener('click',()=>stopRec(false));
   renderTyping();
   const inp=document.getElementById('chatTxt');
@@ -1814,10 +1891,11 @@ function renderFilters(){
   }
   el.querySelectorAll('[data-open-subj]').forEach(b=>b.addEventListener('click',()=>{ subjOpen=b.dataset.openSubj==='1'; vibrate(15); SFX.pop(); subjAnim=subjOpen?'opening':'closing'; render(); }));
   if(subjAnim){ el.classList.add(subjAnim); const a=subjAnim; subjAnim=null; setTimeout(()=>el.classList.remove(a),600); }
-  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{fType=b.dataset.t;vibrate(15);render();});
+  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{fType=b.dataset.t;filtroTocado=true;vibrate(15);render();});
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ fSubj=(fSubj===b.dataset.s&&b.dataset.s!=='all')?'all':b.dataset.s; subjOpen=false; vibrate(15); render(); });
 }
 function render(){
+  filtroPadrao();
   const w=DB.weeks[current];
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
@@ -1849,7 +1927,7 @@ function render(){
     const homePassed=boxPassed(w,d,H);
     const cntTag=homePend?(homePassed?`<span class="tag no">${homePend} esquecida${homePend>1?'s':''}</span>`:`<span class="tag">${homePend} para fazer</span>`):'';
     if(filtering && !tasksAll.some(pass)) return;   // com filtro ativo, dia sem resultado não aparece
-    const open = openState[d.date]!==undefined ? openState[d.date] : (isToday || filtering);
+    const open = openState[d.date]!==undefined ? openState[d.date] : (isToday || fQ.length>=2);
     const box=(type,title,emptyTxt)=>{
       const list=tasksAll.filter(t=>t.type===type&&pass(t));
       if(filtering&&!list.length) return '';
@@ -2518,6 +2596,10 @@ function hourlyReminder(){ if(!USER||USER.papel!=='aluna') return; const h=new D
 function startReminders(){ clearInterval(notifTimer); askNotif(); if(!USER||USER.papel!=='aluna') return; askNotif().then(ok=>{ if(!ok) return; hourlyReminder(); notifTimer=setInterval(hourlyReminder,60*1000); }); }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyReminder(); });
 render();
+// abertura com a bailarina: some depois de 3 s ou no primeiro toque
+(()=>{ const sp=document.getElementById('splash'); if(!sp) return;
+  const tira=()=>{ sp.classList.add('off'); setTimeout(()=>sp.remove(),700); };
+  sp.addEventListener('click',tira,{once:true}); setTimeout(tira,3000); })();
 // ao abrir, rola até o dia de hoje (uma vez por abertura)
 setTimeout(()=>{ const el=document.querySelector('.day.today'); if(!el) return;
   const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector('.top')?.offsetHeight||0)-10;
