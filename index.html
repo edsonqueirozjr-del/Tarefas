@@ -489,6 +489,14 @@
   .recbar .rcancel{background:#fff;color:#8E2A2A;border:1px solid #F0BDB9}
   .recbar .rok{background:#D93A34;color:#fff}
   .recbar .rpause{background:#fff;color:#8E2A2A;border:1px solid #F0BDB9}
+  .recbar .rplay{display:none;background:var(--lilas);color:#fff}
+  .recbar.pronto{background:#F6F1FD;border-top-color:var(--lilas-line);color:var(--lilas-ink)}
+  .recbar.pronto .rdot{background:var(--lilas);animation:none}
+  .recbar.pronto .rpause{display:none}
+  .recbar.pronto .rplay{display:inline-flex}
+  .recbar.pronto .rcancel{color:var(--lilas-ink);border-color:var(--lilas-line)}
+  .recbar.pronto .rnum{font-size:16px}
+  body .chatin #chatSend.pronto{animation:recpulse 1.6s ease-in-out infinite}
   .recbar.pausado{background:#F6F1FD;border-top-color:var(--lilas-line);color:var(--lilas-ink)}
   .recbar.pausado .rdot{background:var(--lilas);animation:none}
   .recbar.pausado .rlbl::after{content:" (pausado)";font-weight:700;opacity:.8}
@@ -1547,20 +1555,29 @@ function enviarSom(i){
 }
 function audPanel(on){ const p=document.getElementById('audPanel'); if(!p) return; const abre=on===undefined?!p.classList.contains('on'):!!on; p.classList.toggle('on',abre); if(abre){ const pk=document.getElementById('picker'); if(pk) pk.classList.remove('on'); scrollMsgs(); } }
 const RECMAX=10;
-let REC=null, recChunks=[], recT0=0, recTimer=null, AUDPLAY=null, recPausedAt=0, recPausedTotal=0;
+let REC=null, recChunks=[], recT0=0, recTimer=null, AUDPLAY=null, recPausedAt=0, recPausedTotal=0, RECDONE=null, recPrev=null;
 // tempo realmente gravado, descontando as pausas
 function recElapsed(){ return (Date.now()-recT0-recPausedTotal-(recPausedAt?Date.now()-recPausedAt:0))/1000; }
 function fmtDur(s){ s=Math.max(0,Math.round(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function micOk(){ return !!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder); }
 function updSendBtn(){ const b=document.getElementById('chatSend'), i=document.getElementById('chatTxt'); if(!b||!i) return;
-  const has=i.value.trim().length>0; b.classList.toggle('rec',!!REC); b.classList.toggle('mic',!REC&&!has);
-  b.textContent=REC?'⏹':(has?'➤':'🎤'); b.setAttribute('aria-label',REC?'Parar gravação':(has?'Enviar':'Gravar áudio')); }
-function recBar(on){
-  const b=document.getElementById('recBar'); if(b){ b.classList.toggle('on',on); b.classList.remove('fim'); }
-  const t=document.getElementById('recTime'); if(t&&on) t.textContent=RECMAX;
+  const has=i.value.trim().length>0; b.classList.toggle('rec',!!REC); b.classList.toggle('pronto',!REC&&!!RECDONE); b.classList.toggle('mic',!REC&&!RECDONE&&!has);
+  b.textContent=REC?'⏹':((RECDONE||has)?'➤':'🎤');
+  b.setAttribute('aria-label',REC?'Parar gravação':(RECDONE?'Enviar áudio':(has?'Enviar':'Gravar áudio'))); }
+function recBar(mode){ // false | 'rec' | 'pronto'
+  const b=document.getElementById('recBar'); if(b){ b.classList.toggle('on',!!mode); b.classList.toggle('pronto',mode==='pronto'); b.classList.remove('fim','pausado'); }
+  const lb=document.getElementById('recLbl'), t=document.getElementById('recTime'), sg=document.getElementById('recSeg');
+  if(mode==='rec'){ if(lb) lb.textContent='Gravando…'; if(t) t.textContent=RECMAX; if(sg) sg.textContent='s'; }
+  if(mode==='pronto'){ if(lb) lb.textContent='Áudio pronto'; if(t) t.textContent=fmtDur(RECDONE?RECDONE.dur:0); if(sg) sg.textContent=''; }
   const pb=document.getElementById('recPause'); if(pb){ pb.textContent='⏸ Pausar'; pb.setAttribute('aria-label','Pausar gravação'); }
   updSendBtn();
 }
+function descartaRec(){ if(REC){ stopRec(true); return; } if(recPrev){ try{recPrev.pause();}catch(e){} recPrev=null; } if(RECDONE){ RECDONE=null; recBar(false); toast('Áudio descartado'); } }
+function ouvirRec(){ if(!RECDONE) return; const pb=document.getElementById('recPlay');
+  if(recPrev&&!recPrev.paused){ recPrev.pause(); recPrev=null; if(pb) pb.textContent='▶ Ouvir'; return; }
+  const a=new Audio(URL.createObjectURL(RECDONE.blob)); recPrev=a; if(pb) pb.textContent='⏸ Parar';
+  a.onended=a.onerror=()=>{ recPrev=null; if(pb) pb.textContent='▶ Ouvir'; }; a.play().catch(()=>{ recPrev=null; if(pb) pb.textContent='▶ Ouvir'; }); }
+function enviarRec(){ if(!RECDONE) return; const d=RECDONE; RECDONE=null; if(recPrev){ try{recPrev.pause();}catch(e){} recPrev=null; } recBar(false); sendAudio(d.blob,d.dur); }
 async function startRec(){
   if(REC) return;
   if(!micOk()){ toast('Este aparelho não deixa gravar áudio'); return; }
@@ -1573,26 +1590,26 @@ async function startRec(){
   catch(e){ stream.getTracks().forEach(t=>t.stop()); toast('Não consegui abrir o microfone'); return; }
   recChunks=[]; REC._cancel=false;
   REC.ondataavailable=e=>{ if(e.data&&e.data.size) recChunks.push(e.data); };
-  REC.onstop=()=>{ stream.getTracks().forEach(t=>t.stop()); clearInterval(recTimer); recBar(false);
+  REC.onstop=()=>{ stream.getTracks().forEach(t=>t.stop()); clearInterval(recTimer);
     const dur=Math.min(RECMAX,recElapsed()), cancelou=REC&&REC._cancel; REC=null; recPausedAt=0; recPausedTotal=0;
-    if(cancelou){ toast('Gravação descartada'); return; }
-    if(!recChunks.length){ toast('Não gravou nada'); return; }
-    if(dur<1){ toast('Muito curtinho — segura mais um pouco'); return; }
-    sendAudio(new Blob(recChunks,{type:recChunks[0].type||mime||'audio/webm'}),dur); };
-  REC.start(); recT0=Date.now(); recPausedAt=0; recPausedTotal=0; recBar(true); vibrate(20);
+    if(cancelou){ recBar(false); toast('Gravação descartada'); return; }
+    if(!recChunks.length){ recBar(false); toast('Não gravou nada'); return; }
+    if(dur<1){ recBar(false); toast('Muito curtinho — segura mais um pouco'); return; }
+    RECDONE={blob:new Blob(recChunks,{type:recChunks[0].type||mime||'audio/webm'}),dur}; recBar('pronto'); vibrate(15); };
+  RECDONE=null; REC.start(); recT0=Date.now(); recPausedAt=0; recPausedTotal=0; recBar('rec'); vibrate(20);
   recTimer=setInterval(()=>{
     const resta=Math.max(0,RECMAX-recElapsed());
     const t=document.getElementById('recTime'); if(t) t.textContent=Math.ceil(resta);
     const b=document.getElementById('recBar'); if(b) b.classList.toggle('fim',resta<=3);
     const a=document.getElementById('recArc'); if(a) a.style.setProperty('--p',(resta/RECMAX*100)+'%');
-    if(resta<=0){ toast('10 segundos — enviando'); stopRec(false); } },100);
+    if(resta<=0){ toast('10 segundos — pronto para enviar'); stopRec(false); } },100);
 }
 function togglePauseRec(){
   if(!REC) return; const b=document.getElementById('recBar'), pb=document.getElementById('recPause');
   if(REC.state==='recording'){ try{REC.pause();}catch(e){return;} recPausedAt=Date.now(); if(b) b.classList.add('pausado'); if(pb){ pb.textContent='▶ Continuar'; pb.setAttribute('aria-label','Continuar gravação'); } vibrate(10); }
   else if(REC.state==='paused'){ try{REC.resume();}catch(e){return;} recPausedTotal+=Date.now()-recPausedAt; recPausedAt=0; if(b) b.classList.remove('pausado'); if(pb){ pb.textContent='⏸ Pausar'; pb.setAttribute('aria-label','Pausar gravação'); } vibrate(10); }
 }
-function stopRec(cancelar){ if(!REC) return; REC._cancel=!!cancelar; try{REC.stop();}catch(e){ REC=null; clearInterval(recTimer); recBar(false); } }
+function stopRec(cancelar){ if(!REC) return; if(REC.state==='paused'&&!cancelar){ try{REC.resume();}catch(e){} recPausedTotal+=Date.now()-recPausedAt; recPausedAt=0; } REC._cancel=!!cancelar; try{REC.stop();}catch(e){ REC=null; clearInterval(recTimer); recBar(false); } }
 function sendAudio(blob,dur){
   if(!famRef||!USER||!blob) return;
   if(blob.size>3*1024*1024){ toast('Áudio muito grande'); return; }
@@ -1796,7 +1813,7 @@ function openChat(){
     </div>
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
-    <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg">s</span><button class="rcancel" id="recCancel">Descartar</button><button class="rpause" id="recPause" aria-label="Pausar gravação">⏸ Pausar</button><button class="rok" id="recSend">Enviar ➤</button></div>
+    <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel">Descartar</button><button class="rpause" id="recPause" aria-label="Pausar gravação">⏸ Pausar</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado">▶ Ouvir</button></div>
     <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">😊</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button><input id="chatTxt" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
     </div>`);
   applyPref(); markRead(); scrollMsgs(); bindMsgs(); editingKey=null; replyTo=null;
@@ -1816,9 +1833,9 @@ function openChat(){
   sheet.querySelectorAll('[data-ap-play]').forEach(b=>b.addEventListener('click',()=>ouvirSom(+b.dataset.apPlay)));
   sheet.querySelectorAll('[data-ap-send]').forEach(b=>b.addEventListener('click',()=>{ enviarSom(+b.dataset.apSend); audPanel(false); }));
   if('speechSynthesis' in window) speechSynthesis.getVoices();
-  document.getElementById('recCancel').addEventListener('click',()=>stopRec(true));
+  document.getElementById('recCancel').addEventListener('click',descartaRec);
   document.getElementById('recPause').addEventListener('click',togglePauseRec);
-  document.getElementById('recSend').addEventListener('click',()=>stopRec(false));
+  document.getElementById('recPlay').addEventListener('click',ouvirRec);
   renderTyping();
   const inp=document.getElementById('chatTxt');
   const cancelEdit=()=>{ if(editingKey) inp.value=''; editingKey=null; replyTo=null; document.getElementById('editbar').classList.remove('on'); updSendBtn(); };
@@ -1829,7 +1846,7 @@ function openChat(){
     famRef.child('chat').push(msg); inp.value=''; replyTo=null; document.getElementById('editbar').classList.remove('on'); inp.focus(); vibrate(15); SFX.send(); setTyping(false); updSendBtn(); };
   inp.addEventListener('input',()=>setTyping(inp.value.trim().length>0));
   inp.addEventListener('blur',()=>setTyping(false));
-  document.getElementById('chatSend').addEventListener('click',()=>{ if(REC){ stopRec(false); return; } if(inp.value.trim()) send(); else audPanel(); });
+  document.getElementById('chatSend').addEventListener('click',()=>{ if(REC){ stopRec(false); return; } if(RECDONE){ enviarRec(); return; } if(inp.value.trim()) send(); else audPanel(); });
   inp.addEventListener('input',updSendBtn); updSendBtn();
   inp.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
   const picker=document.getElementById('picker');
@@ -2156,7 +2173,7 @@ let scrollY0=0;
 function show(html){sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
   if(!veil.classList.contains('on')){scrollY0=window.scrollY;document.body.classList.add('locked');document.body.style.top=(-scrollY0)+'px';}
   veil.classList.add('on');sheet.scrollTop=0;sheet.querySelector('.x')?.addEventListener('click',hide);}
-function hide(){closePop();setTyping(false);if(REC)stopRec(true);veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
+function hide(){closePop();setTyping(false);if(REC)stopRec(true);if(RECDONE){RECDONE=null;}if(recPrev){try{recPrev.pause();}catch(e){}recPrev=null;}veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
 // arrastar para baixo fecha (só começa depois de 14px de arrasto vertical para baixo)
 let ty=0,tx=0,dy=0,armed=false,dragging=false,t0=0;
 sheet.addEventListener('touchstart',e=>{armed=sheet.scrollTop<=0 && !e.target.closest('.nodrag');dragging=false;dy=0;ty=e.touches[0].clientY;tx=e.touches[0].clientX;t0=Date.now();},{passive:true});
@@ -2207,7 +2224,7 @@ function openReagir(id){
 function openTaskAudio(id){
   if(!isResponsavel()) return; const t=findTask(id); if(!t) return; const mine=(t.reacts&&USER)?t.reacts[USER.id]:null;
   show(`<h2>🔊 Um áudio para a Maria <button class="x">✕</button></h2>
-    <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))} <br><small>Toca ▶ para ouvir antes, ✓ para mandar.</small></p>
+    <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div class="alist">${FX_REA.map(x=>`<div class="apitem ${mine&&mine.a===x.fx?'on':''}"><span class="apn">${x.ico} ${x.nome}</span><button data-fxp="${x.fx}" aria-label="Ouvir">▶</button><button data-fxs="${x.fx}" data-nome="${x.nome}" class="go" aria-label="Mandar">✓</button></div>`).join('')}</div>
     ${mine&&mine.a?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu áudio</button>':''}`);
   sheet.querySelectorAll('[data-fxp]').forEach(b=>b.addEventListener('click',()=>{ playFx(b.dataset.fxp); vibrate(10); }));
@@ -2596,10 +2613,10 @@ function hourlyReminder(){ if(!USER||USER.papel!=='aluna') return; const h=new D
 function startReminders(){ clearInterval(notifTimer); askNotif(); if(!USER||USER.papel!=='aluna') return; askNotif().then(ok=>{ if(!ok) return; hourlyReminder(); notifTimer=setInterval(hourlyReminder,60*1000); }); }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyReminder(); });
 render();
-// abertura com a bailarina: some depois de 3 s ou no primeiro toque
+// abertura com a bailarina: fica 6 s dançando (toque não interrompe) e some sozinha
 (()=>{ const sp=document.getElementById('splash'); if(!sp) return;
   const tira=()=>{ sp.classList.add('off'); setTimeout(()=>sp.remove(),700); };
-  sp.addEventListener('click',tira,{once:true}); setTimeout(tira,3000); })();
+  setTimeout(tira,6000); })();
 // ao abrir, rola até o dia de hoje (uma vez por abertura)
 setTimeout(()=>{ const el=document.querySelector('.day.today'); if(!el) return;
   const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector('.top')?.offsetHeight||0)-10;
