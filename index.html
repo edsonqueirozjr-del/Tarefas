@@ -412,14 +412,15 @@
   .msgs.bg-noite .daygrp>summary{background:#4A4770;box-shadow:0 0 0 4px #26243A}
   .msgs>*{flex:none}
   .msgs::before{content:"";margin-top:auto}
-  .daygrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 8px;background:rgba(38,36,58,.08);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:900;color:var(--ink);width:fit-content;max-width:100%}
+  .daygrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 8px;background:#E9E5F2;border-radius:999px;padding:5px 14px;font-size:13px;font-weight:900;color:var(--ink);width:fit-content;max-width:100%}
   .daygrp>summary::-webkit-details-marker{display:none}
   .daygrp>summary .arw{font-size:10px;opacity:.7;transition:transform .2s}
   .daygrp[open]>summary .arw{transform:rotate(180deg)}
   .daygrp .inner{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
   .chatsheet .msgs>.msg{margin-bottom:10px}
   .daysep{text-align:center;font-size:13px;font-weight:900;color:var(--ink);background:rgba(38,36,58,.08);border-radius:999px;padding:4px 14px;margin:2px auto 2px;width:fit-content}
-  .msgs.bg-noite .daygrp>summary,.msgs.bg-noite .daysep{background:rgba(255,255,255,.16);color:#fff}
+  .msgs.bg-noite .daygrp>summary{background:#4A4770;color:#fff}
+  .msgs.bg-noite .daysep{background:rgba(255,255,255,.16);color:#fff}
   .msg .b .q{display:block;border-left:3px solid var(--acc);background:rgba(0,0,0,.06);border-radius:8px;padding:4px 8px;margin-bottom:6px;font-size:13px;line-height:1.25;color:var(--ink);cursor:pointer}
   .msg.me .b .q{background:rgba(255,255,255,.22);border-left-color:#fff;color:#fff}
   .msg .b .q b{display:block;font-size:11px;margin:0;color:inherit;opacity:.85}
@@ -576,6 +577,12 @@
   body .chatsheet .chatin input:focus,body .chatsheet .chatin textarea:focus{border-color:var(--c2,#8E5BE0);box-shadow:0 0 0 3px color-mix(in srgb,var(--c2,#8E5BE0) 14%,transparent)}
   body .chatsheet .chatin button{width:44px;height:44px;box-shadow:none}
   body .chatsheet .chatin .emo,body .chatsheet .chatin .clip,body .chatsheet .chatin .mic{border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 16%,#fff);background:#fff;color:var(--ink)}
+  /* Campo e acoes compartilham uma unica barra; microfone fica externo. */
+  .chatin .chatcompose{display:flex;flex:1;min-width:0;align-items:flex-end;gap:0;padding:0 3px 0 0;border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 22%,#fff);border-radius:24px;background:#fff}
+  .chatin .chatcompose:focus-within{border-color:var(--c2,#8E5BE0);box-shadow:0 0 0 3px color-mix(in srgb,var(--c2,#8E5BE0) 14%,transparent)}
+  body .chatsheet .chatin .chatcompose textarea{border:0;background:transparent;border-radius:24px;box-shadow:none;min-height:44px;padding:11px 4px 11px 14px}
+  body .chatsheet .chatin .chatcompose textarea:focus{border:0;box-shadow:none}
+  body .chatsheet .chatin .chatcompose button{border:0;background:transparent;box-shadow:none;align-self:flex-end;display:flex;align-items:center;justify-content:center;padding:0}
   body .chatsheet .chatin #chatSend{background:linear-gradient(135deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--c2,#8E5BE0) 24%,transparent)}
   .chatsheet button:focus-visible,.chatsheet summary:focus-visible,.chatsheet .cfbar input:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
   @media(hover:hover){body .chatsheet .chat h2 button:hover{background:rgba(255,255,255,.3)}.chatsheet .chatin button:hover{transform:translateY(-1px)}}
@@ -1918,7 +1925,7 @@ function openChat(){
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
     <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel" aria-label="Descartar" title="Descartar">🗑</button><button class="rpause" id="recPause" aria-label="Pausar gravação" title="Pausar">⏸</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado" title="Ouvir">▶</button></div>
-    <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">🐸</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button><textarea id="chatTxt" rows="1" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
+    <div class="chatin"><div class="chatcompose"><textarea id="chatTxt" rows="1" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button class="emo" id="emoBtn" aria-label="Emojis">🐸</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button></div><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
     </div>`);
   applyPref(); markRead(); scrollMsgs(); bindMsgs(); editingKey=null; replyTo=null;
   document.getElementById('chatLook').addEventListener('click',openChatLook);
