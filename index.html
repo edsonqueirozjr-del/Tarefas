@@ -67,7 +67,7 @@
   /* importantes */
   .imp{background:#fff;border:3px solid var(--gold);border-radius:22px;margin-bottom:18px;--c:var(--gold);overflow:hidden}
   .imp summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--gold);color:#fff}
-  .imp summary .n{font-size:24px;font-weight:900;line-height:1}
+  .imp summary .n{font-size:23px;font-weight:900;line-height:1}
   .imp summary::-webkit-details-marker{display:none}
   .imp summary .cnt{margin-left:auto;background:#fff;color:var(--gold);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:900;white-space:nowrap}
   .imp summary .arrow{font-size:14px;opacity:.85;transition:transform .2s}
@@ -87,7 +87,7 @@
   .day summary{list-style:none;cursor:pointer;background:var(--c);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
   .day summary::-webkit-details-marker{display:none}
   .dl{display:flex;align-items:baseline;gap:8px;flex:none}
-  .dl .n{font-size:24px;font-weight:900;line-height:1}
+  .dl .n{font-size:23px;font-weight:900;line-height:1}
   .dl .d{opacity:.9;font-size:15px}
   .tags{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
   .tag{background:#fff;color:var(--c);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:900;white-space:nowrap;line-height:1.2}
@@ -301,13 +301,13 @@
   .msg .av img{width:100%;height:100%;object-fit:cover}
   .msg{--uc:var(--sex)}
   .msg:not(.me) .b{background:color-mix(in srgb,var(--uc) 14%,#fff);border-bottom-left-radius:6px}
-  .msg:not(.me) .b>b{color:var(--uc)}
+  .msg:not(.me) .b .hd b{color:var(--uc)}
   .msg.me .b{background:var(--uc);border-bottom-right-radius:6px}
   .msg.cont:not(.me) .b{border-top-left-radius:8px}
   .msg.cont.me .b{border-top-right-radius:8px}
   .msg.cont{margin-top:-4px}
   .msg.cont .av{visibility:hidden;height:0}
-  .msg.cont .b>b{display:none}
+  .msg.cont .b .hd b{display:none}
   .msgs.bg-lilas{background:#F7F5FC}
   .msgs.bg-claro{background:#fff}
   .msgs.bg-verde{background:#E6F6EE}
@@ -362,8 +362,11 @@
   .msg .b{background:#fff;border-radius:20px;padding:8px 13px 6px;font-size:15px;line-height:1.35;box-shadow:0 2px 6px rgba(38,36,58,.10);min-width:64px}
   .msg.me .b{color:#fff}
   .msg .b small{display:block;font-size:10px;opacity:.7;margin-top:2px;text-align:right}
-  .msg .b b{display:block;font-size:11.5px;color:var(--soft);margin-bottom:1px;font-weight:900}
-  .msg.me .b b{display:none}
+  .msg .b .hd{display:flex;align-items:baseline;gap:6px;margin-bottom:2px;min-width:0}
+  .msg .b .hd b{display:inline;font-size:11.5px;color:var(--soft);margin:0;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .msg .b .hd small{display:inline;margin:0;text-align:left;white-space:nowrap;flex:none}
+  .msg.me .b .hd b{display:none}
+  .msg.me .b .hd small,.msg.cont .b .hd small{margin-left:auto}
   .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 35%,#fff)}
   .daygrp{border:0;margin:0;flex:none}
   .msgs>*{flex:none}
@@ -386,7 +389,7 @@
   @keyframes flashb{0%,60%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:none}}
   .fam .p small{font-size:12px;font-weight:700;color:var(--soft);line-height:1}
   .msg .b.emo{font-size:30px !important;line-height:1.15;padding:6px 12px 4px}
-  .msg.me .b>b{display:none !important}
+  .msg.me .b .hd b{display:none !important}
   .msg.me .b small{color:rgba(255,255,255,.85);opacity:1}
   .chatin>button{flex:none}
   .chatin input{flex:1;min-width:0;border:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 30%,#fff);border-radius:999px;padding:11px 16px;font:inherit;font-size:16px;background:#fff}
@@ -466,8 +469,8 @@
     .chip{font-size:15px;padding:8px 16px}
     .filters{overflow:visible}
     .filters .chip{flex:1;text-align:center}
-    .dl .n{font-size:28px} .dl .d{font-size:17px} .tag{font-size:14px;padding:5px 12px}
-    .imp summary .n{font-size:28px}
+    .dl .n{font-size:27px} .dl .d{font-size:17px} .tag{font-size:14px;padding:5px 12px}
+    .imp summary .n{font-size:27px}
     .aulas span{font-size:14px;padding:5px 12px}
     .body{padding:14px 16px 16px}
     .box h3{font-size:17px}
@@ -1214,7 +1217,7 @@ function msgHtml(m,i,arr){
   const tick=me?`<span class="tick ${seenAll?'seen':''}" title="${seenAll?'Visto por todos':seenAny?'Visto por alguém':'Enviada'}">${seenAny?'✓✓':'✓'}</span>`:'';
   const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${u.cor||'#8A8A9A'}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><b>${esc(u.nome)}</b>${q}${att}${chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')}<small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></div>${reactsHtml(m)}</div></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${u.cor||'#8A8A9A'}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><b>${esc(u.nome)}</b><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></span>${q}${att}${chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')}</div>${reactsHtml(m)}</div></div>`;
 }
 function chatHtml(){
   if(chatQ.length>=2){ const ql=chatQ.toLowerCase();
@@ -1225,7 +1228,7 @@ function chatHtml(){
   if(!CHAT.length) return '<div class="empty">Ainda não tem mensagens.<br>Manda um oi! 👋</div>';
   const groups=[]; CHAT.forEach(m=>{ const d=iso(new Date(m.t||0)); const g=groups[groups.length-1]; if(g&&g.d===d) g.msgs.push(m); else groups.push({d,msgs:[m]}); });
   return groups.map(g=>{ const inner=g.msgs.map((m,i,arr)=>msgHtml(m,i,arr)).join('');
-    if(g.d===TODAY) return `<details class="daygrp hoje" data-day="${g.d}"${chatOpenDays[g.d]===false?'':' open'}><summary>Hoje</summary><div class="inner">${inner}</div></details>`;
+    if(g.d===TODAY) return `<details class="daygrp hoje" data-day="${g.d}"${chatOpenDays[g.d]===false?'':' open'}><summary>Hoje<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
     const open=chatOpenDays[g.d]?' open':'';
     return `<details class="daygrp" data-day="${g.d}"${open}><summary>${dayLabel(g.d)} · ${g.msgs.length} ${g.msgs.length>1?'mensagens':'mensagem'}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`; }).join('');
 }
@@ -1311,8 +1314,8 @@ function openChatLook(){
   const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
   show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px;padding:0"><div class="msgs" id="lookMsgs" style="min-height:0;max-height:none;padding:10px 8px;overflow:hidden">
-      <div class="msg" style="--uc:#E0479E"><span class="av">${avatarHtml(USERS[0])}</span><div><div class="b"><b>Maria</b>Oi! Assim fica o balão dela 😊<small>20:41</small></div></div></div>
-      <div class="msg me" style="--uc:${USER.cor||'#2F8FE0'}"><span class="av">${avatarHtml(USER)}</span><div><div class="b">E assim fica o seu<small>20:42 <span class="tick seen">✓✓</span></small></div></div></div>
+      <div class="msg" style="--uc:#E0479E"><span class="av">${avatarHtml(USERS[0])}</span><div><div class="b"><span class="hd"><b>Maria</b><small>20:41</small></span>Oi! Assim fica o balão dela 😊</div></div></div>
+      <div class="msg me" style="--uc:${USER.cor||'#2F8FE0'}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><small>20:42 <span class="tick seen">✓✓</span></small></span>E assim fica o seu</div></div></div>
     </div></div>
     <p class="looklbl">🎨 Plano de fundo</p>
     <div class="sw2">${BGS.map(([k,c])=>`<button data-bg="${k}" class="${CHATPREF.bg===k?'on':''}" style="background:${c};${c.startsWith('radial')?'background-size:14px 14px;':''}" title="${k}"></button>`).join('')}
