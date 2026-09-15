@@ -26,7 +26,7 @@
   body{user-select:none;-webkit-user-select:none}
   input,textarea{user-select:text;-webkit-user-select:text}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:Nunito,"Segoe UI",system-ui,sans-serif;font-weight:600;font-size:17px;line-height:1.4}
-  .wrap{max-width:560px;margin:0 auto;padding:20px 16px 120px}
+  .wrap{max-width:560px;margin:0 auto;padding:20px 16px 72px}
   h1{font-size:27px;font-weight:900;margin:0 0 6px;line-height:1.1;text-align:center}
   button{font-family:inherit;cursor:pointer}
   .prog{margin:4px 0 14px}
@@ -146,7 +146,7 @@
   .st.ok{background:#DDF3E8;color:#1E7A55}
   .st{display:inline-block;font-size:12px;font-weight:900;background:var(--amber);color:#4a3800;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
   .st.mv{background:#DCD3FF;color:#3B2A8F}
-  .tg{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+  .tg{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:4px}
   .tg .st,.tg .dchip{margin:0;vertical-align:0}
   .st.sj{background:#F2F0FA;color:var(--ink)}
   .st.no{background:#FFD9D6;color:#B3261E}
@@ -162,9 +162,8 @@
   .trea .r{display:inline-flex;align-items:center;gap:4px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:2px 9px;font-size:13px;font-weight:800;box-shadow:0 1px 3px rgba(38,36,58,.10)}
   .trea .r b{font-size:11px;color:var(--soft);font-weight:800}
   .trea .r.new{animation:pop .5s cubic-bezier(.36,1.6,.5,1)}
-  .trea button.ra{cursor:pointer;font:inherit;padding-left:4px;gap:4px}
+  .trea button.ra{cursor:pointer;font:inherit;padding-left:4px;gap:4px;margin:0;line-height:inherit;vertical-align:middle}
   .trea .ra b{font-size:11px;color:var(--soft);font-weight:800}
-  .tg .trea .ra{padding-left:3px}
   .trea .ra .pl{width:18px;height:18px;border-radius:50%;background:var(--lilas);position:relative;flex:none}
   .trea .ra .pl::after{content:"";position:absolute;left:55%;top:50%;transform:translate(-50%,-50%);border-left:6px solid #fff;border-top:4px solid transparent;border-bottom:4px solid transparent}
   .trea .ra.tocando .pl{animation:recpulse .5s ease-in-out 3}
@@ -567,7 +566,7 @@
   /* ===== Tablet (Galaxy Tab S9 FE) ===== */
   @media (min-width:700px){
     body{font-size:18px}
-    .wrap{max-width:840px;padding:28px 28px 130px}
+    .wrap{max-width:840px;padding:28px 28px 84px}
     h1{font-size:35px;margin-bottom:10px}
     .prog .row{font-size:17px} .prog .row b{font-size:20px} .prog .bar{height:26px} .prog .pct{font-size:26px}
     .top{margin:-28px -28px 26px;padding:40px 28px 8px}
@@ -690,7 +689,11 @@
   body .aulas{gap:5px;margin-bottom:10px}
   body .aulas span{background:#F6F6F9;color:var(--ink);border:1px solid #EBEAF0;border-radius:9px;padding:3px 7px;font-size:13px;font-weight:600;line-height:1.35}
   .tg .trea{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0;vertical-align:middle}
-  .tg .trea .r{border-width:1px;padding:2px 7px;font-size:12px;line-height:1.2;box-shadow:none}
+  .tg .trea .r{border-width:1px;padding:1px 8px;font-size:12px;font-weight:900;line-height:1.4;box-shadow:none;color:var(--ink)}
+  .tg .trea .r b{font-size:12px;font-weight:900;color:var(--ink)}
+  .tg .trea .ra{padding-left:3px}
+  .tg .trea .ra .pl{width:14px;height:14px}
+  .tg .trea .ra .pl::after{border-left-width:5px;border-top-width:3.5px;border-bottom-width:3.5px}
   body .fabs .fab.chatfab{background:var(--fab);color:#fff;border:0;box-shadow:0 8px 20px rgba(38,36,58,.28)}
   .notice-date{flex:none;align-self:center;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px;color:var(--ink);font-size:18px}
   .notice-date:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
