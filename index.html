@@ -122,6 +122,14 @@
   @keyframes ring{from{transform:scale(1);opacity:.8}to{transform:scale(1.9);opacity:0}}
   @keyframes pulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.7);opacity:0}}
   .t{flex:1;position:relative;min-width:0}
+  .star{flex:0 0 auto;align-self:center;border:0;background:transparent;padding:2px 2px;margin:0;font-size:21px;line-height:1;color:#B9B4C8;opacity:.4;filter:grayscale(1);transition:transform .18s ease,opacity .18s ease,filter .18s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer}
+  .star.on{opacity:1;filter:none;text-shadow:0 2px 7px rgba(233,162,39,.5)}
+  .star:active{transform:scale(.86)}
+  .star:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:10px}
+  .star.pop{animation:starpop .45s ease}
+  @keyframes starpop{0%{transform:scale(1) rotate(0)}35%{transform:scale(1.45) rotate(14deg)}65%{transform:scale(.9) rotate(-6deg)}100%{transform:scale(1) rotate(0)}}
+  @media(prefers-reduced-motion:reduce){.star.pop{animation:none}}
+  .task.off .star{opacity:.25}
   .task.done .t{opacity:.72;transition:opacity .35s}
   .st.ok{background:#DDF3E8;color:#1E7A55}
   .st{display:inline-block;font-size:11px;font-weight:900;background:var(--amber);color:#4a3800;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
@@ -630,11 +638,20 @@
 
   /* Carinhos no cabeçalho: apenas o coração, com área de toque confortável. */
   .top-title{position:relative;min-height:48px}
-  .top-title:has(.reafab.on) h1{padding-left:48px;padding-right:48px}
-  body .top-title .reafab{position:absolute;top:0;right:0;width:44px;height:44px;background:transparent;border:0;border-radius:12px;box-shadow:none;font-size:32px;animation:none;z-index:1}
+  .top-title:has(.topacts .fab.on) h1{padding-left:80px;padding-right:80px}
+  .top-title.acts h1{padding-left:80px;padding-right:80px}
+  .topacts{position:absolute;top:0;right:0;display:flex;align-items:center;gap:2px;z-index:2}
+  body .topacts .fab{position:relative;width:38px;height:38px;background:transparent;border:0;border-radius:12px;box-shadow:none;font-size:26px;animation:none;color:inherit}
+  body .topacts .chatfab{display:none}
+  body .topacts .chatfab.on{display:flex}
+  .topacts .chat-icon{display:block;line-height:1;transform-origin:center}
+  .topacts .chatfab.pulse .chat-icon{animation:chat-beat 2.4s ease-in-out infinite}
+  @keyframes chat-beat{0%,40%,100%{transform:scale(1)}12%{transform:scale(1.14) rotate(-6deg)}26%{transform:scale(1)}}
+  @media(prefers-reduced-motion:reduce){.topacts .chatfab.pulse .chat-icon{animation:none}}
   .top-title .heart-icon{display:block;line-height:1;transform-origin:center;animation:heart-beat 2s ease-in-out infinite}
-  .top-title .reafab:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-  .top-title .reafab .badge{top:-2px;right:-3px;min-width:18px;height:18px;font-size:10px;padding:0 4px}
+  .topacts .fab:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .topacts .fab .badge{top:-3px;right:-5px;min-width:18px;height:18px;font-size:10px;padding:0 4px}
+  @media(max-width:430px){.top-title h1{font-size:23px}}
   @keyframes heart-beat{0%,38%,100%{transform:scale(1)}12%{transform:scale(1.13)}22%{transform:scale(1)}30%{transform:scale(1.08)}}
   @media(prefers-reduced-motion:reduce){.top-title .heart-icon{animation:none}}
   .subject-flag{display:inline-block;width:1.25em;height:.84em;vertical-align:-.08em;border-radius:2px;overflow:hidden;flex-shrink:0}
@@ -648,7 +665,10 @@
 <div class="wrap">
   <div class="top">
     <div class="top-title"><h1>Gestão de tarefas 🎒</h1>
-      <button class="fab reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="heart-icon" aria-hidden="true">💛</span><span class="badge" id="reaBadge"></span></button>
+      <div class="topacts">
+        <button class="fab chatfab" id="chatFab" aria-label="Conversa"><span class="chat-icon" aria-hidden="true">💬</span><span class="badge" id="chatBadge"></span></button>
+        <button class="fab reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="heart-icon" aria-hidden="true">💛</span><span class="badge" id="reaBadge"></span></button>
+      </div>
     </div>
     <div class="fam" id="fam"></div>
   </div>
@@ -659,7 +679,6 @@
 </div>
 
 <div class="fabs" id="fabs">
-  <button class="fab chatfab" id="chatFab" aria-label="Conversa">💬<span class="badge" id="chatBadge"></span></button>
   <button class="fab" id="fab" aria-label="Menu">☰</button>
 </div>
 <input type="file" id="fotoFile" accept="image/*" style="display:none">
@@ -675,7 +694,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='8.6';
+const APP_VERSION='8.7';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -861,31 +880,64 @@ function cloudStart(){
   clearInterval(seenTimer); seenTimer=setInterval(()=>{ if(famRef&&USER&&!document.hidden) famRef.child('perfis/'+USER.id).update({lastSeen:firebase.database.ServerValue.TIMESTAMP}); },60*1000);
   document.addEventListener('visibilitychange',()=>{ if(famRef&&USER) famRef.child('perfis/'+USER.id).update({lastSeen:firebase.database.ServerValue.TIMESTAMP}); });
   famRef.child('perfis').on('value',sn=>{ PERFIS=sn.val()||{}; try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){} renderFam(); refreshChat(); });
-  famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; const prevLen=CHAT.length; CHAT=Object.keys(v).sort().map(k=>({k,...v[k]}));
+  famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; const prevLen=CHAT.length;
+    const antes={}; CHAT.forEach(m=>antes[m.k]=m);
+    CHAT=Object.keys(v).sort().map(k=>({k,...v[k]}));
     updateChatBadge(); refreshChat();
-    const last=CHAT[CHAT.length-1]; if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && !(sheet.querySelector('.chat')&&!document.hidden)){ vibrate([30,30,30]); SFX.msg(); if(document.hidden){ notifyMsg(last); } else toast('💬 '+uname(last.by)+': '+msgPreview(last).slice(0,60)); } });
+    const chatAberto=!!sheet.querySelector('.chat')&&!document.hidden;
+    const last=CHAT[CHAT.length-1];
+    if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && !chatAberto){ vibrate([30,30,30]); SFX.msg(); notifyMsg(last); if(!document.hidden) toast('💬 '+uname(last.by)+': '+msgPreview(last).slice(0,60)); }
+    if(prevLen>0){ // mudanças na conversa: edição, apagada e reação
+      CHAT.forEach(m=>{ const a=antes[m.k]; if(!a) return;
+        if(m.by!==USER.id && (m.text||'')!==(a.text||'')){ if(!chatAberto) notifyEvt('✏️ '+uname(m.by)+' mudou uma mensagem',msgPreview(m).slice(0,80),'chated-'+m.k); if(!document.hidden&&!chatAberto) toast('✏️ '+uname(m.by)+' mudou uma mensagem'); }
+        if(m.by===USER.id){ let novo=null;
+          Object.entries(m.reacts||{}).forEach(([e,us])=>Object.keys(us||{}).forEach(u=>{ if(u!==USER.id && !((a.reacts||{})[e]||{})[u]) novo={e,u}; }));
+          if(novo){ vibrate(25); const txt=novo.e+' '+uname(novo.u)+' reagiu à sua mensagem';
+            if(!chatAberto){ notifyEvt(txt,msgPreview(m).slice(0,80),'chatrea-'+m.k); if(!document.hidden) toast(txt); } } }
+      });
+      if(CHAT.length<prevLen){ const sumiu=Object.keys(antes).filter(k=>!v[k]);
+        if(sumiu.length&&!chatAberto) notifyEvt('🗑️ Mensagem apagada','Alguém apagou uma mensagem na conversa','chatdel'); }
+    } });
   cloudRef.on('value',sn=>{
     cloudErr=''; const remote=sn.val();
     if(!remote||!remote.weeks){ cloudReady=true; cloudPush(true); return; }
     const before=(()=>{let n=0;Object.values(DB.weeks).forEach(w=>allTasks(w).forEach(t=>{n+=t.reacts?Object.keys(t.reacts).length:0;}));return n;})();
+    const primeira=!cloudReady;
     const changed=mergeRemote(remote); cloudReady=true;
+    if(!primeira) avisaMudancas(MERGE_EVT);
     if(isAluna()){ let after=0; Object.values(DB.weeks).forEach(w=>allTasks(w).forEach(t=>{after+=t.reacts?Object.keys(t.reacts).length:0;}));
-      if(after>before){ vibrate([40,40,80]); SFX.party(); toast('💛 Você recebeu um carinho! Toca no 💛'); notify('💛 Um carinho para você','Alguém reagiu a uma tarefa sua'); } updateReaFab(); }
+      if(after>before&&!primeira){ vibrate([40,40,80]); SFX.party(); toast('💛 Você recebeu um carinho! Toca no 💛'); notifyEvt('💛 Um carinho para você','Alguém reagiu a uma tarefa sua','carinho'); } updateReaFab(); }
     if(changed){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} render(); refreshReminder(); }
     cloudPush(); // envia o que só existe aqui (ex.: semana nova)
   },err=>{ cloudErr=err&&err.code||'erro'; updateSyncBadge(); toast('Sem permissão no banco. Confira as regras do Firebase.'); });
 }
+const STLBL={todo:'falta fazer',doing:'fazendo',done:'feito'};
+const STVERB={todo:'reabriu',doing:'começou',done:'concluiu'};
+const STICON={todo:'↩️',doing:'⏳',done:'✅'};
+let MERGE_EVT=[];
 function mergeRemote(remote){
-  let changed=false;
+  let changed=false; MERGE_EVT=[];
   Object.keys(remote.weeks).forEach(id=>{
     const rw=remote.weeks[id], lw=DB.weeks[id];
     if(!lw){ DB.weeks[id]=rw; changed=true; return; }
     const local={}; lw.days.forEach(d=>d.tasks.forEach(t=>local[t.id]=t));
     (rw.days||[]).forEach(d=>(d.tasks||[]).forEach(rt=>{
       const lt=local[rt.id]; if(!lt) return;
-      if(JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null)){lt.reacts=rt.reacts||null;changed=true;}
+      const ptxt=plain(lt.text||'').trim(); const curto='"'+(ptxt.length>42?ptxt.slice(0,42).trim()+'…':ptxt)+'"';
+      const ela=isAluna()?'':alunaNome()+' ';
+      if(JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null)){
+        const novos=Object.keys(rt.reacts||{}).filter(u=>!((lt.reacts||{})[u]) && (!USER||u!==USER.id));
+        if(novos.length&&!isAluna()){ const r=rt.reacts[novos[0]]; MERGE_EVT.push((r&&r.e||'💛')+' '+((r&&r.n)||'Alguém')+' deixou um carinho em '+curto); }
+        lt.reacts=rt.reacts||null;changed=true;}
       const diff = rt.status!==lt.status || JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null) || (rt.pics||0)!==(lt.pics||0) || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day || !!rt.important!==!!lt.important;
-      if(diff && (!isAluna() || (rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){ lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
+      if(diff && (!isAluna() || (rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){
+        if(rt.status!==lt.status) MERGE_EVT.push(STICON[rt.status]+' '+(ela?ela+STVERB[rt.status]+' '+curto:curto+' agora está '+STLBL[rt.status]));
+        else if((rt.note||'')!==(lt.note||'')) MERGE_EVT.push('📝 '+(rt.note?(ela?ela+'escreveu uma observação em '+curto:'Observação nova em '+curto):(ela?ela+'apagou a observação de '+curto:'Observação apagada em '+curto)));
+        else if(!!rt.off!==!!lt.off) MERGE_EVT.push(rt.off?('🚫 '+(ela?ela+'cancelou '+curto:curto+' foi cancelada')):('↩️ '+curto+' voltou a valer'));
+        else if(!!rt.important!==!!lt.important) MERGE_EVT.push('⭐ '+(rt.important?(ela?ela+'marcou como importante '+curto:curto+' virou importante'):(ela?ela+'tirou das importantes '+curto:curto+' saiu das importantes')));
+        else if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
+        else if((rt.pics||0)>(lt.pics||0)) MERGE_EVT.push('📸 Foto nova em '+curto);
+        lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
     }));
   });
   return changed;
@@ -1087,7 +1139,10 @@ function appBadge(){ // número no ícone do app (tela inicial), como o WhatsApp
   const n=unread()+((USER&&USER.papel==='aluna')?pendingTomorrow().length:0);
   try{ n>0?navigator.setAppBadge(n):navigator.clearAppBadge(); }catch(e){}
 }
-function updateChatBadge(){ const b=document.getElementById('chatBadge'); const n=unread(); b.textContent=n>9?'9+':n; b.classList.toggle('on',n>0); appBadge(); }
+function updateChatBadge(){ const b=document.getElementById('chatBadge'); const n=unread(); b.textContent=n>9?'9+':n; b.classList.toggle('on',n>0);
+  const f=document.getElementById('chatFab'); if(f){ f.classList.toggle('on',!!CLOUD_CFG); f.classList.toggle('pulse',n>0); }
+  marcaTopo(); appBadge(); }
+function marcaTopo(){ const t=document.querySelector('.top-title'); if(t) t.classList.toggle('acts',!!document.querySelector('.topacts .fab.on')); }
 function fmtSeen(t){ const d=new Date(t||0); const di=iso(d); const hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
   if(di===TODAY) return 'visto hoje '+hm; if(di===addDays(TODAY,-1)) return 'visto ontem '+hm; return 'visto '+fmt(di)+' às '+hm; }
 function fmtT(t){ const d=new Date(t||0); const hoje=iso(d)===TODAY; return (hoje?'':fmt(iso(d))+' ')+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
@@ -1192,7 +1247,6 @@ function openChatLook(){
     <div class="sw2 fonts">${FONTS.map(([k,n])=>`<button data-f="${k}" class="fnt f-${k} ${CHATPREF.font===k?'on':''}">${n}</button>`).join('')}</div>
     <p class="looklbl">🔎 Tamanho da letra</p>
     <div class="sw2 sizes">${[['p','Pequena'],['m','Média'],['g','Grande']].map(([k,n])=>`<button data-s="${k}" class="fnt ${CHATPREF.size===k?'on':''}">${n}</button>`).join('')}</div>
-    <p class="quiet" style="margin:0;font-size:13px">Essas escolhas valem só neste aparelho.</p>
     <button class="opt primary" id="lookOk" style="justify-content:center;margin-top:12px">Pronto</button>`);
   applyPref();
   const mark=(sel,attr,val)=>sheet.querySelectorAll(sel).forEach(b=>b.classList.toggle('on',b.dataset[attr]===val));
@@ -1405,7 +1459,8 @@ ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[N
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${SWLBL[NEXT_L[t.status]||'doing'][0]}</div>`: ''}
     <div class="tin">
       <div class="t"><div class="tg">${dchip}${subj}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>`<span class="r">${r.e} <b>${esc(r.n||'')}</b></span>`).join('')}</span>`:''}</div><div class="tx">${t.text}</div>
-        ${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">🚫 <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
+        ${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">🚫 <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
+      <button class="star ${t.important?'on':''}" data-star="${t.id}" aria-pressed="${t.important?'true':'false'}" aria-label="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}" title="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}">⭐</button>
     </div>
   </div>`;
 }
@@ -1484,10 +1539,35 @@ function swipeAction(id,dir,el){
   const status = dir>0 ? NEXT_R[t.status]||'done' : NEXT_L[t.status]||'doing';
   setStatus(id,status,el);
 }
+function toggleImp(id,btn){
+  const t=findTask(id); if(!t) return;
+  if(!isAluna()){ vibrate(15); toast('Só a Maria muda as tarefas 😉'); return; }
+  t.important=!t.important; t.u=Date.now(); save(); vibrate(20); SFX.pop();
+  if(btn){ btn.classList.toggle('on',t.important); btn.setAttribute('aria-pressed',t.important?'true':'false'); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); }
+  toast(t.important?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');
+  const sobe=t.important;
+  setTimeout(()=>{ render(); if(sobe) window.scrollTo({top:0,behavior:'smooth'}); },380);
+}
 function bindTasks(root=document.getElementById('app')){
   root.querySelectorAll('[data-pics]').forEach(g=>g.addEventListener('click',e=>{e.stopPropagation();openPics(g.dataset.pics);}));
   root.querySelectorAll('.task').forEach(el=>{
     const id=el.dataset.id, tin=el.querySelector('.tin');
+    // estrela: sempre visível, toca a qualquer momento para marcar ou tirar
+    const sb=el.querySelector('.star');
+    if(sb){
+      const stop=e=>e.stopPropagation();
+      sb.addEventListener('touchstart',stop,{passive:true});
+      sb.addEventListener('touchmove',stop,{passive:true});
+      sb.addEventListener('touchend',stop,{passive:true});
+      sb.addEventListener('mousedown',stop);
+      sb.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); toggleImp(id,sb); });
+    }
+    // observação: toque (ou botão direito) abre mudar e apagar; segurar continua abrindo o menu da tarefa
+    el.querySelectorAll('.note.nt').forEach(nt=>{
+      nt.addEventListener('click',e=>{ e.stopPropagation(); if(el.classList.contains('drag')||el._swiped) return; openNoteMenu(id); });
+      nt.addEventListener('contextmenu',e=>{ e.preventDefault(); e.stopPropagation(); openNoteMenu(id); });
+      nt.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); e.stopPropagation(); openNoteMenu(id); } });
+    });
     if(!isAluna()){
       el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label','Ver tarefa e opções de acompanhamento');
       el.addEventListener('click',()=>openMenu(id));
@@ -1507,7 +1587,7 @@ function bindTasks(root=document.getElementById('app')){
       if(Math.abs(dx)>=70&&!el._armed){el._armed=true;vibrate(15);} if(Math.abs(dx)<70) el._armed=false;
     },{passive:false});
     const end=()=>{cancelPress(); if(mode!=='h'){return;} el.classList.remove('drag');
-      if(Math.abs(dx)>=70){tin.style.transform='translateX('+(dx>0?'110%':'-110%')+')';setTimeout(()=>swipeAction(id,dx,el),120);}
+      if(Math.abs(dx)>=70){el._swiped=true;setTimeout(()=>{el._swiped=false;},500);tin.style.transform='translateX('+(dx>0?'110%':'-110%')+')';setTimeout(()=>swipeAction(id,dx,el),120);}
       else{tin.style.transform='';el.classList.remove('show-r','show-l');}
       mode=null;};
     el.addEventListener('touchend',end); el.addEventListener('touchcancel',end);
@@ -1546,7 +1626,7 @@ function openMenu(id){
    ${isAluna()?`<button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
    <button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
    ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`:''}
-   ${CLOUD_CFG?`<button class="opt" data-a="pics"><span class="ic">📸</span>${isAluna()?((t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'):('Ver fotos'+((t.pics||0)?' ('+t.pics+')':''))}</button>`:''}
+   ${(CLOUD_CFG&&(isAluna()||(t.pics||0)))?`<button class="opt" data-a="pics"><span class="ic">📸</span>${(t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'}</button>`:''}
    ${isAluna()?'<button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>':''}
    ${CLOUD_CFG?'<button class="opt" data-a="chat"><span class="ic">📨</span>Mandar para a conversa</button>':''}
    ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">💛</span>Deixar um carinho para a Maria</button>`:''}
@@ -1565,7 +1645,7 @@ function openMenu(id){
     if(a==='delnote'){t.note='';t.u=Date.now();save();hide();render();toast('Observação apagada');}
   }));
 }
-const TREACTS=[['🎉','Parabéns!'],['👏','Mandou bem'],['⭐','Caprichou'],['💛','Orgulho'],['💪','Força'],['🤗','Tamo junto'],['🙂','Tudo bem'],['😕','Fiquei triste'],['⏰','Não esquece']];
+const TREACTS=[['🎉','Parabéns!'],['😬','Ansioso'],['⭐','Caprichou'],['💛','Orgulho'],['💪','Força'],['🤗','Tamo junto'],['🙂','Tudo bem'],['😕','Fiquei triste'],['⏰','Não esquece']];
 function openTaskReact(id){
   if(!isResponsavel()) return;
   const t=findTask(id); if(!t) return; const mine=(t.reacts&&USER)?t.reacts[USER.id]:null;
@@ -1605,6 +1685,7 @@ function reaNew(){ return allReacts().filter(r=>(r.t||0)>reaSeen).length; }
 function updateReaFab(){ const list=allReacts(); const n=reaNew(); const show=isAluna()&&list.length>0;
   const f=document.getElementById('reaFab'); if(f){ f.classList.toggle('on',show); f.classList.toggle('pulse',n>0);
     const b=document.getElementById('reaBadge'); b.textContent=n>9?'9+':n; b.classList.toggle('on',n>0); }
+  marcaTopo();
 }
 function openReacts(){
   if(!isAluna()) return;
@@ -1676,6 +1757,21 @@ function openMove(id){ if(!isAluna()) return;
     if(!isAluna()) return; t.day=b.dataset.k; t.u=Date.now(); save(); hide(); openState[w.days.find(d=>d.k===t.day).date]=true; render(); vibrate(20); toast('Mudou para '+DAYMETA[t.day][0]);
   }));
 }
+function openNoteMenu(id){
+  const t=findTask(id); if(!t||!t.note) return;
+  vibrate(10);
+  show(`<h2>📝 Observação <button class="x">✕</button></h2>
+   <p class="quiet" style="margin:0 0 12px">${t.noteBy?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</p>
+   ${isAluna()?`<button class="opt" data-n="edit"><span class="ic">✏️</span>Mudar a observação</button>
+   <button class="opt danger" data-n="del"><span class="ic">🗑️</span>Apagar observação</button>`
+   :`<p class="quiet" style="margin:0">Só a Maria muda as tarefas 😉</p>`}`);
+  const dl=sheet.querySelector('[data-n="del"]');
+  sheet.querySelector('[data-n="edit"]')?.addEventListener('click',()=>{ hide(); setTimeout(()=>openNote(id),220); });
+  if(dl) dl.addEventListener('click',()=>{
+    if(dl.dataset.ok!=='1'){ dl.dataset.ok='1'; dl.innerHTML='<span class="ic">🗑️</span>Tem certeza? Toca de novo para apagar'; vibrate(20); return; }
+    t.note=''; t.noteBy=''; t.u=Date.now(); save(); hide(); render(); vibrate(20); toast('Observação apagada');
+  });
+}
 function openNote(id){ if(!isAluna()) return;
   const t=findTask(id);
   show(`<h2>💬 Observação <button class="x">✕</button></h2>
@@ -1722,7 +1818,7 @@ function openWeeks(){
   show(`<h2>🗂️ Semanas <button class="x">✕</button></h2>
    ${ids.map(id=>{const w=DB.weeks[id];const all=allTasks(w);const done=all.filter(t=>t.status==='done').length;const pct=all.length?Math.round(done/all.length*100):0;
      return `<button class="wk ${id===current?'cur':''}" data-id="${id}"><span>${weekIdFor(TODAY)===id?'📍 ':''}${w.label}<br><small class="quiet">${w.roteiro||''}</small></span><span class="pr">${done}/${all.length}<span class="bar"><i style="width:${pct}%"></i></span></span></button>`;}).join('')}
-   <p class="quiet" style="margin:8px 0 0">Toca em uma semana para abrir.</p>`);
+`);
   sheet.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>{current=b.dataset.id;hide();render();window.scrollTo({top:0,behavior:'smooth'});}));
 }
 function goToday(){const id=weekIdFor(TODAY);if(DB.weeks[id]){current=id;render();const el=document.querySelector('.day[data-date="'+TODAY+'"]');if(el){el.open=true;el.scrollIntoView({behavior:'smooth',block:'start'});}}else toast('Ainda não tem roteiro para esta semana');}
@@ -1776,7 +1872,7 @@ function refreshReminder(){
 document.getElementById('reaFab').addEventListener('click',openReacts);
 document.getElementById('fab').addEventListener('click',openMain);
 document.getElementById('chatFab').addEventListener('click',openChat);
-if(!CLOUD_CFG) document.getElementById('chatFab').style.display='none';
+document.getElementById('chatFab').classList.toggle('on',!!CLOUD_CFG); marcaTopo();
 setInterval(()=>{ if(!document.hidden) renderFam(); },60*1000);
 document.addEventListener('pointerdown',()=>{ if(SOUND&&!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(AC&&AC.state==='suspended') AC.resume(); },{once:false,passive:true});
 document.addEventListener('contextmenu',e=>{ if(!e.target.closest('input,textarea')) e.preventDefault(); });
@@ -1792,6 +1888,17 @@ async function askNotif(){ if(!('Notification' in window)) return false; if(Noti
   try{ const r=await Notification.requestPermission(); return r==='granted'; }catch(e){ return false; } }
 async function notify(title,body){ if(!('Notification' in window)||Notification.permission!=='granted') return;
   try{ const reg=await navigator.serviceWorker?.getRegistration(); if(reg) return reg.showNotification(title,{body,icon:'icon-192.png',badge:'icon-192.png',tag:'lembrete',renotify:true,vibrate:[80,40,80]}); new Notification(title,{body,icon:'icon-192.png'}); }catch(e){}
+}
+// Aviso de mudança: chega no aparelho de todo mundo, com o app aberto ou em segundo plano.
+async function notifyEvt(title,body,tag){ if(!('Notification' in window)||Notification.permission!=='granted') return;
+  try{ const reg=await navigator.serviceWorker?.getRegistration(); const opt={body,icon:'icon-192.png',badge:'icon-192.png',tag:tag||('evt-'+Date.now()),renotify:true,vibrate:[50,30,50]};
+    if(reg) return reg.showNotification(title,opt); new Notification(title,opt); }catch(e){} }
+function alunaNome(){ const u=USERS.find(x=>x.papel==='aluna'); return u?u.nome:'A Maria'; }
+function avisaMudancas(list){
+  if(!list||!list.length) return;
+  if(list.length===1){ notifyEvt('📋 Novidade nas tarefas',list[0],'tarefa-1'); if(!document.hidden) toast(list[0]); return; }
+  notifyEvt('📋 '+list.length+' novidades nas tarefas',list.slice(0,4).join(' · ')+(list.length>4?' e mais '+(list.length-4):''),'tarefa-n');
+  if(!document.hidden) toast('📋 '+list.length+' novidades nas tarefas');
 }
 async function notifyMsg(m){ if(!('Notification' in window)||Notification.permission!=='granted') return;
   try{ const reg=await navigator.serviceWorker?.getRegistration(); const opt={body:msgPreview(m),icon:'icon-192.png',badge:'icon-192.png',tag:'chat-'+m.k,vibrate:[60,40,60]};
