@@ -211,7 +211,12 @@
   .badge.on{display:flex}
   .sheet.chatsheet{display:flex;flex-direction:column;height:min(94dvh,780px);max-height:none;overflow:hidden;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
   .chatsheet .grip{margin:4px auto 6px}
-  .chat h2{font-size:18px;margin-bottom:8px}
+  .chat h2{font-size:18px;margin-bottom:2px}
+  .chatwho{font-size:12px;color:var(--soft);margin:0 0 8px;display:flex;gap:10px;flex-wrap:wrap}
+  .chatwho span{display:inline-flex;align-items:center;gap:4px}
+  .chatwho i{width:8px;height:8px;border-radius:50%;background:#B9B6C6;display:inline-block}
+  .chatwho i.on{background:#2EB88A}
+  body.t-lilas .chatwho i.on{background:#8E5BE0}
   .chat{flex:1;min-height:0;display:flex;flex-direction:column}
   .chat h2{flex:none}
   .msgs{flex:1;min-height:0;overflow:auto;padding:10px 8px;display:flex;flex-direction:column;gap:8px;overscroll-behavior:contain;background:#F7F5FC;border-radius:16px}
@@ -464,7 +469,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='4.8';
+const APP_VERSION='5.1';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -709,18 +714,21 @@ function openTheme(){
       <button data-t="padrao" class="${THEME==='padrao'?'on':''}"><span class="sw" style="background:linear-gradient(90deg,#FF8A3D,#2EB88A,#E0479E,#2F8FE0)"></span>Padrão 🎨</button>
       <button data-t="lilas" class="${THEME==='lilas'?'on':''}"><span class="sw" style="background:linear-gradient(90deg,#F4EEFF,#C9A8FF,#8E5BE0,#5B3FC4)"></span>Lilás ✨</button>
     </div><p class="quiet" style="margin:10px 0 0;font-size:13px">O tema vale só neste aparelho. Cada um escolhe o seu.</p>`);
-  sheet.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>{ THEME=b.dataset.t; try{localStorage.setItem(KEY+'-theme',THEME);}catch(e){} applyTheme(); sheet.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x===b)); vibrate(15); toast(THEME==='lilas'?'Tema lilás ✨':'Tema padrão 🎨'); }));
+  sheet.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>{ THEME=b.dataset.t; try{localStorage.setItem(KEY+'-theme',THEME);}catch(e){} applyTheme(); refreshChat(); sheet.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x===b)); vibrate(15); toast(THEME==='lilas'?'Tema lilás ✨':'Tema padrão 🎨'); }));
 }
 
 /* ================= FAMÍLIA / FOTO / CONVERSA ================= */
 const uname=id=>(USERS.find(u=>u.id===id)||{nome:id}).nome;
 function avatarHtml(u){ const f=PERFIS[u.id]&&PERFIS[u.id].foto; return f?`<img src="${f}" alt="">`:u.emoji; }
+function lastSeenOf(u){ return Math.max(PERFIS[u.id]&&PERFIS[u.id].lastSeen||0, READS[u.id]||0, ...CHAT.filter(m=>m.by===u.id).map(m=>m.t||0)); }
+function chatWhoHtml(){ return USERS.filter(u=>!USER||u.id!==USER.id).map(u=>{const on=!!ONLINE[u.id]; const ls=lastSeenOf(u); return `<span><i class="${on?'on':''}"></i><b>${u.nome}</b> ${on?'online':(ls?fmtSeen(ls):'')}</span>`;}).join(''); }
 function renderFam(){
+  const cw=document.getElementById('chatWho'); if(cw) cw.innerHTML=chatWhoHtml();
   const el=document.getElementById('fam'); if(!el||!USER) return;
   el.innerHTML=USERS.map(u=>{const on=!!ONLINE[u.id];
     // última vez: o maior entre o registro de presença, a última leitura do chat e a última mensagem enviada
     let ls=Math.max(PERFIS[u.id]&&PERFIS[u.id].lastSeen||0, READS[u.id]||0, ...CHAT.filter(m=>m.by===u.id).map(m=>m.t||0));
-    const sub=on?'online':(ls?fmtSeen(ls):'');
+    const sub=u.id===USER.id?'':(on?'online':(ls?fmtSeen(ls):''));
     return `<button class="p ${on?'on':''} ${u.id===USER.id?'me':''}" data-u="${u.id}"><span class="avw"><span class="av">${avatarHtml(u)}</span><i class="dot"></i></span><span>${u.nome}${u.id===USER.id?' (você)':''}</span><small>${sub}</small></button>`;}).join('');
   el.querySelectorAll('.p').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.u===USER.id) openFoto(); else openLogin(null,b.dataset.u); }));
 }
@@ -808,7 +816,7 @@ function chatHtml(){
     const others=USERS.filter(x=>x.id!==m.by); const seenAll=others.every(x=>(READS[x.id]||0)>=(m.t||0)); const seenAny=others.some(x=>(READS[x.id]||0)>=(m.t||0));
     const tick=me?`<span class="tick ${seenAll?'seen':''}" title="${seenAll?'Visto por todos':seenAny?'Visto por alguém':'Enviada'}">${seenAny?'✓✓':'✓'}</span>`:'';
     const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${SUBJ[m.reply.task.subj]||''} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
-    return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${u.cor||'#8A8A9A'}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><b>${esc(u.nome)}</b>${q}${att}${esc(m.text||'')}<small>${fmtT(m.t)}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></div>${reactsHtml(m)}</div></div>`;}).join('');
+    return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${(me&&THEME==='lilas')?'#8E5BE0':(u.cor||'#8A8A9A')}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><b>${esc(u.nome)}</b>${q}${att}${esc(m.text||'')}<small>${fmtT(m.t)}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></div>${reactsHtml(m)}</div></div>`;}).join('');
 }
 function bindMsgs(){
   const box=document.getElementById('msgs'); if(!box) return;
@@ -866,7 +874,7 @@ function openChatLook(){
   show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px"><div class="msgs" id="lookMsgs" style="min-height:0;padding:10px 8px">
       <div class="msg" style="--uc:#E0479E"><span class="av">${avatarHtml(USERS[0])}</span><div><div class="b"><b>Maria</b>Oi! Assim fica o balão dela 😊<small>20:41</small></div></div></div>
-      <div class="msg me" style="--uc:${USER.cor||'#2F8FE0'}"><span class="av">${avatarHtml(USER)}</span><div><div class="b">E assim fica o seu<small>20:42 <span class="tick seen">✓✓</span></small></div></div></div>
+      <div class="msg me" style="--uc:${THEME==='lilas'?'#8E5BE0':(USER.cor||'#2F8FE0')}"><span class="av">${avatarHtml(USER)}</span><div><div class="b">E assim fica o seu<small>20:42 <span class="tick seen">✓✓</span></small></div></div></div>
     </div></div>
     <p class="quiet" style="margin:0 0 4px"><b>Plano de fundo</b></p>
     <div class="sw2">${BGS.map(([k,c])=>`<button data-bg="${k}" class="${CHATPREF.bg===k?'on':''}" style="background:${c};background-size:14px 14px" title="${k}"></button>`).join('')}
@@ -925,7 +933,7 @@ function openMsgMenu(k){
 }
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
-  show(`<div class="chat"><h2>💬 Conversa da família <button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x">✕</button></h2>
+  show(`<div class="chat"><h2>💬 Conversa da família <button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div>
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
