@@ -829,6 +829,8 @@
   /* sapinho da Maria */
   .task .sapo{position:absolute;right:44px;bottom:2px;font-size:22px;line-height:1;pointer-events:none;z-index:3;transform-origin:50% 100%;animation:sapoPula 1.8s ease-in-out forwards;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
   .task .sapo img{display:block;width:64px;height:64px;object-fit:cover;object-position:100% 100%}
+  .sapo-h{display:inline-block;vertical-align:middle;margin-left:2px;line-height:1}
+  .sapo-h img{display:block;width:46px;height:46px;object-fit:cover;object-position:100% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
   @keyframes sapoPula{0%{transform:translateY(8px) scale(.6);opacity:0}10%{transform:translateY(0) scale(1);opacity:1}25%{transform:translateY(-14px) scaleX(1.05)}40%{transform:translateY(0) scale(1.1,.85)}55%{transform:translateY(-10px)}70%{transform:translateY(0) scale(1.08,.9)}82%{transform:translateY(-5px)}92%{transform:translateY(0);opacity:1}100%{transform:translateY(0) scale(.6);opacity:0}}
   @media(prefers-reduced-motion:reduce){.task .sapo{animation:sapoSimples 1.4s ease-out forwards}}
   @keyframes sapoSimples{0%{opacity:0}15%,80%{opacity:1}100%{opacity:0}}
@@ -1315,7 +1317,8 @@ function openFoto(){
 function openCropper(file,opt){ // opt: {circle, out, aspects}
   return new Promise((resolve)=>{
     const url=URL.createObjectURL(file); let img=new Image();
-    img.onload=()=>{ URL.revokeObjectURL(url); build(); };
+    img.onload=()=>{ build(); };
+    const libera=()=>{ try{URL.revokeObjectURL(url);}catch(e){} };
     img.onerror=()=>{toast('Não consegui abrir a imagem');resolve(null);};
     img.src=url;
     let nw,nh,s0,sc,ox,oy,W,H,asp=opt.circle?1:(opt.aspects?opt.aspects[0][1]:1),fi=0;
@@ -1345,11 +1348,11 @@ function openCropper(file,opt){ // opt: {circle, out, aspects}
       box.addEventListener('wheel',e=>{e.preventDefault(); const r=box.getBoundingClientRect(); setScale(Math.max(s0,Math.min(s0*4,sc*(e.deltaY<0?1.1:0.9))),e.clientX-r.left,e.clientY-r.top); zoom.value=Math.round((sc/s0-1)/3*100);},{passive:false});
       document.getElementById('cropRot').addEventListener('click',()=>{ const c=document.createElement('canvas'); c.width=nh; c.height=nw; const x=c.getContext('2d'); x.translate(nh,0); x.rotate(Math.PI/2); x.drawImage(img,0,0); const n=new Image(); n.onload=()=>{img=n; el.src=n.src; nw=n.naturalWidth; nh=n.naturalHeight; layout();}; n.src=c.toDataURL('image/jpeg',.92); });
       sheet.querySelectorAll('.cropasp button').forEach(b=>b.addEventListener('click',()=>{fi=+b.dataset.i; asp=opt.aspects[fi][1]; sheet.querySelectorAll('.cropasp button').forEach(x=>x.classList.toggle('on',x===b)); layout();}));
-      const cancel=()=>{hide();resolve(null);};
+      const cancel=()=>{hide();libera();resolve(null);};
       document.getElementById('cropCancel').addEventListener('click',cancel); sheet.querySelector('.x').addEventListener('click',cancel,{once:true});
       document.getElementById('cropOk').addEventListener('click',()=>{ const bw=box.clientWidth, L=(bw-W)/2; const sx=(L-ox)/sc, sy=(0-oy)/sc, sw=W/sc, sh=H/sc;
         const outW=Math.min(opt.out||1280,Math.round(sw)), outH=Math.round(outW*sh/sw); const c=document.createElement('canvas'); c.width=outW; c.height=outH; c.getContext('2d').drawImage(img,sx,sy,sw,sh,0,0,outW,outH);
-        hide(); resolve(c.toDataURL('image/jpeg',opt.q||.85)); });
+        hide(); libera(); resolve(c.toDataURL('image/jpeg',opt.q||.85)); });
       layout(); window.addEventListener('resize',layout,{once:true});
     }
   });
@@ -2200,7 +2203,15 @@ function bindTasks(root=document.getElementById('app')){
         if(Date.now()-sapT<450 && !el.classList.contains('drag') && !el._swiped) sapinho(el); }); }
     if(!isAluna()){
       el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label','Ver tarefa e opções de acompanhamento');
-      el.addEventListener('click',()=>openMenu(id));
+      // opcoes so ao segurar (toque curto = sapinho); botao direito e Enter tambem abrem
+      { let pt=null, px0=0, py0=0;
+        const arma=e=>{ if(e.button) return; px0=e.clientX; py0=e.clientY; clearTimeout(pt); el.classList.add('pressing');
+          pt=setTimeout(()=>{ pt=null; el.classList.remove('pressing'); el._swiped=true; setTimeout(()=>{el._swiped=false;},400); vibrate(30); openMenu(id); },520); };
+        const solta=()=>{ clearTimeout(pt); pt=null; el.classList.remove('pressing'); };
+        el.addEventListener('pointerdown',arma);
+        el.addEventListener('pointermove',e=>{ if(pt&&(Math.abs(e.clientX-px0)>10||Math.abs(e.clientY-py0)>10)) solta(); });
+        el.addEventListener('pointerup',solta); el.addEventListener('pointercancel',solta); el.addEventListener('pointerleave',solta);
+        el.addEventListener('contextmenu',e=>{ e.preventDefault(); solta(); openMenu(id); }); }
       el.addEventListener('keydown',e=>{if(e.target===el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openMenu(id);}});
       return;
     }
@@ -2251,7 +2262,7 @@ veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 
 function openMenu(id){
   const t=findTask(id); if(!t) return; if(t.type===B){openMove(id);return;}
-  show(`<h2>📝 Tarefa <button class="x">✕</button></h2>
+  show(`<h2>📝 Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho.webp?v=1" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
    <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
    <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
    ${isAluna()?`<button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
@@ -2677,10 +2688,10 @@ function hourlyReminder(){ if(!USER||USER.papel!=='aluna') return; const h=new D
 function startReminders(){ clearInterval(notifTimer); askNotif(); if(!USER||USER.papel!=='aluna') return; askNotif().then(ok=>{ if(!ok) return; hourlyReminder(); notifTimer=setInterval(hourlyReminder,60*1000); }); }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyReminder(); });
 render();
-// abertura com a bailarina: fica 6 s dançando (toque não interrompe) e some sozinha
+// abertura com o sapinho: fica um ciclo inteiro da animação (até ele comer a mosca) e some sozinho; toque não interrompe
 (()=>{ const sp=document.getElementById('splash'); if(!sp) return;
   const tira=()=>{ sp.classList.add('off'); setTimeout(()=>sp.remove(),700); };
-  setTimeout(tira,6000); })();
+  setTimeout(tira,10800); })();
 // ao abrir, rola até o dia de hoje (uma vez por abertura)
 setTimeout(()=>{ const el=document.querySelector('.day.today'); if(!el) return;
   const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector('.top')?.offsetHeight||0)-10;
