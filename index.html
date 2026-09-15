@@ -575,6 +575,8 @@
   .tg .trea{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0;vertical-align:middle}
   .tg .trea .r{border-width:1px;padding:2px 7px;font-size:12px;line-height:1.2;box-shadow:none}
   body .fab.chatfab{background:#485166;color:#fff;border:1px solid #D4D9E4;box-shadow:0 5px 14px rgba(38,36,58,.2)}
+  .notice-date{flex:none;align-self:center;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px;color:var(--ink);font-size:18px}
+  .notice-date:focus-visible{outline:2px solid var(--sex);outline-offset:2px}
   .task .st.todo{background:#FFD9D6;color:#B3261E}
 
   /* Carinhos no cabeçalho: apenas o coração, com área de toque confortável. */
@@ -877,6 +879,10 @@ function mergeRemote(remote){
         const autor=(rt.impBy&&(!USER||rt.impBy!==USER.nome))?rt.impBy+' ':'';
         MERGE_EVT.push('⭐ '+(autor?autor+(rt.important?'marcou como importante ':'tirou das importantes ')+curto:curto+(rt.important?' virou importante':' saiu das importantes')));
       }
+      if((rt.moveU||0)>(lt.moveU||0)){
+        if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
+        lt.day=rt.day;lt.moveU=rt.moveU;lt.moveBy=rt.moveBy||'';changed=true;
+      }
       const diff = rt.status!==lt.status || JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null) || (rt.pics||0)!==(lt.pics||0) || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day;
       if(diff && (!isAluna() || (rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){
         if(rt.status!==lt.status) MERGE_EVT.push(STICON[rt.status]+' '+(ela?ela+STVERB[rt.status]+' '+curto:curto+' agora está '+STLBL[rt.status]));
@@ -884,7 +890,7 @@ function mergeRemote(remote){
         else if(!!rt.off!==!!lt.off) MERGE_EVT.push(rt.off?('🚫 '+(ela?ela+'cancelou '+curto:curto+' foi cancelada')):('↩️ '+curto+' voltou a valer'));
         else if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
         else if((rt.pics||0)>(lt.pics||0)) MERGE_EVT.push('📸 Foto nova em '+curto);
-        lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; lt.day=rt.day; lt.u=rt.u; changed=true; }
+        lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; changed=true; }
     }));
   });
   return changed;
@@ -892,7 +898,8 @@ function mergeRemote(remote){
 function cloudPush(now){
   if(!cloudRef||!cloudReady||!isAluna()) return;
   clearTimeout(pushTimer);
-  const doIt=()=>{ if(!isAluna()||!cloudRef||!cloudReady) return; const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.transaction(remote=>{ if(!isAluna()) return; const next=JSON.parse(json); const reactions={}, estrelas={}; Object.values(remote?.weeks||{}).forEach(w=>(w.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{reactions[t.id]=t.reacts||null; estrelas[t.id]={imp:!!t.important,u:t.impU||0,by:t.impBy||''};}))); Object.values(next.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{if(Object.prototype.hasOwnProperty.call(reactions,t.id)) t.reacts=reactions[t.id];
+  const doIt=()=>{ if(!isAluna()||!cloudRef||!cloudReady) return; const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.transaction(remote=>{ if(!isAluna()) return; const next=JSON.parse(json); const reactions={}, estrelas={}, datas={}; Object.values(remote?.weeks||{}).forEach(w=>(w.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{reactions[t.id]=t.reacts||null; datas[t.id]={day:t.day,u:t.moveU||0,by:t.moveBy||''}; estrelas[t.id]={imp:!!t.important,u:t.impU||0,by:t.impBy||''};}))); Object.values(next.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{if(Object.prototype.hasOwnProperty.call(reactions,t.id)) t.reacts=reactions[t.id];
+      const date=datas[t.id];if(date&&date.u>(t.moveU||0)){t.day=date.day;t.moveU=date.u;t.moveBy=date.by;}
       const e=estrelas[t.id]; if(e && e.u>(t.impU||0)){ t.important=e.imp; t.impU=e.u; t.impBy=e.by; } }))); return next; }).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
   if(now) doIt(); else pushTimer=setTimeout(doIt,400);
 }
@@ -1371,7 +1378,7 @@ const fmt=d=>{const [y,m,dd]=d.split('-');return dd+'/'+m;};
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 function allTasks(w){return w.days.flatMap(d=>d.tasks).filter(t=>!t.skip);}
 function liveTasks(w){return allTasks(w).filter(t=>!t.off);}
-function pass(t){ const st = fType==='late' ? (t.status!=='done'&&taskPassed(t)) : (fType==='all' || (t.status===fType && !(t.status==='todo'&&taskPassed(t)))); return st && (fSubj==='all' || t.subj===fSubj); }
+function pass(t){ if(t.type===B) return fType==='all'&&(fSubj==='all'||t.subj===fSubj); const st = fType==='late' ? (t.status!=='done'&&taskPassed(t)) : (fType==='all' || (t.status===fType && !(t.status==='todo'&&taskPassed(t)))); return st && (fSubj==='all' || t.subj===fSubj); }
 const addDays=(dIso,n)=>{const d=new Date(dIso+'T12:00:00');d.setDate(d.getDate()+n);return iso(d);};
 function boxPassed(w,d,type){
   if(type===B) return d.date<TODAY || (d.date===TODAY && NOW_H>=12.5);       // depois da aula, "levar" já passou
@@ -1386,6 +1393,7 @@ function contaTipo(k,w){
   return allTasks(w).filter(t=>{
     if(fSubj!=='all' && t.subj!==fSubj) return false;
     if(k==='all') return true;
+    if(t.type!==H) return false;
     if(k==='late') return t.status!=='done' && taskPassed(t);
     return t.status===k && !(t.status==='todo' && taskPassed(t));
   }).length;
@@ -1422,10 +1430,10 @@ function render(){
   let html='';
   // mais importantes (ordem: dia da semana)
   const order=w.days.map(d=>d.k);
-  const impVale=t=>t.important && !t.off && t.status!=='done' && !taskPassed(t);
+  const impVale=t=>t.type===H && t.important && !t.off && t.status!=='done' && !taskPassed(t);
   const imp=allTasks(w).filter(t=>impVale(t)&&pass(t)).sort((a,b)=>order.indexOf(a.day)-order.indexOf(b.day));
   const impPend=imp.length;
-  const impGuardadas=allTasks(w).filter(t=>t.important&&!impVale(t)).length;
+  const impGuardadas=allTasks(w).filter(t=>t.type===H&&t.important&&!impVale(t)).length;
   if(!(filtering&&!imp.length)) html+=`<details class="imp" data-date="imp" ${openState['imp']?'open':''}><summary><span class="n">⭐ Importantes</span><span class="cnt">${impPend?impPend+' Pendente'+(impPend>1?'s':''):'✓ Tudo em dia'}</span><span class="arrow">▼</span></summary>
     <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join(''):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':(impGuardadas?'Nada de importante para agora. Aqui só ficam as que ainda dá para fazer.':(isAluna()?'Toca na estrelinha de uma tarefa para ela aparecer aqui.':'As tarefas marcadas com a estrelinha aparecem aqui.'))}</p>`}</div></details>`;
   const inWeek=w.days.some(d=>d.date===TODAY);
@@ -1434,7 +1442,7 @@ function render(){
   w.days.forEach(d=>{
     const [name,cv]=DAYMETA[d.k];
     const tasksAll=allTasks(w).filter(t=>t.day===d.k);
-    const live=tasksAll.filter(t=>!t.off); const complete=live.length>0&&live.every(t=>t.status==='done');
+    const live=tasksAll.filter(t=>t.type===H&&!t.off); const complete=live.length>0&&live.every(t=>t.status==='done');
     const isToday=d.date===TODAY, isTomorrow=d.date===tomorrowDate, past=d.date<TODAY;
     const homePend=tasksAll.filter(t=>t.type===H&&t.status!=='done'&&!t.off).length;
     const homePassed=boxPassed(w,d,H);
@@ -1490,6 +1498,11 @@ function fitSubjectRows(){
   document.fonts?.ready.then(()=>rows.forEach(fit));
 }
 function taskHtml(t,inImp){
+  if(t.type===B){
+    const moved=t.day!==t.origin?'<span class="st mv">Mudou de dia</span>':'';
+    const day=inImp?`<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>`:'';
+    return `<div class="task notice" data-id="${t.id}"><div class="tin"><div class="t"><div class="tg">${day}${moved}<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span></div><div class="tx">${t.text}</div>${t.note?`<span class="note">📝 ${esc(t.note)}</span>`:''}</div>${(isAluna()||isResponsavel())?`<button class="notice-date" data-move-notice="${t.id}" aria-label="Mudar dia do aviso" title="Mudar dia do aviso">📆</button>`:''}</div></div>`;
+  }
   const moved = t.day!==t.origin ? `<span class="st mv">Mudou de dia</span>` : '';
   const dchip = inImp ? `<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
   const subj = `<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span>`;
@@ -1536,7 +1549,7 @@ function setStatus(id,status,el){
   const tin=el?.querySelector('.tin'); if(tin)tin.style.transform='';
   el?.classList.remove('show-r','show-l','drag','pressing');
   if(!isAluna()||!['todo','doing','done'].includes(status)) return;
-  const task=findTask(id); if(!task||task.off||task.status===status) return;
+  const task=findTask(id); if(!task||task.type!==H||task.off||task.status===status) return;
   const previous=task.status, week=current;
   const labels={done:['✅ Marcar como feito?','Sim, concluir'],doing:['⏳ Marcar como fazendo?','Sim, estou fazendo'],todo:['↩️ Reabrir esta tarefa?','Sim, reabrir']};
   show(`<h2>${labels[status][0]} <button class="x" aria-label="Cancelar">✕</button></h2>
@@ -1576,12 +1589,13 @@ const SWMSG={doing:'⏳ Marcada como fazendo',done:'✅ Concluída! Mandou bem',
 function swipeAction(id,dir,el){
   if(!isAluna()){ el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast('Só a Maria marca as tarefas 😉'); return; }
   const t=findTask(id);
+  if(!t||t.type!==H) return;
   if(t.off){ el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast('Essa tarefa está cancelada. Segura nela para voltar a valer'); return; }
   const status = dir>0 ? NEXT_R[t.status]||'done' : NEXT_L[t.status]||'doing';
   setStatus(id,status,el);
 }
 function confirmaImp(id,btn){
-  const t=findTask(id); if(!t) return;
+  const t=findTask(id); if(!t||t.type!==H) return;
   const val=!t.important; vibrate(15);
   show(`<h2>⭐ ${val?'Marcar como mais importante?':'Tirar das mais importantes?'} <button class="x">✕</button></h2>
    <p class="quiet" style="margin:0 0 12px">${esc(plain(t.text))}</p>
@@ -1591,7 +1605,7 @@ function confirmaImp(id,btn){
   document.getElementById('impSim').addEventListener('click',()=>{ hide(); toggleImp(id,btn); });
 }
 function toggleImp(id,btn){
-  const t=findTask(id); if(!t) return;
+  const t=findTask(id); if(!t||t.type!==H) return;
   const val=!t.important; vibrate(20); SFX.pop();
   if(btn){ btn.classList.toggle('on',val); btn.setAttribute('aria-pressed',val?'true':'false'); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); }
   toast(val?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');
@@ -1604,6 +1618,7 @@ function bindTasks(root=document.getElementById('app')){
   root.querySelectorAll('[data-pics]').forEach(g=>g.addEventListener('click',e=>{e.stopPropagation();openPics(g.dataset.pics);}));
   root.querySelectorAll('.task').forEach(el=>{
     const id=el.dataset.id, tin=el.querySelector('.tin');
+    if(findTask(id)?.type===B){el.querySelector('[data-move-notice]')?.addEventListener('click',()=>openMove(id));return;}
     // estrela: sempre visível, toca a qualquer momento para marcar ou tirar
     const sb=el.querySelector('.star');
     if(sb){
@@ -1672,20 +1687,20 @@ sheet.addEventListener('touchend',endDrag); sheet.addEventListener('touchcancel'
 veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 
 function openMenu(id){
-  const t=findTask(id);
+  const t=findTask(id); if(!t) return; if(t.type===B){openMove(id);return;}
   show(`<h2>📝 Tarefa <button class="x">✕</button></h2>
    <p class="quiet" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
    <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
    ${isAluna()?`<button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
    ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`:''}
    ${(CLOUD_CFG&&(isAluna()||(t.pics||0)))?`<button class="opt" data-a="pics"><span class="ic">📸</span>${(t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'}</button>`:''}
-   ${isAluna()?'<button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>':''}
+   ${(isAluna()||isResponsavel())?'<button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>':''}
    ${CLOUD_CFG?'<button class="opt" data-a="chat"><span class="ic">📨</span>Mandar para a conversa</button>':''}
    ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">💛</span>Deixar um carinho para a Maria</button>`:''}
    ${isAluna()?(t.off?'<button class="opt" data-a="undel"><span class="ic">↩️</span>Voltar a valer</button>':'<button class="opt danger" data-a="del"><span class="ic">🚫</span>Cancelar a tarefa</button>'):''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
     const a=b.dataset.a;
-    if(['move','del','undel','note','delnote'].includes(a)&&!isAluna()) return;
+    if(['del','undel','note','delnote'].includes(a)&&!isAluna()) return;
     if(a==='imp'){ hide(); setTimeout(()=>confirmaImp(id),220); }
     if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
     if(a==='del') openCancel(id);
@@ -1752,7 +1767,7 @@ async function writeTaskReaction(id,emoji){
 let reaSeen=0; try{reaSeen=+localStorage.getItem(KEY+'-reaseen')||0;}catch(e){}
 function allReacts(){ const out=[];
   Object.keys(DB.weeks).forEach(id=>{ const w=DB.weeks[id];
-    allTasks(w).forEach(t=>{ if(!t.reacts) return; Object.keys(t.reacts).forEach(uid=>{ const r=t.reacts[uid]; out.push({...r,uid,task:t,week:id}); }); }); });
+    allTasks(w).forEach(t=>{ if(t.type!==H||!t.reacts) return; Object.keys(t.reacts).forEach(uid=>{ const r=t.reacts[uid]; out.push({...r,uid,task:t,week:id}); }); }); });
   return out.sort((a,b)=>(b.t||0)-(a.t||0));
 }
 function reaNew(){ return allReacts().filter(r=>(r.t||0)>reaSeen).length; }
@@ -1777,7 +1792,7 @@ function openReacts(){
 let picTaskId=null;
 function picsRef(id){ return famRef?famRef.child('fotos/'+id):null; }
 function openPics(id){
-  const t=findTask(id); if(!t) return; picTaskId=id;
+  const t=findTask(id); if(!t||t.type!==H) return; picTaskId=id;
   show(`<h2>📸 Fotos da tarefa <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div id="galBox"><p class="quiet" style="text-align:center;padding:10px 0">Carregando…</p></div>
@@ -1823,12 +1838,44 @@ function openCancel(id){ if(!isAluna()) return;
     if(v.length<3){ vibrate([40,40,40]); SFX.err(); toast('Escreve o motivo para cancelar'); document.getElementById('cancelTxt').focus(); return; }
     t.off=true; t.offWhy=v; t.offBy=USER?USER.nome:''; t.status='todo'; t.u=Date.now(); save(); hide(); render(); refreshReminder(); vibrate(20); toast('Tarefa cancelada'); });
 }
-function openMove(id){ if(!isAluna()) return;
-  const t=findTask(id), w=DB.weeks[current];
+async function writeMove(id,day){
+  if(!isAluna()&&!isResponsavel()) return false;
+  const t=findTask(id), w=Object.values(DB.weeks).find(w=>allTasks(w).some(t=>t.id===id));
+  if(!t||!w?.days.some(d=>d.k===day)) return false;
+  if(t.day===day) return true;
+  const moveU=Math.max(Date.now(),(t.moveU||0)+1), moveBy=USER.nome;
+  if(isAluna()){t.day=day;t.moveU=moveU;t.moveBy=moveBy;t.u=Date.now();save();return true;}
+  if(!cloudRef||!cloudReady||!cloudOnline){toast('Conecte à nuvem para mudar o dia');return false;}
+  const actor=USER.id, ref=cloudRef;
+  try{
+    const snap=await ref.once('value');
+    if(!isResponsavel()||USER.id!==actor||cloudRef!==ref) return false;
+    let path=null;
+    Object.entries(snap.val()?.weeks||{}).forEach(([week,w])=>(w.days||[]).forEach((d,di)=>(d.tasks||[]).forEach((x,ti)=>{if(x.id===id)path='weeks/'+week+'/days/'+di+'/tasks/'+ti;})));
+    if(!path){toast('Este item ainda não está na nuvem');return false;}
+    const result=await ref.child(path).transaction(remote=>{
+      if(!remote||!isResponsavel()||USER.id!==actor||cloudRef!==ref) return;
+      if((remote.moveU||0)>moveU) return;
+      return {...remote,day,moveU,moveBy};
+    });
+    if(!result.committed){toast('O dia mudou em outro aparelho. Confira e tente novamente.');return false;}
+    if(USER?.id!==actor||cloudRef!==ref) return false;
+    t.day=day;t.moveU=moveU;t.moveBy=moveBy;
+    mem=DB;try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}
+    return true;
+  }catch(e){toast('Não consegui salvar o dia. Tente novamente.');return false;}
+}
+function openMove(id){
+  if(!isAluna()&&!isResponsavel()) return;
+  const t=findTask(id), w=Object.values(DB.weeks).find(w=>allTasks(w).some(t=>t.id===id)); if(!t||!w) return;
   show(`<h2>📆 Mudar para qual dia? <button class="x">✕</button></h2>
    ${w.days.map(d=>`<button class="opt ${d.k===t.day?'d':''}" style="--c:${dayCss(d.k)}" data-k="${d.k}"><span class="ic">${d.k===t.day?'📍':'📆'}</span>${DAYMETA[d.k][0]} ${fmt(d.date)}${d.k===t.day?' <small>(está aqui)</small>':''}${d.k===t.origin&&d.k!==t.day?' <small>(dia de antes)</small>':''}</button>`).join('')}`);
-  sheet.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click',()=>{
-    if(!isAluna()) return; t.day=b.dataset.k; t.u=Date.now(); save(); hide(); openState[w.days.find(d=>d.k===t.day).date]=true; render(); vibrate(20); toast('Mudou para '+DAYMETA[t.day][0]);
+  const buttons=[...sheet.querySelectorAll('[data-k]')];
+  buttons.forEach(b=>b.addEventListener('click',async()=>{
+    buttons.forEach(x=>x.disabled=true);
+    if(!await writeMove(id,b.dataset.k)){buttons.forEach(x=>x.disabled=false);return;}
+    if(!b.isConnected) return;
+    hide();openState[w.days.find(d=>d.k===t.day).date]=true;render();refreshReminder();vibrate(20);toast('Mudou para '+DAYMETA[t.day][0]);
   }));
 }
 function openNoteMenu(id){
@@ -1899,7 +1946,7 @@ function reminderHtml(){
   const w=DB.weeks[current]; const idx=w.days.findIndex(d=>d.date===TODAY);
   const nextIdx=idx<0 ? w.days.findIndex(d=>d.date>TODAY) : idx;
   if(nextIdx<0) return null;
-  const pend=t=>t.status!=='done'&&!t.off;
+  const pend=t=>t.type===B||(t.status!=='done'&&!t.off);
   const greet=NOW_H<12?'Bom dia':NOW_H<18?'Boa tarde':'Boa noite';
   const secs=[];
   if(idx<0){ const d=w.days[nextIdx];
@@ -1909,7 +1956,7 @@ function reminderHtml(){
   } else { const d=w.days[idx], n=w.days[idx+1];
     secs.push([n?'🏠 O que fazer para amanhã ('+DAYMETA[n.k][0].toLowerCase()+')':'🏠 O que fazer no fim de semana', allTasks(w).filter(t=>t.day===d.k&&t.type===H&&pend(t))]);
   }
-  const doing=allTasks(w).filter(t=>t.status==='doing'&&!t.off&&!secs[0][1].includes(t));
+  const doing=allTasks(w).filter(t=>t.type===H&&t.status==='doing'&&!t.off&&!secs[0][1].includes(t));
   if(doing.length) secs.push(['⏳ O que você está fazendo', doing]);
   const total=secs.reduce((a,[,l])=>a+l.length,0);
   const nome=USER?', '+USER.nome:''; const dica=isAluna()?'Arrasta para a direita quando terminar. Arrasta para a esquerda se ainda está fazendo.':'Você está acompanhando as tarefas da Maria. Toque em uma tarefa para ver fotos ou deixar um carinho.';
