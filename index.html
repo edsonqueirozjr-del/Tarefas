@@ -47,7 +47,7 @@
   .prog .pctin.claro{color:#fff;text-shadow:0 1px 2px rgba(63,39,100,.35)}
   .prog .frase-baixo{font-size:12px;font-weight:800;color:var(--lilas-soft);text-align:right;margin-top:3px;min-height:0;line-height:1.2}
   .prog .frase-baixo:empty{display:none}
-  .prog .sapo-prog{width:24px;height:24px;object-fit:contain;vertical-align:bottom;margin-left:12px;transform:scale(2);transform-origin:50% 100%;object-position:50% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));cursor:pointer;pointer-events:auto}
+  .prog .sapo-prog{width:24px;height:24px;object-fit:contain;vertical-align:bottom;margin-left:12px;transform:scale(2);transform-origin:50% 100%;object-position:50% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));cursor:pointer;pointer-events:auto;position:relative;z-index:25}
   .prog .sapo-prog:active{transform:scale(1.8)}
   .prog .row>span:last-child{display:inline-flex;align-items:flex-end;gap:2px}
   .prog .done .bar i{background:linear-gradient(90deg,var(--ter),var(--qua),var(--gold));background-size:220% 100%}
@@ -310,6 +310,8 @@
   .cfbar button{border:0;background:rgba(255,255,255,.25);color:#fff;border-radius:50%;width:38px;height:38px;font-size:16px;font-weight:900;flex:none;display:flex;align-items:center;justify-content:center}
   .cfbar button:active{background:rgba(255,255,255,.4)}
   .cfbar .cnt{color:#fff;font-size:12px;font-weight:900;white-space:nowrap}
+  .cfbar .cfdate{position:relative;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:17px;flex:none;cursor:pointer;overflow:hidden}
+  .cfbar .cfdate input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0;margin:0}
   .chatwho span{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.22);border-radius:999px;padding:3px 10px;color:#fff;font-weight:700}
   .chatwho b{font-weight:900}
   .chatwho i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);display:inline-block}
@@ -405,6 +407,9 @@
   .msg.me .b .hd b{color:rgba(255,255,255,.9)}
   .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:0}
   .daygrp{border:0;margin:0;flex:none}
+  .daygrp>summary{position:sticky;top:0;z-index:2;background:#E9E5F2;box-shadow:0 0 0 4px #F7F5FC}
+  .msgs.bg-claro .daygrp>summary{box-shadow:0 0 0 4px #fff}
+  .msgs.bg-noite .daygrp>summary{background:#4A4770;box-shadow:0 0 0 4px #26243A}
   .msgs>*{flex:none}
   .msgs::before{content:"";margin-top:auto}
   .daygrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 8px;background:rgba(38,36,58,.08);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:900;color:var(--ink);width:fit-content;max-width:100%}
@@ -1450,10 +1455,16 @@ function msgHtml(m,i,arr){
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
   return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}</div>${reactsHtml(m)}</div></div>`;
 }
+// entende "15/09", "15/9/26", "15/09/2026", "hoje" e "ontem"; devolve a data ISO ou null
+function dataDaBusca(q){ q=(q||'').trim().toLowerCase(); if(q==='hoje') return TODAY; if(q==='ontem') return addDays(TODAY,-1);
+  const m=q.match(/^(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?$/); if(!m) return null;
+  const d=+m[1], mo=+m[2]; let y=m[3]?+m[3]:+TODAY.slice(0,4); if(y<100) y+=2000; if(d<1||d>31||mo<1||mo>12) return null;
+  return y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
 function chatHtml(){
   if(chatQ.length>=2){ const ql=chatQ.toLowerCase();
-    const hits=CHAT.filter(m=>(m.text||'').toLowerCase().includes(ql)||(m.att&&(m.att.name||'').toLowerCase().includes(ql)));
-    if(!hits.length) return '<div class="empty">Nenhuma mensagem com<br><b>“'+esc(chatQ)+'”</b></div>';
+    const dia=dataDaBusca(ql);
+    const hits=dia?CHAT.filter(m=>iso(new Date(m.t||0))===dia):CHAT.filter(m=>(m.text||'').toLowerCase().includes(ql)||(m.att&&(m.att.name||'').toLowerCase().includes(ql)));
+    if(!hits.length) return dia?'<div class="empty">Nenhuma mensagem em<br><b>'+fmt(dia)+'</b></div>':'<div class="empty">Nenhuma mensagem com<br><b>“'+esc(chatQ)+'”</b></div>';
     return hits.map((m,i,arr)=>`<div class="daysep">${dayLabel(iso(new Date(m.t||0)))}</div>`+msgHtml(m,i,arr)).join('');
   }
   if(!CHAT.length) return '<div class="empty">Ainda não tem mensagens.<br>Manda um oi! 👋</div>';
@@ -1898,7 +1909,7 @@ function openMsgMenu(k){
 }
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
-  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção">👋</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem…" autocomplete="off"><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
+  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção">👋</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem ou data (15/09)…" autocomplete="off"><label class="cfdate" title="Escolher a data" aria-label="Escolher a data"><span aria-hidden="true">📅</span><input type="date" id="cfDate"></label><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="audpanel nodrag" id="audPanel">
@@ -1917,6 +1928,7 @@ function openChat(){
   const upd=()=>{ chatQ=cft.value.trim(); const box=document.getElementById('msgs'); box.innerHTML=chatHtml(); bindMsgs(); applyPref();
     if(chatQ.length>=2){ cnt.textContent=box.querySelectorAll('.msg').length+' achadas'; box.scrollTop=box.scrollHeight; } else { cnt.textContent=''; scrollMsgs(); } };
   cft.addEventListener('input',upd);
+  document.getElementById('cfDate').addEventListener('change',e=>{ const v=e.target.value; if(!v) return; const [y,mo,d]=v.split('-'); cft.value=d+'/'+mo+'/'+y; upd(); });
   document.getElementById('cfClose').addEventListener('click',()=>{ chatQ=''; cft.value=''; bar.classList.remove('on'); upd(); });
   document.getElementById('chatFind').addEventListener('click',()=>{ const on=!bar.classList.contains('on'); bar.classList.toggle('on',on); vibrate(15);
     if(on){ setTimeout(()=>cft.focus(),150); } else { chatQ=''; cft.value=''; upd(); } });
