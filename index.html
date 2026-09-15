@@ -162,6 +162,10 @@
   .trea .r{display:inline-flex;align-items:center;gap:4px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:2px 9px;font-size:13px;font-weight:800;box-shadow:0 1px 3px rgba(38,36,58,.10)}
   .trea .r b{font-size:11px;color:var(--soft);font-weight:800}
   .trea .r.new{animation:pop .5s cubic-bezier(.36,1.6,.5,1)}
+  .task .sapo{position:absolute;right:46px;bottom:6px;font-size:22px;line-height:1;pointer-events:none;z-index:3;transform-origin:50% 100%;animation:sapoPula 1.8s ease-in-out forwards;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
+  @keyframes sapoPula{0%{transform:translateY(8px) scale(.6);opacity:0}10%{transform:translateY(0) scale(1);opacity:1}25%{transform:translateY(-14px) scaleX(1.05)}40%{transform:translateY(0) scale(1.1,.85)}55%{transform:translateY(-10px)}70%{transform:translateY(0) scale(1.08,.9)}82%{transform:translateY(-5px)}92%{transform:translateY(0);opacity:1}100%{transform:translateY(0) scale(.6);opacity:0}}
+  @media(prefers-reduced-motion:reduce){.task .sapo{animation:sapoSimples 1.4s ease-out forwards}}
+  @keyframes sapoSimples{0%{opacity:0}15%,80%{opacity:1}100%{opacity:0}}
   .trea button.ra{cursor:pointer;font:inherit;padding-left:4px;gap:4px;margin:0;line-height:inherit;vertical-align:middle}
   .trea .ra b{font-size:11px;color:var(--soft);font-weight:800}
   .trea .ra .pl{width:18px;height:18px;border-radius:50%;background:var(--lilas);position:relative;flex:none}
@@ -346,8 +350,9 @@
   @media(prefers-reduced-motion:reduce){.splash img{animation:none}}
   .chat h2 .gear.find{margin-left:auto}
   @keyframes msnshake{0%,100%{transform:translate(0,0)}10%{transform:translate(-9px,4px)}20%{transform:translate(8px,-6px)}30%{transform:translate(-7px,-4px)}40%{transform:translate(9px,5px)}50%{transform:translate(-8px,6px)}60%{transform:translate(7px,-5px)}70%{transform:translate(-6px,3px)}80%{transform:translate(5px,-3px)}90%{transform:translate(-3px,2px)}}
-  body.shake{animation:msnshake .8s cubic-bezier(.36,.07,.19,.97) both}
-  @media(prefers-reduced-motion:reduce){body.shake{animation:none}}
+  /* treme o conteudo e as camadas flutuantes separadamente: transformar o <body> desmontava os elementos fixos */
+  body.shake .wrap,body.shake .fabs,body.shake .sheet,body.shake .toast{animation:msnshake .8s cubic-bezier(.36,.07,.19,.97)}
+  @media(prefers-reduced-motion:reduce){body.shake .wrap,body.shake .fabs,body.shake .sheet,body.shake .toast{animation:none}}
   .nudge-msg{align-self:center;display:inline-flex;align-items:center;gap:6px;max-width:92%;margin:4px auto;padding:7px 14px;border-radius:999px;background:color-mix(in srgb,var(--uc,#8E5BE0) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,#8E5BE0) 35%,#fff);color:var(--ink);font-size:13px;font-weight:700;text-align:center}
   .nudge-msg b{color:var(--uc,#8E5BE0);font-weight:900}
   .nudge-msg small{font-size:10px;opacity:.65;margin-left:2px}
@@ -497,6 +502,9 @@
   .recbar.pronto .rcancel{color:var(--lilas-ink);border-color:var(--lilas-line)}
   .recbar.pronto .rnum{font-size:16px}
   body .chatin #chatSend.pronto{animation:recpulse 1.6s ease-in-out infinite}
+  body .chatin #chatSend.mic{touch-action:none;-webkit-user-select:none;user-select:none}
+  .recbar.hold .rlbl{font-weight:800}
+  .rpill>button.more{flex:none;margin-left:2px}
   .recbar.pausado{background:#F6F1FD;border-top-color:var(--lilas-line);color:var(--lilas-ink)}
   .recbar.pausado .rdot{background:var(--lilas);animation:none}
   .recbar.pausado .rlbl::after{content:" (pausado)";font-weight:700;opacity:.8}
@@ -784,8 +792,8 @@
   .summary-center{position:absolute;inset:28%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
   .summary-center strong{font-size:46px;line-height:1.05;letter-spacing:-2px;color:var(--ink)}
   .summary-center span{font-size:15px;color:var(--soft);line-height:1.4;margin-top:5px}
-  .summary-legend{display:flex;flex-direction:column;gap:6px;min-width:0}
-  .summary-state{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;width:100%;border:1px solid transparent;background:transparent;border-radius:12px;padding:10px;color:var(--ink);text-align:left;font-size:17px;font-weight:800}
+  .summary-legend{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .summary-state{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;width:100%;border:1px solid transparent;background:transparent;border-radius:12px;padding:7px 10px;color:var(--ink);text-align:left;font-size:17px;font-weight:800}
   .summary-state i{width:10px;height:10px;border-radius:50%;background:var(--state)}
   .summary-state small{display:block;color:var(--soft);font-size:15px;font-weight:600;margin-top:1px}
   .summary-state strong{font-size:20px;font-variant-numeric:tabular-nums}
@@ -1012,10 +1020,13 @@ const weekIds=()=>Object.keys(DB.weeks).sort();
 let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(i=>i<=weekIdFor(TODAY)).pop() || weekIds()[0]);
 const openState={};
 let fType='all', fSubj='all', fQ='', subjOpen=false, subjAnim=null, filtroTocado=false;
-function hojeTemFaltaFazer(){ const w=DB.weeks[current]; const d=w&&w.days.find(x=>x.date===TODAY); if(!d) return false;
-  return allTasks(w).some(t=>t.type===H&&t.day===d.k&&t.status==='todo'&&!t.off&&!taskPassed(t)); }
-// enquanto ninguem mexe nos filtros, o app escolhe sozinho (e acompanha o que chega da nuvem)
-function filtroPadrao(){ if(filtroTocado) return; fType=hojeTemFaltaFazer()?'todo':'all'; }
+const fSet=()=>fType==='all'?[]:fType.split('+');
+const fHas=k=>fType!=='all'&&fSet().includes(k);
+function hojeTemPendencia(){ const w=DB.weeks[current]; const d=w&&w.days.find(x=>x.date===TODAY); if(!d) return false;
+  return allTasks(w).some(t=>t.type===H&&t.day===d.k&&(t.status==='todo'||t.status==='doing')&&!t.off&&!taskPassed(t)); }
+// enquanto ninguem mexe nos filtros, o app escolhe sozinho: "Falta fazer" + "Fazendo" marcados (se hoje tem pendencia)
+function filtroPadrao(){ if(filtroTocado) return; fType=hojeTemPendencia()?'todo+doing':'all'; }
+function passaSituacao(t,k){ return k==='late' ? (t.status!=='done'&&taskPassed(t)) : (t.status===k && !(t.status==='todo'&&taskPassed(t))); }
 
 /* ================= NUVEM ================= */
 const CLOUD_CFG = !!FIREBASE.apiKey;
@@ -1050,7 +1061,7 @@ function cloudStart(){
     const antes={}; CHAT.forEach(m=>antes[m.k]=m);
     CHAT=Object.keys(v).sort().map(k=>({k,...v[k]}));
     updateChatBadge(); refreshChat();
-    const chatAberto=!!sheet.querySelector('.chat')&&!document.hidden;
+    const chatAberto=chatAbertoAgora()&&!document.hidden;
     const last=CHAT[CHAT.length-1];
     const ehNudge=!!(last&&last.att&&last.att.kind==='nudge');
     if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && ehNudge){ zumbido(uname(last.by)); }
@@ -1555,7 +1566,7 @@ function enviarSom(i){
 }
 function audPanel(on){ const p=document.getElementById('audPanel'); if(!p) return; const abre=on===undefined?!p.classList.contains('on'):!!on; p.classList.toggle('on',abre); if(abre){ const pk=document.getElementById('picker'); if(pk) pk.classList.remove('on'); scrollMsgs(); } }
 const RECMAX=10;
-let REC=null, recChunks=[], recT0=0, recTimer=null, AUDPLAY=null, recPausedAt=0, recPausedTotal=0, RECDONE=null, recPrev=null;
+let REC=null, recChunks=[], recT0=0, recTimer=null, AUDPLAY=null, recPausedAt=0, recPausedTotal=0, RECDONE=null, recPrev=null, recAuto=false, recLocked=false;
 // tempo realmente gravado, descontando as pausas
 function recElapsed(){ return (Date.now()-recT0-recPausedTotal-(recPausedAt?Date.now()-recPausedAt:0))/1000; }
 function fmtDur(s){ s=Math.max(0,Math.round(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
@@ -1567,7 +1578,8 @@ function updSendBtn(){ const b=document.getElementById('chatSend'), i=document.g
 function recBar(mode){ // false | 'rec' | 'pronto'
   const b=document.getElementById('recBar'); if(b){ b.classList.toggle('on',!!mode); b.classList.toggle('pronto',mode==='pronto'); b.classList.remove('fim','pausado'); }
   const lb=document.getElementById('recLbl'), t=document.getElementById('recTime'), sg=document.getElementById('recSeg');
-  if(mode==='rec'){ if(lb) lb.textContent='Gravando…'; if(t) t.textContent=RECMAX; if(sg) sg.textContent='s'; }
+  if(mode==='rec'){ if(lb) lb.textContent=recAuto?(recLocked?'🔒 Gravando até 10 s':'Solta para enviar · ↑ trava'):'Gravando…'; if(t) t.textContent=RECMAX; if(sg) sg.textContent='s'; }
+  if(b) b.classList.toggle('hold',mode==='rec'&&recAuto&&!recLocked);
   if(mode==='pronto'){ if(lb) lb.textContent='Áudio pronto'; if(t) t.textContent=fmtDur(RECDONE?RECDONE.dur:0); if(sg) sg.textContent=''; }
   const pb=document.getElementById('recPause'); if(pb){ pb.textContent='⏸'; pb.setAttribute('aria-label','Pausar gravação'); pb.title='Pausar'; }
   updSendBtn();
@@ -1578,8 +1590,8 @@ function ouvirRec(){ if(!RECDONE) return; const pb=document.getElementById('recP
   const a=new Audio(URL.createObjectURL(RECDONE.blob)); recPrev=a; if(pb) pb.textContent='⏸';
   a.onended=a.onerror=()=>{ recPrev=null; if(pb) pb.textContent='▶'; }; a.play().catch(()=>{ recPrev=null; if(pb) pb.textContent='▶'; }); }
 function enviarRec(){ if(!RECDONE) return; const d=RECDONE; RECDONE=null; if(recPrev){ try{recPrev.pause();}catch(e){} recPrev=null; } recBar(false); sendAudio(d.blob,d.dur); }
-async function startRec(){
-  if(REC) return;
+async function startRec(opts){
+  if(REC) return; recAuto=!!(opts&&opts.auto); recLocked=false;
   if(!micOk()){ toast('Este aparelho não deixa gravar áudio'); return; }
   let stream;
   try{ stream=await navigator.mediaDevices.getUserMedia({audio:true}); }
@@ -1595,14 +1607,16 @@ async function startRec(){
     if(cancelou){ recBar(false); toast('Gravação descartada'); return; }
     if(!recChunks.length){ recBar(false); toast('Não gravou nada'); return; }
     if(dur<1){ recBar(false); toast('Muito curtinho — segura mais um pouco'); return; }
-    RECDONE={blob:new Blob(recChunks,{type:recChunks[0].type||mime||'audio/webm'}),dur}; recBar('pronto'); vibrate(15); };
+    const blob=new Blob(recChunks,{type:recChunks[0].type||mime||'audio/webm'});
+    if(recAuto){ recBar(false); sendAudio(blob,dur); return; }   // segurou e soltou: vai direto
+    RECDONE={blob,dur}; recBar('pronto'); vibrate(15); };
   RECDONE=null; REC.start(); recT0=Date.now(); recPausedAt=0; recPausedTotal=0; recBar('rec'); vibrate(20);
   recTimer=setInterval(()=>{
     const resta=Math.max(0,RECMAX-recElapsed());
     const t=document.getElementById('recTime'); if(t) t.textContent=Math.ceil(resta);
     const b=document.getElementById('recBar'); if(b) b.classList.toggle('fim',resta<=3);
     const a=document.getElementById('recArc'); if(a) a.style.setProperty('--p',(resta/RECMAX*100)+'%');
-    if(resta<=0){ toast('10 segundos — pronto para enviar'); stopRec(false); } },100);
+    if(resta<=0){ toast(recAuto?'10 segundos — enviando':'10 segundos — pronto para enviar'); stopRec(false); } },100);
 }
 function togglePauseRec(){
   if(!REC) return; const b=document.getElementById('recBar'), pb=document.getElementById('recPause');
@@ -1769,7 +1783,7 @@ function openMsgMenu(k){
   const r=el.querySelector('.b').getBoundingClientRect();
   const wrap=document.createElement('div'); wrap.className='popwrap';
   const mine=e=>m.reacts&&m.reacts[e]&&USER&&m.reacts[e][USER.id];
-  wrap.innerHTML=`<div class="rpill" id="rpill"><span class="emos" id="rEmos">${REACTS.map(e=>`<button data-r="${e}" class="${mine(e)?'mine':''}">${e}</button>`).join('')}<button class="more" data-more="1">＋</button></span><span class="sep" aria-hidden="true"></span><span class="acts"><button class="act" data-a="reply" title="Responder" aria-label="Responder">↩</button>${me?`<button class="act" data-a="edit" title="Editar" aria-label="Editar">✎</button><button class="act danger" data-a="del" title="Apagar" aria-label="Apagar">🗑</button>`:''}</span></div>`;
+  wrap.innerHTML=`<div class="rpill" id="rpill"><span class="emos" id="rEmos">${REACTS.map(e=>`<button data-r="${e}" class="${mine(e)?'mine':''}">${e}</button>`).join('')}</span><button class="more" data-more="1" aria-label="Mais emojis">＋</button><span class="sep" aria-hidden="true"></span><span class="acts"><button class="act" data-a="reply" title="Responder" aria-label="Responder">↩</button>${me?`<button class="act" data-a="edit" title="Editar" aria-label="Editar">✎</button><button class="act danger" data-a="del" title="Apagar" aria-label="Apagar">🗑</button>`:''}</span></div>`;
   document.body.appendChild(wrap);
   const pill=wrap.querySelector('#rpill'), menu=pill, emos=wrap.querySelector('#rEmos');
   const place=()=>{
@@ -1803,7 +1817,7 @@ function openMsgMenu(k){
 }
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
-  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família">💬</span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção">👋</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem…" autocomplete="off"><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
+  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção">👋</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem…" autocomplete="off"><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="audpanel nodrag" id="audPanel">
@@ -1846,7 +1860,18 @@ function openChat(){
     famRef.child('chat').push(msg); inp.value=''; replyTo=null; document.getElementById('editbar').classList.remove('on'); inp.focus(); vibrate(15); SFX.send(); setTyping(false); updSendBtn(); };
   inp.addEventListener('input',()=>setTyping(inp.value.trim().length>0));
   inp.addEventListener('blur',()=>setTyping(false));
-  document.getElementById('chatSend').addEventListener('click',()=>{ if(REC){ stopRec(false); return; } if(RECDONE){ enviarRec(); return; } if(inp.value.trim()) send(); else audPanel(); });
+  { const sb=document.getElementById('chatSend'); let holdT=null, held=false, y0=0, pid=null;
+    const modoMic=()=>!REC&&!RECDONE&&!inp.value.trim();
+    sb.addEventListener('click',()=>{ if(held){ held=false; return; } if(REC){ stopRec(false); return; } if(RECDONE){ enviarRec(); return; } if(inp.value.trim()) send(); else audPanel(); });
+    sb.addEventListener('pointerdown',e=>{ if(!modoMic()||e.button) return; y0=e.clientY; pid=e.pointerId; held=false;
+      holdT=setTimeout(()=>{ holdT=null; held=true; try{sb.setPointerCapture(pid);}catch(x){} startRec({auto:true}); },260); });
+    sb.addEventListener('pointermove',e=>{ if(!held||!REC||!recAuto||recLocked) return;
+      if(y0-e.clientY>70){ recLocked=true; const lb=document.getElementById('recLbl'); if(lb) lb.textContent='🔒 Gravando até 10 s'; const b=document.getElementById('recBar'); if(b) b.classList.remove('hold'); vibrate([20,30,20]); } });
+    const solta=()=>{ if(holdT){ clearTimeout(holdT); holdT=null; return; }   // toque curto: o click cuida
+      if(!held) return; try{sb.releasePointerCapture(pid);}catch(x){}
+      if(REC&&recAuto&&!recLocked) stopRec(false);                              // soltou: para e envia
+      if(!REC) held=false; else setTimeout(()=>{held=false;},0); };
+    sb.addEventListener('pointerup',solta); sb.addEventListener('pointercancel',solta); }
   inp.addEventListener('input',updSendBtn); updSendBtn();
   inp.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
   const picker=document.getElementById('picker');
@@ -1855,10 +1880,11 @@ function openChat(){
   sheet.querySelectorAll('#picker button').forEach(b=>b.addEventListener('click',()=>{inp.value+=b.dataset.e; updSendBtn();}));
   window.visualViewport&&window.visualViewport.addEventListener('resize',scrollMsgs);
 }
-function refreshChat(){ const m=document.getElementById('msgs'); if(!m) return; const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); bindMsgs(); applyPref(); if(atBottom) scrollMsgs(); markRead(); }
+function chatAbertoAgora(){ return veil.classList.contains('on') && !!sheet.querySelector('#msgs'); }
+function refreshChat(){ const m=document.getElementById('msgs'); if(!m||!chatAbertoAgora()){ updateChatBadge(); return; } const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); bindMsgs(); applyPref(); if(atBottom) scrollMsgs(); markRead(); }
 function scrollMsgs(){ const m=document.getElementById('msgs'); if(m) setTimeout(()=>{m.scrollTop=m.scrollHeight;},50); }
 function markRead(){ const last=CHAT[CHAT.length-1]; if(last&&(last.t||0)>lastRead){ lastRead=last.t; try{localStorage.setItem(KEY+'-read',String(lastRead));}catch(e){} }
-  if(famRef&&USER&&sheet.querySelector('.chat')&&!document.hidden&&last&&(READS[USER.id]||0)<(last.t||0)) famRef.child('reads/'+USER.id).set(last.t||firebase.database.ServerValue.TIMESTAMP);
+  if(famRef&&USER&&chatAbertoAgora()&&!document.hidden&&last&&(READS[USER.id]||0)<(last.t||0)) famRef.child('reads/'+USER.id).set(last.t||firebase.database.ServerValue.TIMESTAMP);
   updateChatBadge(); }
 
 /* ================= RENDER ================= */
@@ -1868,7 +1894,7 @@ function allTasks(w){return w.days.flatMap(d=>d.tasks).filter(t=>!t.skip&&t.type
 function liveTasks(w){return allTasks(w).filter(t=>!t.off);}
 function qMatch(t){ if(fQ.length<2) return true; const ql=fQ.toLowerCase();
   return plain(t.text||'').toLowerCase().includes(ql)||(SUBJ[t.subj]||'').toLowerCase().includes(ql)||(t.note||'').toLowerCase().includes(ql); }
-function pass(t){ if(!qMatch(t)) return false; if(t.type===B) return fType==='all'&&(fSubj==='all'||t.subj===fSubj); const st = fType==='late' ? (t.status!=='done'&&taskPassed(t)) : (fType==='all' || (t.status===fType && !(t.status==='todo'&&taskPassed(t)))); return st && (fSubj==='all' || t.subj===fSubj); }
+function pass(t){ if(!qMatch(t)) return false; if(t.type===B) return fType==='all'&&(fSubj==='all'||t.subj===fSubj); const st = fType==='all' || fSet().some(k=>passaSituacao(t,k)); return st && (fSubj==='all' || t.subj===fSubj); }
 const addDays=(dIso,n)=>{const d=new Date(dIso+'T12:00:00');d.setDate(d.getDate()+n);return iso(d);};
 function boxPassed(w,d,type){
   if(type===B) return d.date<TODAY || (d.date===TODAY && NOW_H>=12.5);       // depois da aula, "levar" já passou
@@ -1892,8 +1918,8 @@ function renderFilters(){
   const types=[['all','Todas'],['todo','Falta fazer'],['doing','Fazendo'],['done','Feito'],['late','Esquecido']];
   const ws=DB.weeks[current];
   document.getElementById('fType').innerHTML=types.map(([k,l])=>{ const n=contaTipo(k,ws);
-    if(!n&&k!=='all'&&fType!==k) return '';   // chip zerado nem aparece
-    return `<button class="chip ${k} ${fType===k?'on':''}" data-t="${k}">${l}<span class="cnt ${n?'':'zero'}">${n}</span></button>`; }).join('');
+    if(!n&&k!=='all'&&!fHas(k)) return '';   // chip zerado nem aparece
+    return `<button class="chip ${k} ${(k==='all'?fType==='all':fHas(k))?'on':''}" data-t="${k}" aria-pressed="${(k==='all'?fType==='all':fHas(k))}">${l}<span class="cnt ${n?'':'zero'}">${n}</span></button>`; }).join('');
   const w=DB.weeks[current]; const used=[...new Set(allTasks(w).map(t=>t.subj))];
   const lista=Object.keys(SUBJ).filter(k=>used.includes(k));
   const el=document.getElementById('fSubj');
@@ -1908,7 +1934,9 @@ function renderFilters(){
   }
   el.querySelectorAll('[data-open-subj]').forEach(b=>b.addEventListener('click',()=>{ subjOpen=b.dataset.openSubj==='1'; vibrate(15); SFX.pop(); subjAnim=subjOpen?'opening':'closing'; render(); }));
   if(subjAnim){ el.classList.add(subjAnim); const a=subjAnim; subjAnim=null; setTimeout(()=>el.classList.remove(a),600); }
-  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{fType=b.dataset.t;filtroTocado=true;vibrate(15);render();});
+  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ const k=b.dataset.t; filtroTocado=true; vibrate(15);
+    if(k==='all'){ fType='all'; } else { const set=fSet(); const i=set.indexOf(k); if(i>=0) set.splice(i,1); else set.push(k); fType=set.length?set.join('+'):'all'; }
+    render(); });
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ fSubj=(fSubj===b.dataset.s&&b.dataset.s!=='all')?'all':b.dataset.s; subjOpen=false; vibrate(15); render(); });
 }
 function render(){
@@ -2017,6 +2045,14 @@ ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[N
 
 /* ================= INTERAÇÃO ================= */
 const SOUND=true;
+// Pedido da Maria: um sapinho que aparece pulando do lado da tarefa quando ela toca nela.
+let SAPO=true; try{ SAPO=localStorage.getItem(KEY+'-sapo')!=='0'; }catch(e){}
+function sapinho(el){
+  if(!SAPO||!el||el.querySelector('.sapo')) return;
+  const sp=document.createElement('span'); sp.className='sapo'; sp.textContent='🐸'; sp.setAttribute('aria-hidden','true');
+  el.appendChild(sp); SFX.pop();
+  sp.addEventListener('animationend',()=>sp.remove(),{once:true}); setTimeout(()=>sp.remove(),2200);
+}
 let AC=null;
 function tone(seq){ if(!SOUND) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume();
   let t=AC.currentTime+0.01;
@@ -2140,8 +2176,11 @@ function bindTasks(root=document.getElementById('app')){
       el.addEventListener('keydown',e=>{if(e.target===el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openMenu(id);}});
       return;
     }
-    let timer=null, sx=0, sy=0, dx=0, mode=null; // mode: null | 'h' | 'v'
+    let timer=null, sx=0, sy=0, dx=0, mode=null, sapT=0; // mode: null | 'h' | 'v'
     const cancelPress=()=>{clearTimeout(timer);el.classList.remove('pressing');};
+    el.addEventListener('pointerdown',()=>{ sapT=Date.now(); });
+    el.addEventListener('pointerup',e=>{ if(e.target.closest('.star,.note.nt,[data-rfx],[data-pics]')) return;
+      if(mode===null && Date.now()-sapT<450 && !el.classList.contains('drag') && !el._swiped) sapinho(el); });
     el.addEventListener('touchstart',ev=>{const t=ev.touches[0];sx=t.clientX;sy=t.clientY;dx=0;mode=null;
       el.classList.add('pressing');timer=setTimeout(()=>{if(mode===null){vibrate(30);el.classList.remove('pressing');openMenu(id);mode='v';}},520);},{passive:true});
     el.addEventListener('touchmove',ev=>{const t=ev.touches[0];const x=t.clientX-sx,y=t.clientY-sy;
@@ -2426,8 +2465,10 @@ function openMain(){
    <button class="opt" data-m="tt"><span class="ic">📅</span>Aulas da semana</button>
    <button class="opt" data-m="share"><span class="ic">📤</span>Compartilhar tarefas</button>
    <button class="opt" data-m="wk"><span class="ic">🗂️</span>Ver semana</button>
+   <button class="opt" data-m="sapo" aria-pressed="${SAPO}"><span class="ic">🐸</span>Sapinho ${SAPO?'ligado':'desligado'}</button>
 `);
-  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='summary')openSummary(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='user')openLogin(); if(m==='chat')openChat();}));
+  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='summary')openSummary(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto();
+    if(m==='sapo'){ SAPO=!SAPO; try{localStorage.setItem(KEY+'-sapo',SAPO?'1':'0');}catch(e){} vibrate(15); toast(SAPO?'🐸 Sapinho ligado!':'Sapinho desligado'); openMain(); return; } if(m==='user')openLogin(); if(m==='chat')openChat();}));
 }
 const SUMMARY_STATES=[
   {key:'todo',label:'Falta fazer',color:'#B98BEA',light:'#D8C2F5'},
