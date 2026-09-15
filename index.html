@@ -403,7 +403,7 @@
   .msg .b .hd b{display:inline;font-size:11.5px;color:var(--soft);margin:0;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .msg .b .hd small{display:inline;margin:0;text-align:left;white-space:nowrap;flex:none}
   .msg.me .b .hd b{color:rgba(255,255,255,.9)}
-  .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 35%,#fff)}
+  .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:0}
   .daygrp{border:0;margin:0;flex:none}
   .msgs>*{flex:none}
   .msgs::before{content:"";margin-top:auto}
@@ -562,7 +562,7 @@
   .chatsheet .chatin{
     gap:8px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));
     background:color-mix(in srgb,var(--c2,#8E5BE0) 5%,#fff);
-    border-top:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 15%,#fff);
+    border-top:0;
   }
   body .chatsheet .chatin input,body .chatsheet .chatin textarea{
     min-height:46px;padding:12px 14px;border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 22%,#fff);
