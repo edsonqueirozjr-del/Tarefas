@@ -33,7 +33,7 @@
   .top .prog{margin:0 0 4px}
   .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:14px;color:var(--soft);margin-bottom:6px}
   .prog .row b{color:var(--ink);font-size:16px}
-  .prog .bar{height:22px;border-radius:999px;background:#EDE7F7;overflow:hidden;position:relative;box-shadow:inset 0 1px 3px rgba(63,39,100,.10)}
+  .prog .bar{height:26px;border-radius:999px;background:#EDE7F7;overflow:hidden;position:relative;box-shadow:inset 0 1px 3px rgba(63,39,100,.10)}
   .prog .bar i{display:block;height:100%;border-radius:999px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width .6s cubic-bezier(.4,0,.2,1)}
   .prog .bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 38%,rgba(255,255,255,.42) 50%,transparent 62%);animation:progshine 3.2s ease-in-out infinite}
   @keyframes progflow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
@@ -42,11 +42,13 @@
   .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
   .prog .frase{position:absolute;top:0;height:100%;display:flex;align-items:center;font-size:12px;font-weight:800;white-space:nowrap;pointer-events:none;visibility:hidden;letter-spacing:.1px}
   .prog .frase.dentro{left:10px;color:#fff;text-shadow:0 1px 2px rgba(63,39,100,.35)}
-  .prog .frase.fora{right:10px;color:var(--lilas-ink)}
+  .prog .frase.fora{right:58px;color:var(--lilas-ink)}
+  .prog .pctin{position:absolute;right:10px;top:0;height:100%;display:flex;align-items:center;font-size:14px;font-weight:900;color:var(--lilas-ink);font-variant-numeric:tabular-nums;pointer-events:none}
+  .prog .pctin.claro{color:#fff;text-shadow:0 1px 2px rgba(63,39,100,.35)}
   .prog .frase-baixo{font-size:12px;font-weight:800;color:var(--lilas-soft);text-align:right;margin-top:3px;min-height:0;line-height:1.2}
   .prog .frase-baixo:empty{display:none}
-  .prog .sapo-prog{width:36px;height:36px;object-fit:contain;vertical-align:middle;margin-left:8px;transform:scale(1.5);transform-origin:50% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));cursor:pointer;pointer-events:auto}
-  .prog .sapo-prog:active{transform:scale(1.35)}
+  .prog .sapo-prog{width:36px;height:36px;object-fit:contain;vertical-align:middle;margin-left:8px;transform:scale(1.35);transform-origin:50% 100%;object-position:50% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));cursor:pointer;pointer-events:auto}
+  .prog .sapo-prog:active{transform:scale(1.22)}
   .prog .row>span:last-child{display:inline-flex;align-items:center;gap:2px}
   .prog .done .bar i{background:linear-gradient(90deg,var(--ter),var(--qua),var(--gold));background-size:220% 100%}
   .nav{display:none}
@@ -63,7 +65,7 @@
   .filters::-webkit-scrollbar{display:none}
   .chips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 8px;margin:0}
   .chip{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:800;white-space:nowrap;flex:none;transition:transform .15s}
-  .chip.on{background:var(--selected-bg);color:var(--selected-ink);border-color:var(--selected-bg);transform:scale(1.04)}
+  .chip.on{background:var(--selected-bg);color:var(--selected-ink);border-color:var(--selected-bg)}
   .chip .arw{font-size:10px;opacity:.7;margin-left:2px}
   .chip .cnt{display:inline-block;margin-left:6px;min-width:18px;padding:0 5px;border-radius:999px;background:#EFEDF7;color:var(--soft);font-size:12px;font-weight:900;text-align:center;vertical-align:1px}
   .chip.on .cnt{background:rgba(59,42,143,.10);color:var(--selected-ink)}
@@ -422,7 +424,7 @@
   .msg .b small .tick.seen{color:#8fe3ff}
   .msg.flash .b{animation:flashb 1.2s}
   @keyframes flashb{0%,60%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:none}}
-  .fam .p small{font-size:13px;font-weight:700;color:var(--lilas-soft);line-height:1}
+  .fam .p small{font-size:12px;font-weight:700;color:var(--lilas-soft);line-height:1}
   .msg .b.emo{font-size:30px !important;line-height:1.15;padding:6px 12px 4px}
   .msg.me .b small{color:rgba(255,255,255,.85);opacity:1}
   .chatin>button{flex:none}
@@ -668,7 +670,7 @@
   .summary-empty{padding:18px;text-align:center;color:var(--soft);font-size:14px}
   @media(min-width:520px){.summary-hero{grid-template-columns:minmax(190px,1fr) minmax(180px,1fr);align-items:center;gap:12px}}
   .filter-row{display:flex;flex-wrap:nowrap;align-items:stretch;gap:6px;margin:8px 0 8px;min-width:0}
-  .filter-row>.filters{flex:1 1 0;min-width:0;margin:0;padding:2px 0;overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;overscroll-behavior-x:contain}
+  .filter-row>.filters{flex:1 1 0;min-width:0;margin:0;padding:2px 2px;overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;overscroll-behavior-x:contain}
   .filter-row .filters .chip{flex:1 0 auto;text-align:center}
   .filter-search{flex:0 0 40px;align-self:stretch;margin:2px 0;display:flex;align-items:center;justify-content:center;padding:6px;border:2px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);transition:background .15s,border-color .15s}
   .filter-search:hover{background:#F2F0FA;border-color:#CEC8E0}
@@ -2026,7 +2028,7 @@ function render(){
   const w=DB.weeks[current];
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas · <span class="pct">${pct}%</span>${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span></div><div class="frase-baixo"></div></div>`; sapoProg(); posicionaFrase(); }
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=2'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; sapoProg(); posicionaFrase(); }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -2131,12 +2133,12 @@ const SOUND=true;
 const SAPO=true;
 // Frases de incentivo na barra: 20 frases em faixas; sorteia uma e mantem enquanto a faixa nao muda
 const FRASES=[
-  [0,0,   ['Bora começar? 🚀','Primeira tarefa e já embala!','Hoje é dia de começar 💪']],
-  [1,25,  ['Todo começo conta 💪','Já saiu do zero, boa!','Um passo de cada vez','Força, vai dar certo!']],
-  [26,50, ['Continue assim!','Tá indo muito bem 👏','Metade já está perto!','Não para agora!']],
-  [51,75, ['Passou da metade! 🎯','Você está mandando bem','Segura firme, tá quase','Orgulho de você 💛']],
-  [76,99, ['Falta pouquinho! ✨','Reta final, vai!','Quase lá, não desiste','Só mais um empurrãozinho']],
-  [100,100,['Arrasou, tudo feito! 🎉','Semana vencida! 🏆']]
+  [0,0,   ['Bora começar?','Primeira tarefa e já embala!','Hoje é dia de começar']],
+  [1,25,  ['Todo começo conta','Já saiu do zero, boa!','Um passo de cada vez','Força, vai dar certo!']],
+  [26,50, ['Continue assim!','Tá indo muito bem','Metade já está perto!','Não para agora!']],
+  [51,75, ['Passou da metade!','Você está mandando bem','Segura firme, tá quase','Orgulho de você']],
+  [76,99, ['Falta pouquinho!','Reta final, vai!','Quase lá, não desiste','Só mais um empurrãozinho']],
+  [100,100,['Arrasou, tudo feito!','Semana vencida!']]
 ];
 let fraseAtual={faixa:-1,txt:''};
 function fraseProg(pct){ const i=FRASES.findIndex(([a,b])=>pct>=a&&pct<=b); if(i<0) return '';
@@ -2145,11 +2147,11 @@ function fraseProg(pct){ const i=FRASES.findIndex(([a,b])=>pct>=a&&pct<=b); if(i
 function posicionaFrase(){ const bar=document.querySelector('#prog .bar'), f=document.querySelector('#prog .frase'), baixo=document.querySelector('#prog .frase-baixo'); if(!bar||!f) return;
   const pct=+f.dataset.pct||0, bw=bar.clientWidth, fill=bw*pct/100, tw=f.scrollWidth+18;
   f.classList.remove('dentro','fora'); f.style.visibility='visible'; if(baixo) baixo.textContent='';
-  if(tw<=fill) f.classList.add('dentro'); else if(tw<=bw-fill) f.classList.add('fora'); else { f.style.visibility='hidden'; if(baixo) baixo.textContent=f.textContent; } }
+  if(tw<=fill) f.classList.add('dentro'); else if(tw<=bw-fill-56) f.classList.add('fora'); else { f.style.visibility='hidden'; if(baixo) baixo.textContent=f.textContent; } }
 // Sapo da porcentagem: pula 20 s ao abrir, para; toque nele acorda de novo (e coaxa por 3 s)
 let sapoAte=Date.now()+20000, sapoTimer=null;
 function sapoProg(){ const im=document.querySelector('.sapo-prog'); if(!im) return; const anim=Date.now()<sapoAte;
-  const alvo=anim?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png'; if(!im.getAttribute('src').endsWith(alvo)) im.src=alvo;
+  const alvo=anim?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=2'; if(!im.getAttribute('src').endsWith(alvo)) im.src=alvo;
   clearTimeout(sapoTimer); if(anim) sapoTimer=setTimeout(sapoProg,sapoAte-Date.now()+60); }
 function acordaSapo(){ sapoAte=Date.now()+20000; sapoProg(); playFx('sapo',{loop:true,ms:3000}); vibrate(15); }
 function sapinho(el){
