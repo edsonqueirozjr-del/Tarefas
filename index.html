@@ -485,7 +485,7 @@
   .recbar .rlbl{flex:none}
   .recbar .rnum{margin-left:auto;font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1;min-width:26px;text-align:right}
   .recbar .rseg{font-size:12px;opacity:.7;margin-right:4px}
-  .recbar button{border:0;border-radius:999px;padding:7px 12px;font:inherit;font-size:12px;font-weight:900;flex:none}
+  .recbar button{border:0;border-radius:50%;width:36px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center;font:inherit;font-size:15px;font-weight:900;flex:none;line-height:1}
   .recbar .rcancel{background:#fff;color:#8E2A2A;border:1px solid #F0BDB9}
   .recbar .rok{background:#D93A34;color:#fff}
   .recbar .rpause{background:#fff;color:#8E2A2A;border:1px solid #F0BDB9}
@@ -1569,14 +1569,14 @@ function recBar(mode){ // false | 'rec' | 'pronto'
   const lb=document.getElementById('recLbl'), t=document.getElementById('recTime'), sg=document.getElementById('recSeg');
   if(mode==='rec'){ if(lb) lb.textContent='Gravando…'; if(t) t.textContent=RECMAX; if(sg) sg.textContent='s'; }
   if(mode==='pronto'){ if(lb) lb.textContent='Áudio pronto'; if(t) t.textContent=fmtDur(RECDONE?RECDONE.dur:0); if(sg) sg.textContent=''; }
-  const pb=document.getElementById('recPause'); if(pb){ pb.textContent='⏸ Pausar'; pb.setAttribute('aria-label','Pausar gravação'); }
+  const pb=document.getElementById('recPause'); if(pb){ pb.textContent='⏸'; pb.setAttribute('aria-label','Pausar gravação'); pb.title='Pausar'; }
   updSendBtn();
 }
 function descartaRec(){ if(REC){ stopRec(true); return; } if(recPrev){ try{recPrev.pause();}catch(e){} recPrev=null; } if(RECDONE){ RECDONE=null; recBar(false); toast('Áudio descartado'); } }
 function ouvirRec(){ if(!RECDONE) return; const pb=document.getElementById('recPlay');
-  if(recPrev&&!recPrev.paused){ recPrev.pause(); recPrev=null; if(pb) pb.textContent='▶ Ouvir'; return; }
-  const a=new Audio(URL.createObjectURL(RECDONE.blob)); recPrev=a; if(pb) pb.textContent='⏸ Parar';
-  a.onended=a.onerror=()=>{ recPrev=null; if(pb) pb.textContent='▶ Ouvir'; }; a.play().catch(()=>{ recPrev=null; if(pb) pb.textContent='▶ Ouvir'; }); }
+  if(recPrev&&!recPrev.paused){ recPrev.pause(); recPrev=null; if(pb) pb.textContent='▶'; return; }
+  const a=new Audio(URL.createObjectURL(RECDONE.blob)); recPrev=a; if(pb) pb.textContent='⏸';
+  a.onended=a.onerror=()=>{ recPrev=null; if(pb) pb.textContent='▶'; }; a.play().catch(()=>{ recPrev=null; if(pb) pb.textContent='▶'; }); }
 function enviarRec(){ if(!RECDONE) return; const d=RECDONE; RECDONE=null; if(recPrev){ try{recPrev.pause();}catch(e){} recPrev=null; } recBar(false); sendAudio(d.blob,d.dur); }
 async function startRec(){
   if(REC) return;
@@ -1606,8 +1606,8 @@ async function startRec(){
 }
 function togglePauseRec(){
   if(!REC) return; const b=document.getElementById('recBar'), pb=document.getElementById('recPause');
-  if(REC.state==='recording'){ try{REC.pause();}catch(e){return;} recPausedAt=Date.now(); if(b) b.classList.add('pausado'); if(pb){ pb.textContent='▶ Continuar'; pb.setAttribute('aria-label','Continuar gravação'); } vibrate(10); }
-  else if(REC.state==='paused'){ try{REC.resume();}catch(e){return;} recPausedTotal+=Date.now()-recPausedAt; recPausedAt=0; if(b) b.classList.remove('pausado'); if(pb){ pb.textContent='⏸ Pausar'; pb.setAttribute('aria-label','Pausar gravação'); } vibrate(10); }
+  if(REC.state==='recording'){ try{REC.pause();}catch(e){return;} recPausedAt=Date.now(); if(b) b.classList.add('pausado'); if(pb){ pb.textContent='▶'; pb.setAttribute('aria-label','Continuar gravação'); pb.title='Continuar'; } vibrate(10); }
+  else if(REC.state==='paused'){ try{REC.resume();}catch(e){return;} recPausedTotal+=Date.now()-recPausedAt; recPausedAt=0; if(b) b.classList.remove('pausado'); if(pb){ pb.textContent='⏸'; pb.setAttribute('aria-label','Pausar gravação'); pb.title='Pausar'; } vibrate(10); }
 }
 function stopRec(cancelar){ if(!REC) return; if(REC.state==='paused'&&!cancelar){ try{REC.resume();}catch(e){} recPausedTotal+=Date.now()-recPausedAt; recPausedAt=0; } REC._cancel=!!cancelar; try{REC.stop();}catch(e){ REC=null; clearInterval(recTimer); recBar(false); } }
 function sendAudio(blob,dur){
@@ -1813,7 +1813,7 @@ function openChat(){
     </div>
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
-    <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel">Descartar</button><button class="rpause" id="recPause" aria-label="Pausar gravação">⏸ Pausar</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado">▶ Ouvir</button></div>
+    <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel" aria-label="Descartar" title="Descartar">🗑</button><button class="rpause" id="recPause" aria-label="Pausar gravação" title="Pausar">⏸</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado" title="Ouvir">▶</button></div>
     <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">😊</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button><input id="chatTxt" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
     </div>`);
   applyPref(); markRead(); scrollMsgs(); bindMsgs(); editingKey=null; replyTo=null;
