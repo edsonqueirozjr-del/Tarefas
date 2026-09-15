@@ -970,7 +970,6 @@ function blocoDia(w,d,compacto){
       L.push(`${ic} ${sit} · ${SUBJ[t.subj]||''} · ${plain(t.text)}`);
       if(t.off&&t.offWhy) L.push(`     🚫 Motivo: ${t.offWhy}`);
       if(t.note) L.push(`     📝 ${t.note}`); }); };
-  bloco('🎒 LEVAR PARA A ESCOLA', ts.filter(t=>t.type===B));
   bloco(d.k==='sex'?'🏠 FAZER NO FIM DE SEMANA':'🏠 FAZER EM CASA PARA AMANHÃ', ts.filter(t=>t.type===H));
   const live=ts.filter(t=>!t.off), feitas=live.filter(t=>t.status==='done').length, falta=live.length-feitas;
   L.push(''); L.push(`📊 ${feitas} de ${live.length} concluídas${live.length&&feitas===live.length?' 🎉 Tudo feito!':''}`);
@@ -1376,7 +1375,7 @@ function markRead(){ const last=CHAT[CHAT.length-1]; if(last&&(last.t||0)>lastRe
 /* ================= RENDER ================= */
 const fmt=d=>{const [y,m,dd]=d.split('-');return dd+'/'+m;};
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-function allTasks(w){return w.days.flatMap(d=>d.tasks).filter(t=>!t.skip);}
+function allTasks(w){return w.days.flatMap(d=>d.tasks).filter(t=>!t.skip&&t.type===H);}
 function liveTasks(w){return allTasks(w).filter(t=>!t.off);}
 function pass(t){ if(t.type===B) return fType==='all'&&(fSubj==='all'||t.subj===fSubj); const st = fType==='late' ? (t.status!=='done'&&taskPassed(t)) : (fType==='all' || (t.status===fType && !(t.status==='todo'&&taskPassed(t)))); return st && (fSubj==='all' || t.subj===fSubj); }
 const addDays=(dIso,n)=>{const d=new Date(dIso+'T12:00:00');d.setDate(d.getDate()+n);return iso(d);};
@@ -1457,8 +1456,8 @@ function render(){
       const passed=boxPassed(w,d,type);
       return `<div class="box ${type} ${passed?'past':''}"><h3>${title}${now}</h3>${list.length?list.map(t=>taskHtml(t,false)).join(''):`<div class="empty">${emptyTxt}</div>`}</div>`;
     };
-    const bx=((d.k==='dom'||d.feriado)?'':box(B,'Levar para a escola','Nada para levar hoje 🙂'))+box(H,d.k==='sex'?'Fazer no fim de semana':'Fazer em casa para amanhã','Nada para fazer em casa 🎉');
-    const boxes=bx?`<div class="boxes ${d.k==='dom'?'one':''}">${bx}</div>`:'';
+    const bx=box(H,d.k==='sex'?'Fazer no fim de semana':'Fazer em casa para amanhã','Nada para fazer em casa 🎉');
+    const boxes=bx?`<div class="boxes one">${bx}</div>`:'';
     html+=`<details class="day ${past&&!isToday?'past':''} ${isToday?'today':''} ${complete?'complete':''}" style="--c:var(${cv})" data-date="${d.date}" ${open?'open':''}>
       <summary><div class="dl"><span class="n">${name}</span><span class="d">${fmt(d.date)}</span></div>
         <div class="tags">${cntTag}${isToday?'<span class="tag">HOJE</span>':''}${isTomorrow?'<span class="tag">AMANHÃ</span>':''}${complete?'<span class="tag">Tudo feito!</span>':''}</div>
@@ -1946,13 +1945,12 @@ function reminderHtml(){
   const w=DB.weeks[current]; const idx=w.days.findIndex(d=>d.date===TODAY);
   const nextIdx=idx<0 ? w.days.findIndex(d=>d.date>TODAY) : idx;
   if(nextIdx<0) return null;
-  const pend=t=>t.type===B||(t.status!=='done'&&!t.off);
+  const pend=t=>t.status!=='done'&&!t.off;
   const greet=NOW_H<12?'Bom dia':NOW_H<18?'Boa tarde':'Boa noite';
   const secs=[];
   if(idx<0){ const d=w.days[nextIdx];
     secs.push(['🏠 O que fazer até '+DAYMETA[d.k][0].toLowerCase(), allTasks(w).filter(t=>t.day===d.k&&t.type===H&&pend(t))]);
-  } else if(MORNING){ const d=w.days[idx];
-    secs.push(['🎒 O que levar hoje', allTasks(w).filter(t=>t.day===d.k&&t.type===B&&pend(t))]);
+
   } else { const d=w.days[idx], n=w.days[idx+1];
     secs.push([n?'🏠 O que fazer para amanhã ('+DAYMETA[n.k][0].toLowerCase()+')':'🏠 O que fazer no fim de semana', allTasks(w).filter(t=>t.day===d.k&&t.type===H&&pend(t))]);
   }
