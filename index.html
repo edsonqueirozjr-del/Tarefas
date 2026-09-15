@@ -27,9 +27,10 @@
   input,textarea{user-select:text;-webkit-user-select:text}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:Nunito,"Segoe UI",system-ui,sans-serif;font-weight:600;font-size:17px;line-height:1.4}
   .wrap{max-width:560px;margin:0 auto;padding:20px 16px 120px}
-  h1{font-size:28px;font-weight:900;margin:0 0 6px;line-height:1.1;text-align:center}
+  h1{font-size:27px;font-weight:900;margin:0 0 6px;line-height:1.1;text-align:center}
   button{font-family:inherit;cursor:pointer}
   .prog{margin:4px 0 14px}
+  .top .prog{margin:0 0 4px}
   .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:14px;color:var(--soft);margin-bottom:6px}
   .prog .row b{color:var(--ink);font-size:16px}
   .prog .bar{height:22px;border-radius:999px;background:#EDE7F7;overflow:hidden;position:relative;box-shadow:inset 0 1px 3px rgba(63,39,100,.10)}
@@ -48,6 +49,7 @@
   .top{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--lilas-bg),var(--lilas-bg2));border-bottom:1px solid var(--lilas-line);margin:-20px -16px 22px;padding:30px 16px 6px;box-shadow:0 10px 14px -10px rgba(63,39,100,.22)}
   .top h1{color:var(--lilas-ink)}
   .top h1{margin-bottom:8px}
+  .top .top-title{margin-bottom:8px}
   .top .fam{margin-bottom:8px}
   .filters{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 6px;margin:8px -16px 2px;scrollbar-width:none}
   .filters::-webkit-scrollbar{display:none}
@@ -160,7 +162,9 @@
   .trea .r{display:inline-flex;align-items:center;gap:4px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:2px 9px;font-size:13px;font-weight:800;box-shadow:0 1px 3px rgba(38,36,58,.10)}
   .trea .r b{font-size:11px;color:var(--soft);font-weight:800}
   .trea .r.new{animation:pop .5s cubic-bezier(.36,1.6,.5,1)}
-  .trea button.ra{cursor:pointer;font:inherit;font-weight:800;color:var(--lilas-ink);border-color:var(--lilas-line);background:#F6F1FD;padding-left:5px}
+  .trea button.ra{cursor:pointer;font:inherit;padding-left:4px;gap:4px}
+  .trea .ra b{font-size:11px;color:var(--soft);font-weight:800}
+  .tg .trea .ra{padding-left:3px}
   .trea .ra .pl{width:18px;height:18px;border-radius:50%;background:var(--lilas);position:relative;flex:none}
   .trea .ra .pl::after{content:"";position:absolute;left:55%;top:50%;transform:translate(-50%,-50%);border-left:6px solid #fff;border-top:4px solid transparent;border-bottom:4px solid transparent}
   .trea .ra.tocando .pl{animation:recpulse .5s ease-in-out 3}
@@ -265,7 +269,7 @@
   .who span{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800}
   .who small{color:var(--soft);font-weight:700}
   /* família / presença */
-  .fam{display:flex;justify-content:center;gap:22px;margin:2px 0 12px}
+  .fam{display:flex;justify-content:center;gap:22px;margin:2px 0 10px}
   .fam .p{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:16px;font-weight:800;color:var(--lilas-soft);border:0;background:none;padding:0}
   .fam .p .avw{position:relative}
   .fam .p .av{width:64px;height:64px;border-radius:50%;background:#EDE5FA;display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid var(--lilas-line);overflow:hidden}
@@ -564,7 +568,7 @@
   @media (min-width:700px){
     body{font-size:18px}
     .wrap{max-width:840px;padding:28px 28px 130px}
-    h1{font-size:36px;margin-bottom:10px}
+    h1{font-size:35px;margin-bottom:10px}
     .prog .row{font-size:17px} .prog .row b{font-size:20px} .prog .bar{height:26px} .prog .pct{font-size:26px}
     .top{margin:-28px -28px 26px;padding:40px 28px 8px}
     .filters{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
@@ -693,10 +697,10 @@
   .task .st.todo{background:#FFD9D6;color:#B3261E}
 
   /* Carinhos no cabeçalho: apenas o coração, com área de toque confortável. */
-  .top-title{position:relative;min-height:48px}
+  .top-title{position:relative;min-height:48px;display:flex;align-items:center}
   .top-title.acts h1{padding-left:var(--acts,80px);padding-right:var(--acts,80px)}
-  .top-title h1{white-space:nowrap}
-  .topacts{position:absolute;top:0;right:0;display:flex;align-items:center;gap:2px;z-index:2}
+  .top-title h1{white-space:nowrap;width:100%;margin-top:0;margin-bottom:0}
+  .topacts{position:absolute;top:50%;right:0;transform:translateY(-50%);display:flex;align-items:center;gap:2px;z-index:2}
   body .topacts .fab{position:relative;width:38px;height:38px;background:transparent;border:0;border-radius:12px;box-shadow:none;font-size:var(--header-emoji-size,28px);animation:none;color:inherit}
   .chat-icon{display:block;line-height:1;transform-origin:center}
   .chatfab.pulse .chat-icon{animation:chat-beat 2.4s ease-in-out infinite}
@@ -766,8 +770,8 @@
       </div>
     </div>
     <div class="fam" id="fam"></div>
+    <div class="prog" id="prog"></div>
   </div>
-  <div class="prog" id="prog"></div>
   <div class="filter-row"><div class="filters" id="fType"></div><button class="filter-search" id="filterSearch" aria-label="Buscar tarefa" title="Buscar tarefa" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button></div>
   <div class="searchbar" id="searchBar"><input id="qTxt" type="search" placeholder="Procurar tarefa…" autocomplete="off" aria-label="Procurar tarefa nesta semana"><span class="qcnt" id="qCnt"></span><button class="qx" id="qClose" aria-label="Fechar busca">✕</button></div>
   <button class="qall" id="qAll">🔎 Procurar em todas as semanas</button>
@@ -1906,7 +1910,7 @@ function taskHtml(t,inImp){
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[NEXT_R[t.status]||'done'][0]}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${SWLBL[NEXT_L[t.status]||'doing'][0]}</div>`: ''}
     <div class="tin">
-      <div class="t"><div class="tg">${dchip}${subj}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>r.a?`<button type="button" class="r ra" data-rfx="${r.a}" aria-label="Ouvir ${esc(r.an||'áudio')} de ${esc(r.n||'')}"><span class="pl" aria-hidden="true"></span>${esc(r.an||'Áudio')} <b>${esc(r.n||'')}</b></button>`:`<span class="r">${r.e} <b>${esc(r.n||'')}</b></span>`).join('')}</span>`:''}</div><div class="tx">${hlHtml(t.text,fQ)}</div>
+      <div class="t"><div class="tg">${dchip}${subj}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>r.a?`<button type="button" class="r ra" data-rfx="${r.a}" aria-label="Ouvir ${esc(r.an||'áudio')} de ${esc(r.n||'')}"><span class="pl" aria-hidden="true"></span><b>${esc(r.n||'')}</b></button>`:`<span class="r">${r.e} <b>${esc(r.n||'')}</b></span>`).join('')}</span>`:''}</div><div class="tx">${hlHtml(t.text,fQ)}</div>
         ${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">🚫 <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
       <button class="star ${t.important?'on':''}" data-star="${t.id}" aria-pressed="${t.important?'true':'false'}" aria-label="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}" title="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}">⭐</button>
     </div>
