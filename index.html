@@ -40,6 +40,8 @@
   @keyframes progshine{0%{transform:translateX(-110%)}60%,100%{transform:translateX(110%)}}
   @media(prefers-reduced-motion:reduce){.prog .bar i{animation:none}.prog .bar i::after{display:none}}
   .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
+  .prog .sapo-prog{width:36px;height:36px;object-fit:contain;vertical-align:middle;margin-left:4px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
+  .prog .row>span:last-child{display:inline-flex;align-items:center;gap:2px}
   .prog .done .bar i{background:linear-gradient(90deg,var(--ter),var(--qua),var(--gold));background-size:220% 100%}
   .nav{display:none}
   .nav b{color:var(--ink)}
@@ -828,8 +830,9 @@
   @keyframes splashIn{from{transform:scale(.7) translateY(18px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
   @media(prefers-reduced-motion:reduce){.splash img{animation:none}}
   /* sapinho da Maria */
-  .sapo{position:fixed;z-index:400;font-size:22px;line-height:1;pointer-events:none;transform-origin:50% 100%;animation:sapoPula 1.8s ease-in-out forwards;filter:drop-shadow(0 3px 4px rgba(0,0,0,.22))}
-  .sapo img{display:block;width:72px;height:72px;object-fit:contain}
+  .sapo{position:fixed;z-index:400;font-size:22px;line-height:1;pointer-events:none;transform-origin:50% 100%;animation:sapoEntra 2.4s ease-in-out forwards;filter:drop-shadow(0 3px 4px rgba(0,0,0,.22))}
+  .sapo img{display:block;width:80px;height:80px;object-fit:contain}
+  @keyframes sapoEntra{0%{transform:scale(.5);opacity:0}8%{transform:scale(1);opacity:1}88%{transform:scale(1);opacity:1}100%{transform:scale(.6);opacity:0}}
   .sapo-h{display:inline-block;vertical-align:middle;margin-left:2px;line-height:1}
   .sapo-h img{display:block;width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
   @keyframes sapoPula{0%{transform:translateY(8px) scale(.6);opacity:0}10%{transform:translateY(0) scale(1);opacity:1}25%{transform:translateY(-14px) scaleX(1.05)}40%{transform:translateY(0) scale(1.1,.85)}55%{transform:translateY(-10px)}70%{transform:translateY(0) scale(1.08,.9)}82%{transform:translateY(-5px)}92%{transform:translateY(0);opacity:1}100%{transform:translateY(0) scale(.6);opacity:0}}
@@ -838,7 +841,7 @@
 </style>
 </head>
 <body>
-<div class="splash" id="splash" aria-hidden="true"><img src="sapinho.webp" alt="" decoding="async" onerror="this.closest('.splash').remove()"></div>
+<div class="splash" id="splash" aria-hidden="true"><img src="bailarina.gif" alt="" decoding="async" onerror="this.closest('.splash').remove()"></div>
 <div class="wrap">
   <div class="top">
     <div class="top-title"><h1>🎒 Gestão de tarefas</h1>
@@ -1690,8 +1693,10 @@ function setTyping(on){
 function quemDigita(){ return USERS.filter(u=>(!USER||u.id!==USER.id)&&TYPING[u.id]); }
 function renderTyping(){
   const el=document.getElementById('typing'); if(!el) return;
-  const q=quemDigita(); el.classList.toggle('on',q.length>0);
+  const q=quemDigita(); const m=document.getElementById('msgs'); const noFim=m&&(m.scrollHeight-m.scrollTop-m.clientHeight)<120; const antes=el.classList.contains('on');
+  el.classList.toggle('on',q.length>0);
   if(!q.length){ el.innerHTML=''; return; }
+  if(!antes&&noFim) scrollMsgs();
   const nomes=q.length===1?`<b>${esc(q[0].nome)}</b> está digitando`:`<b>${q.map(u=>esc(u.nome)).join(' e ')}</b> estão digitando`;
   el.innerHTML=q.map(u=>`<span class="av" style="border-color:${corDe(u)}">${avatarHtml(u)}</span>`).join('')+
     `<span class="tx">${nomes}</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>`;
@@ -1966,7 +1971,7 @@ function render(){
   const w=DB.weeks[current];
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas · <span class="pct">${pct}%</span>${pct===100?' 🎉':''}</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`; }
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas · <span class="pct">${pct}%</span>${pct===100?' 🎉':''}<img class="sapo-prog" src="sapinho-pulo.webp?v=3" alt="" aria-hidden="true" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`; }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -2075,10 +2080,10 @@ function sapinho(el){
   const r=el.getBoundingClientRect(), T=72;
   const sp=document.createElement('span'); sp.className='sapo'; sp.setAttribute('aria-hidden','true');
   sp.style.left=Math.max(4,r.right-44-T)+'px'; sp.style.top=Math.max(4,r.bottom-T-2)+'px';
-  const im=new Image(); im.src='sapinho-pulo.webp?v=2'; im.alt=''; im.decoding='async'; im.onerror=()=>{ im.remove(); sp.textContent='🐸'; }; sp.appendChild(im);
+  const im=new Image(); im.src='sapinho-pulo.webp?v=3'; im.alt=''; im.decoding='async'; im.onerror=()=>{ im.remove(); sp.textContent='🐸'; }; sp.appendChild(im);
   document.body.appendChild(sp); SFX.pop();
   const fim=()=>{ sp.remove(); el._sapo=false; };
-  sp.addEventListener('animationend',fim,{once:true}); setTimeout(fim,2200);
+  sp.addEventListener('animationend',fim,{once:true}); setTimeout(fim,2800);
 }
 let AC=null;
 function tone(seq){ if(!SOUND) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume();
@@ -2263,7 +2268,7 @@ veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 
 function openMenu(id){
   const t=findTask(id); if(!t) return; if(t.type===B){openMove(id);return;}
-  show(`<h2>📝 Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=2" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
+  show(`<h2>📝 Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=3" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
    <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
    <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
    ${isAluna()?`<button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
@@ -2689,7 +2694,7 @@ function hourlyReminder(){ if(!USER||USER.papel!=='aluna') return; const h=new D
 function startReminders(){ clearInterval(notifTimer); askNotif(); if(!USER||USER.papel!=='aluna') return; askNotif().then(ok=>{ if(!ok) return; hourlyReminder(); notifTimer=setInterval(hourlyReminder,60*1000); }); }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyReminder(); });
 render();
-// abertura com o sapinho: fica um ciclo inteiro da animação (até ele comer a mosca) e some sozinho; toque não interrompe
+// abertura com a bailarina: 6 s, toque não interrompe, some sozinha
 (()=>{ const sp=document.getElementById('splash'); if(!sp) return;
   document.body.classList.add('abrindo');
   const bloqueia=e=>{ if(document.body.classList.contains('abrindo')) e.preventDefault(); };
@@ -2697,7 +2702,7 @@ render();
   const teclas=e=>{ if(document.body.classList.contains('abrindo')&&['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(e.key)) e.preventDefault(); };
   document.addEventListener('keydown',teclas);
   const tira=()=>{ sp.classList.add('off'); document.body.classList.remove('abrindo'); document.removeEventListener('keydown',teclas); setTimeout(()=>sp.remove(),700); };
-  setTimeout(tira,10800); })();
+  setTimeout(tira,6000); })();
 // ao abrir, rola até o dia de hoje (uma vez por abertura)
 setTimeout(()=>{ const el=document.querySelector('.day.today'); if(!el) return;
   const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector('.top')?.offsetHeight||0)-10;
