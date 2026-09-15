@@ -40,7 +40,7 @@
   @keyframes progshine{0%{transform:translateX(-110%)}60%,100%{transform:translateX(110%)}}
   @media(prefers-reduced-motion:reduce){.prog .bar i{animation:none}.prog .bar i::after{display:none}}
   .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
-  .prog .sapo-prog{width:36px;height:36px;object-fit:contain;vertical-align:middle;margin-left:4px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
+  .prog .sapo-prog{width:36px;height:36px;object-fit:contain;vertical-align:middle;margin-left:8px;transform:scale(1.5);transform-origin:50% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
   .prog .row>span:last-child{display:inline-flex;align-items:center;gap:2px}
   .prog .done .bar i{background:linear-gradient(90deg,var(--ter),var(--qua),var(--gold));background-size:220% 100%}
   .nav{display:none}
@@ -420,8 +420,8 @@
   .msg .b.emo{font-size:30px !important;line-height:1.15;padding:6px 12px 4px}
   .msg.me .b small{color:rgba(255,255,255,.85);opacity:1}
   .chatin>button{flex:none}
-  .chatin input{flex:1;min-width:0;border:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 30%,#fff);border-radius:999px;padding:11px 16px;font:inherit;font-size:16px;background:#fff}
-  .chatin input:focus{outline:none;border-color:var(--c2)}
+  .chatin input,.chatin textarea{flex:1;min-width:0;border:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 30%,#fff);border-radius:22px;padding:11px 16px;font:inherit;font-size:16px;line-height:1.35;background:#fff;resize:none;max-height:130px;overflow-y:auto;scrollbar-width:thin}
+  .chatin input:focus,.chatin textarea:focus{outline:none;border-color:var(--c2)}
   .chatin button{width:46px;height:46px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-size:20px;flex:none;box-shadow:0 4px 10px -4px rgba(0,0,0,.35);transition:transform .15s}
   .chatin button:active{transform:scale(.9)}
   .chat .empty{color:var(--soft);text-align:center;margin:auto;font-size:16px;line-height:1.5}
@@ -556,11 +556,11 @@
     background:color-mix(in srgb,var(--c2,#8E5BE0) 5%,#fff);
     border-top:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 15%,#fff);
   }
-  body .chatsheet .chatin input{
-    height:46px;padding:10px 14px;border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 22%,#fff);
+  body .chatsheet .chatin input,body .chatsheet .chatin textarea{
+    min-height:46px;padding:12px 14px;border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 22%,#fff);
     color:var(--ink);box-shadow:0 2px 6px rgba(63,39,100,.025);
   }
-  body .chatsheet .chatin input:focus{border-color:var(--c2,#8E5BE0);box-shadow:0 0 0 3px color-mix(in srgb,var(--c2,#8E5BE0) 14%,transparent)}
+  body .chatsheet .chatin input:focus,body .chatsheet .chatin textarea:focus{border-color:var(--c2,#8E5BE0);box-shadow:0 0 0 3px color-mix(in srgb,var(--c2,#8E5BE0) 14%,transparent)}
   body .chatsheet .chatin button{width:44px;height:44px;box-shadow:none}
   body .chatsheet .chatin .emo,body .chatsheet .chatin .clip,body .chatsheet .chatin .mic{border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 16%,#fff);background:#fff;color:var(--ink)}
   body .chatsheet .chatin #chatSend{background:linear-gradient(135deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--c2,#8E5BE0) 24%,transparent)}
@@ -1432,10 +1432,11 @@ function msgHtml(m,i,arr){
   const onlyEmo=!m.att&&/^(\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u200d|\ufe0f|\s){1,6}$/u.test(m.text||'');
   const att=m.att?(m.att.kind==='img'?`<img class="pic" src="${m.att.thumb}" data-open="${m.k}" alt="foto">`:m.att.kind==='fala'?`<span class="aud fala" data-fala="${esc(m.att.texto||'')}" role="button" tabindex="0" aria-label="Ouvir"><span class="pl" aria-hidden="true"></span><span class="ft">🗣️ ${esc(m.att.texto||'')}</span></span>`:m.att.kind==='audio'?`<span class="aud" data-aud="${m.k}" role="button" tabindex="0" aria-label="Tocar áudio"><span class="pl" aria-hidden="true"></span><span class="wv" aria-hidden="true">${'<i></i>'.repeat(14)}</span><small>${fmtDur(m.att.dur||0)}</small></span>`:`<span class="file" data-open="${m.k}">📄 <span>${esc(m.att.name||'arquivo')}<small>${fmtSize(m.att.size||0)}</small></span></span>`):'';
   const others=USERS.filter(x=>x.id!==m.by); const seenAll=others.every(x=>(READS[x.id]||0)>=(m.t||0)); const seenAny=others.some(x=>(READS[x.id]||0)>=(m.t||0));
-  const tick=me?`<span class="tick ${seenAll?'seen':''}" title="${seenAll?'Visto por todos':seenAny?'Visto por alguém':'Enviada'}">${seenAny?'✓✓':'✓'}</span>`:'';
+  // sem marca enquanto ninguém viu; um ✓ quando alguém viu
+  const tick=(me&&seenAny)?`<span class="tick seen" title="${seenAll?'Visto por todos':'Visto por alguém'}">✓</span>`:'';
   const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||''))}</div>${reactsHtml(m)}</div></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}</div>${reactsHtml(m)}</div></div>`;
 }
 function chatHtml(){
   if(chatQ.length>=2){ const ql=chatQ.toLowerCase();
@@ -1756,7 +1757,7 @@ function openChatLook(){
   show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px;padding:0"><div class="msgs" id="lookMsgs" style="min-height:0;max-height:none;padding:10px 8px;overflow:hidden">
       <div class="msg" data-pu="${OUTRO.id}" style="--uc:${corDe(OUTRO)}"><span class="av">${avatarHtml(OUTRO)}</span><div><div class="b"><span class="hd"><small>20:41</small><b>${esc(OUTRO.nome)}</b></span>Oi! Assim fica o balão dele(a) 😊</div></div></div>
-      <div class="msg me" data-pu="${USER.id}" style="--uc:${corDe(USER)}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><small>20:42 <span class="tick seen">✓✓</span></small><b>Eu</b></span>E assim fica o seu</div></div></div>
+      <div class="msg me" data-pu="${USER.id}" style="--uc:${corDe(USER)}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><small>20:42 <span class="tick seen">✓</span></small><b>Eu</b></span>E assim fica o seu</div></div></div>
     </div></div>
     <p class="looklbl">💬 Cor dos balões</p>
     ${USERS.map(u=>`<div class="corp"><span class="nm"><span class="av">${avatarHtml(u)}</span><b>${esc(u.nome)}${USER&&u.id===USER.id?' (você)':''}</b></span>
@@ -1855,7 +1856,7 @@ function openChat(){
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
     <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel" aria-label="Descartar" title="Descartar">🗑</button><button class="rpause" id="recPause" aria-label="Pausar gravação" title="Pausar">⏸</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado" title="Ouvir">▶</button></div>
-    <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">😊</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button><input id="chatTxt" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
+    <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">😊</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button><textarea id="chatTxt" rows="1" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
     </div>`);
   applyPref(); markRead(); scrollMsgs(); bindMsgs(); editingKey=null; replyTo=null;
   document.getElementById('chatLook').addEventListener('click',openChatLook);
@@ -1884,7 +1885,7 @@ function openChat(){
   const send=()=>{ const v=inp.value.trim(); if(!v) return;
     if(editingKey){ famRef.child('chat/'+editingKey).update({text:v,edited:true}); cancelEdit(); vibrate(15); return; }
     const msg={by:USER.id,text:v,t:firebase.database.ServerValue.TIMESTAMP}; if(replyTo) msg.reply=replyTo;
-    famRef.child('chat').push(msg); inp.value=''; replyTo=null; document.getElementById('editbar').classList.remove('on'); inp.focus(); vibrate(15); SFX.send(); setTyping(false); updSendBtn(); };
+    famRef.child('chat').push(msg); inp.value=''; inp.style.height='auto'; replyTo=null; document.getElementById('editbar').classList.remove('on'); inp.focus(); vibrate(15); SFX.send(); setTyping(false); updSendBtn(); };
   inp.addEventListener('input',()=>setTyping(inp.value.trim().length>0));
   inp.addEventListener('blur',()=>setTyping(false));
   { const sb=document.getElementById('chatSend'); let holdT=null, held=false, y0=0, pid=null;
@@ -1900,7 +1901,9 @@ function openChat(){
       if(!REC) held=false; else setTimeout(()=>{held=false;},0); };
     sb.addEventListener('pointerup',solta); sb.addEventListener('pointercancel',solta); }
   inp.addEventListener('input',updSendBtn); updSendBtn();
-  inp.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); } });
+  const cresce=()=>{ inp.style.height='auto'; inp.style.height=Math.min(130,inp.scrollHeight)+'px'; };
+  inp.addEventListener('input',cresce); cresce();
   const picker=document.getElementById('picker');
   document.getElementById('emoBtn').addEventListener('click',()=>{ const on=!picker.classList.contains('on'); if(on){ inp.blur(); setTimeout(()=>{picker.classList.add('on');scrollMsgs();},120); } else { picker.classList.remove('on'); inp.focus(); } });
   inp.addEventListener('focus',()=>{ picker.classList.remove('on'); audPanel(false); setTimeout(scrollMsgs,250); });
@@ -2694,6 +2697,20 @@ function hourlyReminder(){ if(!USER||USER.papel!=='aluna') return; const h=new D
 function startReminders(){ clearInterval(notifTimer); askNotif(); if(!USER||USER.papel!=='aluna') return; askNotif().then(ok=>{ if(!ok) return; hourlyReminder(); notifTimer=setInterval(hourlyReminder,60*1000); }); }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyReminder(); });
 render();
+// Botão "voltar" do Android: fecha o que estiver aberto em vez de sair do app; na tela inicial, dois toques e pergunta
+(()=>{ let ultimoVoltar=0, saindo=false;
+  const arma=()=>{ try{ history.pushState({guarda:1},''); }catch(e){} };
+  try{ history.replaceState({raiz:1},''); }catch(e){} arma();
+  window.addEventListener('popstate',()=>{
+    if(saindo) return;
+    if(document.querySelector('.popwrap')){ closePop(); arma(); return; }          // menu da mensagem
+    if(veil.classList.contains('on')){ hide(); arma(); return; }                   // folha aberta (conversa, tarefa, menu…)
+    const agora=Date.now();
+    if(agora-ultimoVoltar>2500){ ultimoVoltar=agora; toast('Toca em voltar de novo para sair'); arma(); return; }
+    if(confirm('Sair do app?')){ saindo=true; try{ history.go(-2); }catch(e){} setTimeout(()=>{ try{window.close();}catch(e){} saindo=false; arma(); },600); }
+    else { ultimoVoltar=0; arma(); }
+  });
+})();
 // abertura com a bailarina: 6 s, toque não interrompe, some sozinha
 (()=>{ const sp=document.getElementById('splash'); if(!sp) return;
   document.body.classList.add('abrindo');
