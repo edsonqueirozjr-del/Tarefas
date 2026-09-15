@@ -30,8 +30,7 @@
   .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:14px;color:var(--soft);margin-bottom:6px}
   .prog .row b{color:var(--ink);font-size:16px}
   .prog .bar{height:22px;border-radius:999px;background:#EEEBF5;overflow:hidden;position:relative}
-  .prog .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--seg),var(--ter),var(--sex));transition:width .6s cubic-bezier(.4,0,.2,1);position:relative}
-  .prog .bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.45),transparent 70%);animation:shine 2.6s ease-in-out infinite}
+  .prog .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--seg),var(--ter),var(--sex));transition:width .6s cubic-bezier(.4,0,.2,1)}
   .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
   .prog .done .bar i{background:linear-gradient(90deg,var(--ter),var(--gold))}
   .nav{display:none}
@@ -48,6 +47,9 @@
   .chip{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:800;white-space:nowrap;flex:none;transition:transform .15s}
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink);transform:scale(1.04)}
   .chip .arw{font-size:10px;opacity:.7;margin-left:2px}
+  .chip .cnt{display:inline-block;margin-left:6px;min-width:18px;padding:0 5px;border-radius:999px;background:#EFEDF7;color:var(--soft);font-size:12px;font-weight:900;text-align:center;vertical-align:1px}
+  .chip.on .cnt{background:rgba(255,255,255,.24);color:#fff}
+  .chip .cnt.zero{opacity:.55}
   .chip.wide{font-weight:900;position:relative;overflow:hidden}
   .chip.wide:active{transform:scale(.94)}
   .chips.opening .chip{animation:chipIn .34s cubic-bezier(.34,1.56,.5,1) both}
@@ -130,16 +132,16 @@
   @keyframes starpop{0%{transform:scale(1) rotate(0)}35%{transform:scale(1.45) rotate(14deg)}65%{transform:scale(.9) rotate(-6deg)}100%{transform:scale(1) rotate(0)}}
   @media(prefers-reduced-motion:reduce){.star.pop{animation:none}}
   .task.off .star{opacity:.25}
-  .task.done .t{opacity:.72;transition:opacity .35s}
+  .task.done .t{opacity:1}
   .st.ok{background:#DDF3E8;color:#1E7A55}
   .st{display:inline-block;font-size:11px;font-weight:900;background:var(--amber);color:#4a3800;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
   .st.mv{background:#DCD3FF;color:#3B2A8F}
   .tg{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
   .tg .st,.tg .dchip{margin:0;vertical-align:0}
-  .st.sj{background:#F2F0FA;color:var(--soft)}
+  .st.sj{background:#F2F0FA;color:var(--ink)}
   .st.no{background:#FFD9D6;color:#B3261E}
   .tag.no{background:#FFD9D6;color:#B3261E}
-  .box.past{opacity:.62}
+  .box.past{opacity:1}
   .task.late .tx{color:var(--soft)}
   .task.off{opacity:.55}
   .task.off .tx{text-decoration:line-through;color:var(--soft)}
@@ -276,7 +278,7 @@
   .chat h2 .gear,.chat h2 .x{background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:18px;flex:none;display:flex;align-items:center;justify-content:center}
   .chat h2 .gear.find{margin-left:auto}
   .chat h2 .x{margin-left:0}
-  .chatwho{font-size:12px;margin:0;display:flex;gap:6px;flex-wrap:wrap}
+  .chatwho{font-size:12px;margin:0;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;text-align:center;width:100%}
   .cfbar{display:none;gap:8px;align-items:center;margin:10px 0 0}
   .cfbar.on{display:flex}
   .cfbar input{flex:1;min-width:0;border:0;border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;background:rgba(255,255,255,.95);color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12)}
@@ -403,10 +405,16 @@
   .rpill button{border:0;background:transparent;font-size:26px;width:40px;height:40px;border-radius:50%;flex:none;transition:transform .12s}
   .rpill button:active,.rpill button.mine{background:rgba(255,255,255,.18);transform:scale(1.15)}
   .rpill button.more{color:#fff;font-size:24px;background:rgba(255,255,255,.14)}
-  .pmenu{position:fixed;background:#fff;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.25);min-width:170px;overflow:hidden;animation:pop .25s cubic-bezier(.36,1.6,.5,1)}
-  .pmenu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:#fff;padding:12px 16px;font-size:16px;font-weight:800;color:var(--ink);text-align:left}
-  .pmenu button+button{border-top:1px solid var(--line)}
-  .pmenu button.danger{color:#B3261E}
+  .pmenu{position:fixed;background:#26243A;border-radius:18px;box-shadow:0 10px 24px rgba(0,0,0,.28);min-width:170px;overflow:hidden;animation:pop .25s cubic-bezier(.36,1.6,.5,1)}
+  .pmenu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;padding:12px 16px;font-size:16px;font-weight:800;color:#fff;text-align:left}
+  .pmenu button+button{border-top:1px solid rgba(255,255,255,.14)}
+  .pmenu button:active{background:rgba(255,255,255,.16)}
+  .pmenu button.danger{color:#FF9B93}
+  .pmenu.me button{justify-content:flex-end;text-align:right}
+  .msg{transition:transform .22s ease;position:relative}
+  .msg.sdrag{transition:none}
+  .msg .rpico{position:absolute;top:50%;left:8px;transform:translateY(-50%) scale(.7);width:34px;height:34px;border-radius:50%;background:#DCE9FA;color:var(--sex);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none;z-index:0}
+  .msg.armed .rpico{opacity:1;transform:translateY(-50%) scale(1)}
   .msg.focus .b{box-shadow:0 0 0 3px var(--sex)}
   .msgs.dim .msg:not(.focus){opacity:.35}
   .editbar{display:none;align-items:center;gap:8px;background:#E8F1FC;border-left:4px solid var(--sex);padding:8px 12px;font-size:13px;color:var(--soft);flex:none}
@@ -481,72 +489,6 @@
     .veil{align-items:center}
     .sheet{border-radius:28px;max-height:86vh}
   }
-  /* ===== Tema Lilás ✨ ===== */
-  body.t-lilas{--paper:#FFFFFF;--ink:#2E2352;--soft:#7A6F9C;--line:#E6DDFB;--fab:#8E5BE0;--gold:#B48BF5;--doing:#F1E7FF;--amber:#C9A8FF;
-    background:linear-gradient(180deg,#F4EEFF 0,#FFFFFF 260px)}
-  body.t-lilas .top{background:linear-gradient(180deg,#F4EEFF,#F9F6FF);box-shadow:0 10px 12px -10px rgba(142,91,224,.25)}
-  body.t-lilas h1{color:#5B3FC4}
-  body.t-lilas .chip{border-color:#E6DDFB}
-  body.t-lilas .chip.on,body.t-lilas .chip.on.todo,body.t-lilas .chip.on.doing,body.t-lilas .chip.on.done,body.t-lilas .chip.on.late{background:#8E5BE0;border-color:#8E5BE0;color:#fff}
-  body.t-lilas .prog .bar{background:#EFE8FF}
-  body.t-lilas .prog .bar i{background:linear-gradient(90deg,#C9A8FF,#8E5BE0,#5B3FC4)}
-  body.t-lilas .prog .pct{color:#5B3FC4}
-  body.t-lilas .fab{background:#5B3FC4;box-shadow:0 8px 20px rgba(91,63,196,.35)}
-  body.t-lilas .chatfab{background:#8E5BE0}
-  body.t-lilas .fam .p .av{border-color:#E6DDFB}
-  body.t-lilas .fam .p.me .av{border-color:#8E5BE0}
-  body.t-lilas .fam .p.on .dot{background:#8E5BE0;box-shadow:0 0 0 3px rgba(142,91,224,.25)}
-  body.t-lilas .imp{border-color:#B48BF5}
-  body.t-lilas .imp summary{background:linear-gradient(90deg,#8E5BE0,#B48BF5)}
-  body.t-lilas .imp summary .cnt{color:#8E5BE0}
-  body.t-lilas .imp .task{background:#F7F2FF;--tbg:#F7F2FF}
-  body.t-lilas .box.bring{background:var(--bring)} body.t-lilas .bring .task{--tbg:var(--bring)}
-  body.t-lilas .box.home{background:#EFE8FF} body.t-lilas .home .task{--tbg:#EFE8FF}
-  body.t-lilas .box .task.doing{--tbg:var(--doing)}
-  body.t-lilas .aulas span{background:#F3EEFF;color:#5B3FC4}
-  body.t-lilas .st.sj{background:#F3EEFF;color:#7A6F9C}
-  body.t-lilas .st.ok{background:#DDF3E8;color:#1E7A55}
-  body.t-lilas .sw.st-done{background:#8E5BE0} body.t-lilas .sw.st-doing{background:#C9A8FF} body.t-lilas .sw.st-todo{background:#8C86A8}
-  body.t-lilas .task.doing .st{background:#C9A8FF;color:#2E2352}
-  body.t-lilas .bang.now{background:#8E5BE0}
-  body.t-lilas .now{background:#8E5BE0}
-  body.t-lilas .next{border-color:#E6DDFB;background:#FCFAFF}
-  body.t-lilas .sheet{background:#fff}
-  body.t-lilas .opt{background:#F3EEFF}
-  body.t-lilas .primary,body.t-lilas .opt.primary{background:#8E5BE0 !important}
-  body.t-lilas .sheet h2 .x,body.t-lilas .chat h2 .gear{background:#F3EEFF}
-  body.t-lilas .grip{background:#E6DDFB}
-  body.t-lilas .msg.me{--uc:#8E5BE0}
-  body.t-lilas .msgs.bg-lilas{background:#F7F2FF}
-  body.t-lilas .chatin input{border-color:#E6DDFB}
-  body.t-lilas .chatin button{background:#8E5BE0}
-  body.t-lilas .chatin .emo,body.t-lilas .chatin .clip{background:#F3EEFF;color:#5B3FC4}
-  body.t-lilas .day.today{animation:glowl 2.2s ease-in-out infinite}
-  @keyframes glowl{0%,100%{box-shadow:0 0 0 0 rgba(142,91,224,0)}50%{box-shadow:0 0 0 7px rgba(142,91,224,.28)}}
-  body.t-lilas .tt .c{background:#F3EEFF}
-  body.t-lilas .wk.cur{border-color:#8E5BE0;background:#F3EEFF}
-  body.t-lilas .wk .bar i{background:#8E5BE0}
-  body.t-lilas .badge{background:#E4443F}
-  body.t-lilas .react.mine{border-color:#8E5BE0;background:#F1E7FF}
-  body.t-lilas .editbar{background:#F1E7FF;border-left-color:#8E5BE0}
-  body.t-lilas .msg .b .q{border-left-color:#8E5BE0}
-  body.t-lilas .msg.focus .b{box-shadow:0 0 0 3px #8E5BE0}
-  body.t-lilas .cropbar input[type=range]{accent-color:#8E5BE0}
-  body.t-lilas .rpill{background:#2E2352}
-  body.t-lilas .msg .b small .tick.seen{color:#E9DDFF}
-  body.t-lilas .uopt:active{border-color:#8E5BE0}
-  body.t-lilas .tt .c.tom{border-color:#8E5BE0;background:#F1E7FF}
-  body.t-lilas .tt .c.tom span{color:#5B3FC4}
-  body.t-lilas .dchip{filter:none}
-  body.t-lilas .prog .row b{color:#5B3FC4}
-  body.t-lilas .empty,body.t-lilas .quiet{color:#7A6F9C}
-  body.t-lilas .task.late .tx{color:#9A90B8}
-  body.t-lilas .st.no,body.t-lilas .tag.no{background:#FFE1E7;color:#C2185B}
-  body.t-lilas .bang.late{background:#C2185B}
-  .themes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .themes button{border:3px solid var(--line);border-radius:18px;padding:14px 10px;background:#fff;font-weight:900;font-size:16px;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:8px}
-  .themes button.on{border-color:var(--ink)}
-  .themes .sw{width:100%;height:44px;border-radius:12px;position:static;opacity:1}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   @media print{.fab,.veil,.filters,.chips{display:none} .day{break-inside:avoid} details:not([open])>.body{display:block}}
 
@@ -630,7 +572,6 @@
   /* Informação de apoio discreta; ações não reutilizam as cores dos dias. */
   body .aulas{gap:5px;margin-bottom:10px}
   body .aulas span{background:#F6F6F9;color:#666276;border:1px solid #EBEAF0;border-radius:9px;padding:3px 7px;font-size:12px;font-weight:600;line-height:1.35}
-  body.t-lilas .aulas span{background:#F7F5FA;color:#70667F;border-color:#ECE7F2}
   .tg .trea{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0;vertical-align:middle}
   .tg .trea .r{border-width:1px;padding:2px 7px;font-size:12px;line-height:1.2;box-shadow:none}
   body .fab.chatfab{background:#485166;color:#fff;border:1px solid #D4D9E4;box-shadow:0 5px 14px rgba(38,36,58,.2)}
@@ -638,8 +579,8 @@
 
   /* Carinhos no cabeçalho: apenas o coração, com área de toque confortável. */
   .top-title{position:relative;min-height:48px}
-  .top-title:has(.topacts .fab.on) h1{padding-left:80px;padding-right:80px}
-  .top-title.acts h1{padding-left:80px;padding-right:80px}
+  .top-title.acts h1{padding-left:var(--acts,80px);padding-right:var(--acts,80px)}
+  .top-title h1{white-space:nowrap}
   .topacts{position:absolute;top:0;right:0;display:flex;align-items:center;gap:2px;z-index:2}
   body .topacts .fab{position:relative;width:38px;height:38px;background:transparent;border:0;border-radius:12px;box-shadow:none;font-size:26px;animation:none;color:inherit}
   body .topacts .chatfab{display:none}
@@ -651,7 +592,7 @@
   .top-title .heart-icon{display:block;line-height:1;transform-origin:center;animation:heart-beat 2s ease-in-out infinite}
   .topacts .fab:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
   .topacts .fab .badge{top:-3px;right:-5px;min-width:18px;height:18px;font-size:10px;padding:0 4px}
-  @media(max-width:430px){.top-title h1{font-size:23px}}
+
   @keyframes heart-beat{0%,38%,100%{transform:scale(1)}12%{transform:scale(1.13)}22%{transform:scale(1)}30%{transform:scale(1.08)}}
   @media(prefers-reduced-motion:reduce){.top-title .heart-icon{animation:none}}
   .subject-flag{display:inline-block;width:1.25em;height:.84em;vertical-align:-.08em;border-radius:2px;overflow:hidden;flex-shrink:0}
@@ -694,7 +635,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='8.8';
+const APP_VERSION='9.2';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -982,8 +923,8 @@ function openLogin(after,preId){
 }
 
 /* ================= TEMA ================= */
-let THEME='padrao'; try{THEME=localStorage.getItem(KEY+'-theme')||'padrao';}catch(e){}
-function applyTheme(){ document.body.classList.toggle('t-lilas',THEME==='lilas'); const mt=document.querySelector('meta[name=theme-color]'); if(mt) mt.content=THEME==='lilas'?'#8E5BE0':'#7D5BE6'; }
+try{localStorage.removeItem(KEY+'-theme');}catch(e){}
+function applyTheme(){ const mt=document.querySelector('meta[name=theme-color]'); if(mt) mt.content='#7D5BE6'; }
 applyTheme();
 function hl(txt,q){ const t=esc(txt); if(!q) return t; const i=t.toLowerCase().indexOf(q.toLowerCase()); if(i<0) return t; return t.slice(0,i)+'<mark>'+t.slice(i,i+q.length)+'</mark>'+t.slice(i+q.length); }
 function plain(t){ return (t||'').replace(/<[^>]+>/g,''); }
@@ -1088,14 +1029,6 @@ function openShare(){
   }));
   const hoje=w.days.find(d=>d.date===TODAY); sel.add(hoje?hoje.k:w.days[0].k); atualiza();
 }
-function openTheme(){
-  show(`<h2>✨ Tema do app <button class="x">✕</button></h2>
-    <div class="themes">
-      <button data-t="padrao" class="${THEME==='padrao'?'on':''}"><span class="sw" style="background:linear-gradient(90deg,#FF8A3D,#2EB88A,#E0479E,#2F8FE0)"></span>Padrão 🎨</button>
-      <button data-t="lilas" class="${THEME==='lilas'?'on':''}"><span class="sw" style="background:linear-gradient(90deg,#F4EEFF,#C9A8FF,#8E5BE0,#5B3FC4)"></span>Lilás ✨</button>
-    </div><p class="quiet" style="margin:10px 0 0;font-size:13px">O tema vale só neste aparelho. Cada um escolhe o seu.</p>`);
-  sheet.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>{ THEME=b.dataset.t; try{localStorage.setItem(KEY+'-theme',THEME);}catch(e){} applyTheme(); refreshChat(); sheet.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x===b)); vibrate(15); toast(THEME==='lilas'?'Tema lilás ✨':'Tema padrão 🎨'); }));
-}
 
 /* ================= FAMÍLIA / FOTO / CONVERSA ================= */
 const uname=id=>(USERS.find(u=>u.id===id)||{nome:id}).nome;
@@ -1183,7 +1116,25 @@ function appBadge(){ // número no ícone do app (tela inicial), como o WhatsApp
 function updateChatBadge(){ const b=document.getElementById('chatBadge'); const n=unread(); b.textContent=n>9?'9+':n; b.classList.toggle('on',n>0);
   const f=document.getElementById('chatFab'); if(f){ f.classList.toggle('on',!!CLOUD_CFG); f.classList.toggle('pulse',n>0); }
   marcaTopo(); appBadge(); }
-function marcaTopo(){ const t=document.querySelector('.top-title'); if(t) t.classList.toggle('acts',!!document.querySelector('.topacts .fab.on')); }
+function marcaTopo(){
+  const t=document.querySelector('.top-title'); if(!t) return;
+  const acts=t.querySelector('.topacts');
+  const vis=acts?[...acts.querySelectorAll('.fab.on')].length:0;
+  t.classList.toggle('acts',vis>0);
+  if(acts&&vis) t.style.setProperty('--acts',Math.max(vis*38+6,acts.offsetWidth+6)+'px');
+  ajustaTitulo();
+}
+// deixa o título numa linha só: diminui a letra até caber no espaço que sobra
+function ajustaTitulo(){
+  const h=document.querySelector('.top-title h1'); if(!h) return;
+  h.style.fontSize='';
+  const base=parseFloat(getComputedStyle(h).fontSize)||28;
+  let fs=base;
+  while(h.scrollWidth>h.clientWidth+1 && fs>15){ fs-=1; h.style.fontSize=fs+'px'; }
+}
+window.addEventListener('resize',()=>{ clearTimeout(window.__tt); window.__tt=setTimeout(marcaTopo,150); });
+window.addEventListener('orientationchange',()=>setTimeout(marcaTopo,300));
+document.fonts&&document.fonts.ready&&document.fonts.ready.then(()=>marcaTopo());
 function fmtSeen(t){ const d=new Date(t||0); const di=iso(d); const hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
   if(di===TODAY) return 'visto hoje '+hm; if(di===addDays(TODAY,-1)) return 'visto ontem '+hm; return 'visto '+fmt(di)+' às '+hm; }
 function fmtT(t){ const d=new Date(t||0); const hoje=iso(d)===TODAY; return (hoje?'':fmt(iso(d))+' ')+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
@@ -1203,7 +1154,7 @@ function msgHtml(m,i,arr){
   const tick=me?`<span class="tick ${seenAll?'seen':''}" title="${seenAll?'Visto por todos':seenAny?'Visto por alguém':'Enviada'}">${seenAny?'✓✓':'✓'}</span>`:'';
   const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${(me&&THEME==='lilas')?'#8E5BE0':(u.cor||'#8A8A9A')}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><b>${esc(u.nome)}</b>${q}${att}${chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')}<small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></div>${reactsHtml(m)}</div></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${u.cor||'#8A8A9A'}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><b>${esc(u.nome)}</b>${q}${att}${chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')}<small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></div>${reactsHtml(m)}</div></div>`;
 }
 function chatHtml(){
   if(chatQ.length>=2){ const ql=chatQ.toLowerCase();
@@ -1216,7 +1167,7 @@ function chatHtml(){
   return groups.map(g=>{ const inner=g.msgs.map((m,i,arr)=>msgHtml(m,i,arr)).join('');
     if(g.d===TODAY) return `<div class="daysep">Hoje</div>${inner}`;
     const open=chatOpenDays[g.d]?' open':'';
-    return `<details class="daygrp" data-day="${g.d}"${open}><summary>${dayLabel(g.d)} · ${g.msgs.length} mensagem${g.msgs.length>1?'s':''}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`; }).join('');
+    return `<details class="daygrp" data-day="${g.d}"${open}><summary>${dayLabel(g.d)} · ${g.msgs.length} ${g.msgs.length>1?'mensagens':'mensagem'}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`; }).join('');
 }
 function bindMsgs(){
   const box=document.getElementById('msgs'); if(!box) return;
@@ -1226,13 +1177,35 @@ function bindMsgs(){
   box.querySelectorAll('.qt').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=findTask(q.dataset.task); if(!t){toast('Essa tarefa não está mais aqui');return;} hide(); const w=DB.weeks[current]; const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; render(); setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500);} },200); }));
   box.querySelectorAll('.q:not(.qt)').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=box.querySelector(`.msg[data-k="${q.dataset.go}"]`); if(t){t.scrollIntoView({behavior:'smooth',block:'center'}); t.classList.add('flash'); setTimeout(()=>t.classList.remove('flash'),1300);} }));
   box.querySelectorAll('.msg').forEach(el=>{
-    let timer=null,sx=0,sy=0;
-    const start=(x,y)=>{sx=x;sy=y;el.classList.add('pressing');timer=setTimeout(()=>{el.classList.remove('pressing');vibrate(30);openMsgMenu(el.dataset.k);},450);};
+    let timer=null,sx=0,sy=0,mdx=0,mmode=null,ico=null,armado=false;
+    const start=(x,y)=>{sx=x;sy=y;mdx=0;mmode=null;armado=false;el.classList.add('pressing');timer=setTimeout(()=>{el.classList.remove('pressing');vibrate(30);openMsgMenu(el.dataset.k);},450);};
     const cancel=()=>{clearTimeout(timer);el.classList.remove('pressing');};
+    const limpa=()=>{ el.classList.remove('sdrag','armed'); el.style.transform=''; if(ico){ico.remove();ico=null;} mdx=0; mmode=null; armado=false; };
+    const move=(x,y)=>{
+      const dx=x-sx, dy=y-sy;
+      if(mmode===null){
+        if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.4){ mmode='h'; cancel(); el.classList.add('sdrag');
+          if(!ico){ ico=document.createElement('span'); ico.className='rpico'; ico.textContent='↩'; el.appendChild(ico); } }
+        else if(Math.abs(dy)>10){ mmode='v'; cancel(); }
+        else return false;
+      }
+      if(mmode!=='h') return false;
+      mdx=Math.max(-95,Math.min(95,dx));
+      el.style.transform='translateX('+mdx+'px)';
+      if(ico){ if(mdx>=0){ ico.style.left=(8-mdx)+'px'; ico.style.right='auto'; } else { ico.style.left='auto'; ico.style.right=(8+mdx)+'px'; } }
+      const arm=Math.abs(mdx)>=56; el.classList.toggle('armed',arm);
+      if(arm&&!armado){ armado=true; vibrate(12); } if(!arm) armado=false;
+      return true;
+    };
+    const solta=()=>{ cancel(); if(mmode==='h'&&Math.abs(mdx)>=56){ vibrate(20); SFX.pop(); const k=el.dataset.k; limpa(); startReply(k); return; } limpa(); };
     el.addEventListener('touchstart',e=>start(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
-    el.addEventListener('touchmove',e=>{if(Math.abs(e.touches[0].clientX-sx)>10||Math.abs(e.touches[0].clientY-sy)>10)cancel();},{passive:true});
-    el.addEventListener('touchend',cancel); el.addEventListener('touchcancel',cancel);
-    el.addEventListener('mousedown',e=>{if(e.button===0)start(e.clientX,e.clientY);}); el.addEventListener('mouseup',cancel); el.addEventListener('mouseleave',cancel);
+    el.addEventListener('touchmove',e=>{ const t=e.touches[0]; if(move(t.clientX,t.clientY)) e.preventDefault(); },{passive:false});
+    el.addEventListener('touchend',solta); el.addEventListener('touchcancel',solta);
+    el.addEventListener('mousedown',e=>{ if(e.button!==0) return; start(e.clientX,e.clientY);
+      const mv=ev=>move(ev.clientX,ev.clientY);
+      const up=()=>{ document.removeEventListener('mousemove',mv); document.removeEventListener('mouseup',up); solta(); };
+      document.addEventListener('mousemove',mv); document.addEventListener('mouseup',up); });
+    el.addEventListener('mouseleave',cancel);
   });
 }
 function toggleReact(k,e){ if(!famRef||!USER) return; const m=CHAT.find(x=>x.k===k); const mine=m&&m.reacts&&m.reacts[e]&&m.reacts[e][USER.id];
@@ -1279,7 +1252,7 @@ function openChatLook(){
   show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px;padding:0"><div class="msgs" id="lookMsgs" style="min-height:0;max-height:none;padding:10px 8px;overflow:hidden">
       <div class="msg" style="--uc:#E0479E"><span class="av">${avatarHtml(USERS[0])}</span><div><div class="b"><b>Maria</b>Oi! Assim fica o balão dela 😊<small>20:41</small></div></div></div>
-      <div class="msg me" style="--uc:${THEME==='lilas'?'#8E5BE0':(USER.cor||'#2F8FE0')}"><span class="av">${avatarHtml(USER)}</span><div><div class="b">E assim fica o seu<small>20:42 <span class="tick seen">✓✓</span></small></div></div></div>
+      <div class="msg me" style="--uc:${USER.cor||'#2F8FE0'}"><span class="av">${avatarHtml(USER)}</span><div><div class="b">E assim fica o seu<small>20:42 <span class="tick seen">✓✓</span></small></div></div></div>
     </div></div>
     <p class="looklbl">🎨 Plano de fundo</p>
     <div class="sw2">${BGS.map(([k,c])=>`<button data-bg="${k}" class="${CHATPREF.bg===k?'on':''}" style="background:${c};${c.startsWith('radial')?'background-size:14px 14px;':''}" title="${k}"></button>`).join('')}
@@ -1302,6 +1275,13 @@ document.getElementById('bgFile').addEventListener('change',ev=>{ const f=ev.tar
     c.getContext('2d').drawImage(img,0,0,c.width,c.height); CHATPREF.foto=c.toDataURL('image/jpeg',.7); CHATPREF.bg='foto'; savePref(); URL.revokeObjectURL(url); openChatLook(); toast('Plano de fundo atualizado 🎨'); };
   img.src=url; });
 function closePop(){ const w=document.querySelector('.popwrap'); if(w) w.remove(); const m=document.getElementById('msgs'); if(m){m.classList.remove('dim'); m.querySelectorAll('.msg.focus').forEach(x=>x.classList.remove('focus'));} }
+function startReply(k){
+  const m=CHAT.find(x=>x.k===k); if(!m) return;
+  replyTo={k,by:m.by,text:msgPreview(m).slice(0,90)}; editingKey=null;
+  const eb=document.getElementById('editbar'); if(!eb) return;
+  eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Respondendo a '+esc(uname(m.by))+':</b> '+esc(msgPreview(m).slice(0,50));
+  const inp=document.getElementById('chatTxt'); if(inp) inp.focus();
+}
 function openMsgMenu(k){
   const m=CHAT.find(x=>x.k===k); if(!m) return; const me=USER&&m.by===USER.id;
   closePop();
@@ -1311,7 +1291,7 @@ function openMsgMenu(k){
   const wrap=document.createElement('div'); wrap.className='popwrap';
   const mine=e=>m.reacts&&m.reacts[e]&&USER&&m.reacts[e][USER.id];
   wrap.innerHTML=`<div class="rpill" id="rpill">${REACTS.map(e=>`<button data-r="${e}" class="${mine(e)?'mine':''}">${e}</button>`).join('')}<button class="more" data-more="1">＋</button></div>
-    <div class="pmenu" id="pmenu"><button data-a="reply">↩️ Responder</button>${me?`<button data-a="edit">✏️ Editar</button><button data-a="del" class="danger">🗑️ Apagar</button>`:''}</div>`;
+    <div class="pmenu ${me?'me':''}" id="pmenu"><button data-a="reply">↩️ Responder</button>${me?`<button data-a="edit">✏️ Editar</button><button data-a="del" class="danger">🗑️ Apagar</button>`:''}</div>`;
   document.body.appendChild(wrap);
   const pill=wrap.querySelector('#rpill'), menu=wrap.querySelector('#pmenu');
   const place=()=>{ const pw=pill.offsetWidth, ph=pill.offsetHeight;
@@ -1325,8 +1305,7 @@ function openMsgMenu(k){
   wrap.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);closePop();}));
   wrap.querySelector('[data-more]').addEventListener('click',()=>{ pill.innerHTML=EMOJIS.map(e=>`<button data-r="${e}">${e}</button>`).join(''); pill.style.maxWidth='calc(100vw - 24px)';
     pill.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);closePop();})); place(); });
-  menu.querySelector('[data-a=reply]').addEventListener('click',()=>{ closePop(); replyTo={k,by:m.by,text:msgPreview(m).slice(0,90)}; editingKey=null;
-    const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Respondendo a '+esc(uname(m.by))+':</b> '+esc(msgPreview(m).slice(0,50)); document.getElementById('chatTxt').focus(); });
+  menu.querySelector('[data-a=reply]').addEventListener('click',()=>{ closePop(); startReply(k); });
   if(me){
     menu.querySelector('[data-a=edit]').addEventListener('click',()=>{ closePop(); editingKey=k; replyTo=null; const inp=document.getElementById('chatTxt'); inp.value=m.text||'';
       const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Editando:</b> '+esc((m.text||'').slice(0,50)); inp.focus(); });
@@ -1394,9 +1373,19 @@ function taskPassed(t){const w=DB.weeks[current];const d=w.days.find(x=>x.k===t.
 function findTask(id){for(const w of Object.values(DB.weeks)){const t=allTasks(w).find(t=>t.id===id);if(t)return t;}}
 function dayCss(k){return `var(${DAYMETA[k][1]})`;}
 
+function contaTipo(k,w){
+  return allTasks(w).filter(t=>{
+    if(fSubj!=='all' && t.subj!==fSubj) return false;
+    if(k==='all') return true;
+    if(k==='late') return t.status!=='done' && taskPassed(t);
+    return t.status===k && !(t.status==='todo' && taskPassed(t));
+  }).length;
+}
 function renderFilters(){
   const types=[['all','Todas'],['todo','Falta fazer'],['doing','Fazendo'],['done','Feito'],['late','Esquecido']];
-  document.getElementById('fType').innerHTML=types.map(([k,l])=>`<button class="chip ${k} ${fType===k?'on':''}" data-t="${k}">${l}</button>`).join('');
+  const ws=DB.weeks[current];
+  document.getElementById('fType').innerHTML=types.map(([k,l])=>{ const n=contaTipo(k,ws);
+    return `<button class="chip ${k} ${fType===k?'on':''}" data-t="${k}">${l}<span class="cnt ${n?'':'zero'}">${n}</span></button>`; }).join('');
   const w=DB.weeks[current]; const used=[...new Set(allTasks(w).map(t=>t.subj))];
   const lista=Object.keys(SUBJ).filter(k=>used.includes(k));
   const el=document.getElementById('fSubj');
@@ -1424,10 +1413,12 @@ function render(){
   let html='';
   // mais importantes (ordem: dia da semana)
   const order=w.days.map(d=>d.k);
-  const imp=allTasks(w).filter(t=>t.important&&pass(t)).sort((a,b)=>order.indexOf(a.day)-order.indexOf(b.day));
-  const impPend=imp.filter(t=>t.status!=='done').length;
-  if(!(filtering&&!imp.length)) html+=`<details class="imp" data-date="imp" ${openState['imp']?'open':''}><summary><span class="n">⭐ Importantes</span><span class="cnt">${impPend?impPend+' Pendente'+(impPend>1?'s':''):'✓ Tudo feito'}</span><span class="arrow">▼</span></summary>
-    <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join(''):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':(isAluna()?'Segura o dedo em uma tarefa e escolhe “Marcar como mais importante”. Ela vai aparecer aqui.':'As tarefas que a Maria marcar como importantes aparecem aqui.')}</p>`}</div></details>`;
+  const impVale=t=>t.important && !t.off && t.status!=='done' && !taskPassed(t);
+  const imp=allTasks(w).filter(t=>impVale(t)&&pass(t)).sort((a,b)=>order.indexOf(a.day)-order.indexOf(b.day));
+  const impPend=imp.length;
+  const impGuardadas=allTasks(w).filter(t=>t.important&&!impVale(t)).length;
+  if(!(filtering&&!imp.length)) html+=`<details class="imp" data-date="imp" ${openState['imp']?'open':''}><summary><span class="n">⭐ Importantes</span><span class="cnt">${impPend?impPend+' Pendente'+(impPend>1?'s':''):'✓ Tudo em dia'}</span><span class="arrow">▼</span></summary>
+    <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join(''):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':(impGuardadas?'Nada de importante para agora. Aqui só ficam as que ainda dá para fazer.':(isAluna()?'Toca na estrelinha de uma tarefa para ela aparecer aqui.':'As tarefas marcadas com a estrelinha aparecem aqui.'))}</p>`}</div></details>`;
   const inWeek=w.days.some(d=>d.date===TODAY);
   html+='<div class="days">';
   const tomorrowDate=(()=>{const d=new Date(TODAY+'T12:00:00');d.setDate(d.getDate()+1);return iso(d);})();
@@ -1499,7 +1490,7 @@ function taskHtml(t,inImp){
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[NEXT_R[t.status]||'done'][0]}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${SWLBL[NEXT_L[t.status]||'doing'][0]}</div>`: ''}
     <div class="tin">
-      <div class="t"><div class="tg">${dchip}${subj}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>`<span class="r">${r.e} <b>${esc(r.n||'')}</b></span>`).join('')}</span>`:''}</div><div class="tx">${t.text}</div>
+      <div class="t"><div class="tg">${dchip}${status}${subj}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>`<span class="r">${r.e} <b>${esc(r.n||'')}</b></span>`).join('')}</span>`:''}</div><div class="tx">${t.text}</div>
         ${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">🚫 <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
       <button class="star ${t.important?'on':''}" data-star="${t.id}" aria-pressed="${t.important?'true':'false'}" aria-label="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}" title="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}">⭐</button>
     </div>
@@ -1580,6 +1571,16 @@ function swipeAction(id,dir,el){
   const status = dir>0 ? NEXT_R[t.status]||'done' : NEXT_L[t.status]||'doing';
   setStatus(id,status,el);
 }
+function confirmaImp(id,btn){
+  const t=findTask(id); if(!t) return;
+  const val=!t.important; vibrate(15);
+  show(`<h2>⭐ ${val?'Marcar como mais importante?':'Tirar das mais importantes?'} <button class="x">✕</button></h2>
+   <p class="quiet" style="margin:0 0 12px">${esc(plain(t.text))}</p>
+   <p class="quiet" style="margin:0 0 12px;font-size:14px">${val?'Ela vai aparecer lá em cima, no quadro dourado das mais importantes.':'Ela sai do quadro dourado e fica só no dia dela.'}</p>
+   <div class="row"><button class="opt" id="impNao">Agora não</button><button class="opt primary" id="impSim">${val?'⭐ Marcar':'Tirar'}</button></div>`);
+  document.getElementById('impNao').addEventListener('click',hide);
+  document.getElementById('impSim').addEventListener('click',()=>{ hide(); toggleImp(id,btn); });
+}
 function toggleImp(id,btn){
   const t=findTask(id); if(!t) return;
   const val=!t.important; vibrate(20); SFX.pop();
@@ -1602,7 +1603,7 @@ function bindTasks(root=document.getElementById('app')){
       sb.addEventListener('touchmove',stop,{passive:true});
       sb.addEventListener('touchend',stop,{passive:true});
       sb.addEventListener('mousedown',stop);
-      sb.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); toggleImp(id,sb); });
+      sb.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); confirmaImp(id,sb); });
     }
     // observação: toque (ou botão direito) abre mudar e apagar; segurar continua abrindo o menu da tarefa
     el.querySelectorAll('.note.nt').forEach(nt=>{
@@ -1676,10 +1677,7 @@ function openMenu(id){
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
     const a=b.dataset.a;
     if(['move','del','undel','note','delnote'].includes(a)&&!isAluna()) return;
-    if(a==='imp'){ const val=!t.important; hide(); vibrate(20);
-      Promise.resolve(writeImportant(id,val)).then(ok=>{ if(!ok) return;
-        render(); toast(val?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');
-        if(val) window.scrollTo({top:0,behavior:'smooth'}); }); }
+    if(a==='imp'){ hide(); setTimeout(()=>confirmaImp(id),220); }
     if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
     if(a==='del') openCancel(id);
     if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.u=Date.now(); save(); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
@@ -1854,10 +1852,9 @@ function openMain(){
    <button class="opt" data-m="find"><span class="ic">🔎</span>Buscar tarefa</button>
    <button class="opt" data-m="tt"><span class="ic">📅</span>Aulas da semana</button>
    <button class="opt" data-m="share"><span class="ic">📤</span>Compartilhar tarefas</button>
-   <button class="opt" data-m="wk"><span class="ic">🗂️</span>Semanas e histórico</button>
-   <button class="opt" data-m="theme"><span class="ic">✨</span>Tema do app${THEME==='lilas'?' <small class="quiet">(Lilás)</small>':''}</button>
+   <button class="opt" data-m="wk"><span class="ic">🗂️</span>Ver semana</button>
 `);
-  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='find')openSearch(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='theme')openTheme(); if(m==='foto')openFoto(); if(m==='user')openLogin(); if(m==='chat')openChat();}));
+  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='find')openSearch(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='user')openLogin(); if(m==='chat')openChat();}));
 }
 function openTimetable(){
   const dow=new Date().getDay();
