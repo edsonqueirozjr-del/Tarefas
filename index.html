@@ -369,7 +369,7 @@
     .sheet{border-radius:28px;max-height:86vh}
   }
   /* ===== Tema Lilás ✨ ===== */
-  body.t-lilas{--paper:#FFFFFF;--ink:#2E2352;--soft:#7A6F9C;--line:#E6DDFB;--fab:#8E5BE0;--sex:#8E5BE0;--gold:#B48BF5;--doing:#F1E7FF;--amber:#C9A8FF;
+  body.t-lilas{--paper:#FFFFFF;--ink:#2E2352;--soft:#7A6F9C;--line:#E6DDFB;--fab:#8E5BE0;--gold:#B48BF5;--doing:#F1E7FF;--amber:#C9A8FF;
     background:linear-gradient(180deg,#F4EEFF 0,#FFFFFF 260px)}
   body.t-lilas .top{background:linear-gradient(180deg,#F4EEFF,#F9F6FF);box-shadow:0 10px 12px -10px rgba(142,91,224,.25)}
   body.t-lilas h1{color:#5B3FC4}
@@ -408,13 +408,28 @@
   body.t-lilas .chatin input{border-color:#E6DDFB}
   body.t-lilas .chatin button{background:#8E5BE0}
   body.t-lilas .chatin .emo,body.t-lilas .chatin .clip{background:#F3EEFF;color:#5B3FC4}
-  body.t-lilas .tag{color:inherit}
   body.t-lilas .day.today{animation:glowl 2.2s ease-in-out infinite}
   @keyframes glowl{0%,100%{box-shadow:0 0 0 0 rgba(142,91,224,0)}50%{box-shadow:0 0 0 7px rgba(142,91,224,.28)}}
   body.t-lilas .tt .c{background:#F3EEFF}
   body.t-lilas .wk.cur{border-color:#8E5BE0;background:#F3EEFF}
   body.t-lilas .wk .bar i{background:#8E5BE0}
   body.t-lilas .badge{background:#E4443F}
+  body.t-lilas .react.mine{border-color:#8E5BE0;background:#F1E7FF}
+  body.t-lilas .editbar{background:#F1E7FF;border-left-color:#8E5BE0}
+  body.t-lilas .msg .b .q{border-left-color:#8E5BE0}
+  body.t-lilas .msg.focus .b{box-shadow:0 0 0 3px #8E5BE0}
+  body.t-lilas .cropbar input[type=range]{accent-color:#8E5BE0}
+  body.t-lilas .rpill{background:#2E2352}
+  body.t-lilas .msg .b small .tick.seen{color:#E9DDFF}
+  body.t-lilas .uopt:active{border-color:#8E5BE0}
+  body.t-lilas .tt .c.tom{border-color:#8E5BE0;background:#F1E7FF}
+  body.t-lilas .tt .c.tom span{color:#5B3FC4}
+  body.t-lilas .dchip{filter:none}
+  body.t-lilas .prog .row b{color:#5B3FC4}
+  body.t-lilas .empty,body.t-lilas .quiet{color:#7A6F9C}
+  body.t-lilas .task.late .tx{color:#9A90B8}
+  body.t-lilas .st.no,body.t-lilas .tag.no{background:#FFE1E7;color:#C2185B}
+  body.t-lilas .bang.late{background:#C2185B}
   .themes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .themes button{border:3px solid var(--line);border-radius:18px;padding:14px 10px;background:#fff;font-weight:900;font-size:16px;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:8px}
   .themes button.on{border-color:var(--ink)}
@@ -449,7 +464,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='4.7';
+const APP_VERSION='4.8';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
