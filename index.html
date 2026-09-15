@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#7D5BE6">
+<meta name="theme-color" content="#FFFDF7">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Gestão de tarefas">
@@ -575,7 +575,7 @@
   .tg .trea{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0;vertical-align:middle}
   .tg .trea .r{border-width:1px;padding:2px 7px;font-size:12px;line-height:1.2;box-shadow:none}
   body .fab.chatfab{background:#485166;color:#fff;border:1px solid #D4D9E4;box-shadow:0 5px 14px rgba(38,36,58,.2)}
-  .task .st.todo{background:#E7EAF0;color:#485166}
+  .task .st.todo{background:#FFD9D6;color:#B3261E}
 
   /* Carinhos no cabeçalho: apenas o coração, com área de toque confortável. */
   .top-title{position:relative;min-height:48px}
@@ -924,7 +924,7 @@ function openLogin(after,preId){
 
 /* ================= TEMA ================= */
 try{localStorage.removeItem(KEY+'-theme');}catch(e){}
-function applyTheme(){ const mt=document.querySelector('meta[name=theme-color]'); if(mt) mt.content='#7D5BE6'; }
+function applyTheme(){ const mt=document.querySelector('meta[name=theme-color]'); if(mt) mt.content='#FFFDF7'; }
 applyTheme();
 function hl(txt,q){ const t=esc(txt); if(!q) return t; const i=t.toLowerCase().indexOf(q.toLowerCase()); if(i<0) return t; return t.slice(0,i)+'<mark>'+t.slice(i,i+q.length)+'</mark>'+t.slice(i+q.length); }
 function plain(t){ return (t||'').replace(/<[^>]+>/g,''); }
@@ -1294,12 +1294,21 @@ function openMsgMenu(k){
     <div class="pmenu ${me?'me':''}" id="pmenu"><button data-a="reply">↩️ Responder</button>${me?`<button data-a="edit">✏️ Editar</button><button data-a="del" class="danger">🗑️ Apagar</button>`:''}</div>`;
   document.body.appendChild(wrap);
   const pill=wrap.querySelector('#rpill'), menu=wrap.querySelector('#pmenu');
-  const place=()=>{ const pw=pill.offsetWidth, ph=pill.offsetHeight;
-    let top=r.top-ph-10; if(top<70) top=r.bottom+10;
-    let left=me? r.right-pw : r.left; left=Math.max(12,Math.min(left,window.innerWidth-pw-12));
-    pill.style.top=top+'px'; pill.style.left=left+'px';
-    if(menu){ const mh=menu.offsetHeight, mw=menu.offsetWidth; let mt=(top<r.top)? r.bottom+10 : top+ph+10; if(mt+mh>window.innerHeight-20) mt=r.top-mh-10-ph-10;
-      menu.style.top=Math.max(70,mt)+'px'; menu.style.left=Math.max(12,Math.min(me?r.right-mw:r.left,window.innerWidth-mw-12))+'px'; } };
+  const place=()=>{
+    const pw=pill.offsetWidth, ph=pill.offsetHeight, mh=menu.offsetHeight, mw=menu.offsetWidth;
+    const gap=10, edge=12, vv=window.visualViewport;
+    const viewLeft=vv?vv.offsetLeft:0, viewTop=vv?vv.offsetTop:0;
+    const viewWidth=vv?vv.width:window.innerWidth, viewHeight=vv?vv.height:window.innerHeight;
+    const minTop=viewTop+edge, maxBottom=viewTop+viewHeight-edge;
+    const groupHeight=mh+gap+ph;
+    let groupTop=r.top-gap-groupHeight;
+    if(groupTop<minTop) groupTop=r.bottom+gap;
+    groupTop=Math.max(minTop,Math.min(groupTop,maxBottom-groupHeight));
+    const left=Math.max(viewLeft+edge,Math.min(me?r.right-pw:r.left,viewLeft+viewWidth-pw-edge));
+    pill.style.top=(groupTop+mh+gap)+'px'; pill.style.left=left+'px';
+    menu.style.top=groupTop+'px';
+    menu.style.left=Math.max(viewLeft+edge,Math.min(left+pw-mw,viewLeft+viewWidth-mw-edge))+'px';
+  };
   place();
   wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
   wrap.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);closePop();}));
