@@ -626,6 +626,7 @@
   .tg .trea{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0;vertical-align:middle}
   .tg .trea .r{border-width:1px;padding:2px 7px;font-size:12px;line-height:1.2;box-shadow:none}
   body .fab.chatfab{background:#485166;color:#fff;border:1px solid #D4D9E4;box-shadow:0 5px 14px rgba(38,36,58,.2)}
+  .task .st.todo{background:#E7EAF0;color:#485166}
 </style>
 </head>
 <body>
@@ -1323,7 +1324,8 @@ function render(){
     const box=(type,title,emptyTxt)=>{
       const list=tasksAll.filter(t=>t.type===type&&pass(t));
       if(filtering&&!list.length) return '';
-      const now = isToday && ((type===B&&MORNING)||(type===H&&!MORNING)) ? '<span class="bang now" title="É agora">!</span>' : '';
+      const hasPending = tasksAll.some(t=>t.type===type&&t.status!=='done'&&!t.off);
+      const now = hasPending && isToday && ((type===B&&MORNING)||(type===H&&!MORNING)) ? '<span class="bang now" title="É agora">!</span>' : '';
       const passed=boxPassed(w,d,type);
       return `<div class="box ${type} ${passed?'past':''}"><h3>${title}${now}</h3>${list.length?list.map(t=>taskHtml(t,false)).join(''):`<div class="empty">${emptyTxt}</div>`}</div>`;
     };
@@ -1351,7 +1353,7 @@ function taskHtml(t,inImp){
   const dchip = inImp ? `<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
   const subj = `<span class="st sj">${SUBJ[t.subj]}</span>`;
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
-  const status=((t.pics||0)?`<span class="st pics">📸 ${t.pics}</span>`:'')+(t.off?`<span class="st canc">🚫 Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(t.status==='doing'?'<span class="st">⏳ Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">✓ Feito</span>':'')+moved;
+  const status=((t.pics||0)?`<span class="st pics">📸 ${t.pics}</span>`:'')+(t.off?`<span class="st canc">🚫 Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">📝 Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">⏳ Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">✓ Feito</span>':'')+moved;
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''}" data-id="${t.id}">
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[NEXT_R[t.status]||'done'][0]}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${SWLBL[NEXT_L[t.status]||'doing'][0]}</div>`: ''}
@@ -1471,14 +1473,14 @@ function openMenu(id){
   const t=findTask(id);
   show(`<h2>📝 Tarefa <button class="x">✕</button></h2>
    <p class="quiet" style="margin:0 0 12px">${SUBJ[t.subj]} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
-   ${isAluna()?`<button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>`:''}
-   ${CLOUD_CFG?'<button class="opt" data-a="chat"><span class="ic">📨</span>Mandar para a conversa</button>':''}
-   ${isAluna()?`<button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>
-   ${t.off?'<button class="opt" data-a="undel"><span class="ic">↩️</span>Voltar a valer</button>':'<button class="opt danger" data-a="del"><span class="ic">🚫</span>Cancelar a tarefa</button>'}`:''}
-   ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">💛</span>Deixar um carinho para a Maria</button>`:''}
+   ${isAluna()?`<button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
+   <button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
+   ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`:''}
    ${CLOUD_CFG?`<button class="opt" data-a="pics"><span class="ic">📸</span>${isAluna()?((t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'):('Ver fotos'+((t.pics||0)?' ('+t.pics+')':''))}</button>`:''}
-   ${isAluna()?`<button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
-   ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`:''}`);
+   ${isAluna()?'<button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>':''}
+   ${CLOUD_CFG?'<button class="opt" data-a="chat"><span class="ic">📨</span>Mandar para a conversa</button>':''}
+   ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">💛</span>Deixar um carinho para a Maria</button>`:''}
+   ${isAluna()?(t.off?'<button class="opt" data-a="undel"><span class="ic">↩️</span>Voltar a valer</button>':'<button class="opt danger" data-a="del"><span class="ic">🚫</span>Cancelar a tarefa</button>'):''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
     const a=b.dataset.a;
     if(['imp','move','del','undel','note','delnote'].includes(a)&&!isAluna()) return;
