@@ -193,12 +193,12 @@
   .who span{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800}
   .who small{color:var(--soft);font-weight:700}
   /* família / presença */
-  .fam{display:flex;justify-content:center;gap:14px;margin:2px 0 12px}
-  .fam .p{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;font-weight:800;color:var(--soft);border:0;background:none;padding:0}
+  .fam{display:flex;justify-content:center;gap:22px;margin:2px 0 12px}
+  .fam .p{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:13px;font-weight:800;color:var(--soft);border:0;background:none;padding:0}
   .fam .p .avw{position:relative}
-  .fam .p .av{width:46px;height:46px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:24px;border:3px solid var(--line);overflow:hidden}
+  .fam .p .av{width:64px;height:64px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid var(--line);overflow:hidden}
   .fam .p .av img{width:100%;height:100%;object-fit:cover}
-  .fam .p .dot{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:#B9B6C6;border:2px solid #fff;z-index:1}
+  .fam .p .dot{position:absolute;right:0;bottom:0;width:17px;height:17px;border-radius:50%;background:#B9B6C6;border:2px solid #fff;z-index:1}
   .fam .p.on .dot{background:#2EB88A;box-shadow:0 0 0 3px rgba(46,184,138,.25)}
   .fam .p.on{color:var(--ink)}
   .fam .p.me .av{border-color:var(--ink)}
@@ -206,6 +206,7 @@
   .uopt .av{width:56px;height:56px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#F2F0FA}
   .uopt .av img{width:100%;height:100%;object-fit:cover}
   /* conversa */
+  .chatfab{bottom:calc(16px + 62px + 12px + env(safe-area-inset-bottom));background:var(--sex)}
   .badge{position:absolute;top:-2px;right:-2px;background:#E4443F;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
   .badge.on{display:flex}
   .sheet.chatsheet{display:flex;flex-direction:column;height:min(94dvh,780px);max-height:none;overflow:hidden;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
@@ -216,7 +217,7 @@
   .msgs{flex:1;min-height:0;overflow:auto;padding:10px 8px;display:flex;flex-direction:column;gap:8px;overscroll-behavior:contain;background:#F7F5FC;border-radius:16px}
   .msg{display:flex;gap:8px;align-items:flex-end;max-width:85%}
   .msg.me{align-self:flex-end;flex-direction:row-reverse}
-  .msg .av{width:28px;height:28px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:16px;overflow:hidden;flex:none}
+  .msg .av{width:40px;height:40px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex:none;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.12)}
   .msg .av img{width:100%;height:100%;object-fit:cover}
   .msg{--uc:var(--sex)}
   .msg:not(.me) .b{background:color-mix(in srgb,var(--uc) 14%,#fff);border-bottom-left-radius:6px}
@@ -261,6 +262,8 @@
   .msg .b .q{display:block;border-left:3px solid var(--sex);background:rgba(0,0,0,.06);border-radius:8px;padding:4px 8px;margin-bottom:6px;font-size:13px;line-height:1.25;color:var(--ink);cursor:pointer}
   .msg.me .b .q{background:rgba(255,255,255,.22);border-left-color:#fff;color:#fff}
   .msg .b .q b{display:block;font-size:11px;margin:0;color:inherit;opacity:.85}
+  .msg .b .qt{border-left-color:var(--gold);background:#FFF3D1;color:var(--ink)}
+  .msg.me .b .qt{background:rgba(255,255,255,.9);border-left-color:var(--gold)}
   .msg .b small .tick{margin-left:6px;font-weight:900;letter-spacing:-2px}
   .msg .b small .tick.seen{color:#8fe3ff}
   .msg.flash .b{animation:flashb 1.2s}
@@ -332,6 +335,7 @@
     .tg .st,.tg .dchip,.tg .bang{vertical-align:2px;margin-right:4px}
     .st,.dchip{font-size:12px}
     .fab{width:72px;height:72px;font-size:32px;right:28px;bottom:28px}
+    .chatfab{bottom:112px}
     .sheet{max-width:760px;border-radius:28px 28px 0 0;padding:6px 24px 28px}
     .sheet h2{font-size:24px}
     .opt{font-size:19px;padding:16px}
@@ -368,7 +372,8 @@
   <div id="app"></div>
 </div>
 
-<button class="fab" id="fab" aria-label="Menu">☰<span class="badge" id="chatBadge"></span></button>
+<button class="fab chatfab" id="chatFab" aria-label="Conversa">💬<span class="badge" id="chatBadge"></span></button>
+<button class="fab" id="fab" aria-label="Menu">☰</button>
 <input type="file" id="fotoFile" accept="image/*" style="display:none">
 <input type="file" id="bgFile" accept="image/*" style="display:none">
 <input type="file" id="attFile" style="display:none">
@@ -381,7 +386,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='4.2';
+const APP_VERSION='4.4';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -673,14 +678,15 @@ function chatHtml(){
     const att=m.att?(m.att.kind==='img'?`<img class="pic" src="${m.att.thumb}" data-open="${m.k}" alt="foto">`:`<span class="file" data-open="${m.k}">📄 <span>${esc(m.att.name||'arquivo')}<small>${fmtSize(m.att.size||0)}</small></span></span>`):'';
     const others=USERS.filter(x=>x.id!==m.by); const seenAll=others.every(x=>(READS[x.id]||0)>=(m.t||0)); const seenAny=others.some(x=>(READS[x.id]||0)>=(m.t||0));
     const tick=me?`<span class="tick ${seenAll?'seen':''}" title="${seenAll?'Visto por todos':seenAny?'Visto por alguém':'Enviada'}">${seenAny?'✓✓':'✓'}</span>`:'';
-    const q=m.reply?`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`:'';
+    const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${SUBJ[m.reply.task.subj]||''} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
     return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${u.cor||'#8A8A9A'}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><b>${esc(u.nome)}</b>${q}${att}${esc(m.text||'')}<small>${fmtT(m.t)}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></div>${reactsHtml(m)}</div></div>`;}).join('');
 }
 function bindMsgs(){
   const box=document.getElementById('msgs'); if(!box) return;
   box.querySelectorAll('.react').forEach(b=>b.addEventListener('click',()=>toggleReact(b.dataset.k,b.dataset.r)));
   box.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',e=>{e.stopPropagation(); openAtt(a.dataset.open);}));
-  box.querySelectorAll('.q').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=box.querySelector(`.msg[data-k="${q.dataset.go}"]`); if(t){t.scrollIntoView({behavior:'smooth',block:'center'}); t.classList.add('flash'); setTimeout(()=>t.classList.remove('flash'),1300);} }));
+  box.querySelectorAll('.qt').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=findTask(q.dataset.task); if(!t){toast('Essa tarefa não está mais aqui');return;} hide(); const w=DB.weeks[current]; const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; render(); setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500);} },200); }));
+  box.querySelectorAll('.q:not(.qt)').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=box.querySelector(`.msg[data-k="${q.dataset.go}"]`); if(t){t.scrollIntoView({behavior:'smooth',block:'center'}); t.classList.add('flash'); setTimeout(()=>t.classList.remove('flash'),1300);} }));
   box.querySelectorAll('.msg').forEach(el=>{
     let timer=null,sx=0,sy=0;
     const start=(x,y)=>{sx=x;sy=y;el.classList.add('pressing');timer=setTimeout(()=>{el.classList.remove('pressing');vibrate(30);openMsgMenu(el.dataset.k);},450);};
@@ -990,12 +996,14 @@ function openMenu(id){
   show(`<h2>📝 Tarefa <button class="x">✕</button></h2>
    <p class="quiet" style="margin:0 0 12px">${SUBJ[t.subj]} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
    <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
+   ${CLOUD_CFG?'<button class="opt" data-a="chat"><span class="ic">💬</span>Comentar na conversa</button>':''}
    <button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>
    <button class="opt" data-a="note"><span class="ic">💬</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
    ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
     const a=b.dataset.a;
     if(a==='imp'){t.important=!t.important;t.u=Date.now();save();hide();render();vibrate(20);toast(t.important?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');if(t.important)window.scrollTo({top:0,behavior:'smooth'});}
+    if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
     if(a==='move') openMove(id);
     if(a==='note') openNote(id);
     if(a==='delnote'){t.note='';t.u=Date.now();save();hide();render();toast('Observação apagada');}
@@ -1021,7 +1029,6 @@ function openNote(id){
 function openMain(){
   const n=unread();
   show(`<h2>☰ Menu <button class="x">✕</button></h2>
-   ${CLOUD_CFG?`<button class="opt" data-m="chat"><span class="ic">💬</span>Conversa da família${n?` <span class="st" style="background:#E4443F;color:#fff">${n} nova${n>1?'s':''}</span>`:''}</button>`:''}
    <button class="opt" data-m="tt"><span class="ic">📅</span>Aulas da semana</button>
    <button class="opt" data-m="wk"><span class="ic">🗂️</span>Semanas e histórico</button>
    ${CLOUD_CFG?`<p class="quiet" id="syncBadge" style="margin:4px 0 0;text-align:center;font-size:13px"></p>`:''}`);
@@ -1106,6 +1113,8 @@ function refreshReminder(){
   document.getElementById('remGo').addEventListener('click',()=>{hide();vibrate(20);});
 }
 document.getElementById('fab').addEventListener('click',openMain);
+document.getElementById('chatFab').addEventListener('click',openChat);
+if(!CLOUD_CFG) document.getElementById('chatFab').style.display='none';
 setInterval(()=>{ if(!document.hidden) renderFam(); },60*1000);
 document.addEventListener('contextmenu',e=>{ if(!e.target.closest('input,textarea')) e.preventDefault(); });
 
