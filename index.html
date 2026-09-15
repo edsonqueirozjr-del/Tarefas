@@ -687,8 +687,8 @@
   .rpill>button.more{flex:none;margin-left:2px}
   /* chamar atencao (zumbido) */
   @keyframes msnshake{0%,100%{transform:translate(0,0)}10%{transform:translate(-9px,4px)}20%{transform:translate(8px,-6px)}30%{transform:translate(-7px,-4px)}40%{transform:translate(9px,5px)}50%{transform:translate(-8px,6px)}60%{transform:translate(7px,-5px)}70%{transform:translate(-6px,3px)}80%{transform:translate(5px,-3px)}90%{transform:translate(-3px,2px)}}
-  body.shake .wrap,body.shake .fabs,body.shake .sheet,body.shake .toast{animation:msnshake .8s cubic-bezier(.36,.07,.19,.97)}
-  @media(prefers-reduced-motion:reduce){body.shake .wrap,body.shake .fabs,body.shake .sheet,body.shake .toast{animation:none}}
+  body.shake .wrap,body.shake .fabs,body.shake .sheet>*,body.shake .toast{animation:msnshake .8s cubic-bezier(.36,.07,.19,.97)}
+  @media(prefers-reduced-motion:reduce){body.shake .wrap,body.shake .fabs,body.shake .sheet>*,body.shake .toast{animation:none}}
   .nudge-msg{align-self:center;display:inline-flex;align-items:center;gap:6px;max-width:92%;margin:4px auto;padding:7px 14px;border-radius:999px;background:color-mix(in srgb,var(--uc,#8E5BE0) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,#8E5BE0) 35%,#fff);color:var(--ink);font-size:13px;font-weight:700;text-align:center}
   .nudge-msg b{color:var(--uc,#8E5BE0);font-weight:900}
   .nudge-msg small{font-size:10px;opacity:.65;margin-left:2px}
@@ -821,16 +821,17 @@
   @keyframes emIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
   @media(prefers-reduced-motion:reduce){.msg .b .em{animation:none!important}}
   /* abertura: o sapinho por cima do app (fundo transparente), some sozinho */
-  .splash{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:rgba(246,241,253,.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:1;transition:opacity .6s ease}
+  body.abrindo{overflow:hidden;touch-action:none;overscroll-behavior:none}
+  .splash{position:fixed;inset:0;z-index:300;touch-action:none;overscroll-behavior:contain;display:flex;align-items:center;justify-content:center;background:rgba(246,241,253,.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:1;transition:opacity .6s ease}
   .splash img{max-width:min(78vw,420px);max-height:70vh;object-fit:contain;filter:drop-shadow(0 14px 28px rgba(63,39,100,.25));animation:splashIn .7s cubic-bezier(.36,1.4,.5,1) both}
   .splash.off{opacity:0;pointer-events:none}
   @keyframes splashIn{from{transform:scale(.7) translateY(18px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
   @media(prefers-reduced-motion:reduce){.splash img{animation:none}}
   /* sapinho da Maria */
   .task .sapo{position:absolute;right:44px;bottom:2px;font-size:22px;line-height:1;pointer-events:none;z-index:3;transform-origin:50% 100%;animation:sapoPula 1.8s ease-in-out forwards;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
-  .task .sapo img{display:block;width:64px;height:64px;object-fit:cover;object-position:100% 100%}
+  .task .sapo img{display:block;width:64px;height:64px;object-fit:contain;image-rendering:auto}
   .sapo-h{display:inline-block;vertical-align:middle;margin-left:2px;line-height:1}
-  .sapo-h img{display:block;width:46px;height:46px;object-fit:cover;object-position:100% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
+  .sapo-h img{display:block;width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
   @keyframes sapoPula{0%{transform:translateY(8px) scale(.6);opacity:0}10%{transform:translateY(0) scale(1);opacity:1}25%{transform:translateY(-14px) scaleX(1.05)}40%{transform:translateY(0) scale(1.1,.85)}55%{transform:translateY(-10px)}70%{transform:translateY(0) scale(1.08,.9)}82%{transform:translateY(-5px)}92%{transform:translateY(0);opacity:1}100%{transform:translateY(0) scale(.6);opacity:0}}
   @media(prefers-reduced-motion:reduce){.task .sapo{animation:sapoSimples 1.4s ease-out forwards}}
   @keyframes sapoSimples{0%{opacity:0}15%,80%{opacity:1}100%{opacity:0}}
@@ -1327,7 +1328,6 @@ function openCropper(file,opt){ // opt: {circle, out, aspects}
       show(`<h2>✂️ Enquadrar foto <button class="x">✕</button></h2><div class="crop">
         <div class="cropbox" id="cropbox"><img id="cropimg" alt=""><div class="cropmask ${opt.circle?'circle':''}" id="cropmask"></div></div>
         <div class="cropbar"><span>🔍</span><input type="range" id="cropzoom" min="0" max="100" value="0"><button class="opt" id="cropRot" style="width:auto;margin:0;padding:8px 12px">🔄</button></div>
-        ${opt.aspects?`<div class="cropasp">${opt.aspects.map(([n,a],i)=>`<button data-i="${i}" class="${i===fi?'on':''}">${n}</button>`).join('')}</div>`:''}
         <p class="quiet" style="margin:0;font-size:13px;text-align:center">Arrasta para mover, pinça ou usa a barra para aproximar.</p>
         <div class="row" style="width:100%;max-width:340px"><button class="opt" id="cropCancel">Cancelar</button><button class="opt primary" id="cropOk">Usar</button></div></div>`);
       const box=document.getElementById('cropbox'), el=document.getElementById('cropimg'), mask=document.getElementById('cropmask'), zoom=document.getElementById('cropzoom');
@@ -2075,7 +2075,7 @@ const SAPO=true;
 function sapinho(el){
   if(!SAPO||!el||el.querySelector('.sapo')) return;
   const sp=document.createElement('span'); sp.className='sapo'; sp.setAttribute('aria-hidden','true');
-  const im=new Image(); im.src='sapinho.webp?v=1'; im.alt=''; im.decoding='async'; im.onerror=()=>{ im.remove(); sp.textContent='🐸'; }; sp.appendChild(im);
+  const im=new Image(); im.src='sapinho-pulo.webp?v=1'; im.alt=''; im.decoding='async'; im.onerror=()=>{ im.remove(); sp.textContent='🐸'; }; sp.appendChild(im);
   el.appendChild(sp); SFX.pop();
   sp.addEventListener('animationend',()=>sp.remove(),{once:true}); setTimeout(()=>sp.remove(),2200);
 }
@@ -2262,7 +2262,7 @@ veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 
 function openMenu(id){
   const t=findTask(id); if(!t) return; if(t.type===B){openMove(id);return;}
-  show(`<h2>📝 Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho.webp?v=1" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
+  show(`<h2>📝 Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=1" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
    <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
    <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
    ${isAluna()?`<button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
@@ -2690,7 +2690,12 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyRe
 render();
 // abertura com o sapinho: fica um ciclo inteiro da animação (até ele comer a mosca) e some sozinho; toque não interrompe
 (()=>{ const sp=document.getElementById('splash'); if(!sp) return;
-  const tira=()=>{ sp.classList.add('off'); setTimeout(()=>sp.remove(),700); };
+  document.body.classList.add('abrindo');
+  const bloqueia=e=>{ if(document.body.classList.contains('abrindo')) e.preventDefault(); };
+  ['touchmove','wheel'].forEach(ev=>document.addEventListener(ev,bloqueia,{passive:false}));
+  const teclas=e=>{ if(document.body.classList.contains('abrindo')&&['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(e.key)) e.preventDefault(); };
+  document.addEventListener('keydown',teclas);
+  const tira=()=>{ sp.classList.add('off'); document.body.classList.remove('abrindo'); document.removeEventListener('keydown',teclas); setTimeout(()=>sp.remove(),700); };
   setTimeout(tira,10800); })();
 // ao abrir, rola até o dia de hoje (uma vez por abertura)
 setTimeout(()=>{ const el=document.querySelector('.day.today'); if(!el) return;
