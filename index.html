@@ -74,7 +74,7 @@
   @keyframes chipOut{to{opacity:0;transform:scale(.85)}}
   
   /* importantes */
-  .imp{background:#fff;border:3px solid var(--gold);border-radius:22px;margin-bottom:18px;--c:var(--gold);overflow:hidden}
+  .imp{background:#fff;border:3px solid color-mix(in srgb,var(--gold) 14%,#fff);border-radius:22px;margin-bottom:18px;--c:var(--gold);overflow:hidden}
   .imp summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;background:color-mix(in srgb,var(--gold) 14%,#fff);color:#7A4E0C}
   .imp summary .n{font-size:23px;font-weight:900;line-height:1}
   .imp summary::-webkit-details-marker{display:none}
@@ -260,9 +260,9 @@
   @keyframes fly{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
   @keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
   .users{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .uopt{border:2px solid var(--line);background:#fff;border-radius:18px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:900;font-size:16px;color:var(--ink)}
+  .uopt{border:2px solid var(--line);background:#fff;border-radius:18px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:900;font-size:17px;color:var(--ink)}
   .uopt .av{font-size:38px;line-height:1}
-  .uopt small{font-weight:700;color:var(--soft);font-size:11px}
+  .uopt small{font-weight:700;color:var(--soft);font-size:12px}
   .uopt:active{transform:scale(.95);border-color:var(--ink)}
   .who{text-align:center;margin:-2px 0 10px}
   .who span{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800}
@@ -1126,14 +1126,13 @@ function openLogin(after,preId){
   show(`<h2>👋 Quem é você? <button class="x" style="visibility:${USER?'visible':'hidden'}">✕</button></h2>
     <div class="users">${USERS.map(u=>`<button class="uopt" data-u="${u.id}"><span class="av">${avatarHtml(u)}</span><span>${u.nome}</span><small>${u.papel==='aluna'?'faz as tarefas':'acompanha'}</small></button>`).join('')}</div>
     <div id="pinBox" style="display:none;margin-top:12px">
-      <p class="quiet" id="pinWho" style="margin:0 0 8px"></p>
       <input id="pinTxt" type="password" inputmode="numeric" maxlength="8" placeholder="Código" style="width:100%;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:22px;letter-spacing:6px;text-align:center">
       <div class="row"><button class="opt" id="pinBack">Voltar</button><button class="opt primary" id="pinOk">Entrar</button></div>
     </div>`);
   let pick=null;
   const usersEl=sheet.querySelector('.users'), pinBox=document.getElementById('pinBox');
   sheet.querySelectorAll('.uopt').forEach(b=>b.addEventListener('click',()=>{pick=USERS.find(u=>u.id===b.dataset.u);usersEl.style.display='none';pinBox.style.display='block';
-    document.getElementById('pinWho').textContent=pick.emoji+' '+pick.nome+', digite seu código:';document.getElementById('pinTxt').value='';document.getElementById('pinTxt').focus();}));
+document.getElementById('pinTxt').value='';document.getElementById('pinTxt').focus();}));
   document.getElementById('pinBack').addEventListener('click',()=>{usersEl.style.display='';pinBox.style.display='none';});
   if(preId){ const b=sheet.querySelector('.uopt[data-u="'+preId+'"]'); if(b) b.click(); }
   const enter=()=>{const v=document.getElementById('pinTxt').value.trim(); if(v!==pick.pin){vibrate([40,40,40]);toast('Código errado. Tenta de novo');return;}
@@ -1876,6 +1875,7 @@ function renderFilters(){
   const types=[['all','Todas'],['todo','Falta fazer'],['doing','Fazendo'],['done','Feito'],['late','Esquecido']];
   const ws=DB.weeks[current];
   document.getElementById('fType').innerHTML=types.map(([k,l])=>{ const n=contaTipo(k,ws);
+    if(!n&&k!=='all'&&fType!==k) return '';   // chip zerado nem aparece
     return `<button class="chip ${k} ${fType===k?'on':''}" data-t="${k}">${l}<span class="cnt ${n?'':'zero'}">${n}</span></button>`; }).join('');
   const w=DB.weeks[current]; const used=[...new Set(allTasks(w).map(t=>t.subj))];
   const lista=Object.keys(SUBJ).filter(k=>used.includes(k));
