@@ -39,7 +39,7 @@
   .nav button{border:2px solid var(--line);background:#fff;border-radius:999px;width:36px;height:36px;font-size:18px;font-weight:900;color:var(--ink)}
   .nav button:disabled{opacity:.35}
   /* filtros (fixos ao rolar) */
-  .top{position:sticky;top:0;z-index:20;background:var(--paper);margin:0 -16px 10px;padding:10px 16px 0;box-shadow:0 10px 12px -10px rgba(38,36,58,.18)}
+  .top{position:sticky;top:0;z-index:20;background:var(--paper);margin:0 -16px 22px;padding:10px 16px 6px;box-shadow:0 10px 12px -10px rgba(38,36,58,.18)}
   .top h1{margin-bottom:8px}
   .top .fam{margin-bottom:8px}
   .filters{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 6px;margin:8px -16px 2px;scrollbar-width:none}
@@ -320,7 +320,7 @@
     .wrap{max-width:840px;padding:28px 28px 130px}
     h1{font-size:36px;margin-bottom:10px}
     .prog .row{font-size:17px} .prog .row b{font-size:20px} .prog .bar{height:26px} .prog .pct{font-size:26px}
-    .top{margin:0 -28px 12px;padding:12px 28px 0}
+    .top{margin:0 -28px 26px;padding:12px 28px 8px}
     .filters{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
     .chip{font-size:15px;padding:8px 16px}
     .filters{overflow:visible}
@@ -386,7 +386,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='4.4';
+const APP_VERSION='4.5';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
