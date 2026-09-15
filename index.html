@@ -694,7 +694,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='8.7';
+const APP_VERSION='8.8';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -836,7 +836,7 @@ SEED_WEEKS.forEach(w=>{
     DB.weeks[w.id]=copy;
   } else { // migração: atualiza texto/matéria/importante sem perder progresso
     const sw=DB.weeks[w.id]; sw.label=w.label; sw.roteiro=w.roteiro; sw.topics=w.topics; delete sw.alerts;
-    sw.days.forEach(d=>d.tasks.forEach(t=>{const s=seedTasks[t.id]; if(!s) return; t.text=s.text; t.subj=s.subj; t.skip=!!s.skip; if(t.important===undefined) t.important=s.important;}));
+    sw.days.forEach(d=>d.tasks.forEach(t=>{const s=seedTasks[t.id]; if(!s) return; t.text=s.text; t.subj=s.subj; t.skip=!!s.skip; if(t.important===undefined&&!t.impU) t.important=s.important;}));
     sw.days.forEach(d=>{const sd=w.days.find(x=>x.k===d.k); if(sd&&sd.feriado) d.feriado=sd.feriado;});
   }
 });
@@ -929,15 +929,21 @@ function mergeRemote(remote){
         const novos=Object.keys(rt.reacts||{}).filter(u=>!((lt.reacts||{})[u]) && (!USER||u!==USER.id));
         if(novos.length&&!isAluna()){ const r=rt.reacts[novos[0]]; MERGE_EVT.push((r&&r.e||'💛')+' '+((r&&r.n)||'Alguém')+' deixou um carinho em '+curto); }
         lt.reacts=rt.reacts||null;changed=true;}
-      const diff = rt.status!==lt.status || JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null) || (rt.pics||0)!==(lt.pics||0) || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day || !!rt.important!==!!lt.important;
+      // estrela: vale sempre a mudança mais recente, venha de quem vier
+      const ri=rt.impU||0, li=lt.impU||0;
+      if(!!rt.important!==!!lt.important && (ri>li || (!ri&&!li&&(!isAluna()||(rt.u||0)>(lt.u||0))))){
+        lt.important=!!rt.important; lt.impU=ri||li; lt.impBy=rt.impBy||''; changed=true;
+        const autor=(rt.impBy&&(!USER||rt.impBy!==USER.nome))?rt.impBy+' ':'';
+        MERGE_EVT.push('⭐ '+(autor?autor+(rt.important?'marcou como importante ':'tirou das importantes ')+curto:curto+(rt.important?' virou importante':' saiu das importantes')));
+      }
+      const diff = rt.status!==lt.status || JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null) || (rt.pics||0)!==(lt.pics||0) || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day;
       if(diff && (!isAluna() || (rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){
         if(rt.status!==lt.status) MERGE_EVT.push(STICON[rt.status]+' '+(ela?ela+STVERB[rt.status]+' '+curto:curto+' agora está '+STLBL[rt.status]));
         else if((rt.note||'')!==(lt.note||'')) MERGE_EVT.push('📝 '+(rt.note?(ela?ela+'escreveu uma observação em '+curto:'Observação nova em '+curto):(ela?ela+'apagou a observação de '+curto:'Observação apagada em '+curto)));
         else if(!!rt.off!==!!lt.off) MERGE_EVT.push(rt.off?('🚫 '+(ela?ela+'cancelou '+curto:curto+' foi cancelada')):('↩️ '+curto+' voltou a valer'));
-        else if(!!rt.important!==!!lt.important) MERGE_EVT.push('⭐ '+(rt.important?(ela?ela+'marcou como importante '+curto:curto+' virou importante'):(ela?ela+'tirou das importantes '+curto:curto+' saiu das importantes')));
         else if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
         else if((rt.pics||0)>(lt.pics||0)) MERGE_EVT.push('📸 Foto nova em '+curto);
-        lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
+        lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; lt.day=rt.day; lt.u=rt.u; changed=true; }
     }));
   });
   return changed;
@@ -945,7 +951,8 @@ function mergeRemote(remote){
 function cloudPush(now){
   if(!cloudRef||!cloudReady||!isAluna()) return;
   clearTimeout(pushTimer);
-  const doIt=()=>{ if(!isAluna()||!cloudRef||!cloudReady) return; const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.transaction(remote=>{ if(!isAluna()) return; const next=JSON.parse(json); const reactions={}; Object.values(remote?.weeks||{}).forEach(w=>(w.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{reactions[t.id]=t.reacts||null;}))); Object.values(next.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{if(Object.prototype.hasOwnProperty.call(reactions,t.id)) t.reacts=reactions[t.id];}))); return next; }).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
+  const doIt=()=>{ if(!isAluna()||!cloudRef||!cloudReady) return; const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.transaction(remote=>{ if(!isAluna()) return; const next=JSON.parse(json); const reactions={}, estrelas={}; Object.values(remote?.weeks||{}).forEach(w=>(w.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{reactions[t.id]=t.reacts||null; estrelas[t.id]={imp:!!t.important,u:t.impU||0,by:t.impBy||''};}))); Object.values(next.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{if(Object.prototype.hasOwnProperty.call(reactions,t.id)) t.reacts=reactions[t.id];
+      const e=estrelas[t.id]; if(e && e.u>(t.impU||0)){ t.important=e.imp; t.impU=e.u; t.impBy=e.by; } }))); return next; }).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
   if(now) doIt(); else pushTimer=setTimeout(doIt,400);
 }
 function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b) return;
@@ -999,53 +1006,87 @@ function openSearch(){
   };
   inp.addEventListener('input',run); setTimeout(()=>inp.focus(),300);
 }
-function resumoDia(w,d){
+// Situação escrita por extenso, para não depender só do quadradinho no WhatsApp.
+function sitTask(t){
+  if(t.off) return ['🚫','CANCELADA'];
+  if(t.status==='done') return ['✅','FEITO'];
+  if(t.status==='doing') return ['⏳','FAZENDO'];
+  if(taskPassed(t)) return ['❗','ESQUECIDO'];
+  return ['⬜','FALTA FAZER'];
+}
+function blocoDia(w,d,compacto){
   const ts=allTasks(w).filter(t=>t.day===d.k);
-  const L=[]; L.push(`🎒 Tarefas de ${DAYMETA[d.k][0]} ${fmt(d.date)}`);
+  const L=[]; L.push(compacto?`📅 ${DAYMETA[d.k][0]} ${fmt(d.date)}`:`🎒 Tarefas de ${DAYMETA[d.k][0]} ${fmt(d.date)}`);
   const bloco=(titulo,lista)=>{ if(!lista.length) return; L.push(''); L.push(titulo);
-    lista.forEach(t=>{ const ic=t.off?'🚫':(t.status==='done'?'✅':(t.status==='doing'?'⏳':(taskPassed(t)?'❗':'⬜')));
-      L.push(`${ic} ${SUBJ[t.subj]||''} · ${plain(t.text)}`);
-      if(t.off&&t.offWhy) L.push(`     🚫 Cancelada: ${t.offWhy}`);
+    lista.forEach(t=>{ const [ic,sit]=sitTask(t);
+      L.push(`${ic} ${sit} · ${SUBJ[t.subj]||''} · ${plain(t.text)}`);
+      if(t.off&&t.offWhy) L.push(`     🚫 Motivo: ${t.offWhy}`);
       if(t.note) L.push(`     📝 ${t.note}`); }); };
   bloco('🎒 LEVAR PARA A ESCOLA', ts.filter(t=>t.type===B));
   bloco(d.k==='sex'?'🏠 FAZER NO FIM DE SEMANA':'🏠 FAZER EM CASA PARA AMANHÃ', ts.filter(t=>t.type===H));
-  const live=ts.filter(t=>!t.off), feitas=live.filter(t=>t.status==='done').length;
+  const live=ts.filter(t=>!t.off), feitas=live.filter(t=>t.status==='done').length, falta=live.length-feitas;
   L.push(''); L.push(`📊 ${feitas} de ${live.length} concluídas${live.length&&feitas===live.length?' 🎉 Tudo feito!':''}`);
-  const falta=live.filter(t=>t.status!=='done').length; if(falta) L.push(`⬜ Ainda falta: ${falta}`);
-  L.push(''); L.push('— enviado pelo app Gestão de tarefas');
+  if(falta) L.push(`⬜ Ainda falta fazer: ${falta}`);
+  return {L,live:live.length,feitas};
+}
+const ASSINA='Enviado pelo app Gestão de tarefas 🎒';
+function resumoDia(w,d){ return blocoDia(w,d).L.concat(['',ASSINA]).join('\n'); }
+function resumoDias(w,keys){
+  const ordem=w.days.map(x=>x.k);
+  const dias=keys.slice().sort((a,b)=>ordem.indexOf(a)-ordem.indexOf(b)).map(k=>w.days.find(d=>d.k===k)).filter(Boolean);
+  if(!dias.length) return '';
+  if(dias.length===1) return resumoDia(w,dias[0]);
+  const L=['🎒 Tarefas de '+dias.map(d=>DAYMETA[d.k][0]+' '+fmt(d.date)).join(', ')];
+  let tot=0, fei=0;
+  dias.forEach(d=>{ const r=blocoDia(w,d,true); L.push(''); L.push('━━━━━━━━━━━'); L.push(...r.L); tot+=r.live; fei+=r.feitas; });
+  L.push(''); L.push('━━━━━━━━━━━');
+  L.push(`📊 No total: ${fei} de ${tot} concluídas${tot&&fei===tot?' 🎉 Tudo feito!':''}`);
+  if(tot-fei) L.push(`⬜ Ainda falta fazer: ${tot-fei}`);
+  L.push(''); L.push(ASSINA);
   return L.join('\n');
 }
 function resumoSemana(w){
   const L=[`🎒 Semana ${w.label}`];
   w.days.forEach(d=>{ const ts=allTasks(w).filter(t=>t.day===d.k&&!t.off); if(!ts.length) return;
-    const f=ts.filter(t=>t.status==='done').length; L.push(`\n📅 ${DAYMETA[d.k][0]} ${fmt(d.date)} — ${f}/${ts.length}`);
-    ts.forEach(t=>{ const ic=t.status==='done'?'✅':(t.status==='doing'?'⏳':(taskPassed(t)?'❗':'⬜')); L.push(`${ic} ${SUBJ[t.subj]||''} · ${plain(t.text)}`); }); });
+    const f=ts.filter(t=>t.status==='done').length; L.push(`\n📅 ${DAYMETA[d.k][0]} ${fmt(d.date)} · ${f}/${ts.length}`);
+    ts.forEach(t=>{ const [ic,sit]=sitTask(t); L.push(`${ic} ${sit} · ${SUBJ[t.subj]||''} · ${plain(t.text)}`); }); });
   const all=allTasks(w).filter(t=>t.type===H&&!t.off), fe=all.filter(t=>t.status==='done').length;
   L.push(`\n📊 ${fe} de ${all.length} tarefas de casa concluídas (${all.length?Math.round(fe/all.length*100):0}%)`);
-  L.push('\n— enviado pelo app Gestão de tarefas');
+  L.push('\n'+ASSINA);
   return L.join('\n');
 }
 function openShare(){
   const w=DB.weeks[current];
+  const sel=new Set();
   show(`<h2>📤 Compartilhar <button class="x">✕</button></h2>
-    <p class="quiet" style="margin:0 0 10px">Escolhe o que quer mandar:</p>
+    <p class="quiet" style="margin:0 0 10px">Escolhe o que quer mandar. Pode marcar mais de um dia.</p>
     <div class="shdays">
       ${w.days.map(d=>{ const ts=allTasks(w).filter(t=>t.day===d.k&&!t.off); const f=ts.filter(t=>t.status==='done').length;
         return `<button data-d="${d.k}"><span class="dot2" style="background:${dayCss(d.k)}"></span>${DAYMETA[d.k][0]} ${fmt(d.date)}<small>${f}/${ts.length}</small></button>`; }).join('')}
       <button data-d="all"><span class="dot2" style="background:var(--ink)"></span>Semana inteira<small>${w.label}</small></button>
     </div>
     <div id="shBox"></div>`);
-  sheet.querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>{
-    sheet.querySelectorAll('[data-d]').forEach(x=>x.classList.toggle('on',x===b)); vibrate(15);
-    const txt=b.dataset.d==='all'?resumoSemana(w):resumoDia(w,w.days.find(x=>x.k===b.dataset.d));
-    document.getElementById('shBox').innerHTML=`<p class="looklbl">👀 Como vai ficar</p><pre class="shprev" id="shTxt">${esc(txt)}</pre>
+  const box=document.getElementById('shBox');
+  const pinta=()=>sheet.querySelectorAll('[data-d]').forEach(x=>x.classList.toggle('on',x.dataset.d==='all'?sel.has('all'):sel.has(x.dataset.d)));
+  const atualiza=()=>{
+    pinta();
+    if(!sel.size){ box.innerHTML='<p class="quiet" style="text-align:center;padding:10px 0">Marca pelo menos um dia para ver como vai ficar.</p>'; return; }
+    const txt=sel.has('all')?resumoSemana(w):resumoDias(w,[...sel]);
+    const n=sel.has('all')?0:sel.size;
+    box.innerHTML=`<p class="looklbl">👀 Como vai ficar${n>1?' ('+n+' dias)':''}</p><pre class="shprev" id="shTxt">${esc(txt)}</pre>
       <div class="row"><button class="opt" id="shCopy">📋 Copiar</button><button class="opt primary" id="shGo">📤 Enviar</button></div>`;
     document.getElementById('shCopy').addEventListener('click',()=>{ navigator.clipboard?.writeText(txt).then(()=>{SFX.pop();toast('Copiado! É só colar no WhatsApp');},()=>toast('Não consegui copiar')); });
     document.getElementById('shGo').addEventListener('click',()=>{ SFX.pop();
       if(navigator.share){ navigator.share({title:'Gestão de tarefas',text:txt}).catch(()=>{}); }
       else { window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank'); } });
+  };
+  sheet.querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>{
+    const k=b.dataset.d; vibrate(15);
+    if(k==='all'){ if(sel.has('all')) sel.clear(); else { sel.clear(); sel.add('all'); } }
+    else { sel.delete('all'); if(sel.has(k)) sel.delete(k); else sel.add(k); }
+    atualiza();
   }));
-  const hoje=w.days.find(d=>d.date===TODAY); const alvo=sheet.querySelector(`[data-d="${hoje?hoje.k:w.days[0].k}"]`); if(alvo) alvo.click();
+  const hoje=w.days.find(d=>d.date===TODAY); sel.add(hoje?hoje.k:w.days[0].k); atualiza();
 }
 function openTheme(){
   show(`<h2>✨ Tema do app <button class="x">✕</button></h2>
@@ -1541,12 +1582,13 @@ function swipeAction(id,dir,el){
 }
 function toggleImp(id,btn){
   const t=findTask(id); if(!t) return;
-  if(!isAluna()){ vibrate(15); toast('Só a Maria muda as tarefas 😉'); return; }
-  t.important=!t.important; t.u=Date.now(); save(); vibrate(20); SFX.pop();
-  if(btn){ btn.classList.toggle('on',t.important); btn.setAttribute('aria-pressed',t.important?'true':'false'); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); }
-  toast(t.important?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');
-  const sobe=t.important;
-  setTimeout(()=>{ render(); if(sobe) window.scrollTo({top:0,behavior:'smooth'}); },380);
+  const val=!t.important; vibrate(20); SFX.pop();
+  if(btn){ btn.classList.toggle('on',val); btn.setAttribute('aria-pressed',val?'true':'false'); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); }
+  toast(val?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');
+  Promise.resolve(writeImportant(id,val,btn)).then(ok=>{
+    if(!ok){ if(btn){ btn.classList.toggle('on',!val); btn.setAttribute('aria-pressed',(!val)?'true':'false'); } return; }
+    setTimeout(()=>{ render(); if(val) window.scrollTo({top:0,behavior:'smooth'}); },380);
+  });
 }
 function bindTasks(root=document.getElementById('app')){
   root.querySelectorAll('[data-pics]').forEach(g=>g.addEventListener('click',e=>{e.stopPropagation();openPics(g.dataset.pics);}));
@@ -1623,8 +1665,8 @@ function openMenu(id){
   const t=findTask(id);
   show(`<h2>📝 Tarefa <button class="x">✕</button></h2>
    <p class="quiet" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
-   ${isAluna()?`<button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
-   <button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
+   <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
+   ${isAluna()?`<button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
    ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`:''}
    ${(CLOUD_CFG&&(isAluna()||(t.pics||0)))?`<button class="opt" data-a="pics"><span class="ic">📸</span>${(t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'}</button>`:''}
    ${isAluna()?'<button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>':''}
@@ -1633,8 +1675,11 @@ function openMenu(id){
    ${isAluna()?(t.off?'<button class="opt" data-a="undel"><span class="ic">↩️</span>Voltar a valer</button>':'<button class="opt danger" data-a="del"><span class="ic">🚫</span>Cancelar a tarefa</button>'):''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
     const a=b.dataset.a;
-    if(['imp','move','del','undel','note','delnote'].includes(a)&&!isAluna()) return;
-    if(a==='imp'){t.important=!t.important;t.u=Date.now();save();hide();render();vibrate(20);toast(t.important?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');if(t.important)window.scrollTo({top:0,behavior:'smooth'});}
+    if(['move','del','undel','note','delnote'].includes(a)&&!isAluna()) return;
+    if(a==='imp'){ const val=!t.important; hide(); vibrate(20);
+      Promise.resolve(writeImportant(id,val)).then(ok=>{ if(!ok) return;
+        render(); toast(val?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');
+        if(val) window.scrollTo({top:0,behavior:'smooth'}); }); }
     if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
     if(a==='del') openCancel(id);
     if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.u=Date.now(); save(); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
@@ -1656,6 +1701,28 @@ function openTaskReact(id){
   sheet.querySelectorAll('[data-e]').forEach(b=>b.addEventListener('click',()=>{
     writeTaskReaction(id,b.dataset.e); }));
   const del=document.getElementById('reaDel'); if(del) del.addEventListener('click',()=>{ writeTaskReaction(id,null); });
+}
+// Estrela: a Maria grava junto com o resto; o pai e a mãe gravam direto na nuvem,
+// com carimbo de hora (impU) para o app saber qual foi a última mudança.
+async function writeImportant(id,val,btn){
+  const t=findTask(id); if(!t) return false;
+  const quando=Date.now(), quem=USER?USER.nome:'';
+  if(isAluna()){ t.important=val; t.impU=quando; t.impBy=quem; t.u=quando; save(); return true; }
+  if(!isResponsavel()||!cloudRef||!cloudReady){ toast('Espera a nuvem conectar para mudar as importantes'); return false; }
+  if(!cloudOnline){ toast('Conecte à internet para mudar as importantes'); return false; }
+  const actor=USER.id, ref=cloudRef;
+  t.important=val; t.impU=quando; t.impBy=quem; // mostra na hora, confirma depois
+  mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}
+  try{
+    const snap=await ref.once('value');
+    if(!isResponsavel()||USER.id!==actor||cloudRef!==ref) return false;
+    let path=null;
+    Object.entries(snap.val()?.weeks||{}).forEach(([week,w])=>(w.days||[]).forEach((d,di)=>(d.tasks||[]).forEach((x,ti)=>{ if(x.id===id) path='weeks/'+week+'/days/'+di+'/tasks/'+ti; })));
+    if(!path){ toast('Essa tarefa ainda não está na nuvem'); return false; }
+    await ref.child(path).update({important:!!val,impU:quando,impBy:quem});
+    return true;
+  }catch(e){ t.important=!val; mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e2){}
+    render(); toast('Não consegui salvar. Tente de novo'); return false; }
 }
 async function writeTaskReaction(id,emoji){
   if(!isResponsavel()||!cloudRef||!cloudReady) return;
