@@ -137,6 +137,22 @@
   .task.off .tx{text-decoration:line-through;color:var(--soft)}
   .task.off .note{border-left-color:#B3261E}
   .st.canc{background:#EDEAF5;color:#6B6880}
+  .st.pics{background:#E9DDFF;color:#5B3FC4}
+  .trea{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+  .trea .r{display:inline-flex;align-items:center;gap:4px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:2px 9px;font-size:13px;font-weight:800;box-shadow:0 1px 3px rgba(38,36,58,.10)}
+  .trea .r b{font-size:11px;color:var(--soft);font-weight:800}
+  .trea .r.new{animation:pop .5s cubic-bezier(.36,1.6,.5,1)}
+  .rgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 12px}
+  .rgrid button{border:2px solid var(--line);background:#fff;border-radius:16px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:800;color:var(--ink)}
+  .rgrid button span{font-size:30px;line-height:1}
+  .rgrid button.on{border-color:var(--ink);background:#F7F5FC}
+  .tpics{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .tpics img{width:56px;height:56px;object-fit:cover;border-radius:12px;border:2px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18)}
+  .tpics .more2{width:56px;height:56px;border-radius:12px;background:rgba(38,36,58,.12);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--ink)}
+  .gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
+  .gal .cell{position:relative}
+  .gal img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px}
+  .gal .del{position:absolute;right:4px;top:4px;border:0;background:rgba(0,0,0,.55);color:#fff;border-radius:50%;width:26px;height:26px;font-size:14px}
   .tx{line-height:1.35}
   .note{display:block;font-size:14px;color:var(--soft);background:#fff;border-radius:10px;padding:6px 10px;margin-top:6px;border-left:4px solid var(--c)}
   .imp .note{background:#fff}
@@ -225,6 +241,16 @@
   .uopt .av img{width:100%;height:100%;object-fit:cover}
   /* conversa */
   .chatfab{bottom:calc(16px + 62px + 12px + env(safe-area-inset-bottom));background:var(--sex);touch-action:none;transition:transform .15s}
+  .reafab{bottom:calc(16px + 124px + 24px + env(safe-area-inset-bottom));background:#E9A227;display:none}
+  .reafab.on{display:flex}
+  .reafab.pulse{animation:reap 1.6s ease-in-out infinite}
+  @keyframes reap{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  .realist{display:flex;flex-direction:column;gap:8px;max-height:62vh;overflow:auto}
+  .realist .it2{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--line);border-radius:16px;padding:10px 12px;background:#fff;text-align:left;width:100%;color:var(--ink)}
+  .realist .it2.novo{border-color:#E9A227;background:#FFF8E6}
+  .realist .em{font-size:28px;line-height:1;flex:none}
+  .realist .tx2{font-size:15px;font-weight:700;line-height:1.3}
+  .realist .tx2 b{display:block;font-size:12px;color:var(--soft);margin-bottom:2px}
   .chatfab.moving{transform:scale(1.14);box-shadow:0 14px 28px rgba(38,36,58,.45)}
   .badge{position:absolute;top:-2px;right:-2px;background:#E4443F;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
   .badge.on{display:flex}
@@ -523,11 +549,13 @@
   <div id="app"></div>
 </div>
 
+<button class="fab reafab" id="reaFab" aria-label="Carinhos">💛<span class="badge" id="reaBadge"></span></button>
 <button class="fab chatfab" id="chatFab" aria-label="Conversa">💬<span class="badge" id="chatBadge"></span></button>
 <button class="fab" id="fab" aria-label="Menu">☰</button>
 <input type="file" id="fotoFile" accept="image/*" style="display:none">
 <input type="file" id="bgFile" accept="image/*" style="display:none">
 <input type="file" id="attFile" style="display:none">
+<input type="file" id="taskFoto" accept="image/*" style="display:none">
 <div class="veil" id="veil"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
 
@@ -537,7 +565,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='7.3';
+const APP_VERSION='7.6';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -722,7 +750,10 @@ function cloudStart(){
   cloudRef.on('value',sn=>{
     cloudErr=''; const remote=sn.val();
     if(!remote||!remote.weeks){ cloudReady=true; cloudPush(true); return; }
+    const before=(()=>{let n=0;Object.values(DB.weeks).forEach(w=>allTasks(w).forEach(t=>{n+=t.reacts?Object.keys(t.reacts).length:0;}));return n;})();
     const changed=mergeRemote(remote); cloudReady=true;
+    if(isAluna()){ let after=0; Object.values(DB.weeks).forEach(w=>allTasks(w).forEach(t=>{after+=t.reacts?Object.keys(t.reacts).length:0;}));
+      if(after>before){ vibrate([40,40,80]); SFX.party(); toast('💛 Você recebeu um carinho! Toca no 💛'); notify('💛 Um carinho para você','Alguém reagiu a uma tarefa sua'); } updateReaFab(); }
     if(changed){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} render(); refreshReminder(); }
     cloudPush(); // envia o que só existe aqui (ex.: semana nova)
   },err=>{ cloudErr=err&&err.code||'erro'; updateSyncBadge(); toast('Sem permissão no banco. Confira as regras do Firebase.'); });
@@ -735,8 +766,8 @@ function mergeRemote(remote){
     const local={}; lw.days.forEach(d=>d.tasks.forEach(t=>local[t.id]=t));
     (rw.days||[]).forEach(d=>(d.tasks||[]).forEach(rt=>{
       const lt=local[rt.id]; if(!lt) return;
-      const diff = rt.status!==lt.status || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day || !!rt.important!==!!lt.important;
-      if(diff && ((rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){ lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
+      const diff = rt.status!==lt.status || JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null) || (rt.pics||0)!==(lt.pics||0) || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day || !!rt.important!==!!lt.important;
+      if(diff && ((rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){ lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
     }));
   });
   return changed;
@@ -1214,6 +1245,7 @@ function render(){
   if(w.topics&&!filtering) html+=`<div class="next"><h2>📌 O que cada matéria está estudando</h2><p class="quiet" style="margin:0">${w.topics}</p></div>`;
   document.getElementById('app').innerHTML=html;
   if(typeof appBadge==='function') appBadge();
+  if(typeof updateReaFab==='function') updateReaFab();
   document.querySelectorAll('.day,.imp').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
   bindTasks();
 }
@@ -1222,13 +1254,13 @@ function taskHtml(t,inImp){
   const dchip = inImp ? `<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
   const subj = `<span class="st sj">${SUBJ[t.subj]}</span>`;
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
-  const status=(t.off?`<span class="st canc">🚫 Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(t.status==='doing'?'<span class="st">⏳ Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">✓ Feito</span>':'')+moved;
+  const status=((t.pics||0)?`<span class="st pics">📸 ${t.pics}</span>`:'')+(t.off?`<span class="st canc">🚫 Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(t.status==='doing'?'<span class="st">⏳ Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">✓ Feito</span>':'')+moved;
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''}" data-id="${t.id}">
     <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[NEXT_R[t.status]||'done'][0]}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${SWLBL[NEXT_L[t.status]||'doing'][0]}</div>
     <div class="tin">
       <div class="t"><div class="tg">${dchip}${subj}${status}</div><div class="tx">${t.text}</div>
-        ${t.off?`<span class="note">🚫 <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
+        ${(t.reacts&&Object.keys(t.reacts).length)?`<div class="trea">${Object.values(t.reacts).map(r=>`<span class="r">${r.e} <b>${esc(r.n||'')}</b></span>`).join('')}</div>`:''}${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">🚫 <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
     </div>
   </div>`;
 }
@@ -1268,6 +1300,7 @@ function setStatus(id,status,el){
   if(status==='doing'){vibrate(25);SFX.doing();}
   const dayLive=allTasks(w).filter(x=>x.day===t.day&&!x.off); const complete=dayLive.length>0&&dayLive.every(x=>x.status==='done');
   render(); refreshReminder();
+  if(status==='done'&&!t.off) setTimeout(()=>askPhotoAfterDone(id),600);
   if(complete&&!wasComplete){vibrate([60,40,60,40,120]);SFX.party();const c=colorOf(document.querySelector(`.day[data-date="${dayEl.dataset.date}"]`));
     for(let k=0;k<6;k++)setTimeout(()=>sparks(window.innerWidth*Math.random(),120+Math.random()*200,c),k*90);}
 }
@@ -1283,6 +1316,7 @@ function swipeAction(id,dir,el){
   setStatus(id,status,el); toast(SWMSG[status]);
 }
 function bindTasks(root=document.getElementById('app')){
+  root.querySelectorAll('[data-pics]').forEach(g=>g.addEventListener('click',e=>{e.stopPropagation();openPics(g.dataset.pics);}));
   root.querySelectorAll('.task').forEach(el=>{
     const id=el.dataset.id, tin=el.querySelector('.tin');
     let timer=null, sx=0, sy=0, dx=0, mode=null; // mode: null | 'h' | 'v'
@@ -1338,6 +1372,8 @@ function openMenu(id){
    ${CLOUD_CFG?'<button class="opt" data-a="chat"><span class="ic">📨</span>Mandar para a conversa</button>':''}
    <button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>
    ${t.off?'<button class="opt" data-a="undel"><span class="ic">↩️</span>Voltar a valer</button>':'<button class="opt danger" data-a="del"><span class="ic">🚫</span>Cancelar a tarefa</button>'}
+   ${(CLOUD_CFG&&!isAluna())?`<button class="opt" data-a="rea"><span class="ic">💛</span>Deixar um carinho para a Maria</button>`:''}
+   ${CLOUD_CFG?`<button class="opt" data-a="pics"><span class="ic">📸</span>${(t.pics||0)?'Ver fotos ('+t.pics+')':'Adicionar foto do que fez'}</button>`:''}
    <button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
    ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
@@ -1346,10 +1382,82 @@ function openMenu(id){
     if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
     if(a==='del') openCancel(id);
     if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.u=Date.now(); save(); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
+    if(a==='rea') openTaskReact(id);
+    if(a==='pics') openPics(id);
     if(a==='move') openMove(id);
     if(a==='note') openNote(id);
     if(a==='delnote'){t.note='';t.u=Date.now();save();hide();render();toast('Observação apagada');}
   }));
+}
+const TREACTS=[['🎉','Parabéns!'],['👏','Mandou bem'],['⭐','Caprichou'],['💛','Orgulho'],['💪','Força'],['🤗','Tamo junto'],['🙂','Tudo bem'],['😕','Fiquei triste'],['⏰','Não esquece']];
+function openTaskReact(id){
+  const t=findTask(id); if(!t) return; const mine=(t.reacts&&USER)?t.reacts[USER.id]:null;
+  show(`<h2>💛 Um carinho para a Maria <button class="x">✕</button></h2>
+    <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
+    <div class="rgrid">${TREACTS.map(([e,n])=>`<button data-e="${e}" class="${mine&&mine.e===e?'on':''}"><span>${e}</span>${n}</button>`).join('')}</div>
+    ${mine?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu carinho</button>':''}`);
+  sheet.querySelectorAll('[data-e]').forEach(b=>b.addEventListener('click',()=>{
+    t.reacts=t.reacts||{}; t.reacts[USER.id]={e:b.dataset.e,n:USER.nome,t:Date.now()}; t.u=Date.now(); save(); hide(); render(); vibrate(20); SFX.pop(); toast('Carinho enviado '+b.dataset.e); }));
+  const del=document.getElementById('reaDel'); if(del) del.addEventListener('click',()=>{ delete t.reacts[USER.id]; t.u=Date.now(); save(); hide(); render(); toast('Tirei seu carinho'); });
+}
+let reaSeen=0; try{reaSeen=+localStorage.getItem(KEY+'-reaseen')||0;}catch(e){}
+function allReacts(){ const out=[];
+  Object.keys(DB.weeks).forEach(id=>{ const w=DB.weeks[id];
+    allTasks(w).forEach(t=>{ if(!t.reacts) return; Object.keys(t.reacts).forEach(uid=>{ const r=t.reacts[uid]; out.push({...r,uid,task:t,week:id}); }); }); });
+  return out.sort((a,b)=>(b.t||0)-(a.t||0));
+}
+function reaNew(){ return allReacts().filter(r=>(r.t||0)>reaSeen).length; }
+function updateReaFab(){ const f=document.getElementById('reaFab'); if(!f) return;
+  const list=allReacts(); const n=reaNew();
+  f.classList.toggle('on', isAluna() && list.length>0);
+  f.classList.toggle('pulse', n>0);
+  const b=document.getElementById('reaBadge'); b.textContent=n>9?'9+':n; b.classList.toggle('on',n>0); }
+function openReacts(){
+  const list=allReacts();
+  show(`<h2>💛 Carinhos que você recebeu <button class="x">✕</button></h2>
+    ${list.length?`<div class="realist">${list.map(r=>{ const d=DB.weeks[r.week].days.find(x=>x.k===r.task.day); const novo=(r.t||0)>reaSeen;
+      return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><b>${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}${novo?' · novo ✨':''}</b>${esc(plain(r.task.text))}<br><small class="quiet">${SUBJ[r.task.subj]||''} · ${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</small></span></button>`; }).join('')}</div>`
+      :'<p class="quiet" style="text-align:center;padding:16px 0">Ainda não tem carinhos. Faça as tarefas que logo chegam! 💛</p>'}`);
+  sheet.querySelectorAll('.it2').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
+    const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
+    setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500);} },200); }));
+  const top=list[0]&&list[0].t||0; if(top>reaSeen){ reaSeen=top; try{localStorage.setItem(KEY+'-reaseen',String(reaSeen));}catch(e){} }
+  setTimeout(updateReaFab,300);
+}
+let picTaskId=null;
+function picsRef(id){ return famRef?famRef.child('fotos/'+id):null; }
+function openPics(id){
+  const t=findTask(id); if(!t) return; picTaskId=id;
+  show(`<h2>📸 Fotos da tarefa <button class="x">✕</button></h2>
+    <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
+    <div id="galBox"><p class="quiet" style="text-align:center;padding:10px 0">Carregando…</p></div>
+    <button class="opt primary" id="picAdd" style="justify-content:center">📷 Adicionar foto</button>`);
+  document.getElementById('picAdd').addEventListener('click',()=>document.getElementById('taskFoto').click());
+  if(!picsRef(id)){ document.getElementById('galBox').innerHTML='<p class="quiet" style="text-align:center">Precisa de internet para ver as fotos.</p>'; return; }
+  picsRef(id).once('value').then(sn=>{ const v=sn.val()||{}; const ks=Object.keys(v).sort(); const box=document.getElementById('galBox'); if(!box) return;
+    box.innerHTML=ks.length?`<div class="gal">${ks.map(k=>`<div class="cell"><img src="${v[k].data}" data-big="${k}" alt=""><button class="del" data-del="${k}" aria-label="Apagar">✕</button></div>`).join('')}</div>`
+      :'<p class="quiet" style="text-align:center;padding:10px 0">Ainda não tem foto. Tira uma para mostrar o que você fez! 📷</p>';
+    box.querySelectorAll('[data-big]').forEach(im=>im.addEventListener('click',()=>{ const k=im.dataset.big;
+      show(`<h2>📸 Foto <button class="x">✕</button></h2><div class="viewer"><img src="${v[k].data}" alt=""></div><div class="row"><button class="opt" id="picBack">Voltar</button><a class="opt primary" style="justify-content:center;text-decoration:none" href="${v[k].data}" download="tarefa.jpg">⬇️ Salvar</a></div>`);
+      document.getElementById('picBack').addEventListener('click',()=>openPics(id)); sheet.querySelector('.x').addEventListener('click',()=>openPics(id),{once:true}); }));
+    box.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ picsRef(id).child(b.dataset.del).remove().then(()=>{ countPics(id); openPics(id); toast('Foto apagada'); }); }));
+  });
+}
+function countPics(id){ if(!picsRef(id)) return; picsRef(id).once('value').then(sn=>{ const v=sn.val()||{}; const ks=Object.keys(v).sort();
+  const t=findTask(id); if(!t) return; t.pics=ks.length; t.thumbs=ks.slice(-4).map(k=>v[k].thumb||v[k].data); t.u=Date.now(); save(); render(); }); }
+document.getElementById('taskFoto').addEventListener('change',ev=>{ const f=ev.target.files[0]; ev.target.value=''; if(!f||!picTaskId) return;
+  openCropper(f,{out:1280,q:.8,aspects:[['Original',4/3],['Quadrado',1],['3:4',3/4]]}).then(full=>{ if(!full){ openPics(picTaskId); return; }
+    const im=new Image(); im.onload=()=>{ const k=Math.min(1,260/Math.max(im.width,im.height)); const c=document.createElement('canvas'); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k); c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+      const id=picTaskId; toast('Enviando foto…');
+      picsRef(id).push({data:full,thumb:c.toDataURL('image/jpeg',.7),by:USER?USER.id:'',t:Date.now()}).then(()=>{ countPics(id); SFX.pop(); vibrate(20); toast('Foto guardada 📸'); openPics(id); }).catch(()=>toast('Não consegui enviar'));
+    }; im.src=full; }); });
+function askPhotoAfterDone(id){
+  const t=findTask(id); if(!t||!CLOUD_CFG||!isAluna()) return;
+  show(`<h2>🎉 Boa! <button class="x">✕</button></h2>
+    <p class="quiet" style="margin:0 0 12px">Quer tirar uma foto do que você fez em <b>${esc(plain(t.text))}</b>?</p>
+    <div class="row"><button class="opt" id="npNo">Agora não</button><button class="opt primary" id="npYes">📷 Tirar foto</button></div>`);
+  document.getElementById('npNo').addEventListener('click',hide);
+  document.getElementById('npYes').addEventListener('click',()=>{ picTaskId=id; document.getElementById('taskFoto').click(); });
 }
 function openCancel(id){
   const t=findTask(id);
@@ -1470,6 +1578,7 @@ function refreshReminder(){
   sheet.querySelector('.x').addEventListener('click',hide); bindTasks(sheet);
   document.getElementById('remGo').addEventListener('click',()=>{hide();vibrate(20);});
 }
+document.getElementById('reaFab').addEventListener('click',openReacts);
 document.getElementById('fab').addEventListener('click',openMain);
 (function(){ // botão da conversa pode ser arrastado para qualquer canto da tela
   const b=document.getElementById('chatFab'); let sx=0,sy=0,moved=false,drag=false,ox=0,oy=0;
