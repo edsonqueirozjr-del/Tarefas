@@ -17,7 +17,7 @@
   :root{
     --paper:#FFFDF7; --ink:#26243A; --soft:#6B6880; --line:#E8E4D8;
     --dom:#8A8A9A; --seg:#FF8A3D; --ter:#2EB88A; --qua:#E0479E; --qui:#8E5BE0; --sex:#2F8FE0; --fab:#26243A; --gold:#D9A21B;
-    --bring:#FFF3C4; --home:#E8EFFF; --alert:#FFE1DD; --doing:#FFE9B3; --amber:#E9C46A; --imp:#E4443F;
+    --bring:#F3F4F7; --home:#E8EFFF; --alert:#FFE1DD; --doing:#FFE9B3; --amber:#E9C46A; --imp:#E4443F;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
   body{user-select:none;-webkit-user-select:none}
@@ -247,11 +247,15 @@
   .reafab.pulse{animation:reap 1.6s ease-in-out infinite}
   @keyframes reap{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
   .realist{display:flex;flex-direction:column;gap:8px;max-height:62vh;overflow:auto}
-  .realist .it2{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--line);border-radius:16px;padding:10px 12px;background:#fff;text-align:left;width:100%;color:var(--ink)}
+  .realist .it2{display:flex;gap:12px;align-items:center;border:2px solid var(--line);border-radius:16px;padding:10px 12px;background:#fff;text-align:left;width:100%;color:var(--ink)}
   .realist .it2.novo{border-color:#E9A227;background:#FFF8E6}
-  .realist .em{font-size:28px;line-height:1;flex:none}
-  .realist .tx2{font-size:15px;font-weight:700;line-height:1.3}
-  .realist .tx2 b{display:block;font-size:12px;color:var(--soft);margin-bottom:2px}
+  .realist .em{font-size:28px;line-height:1;flex:0 0 36px;align-self:stretch;display:flex;align-items:center;justify-content:center}
+  .realist .tx2{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
+  .realist .rea-sender{display:block;font-size:15px;font-weight:800;color:var(--soft);margin:0}
+  .realist .rea-activity{display:block;font-size:15px;font-weight:700}
+  .realist .rea-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .realist .rea-subject{display:inline-flex;align-items:center;max-width:100%;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#F3EEFF;color:#5B3FC4;font-size:13px;font-weight:800;line-height:1.3}
+  .realist .rea-date{font-size:15px;font-weight:700;color:var(--soft);line-height:1.4}
   .badge{position:absolute;top:-4px;right:-4px;z-index:5;background:#E4443F;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
   .badge.on{display:flex}
   .sheet.chatsheet{display:flex;flex-direction:column;height:min(92dvh,780px);max-height:none}
@@ -488,8 +492,9 @@
   body.t-lilas .imp summary{background:linear-gradient(90deg,#8E5BE0,#B48BF5)}
   body.t-lilas .imp summary .cnt{color:#8E5BE0}
   body.t-lilas .imp .task{background:#F7F2FF;--tbg:#F7F2FF}
-  body.t-lilas .box.bring{background:#F3EEFF} body.t-lilas .bring .task{--tbg:#F3EEFF}
+  body.t-lilas .box.bring{background:var(--bring)} body.t-lilas .bring .task{--tbg:var(--bring)}
   body.t-lilas .box.home{background:#EFE8FF} body.t-lilas .home .task{--tbg:#EFE8FF}
+  body.t-lilas .box .task.doing{--tbg:var(--doing)}
   body.t-lilas .aulas span{background:#F3EEFF;color:#5B3FC4}
   body.t-lilas .st.sj{background:#F3EEFF;color:#7A6F9C}
   body.t-lilas .st.ok{background:#DDF3E8;color:#1E7A55}
@@ -586,6 +591,41 @@
     body .chatsheet .chatin button{width:40px;height:44px}
   }
   @media(prefers-reduced-motion:reduce){.chatsheet,.chatsheet *{animation:none!important;transition:none!important}}
+
+  /* Aparência: modal próprio; a prévia não deve ativar o layout do chat. */
+  body .sheet.looksheet{
+    width:calc(100% - 32px);max-width:460px;
+    height:auto;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    margin:16px 0 calc(16px + env(safe-area-inset-bottom));
+    padding:8px 20px 20px;border:1px solid #E6DDF2;border-radius:24px;
+    background:#FCFAFF;overflow-y:auto;overflow-x:hidden;
+    box-shadow:0 16px 48px rgba(46,35,82,.2);scrollbar-width:thin;
+  }
+  .looksheet>.grip{width:32px;height:4px;margin:2px auto 12px;background:#DDD3EB}
+  .looksheet>h2{font-size:18px;line-height:1.3;gap:10px;margin-bottom:16px;letter-spacing:-.3px}
+  .looksheet>h2 .x{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .looksheet #lookPrev{min-height:0;flex:none;border:1px solid #EAE2F4;border-radius:16px;overflow:hidden}
+  .looksheet #lookMsgs{gap:8px}
+  .looksheet #lookMsgs .msg{max-width:94%}
+  .looksheet #lookMsgs .msg .b{line-height:1.35}
+  .looksheet .looklbl{font-size:13px;margin:0 0 8px;line-height:1.4}
+  .looksheet .sw2{gap:8px;margin:0 0 16px}
+  .looksheet .sw2>button[data-bg]{aspect-ratio:auto;height:48px;border-radius:12px;border-width:1px}
+  .looksheet .sw2 button.on{border:2px solid #7951BA;box-shadow:0 0 0 2px #EDE4FA}
+  .looksheet .sw2 .fnt{height:40px;font-size:13px;border-radius:12px;border-width:1px;font-weight:700}
+  .looksheet .sw2 .fnt.on{border-width:2px;background:#F0E8FC}
+  .looksheet #lookOk{height:44px;padding:10px 14px;font-size:15px;border-radius:14px;margin-bottom:0}
+  .looksheet button:focus-visible{outline:2px solid #7951BA;outline-offset:3px}
+  @media(min-width:600px){.veil:has(>.looksheet){align-items:center}}
+  @media(max-width:360px){body .sheet.looksheet{padding-left:16px;padding-right:16px}.looksheet>h2{font-size:16px}.looksheet .sw2{gap:6px}}
+
+  /* Informação de apoio discreta; ações não reutilizam as cores dos dias. */
+  body .aulas{gap:5px;margin-bottom:10px}
+  body .aulas span{background:#F6F6F9;color:#666276;border:1px solid #EBEAF0;border-radius:9px;padding:3px 7px;font-size:12px;font-weight:600;line-height:1.35}
+  body.t-lilas .aulas span{background:#F7F5FA;color:#70667F;border-color:#ECE7F2}
+  .tg .trea{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0;vertical-align:middle}
+  .tg .trea .r{border-width:1px;padding:2px 7px;font-size:12px;line-height:1.2;box-shadow:none}
+  body .fab.chatfab{background:#485166;color:#fff;border:1px solid #D4D9E4;box-shadow:0 5px 14px rgba(38,36,58,.2)}
 </style>
 </head>
 <body>
@@ -777,7 +817,8 @@ const CLOUD_CFG = !!FIREBASE.apiKey;
 const CLOUD_ON = CLOUD_CFG && typeof firebase!=='undefined';
 const famCode=FAMILIA;
 let USER=null; try{const u=localStorage.getItem(KEY+'-user'); USER=USERS.find(x=>x.id===u)||null;}catch(e){}
-const isAluna=()=>!USER||USER.papel==='aluna';
+const isAluna=()=>!!USER&&USER.id==='maria'&&USER.papel==='aluna';
+const isResponsavel=()=>!!USER&&['edson','thaysa'].includes(USER.id)&&USER.papel==='responsavel';
 function cloudStart(){
   if(!CLOUD_ON||!USER) return;
   if(!firebase.apps.length) firebase.initializeApp(FIREBASE);
@@ -786,7 +827,7 @@ function cloudStart(){
   famRef=db.ref('familias/'+famCode);
   cloudRef=famRef.child('dados');
   // migração: versão anterior gravava as semanas na raiz da família
-  famRef.child('weeks').once('value',sn=>{ if(sn.val()){ cloudRef.once('value',d=>{ if(!d.val()){ cloudRef.set({weeks:sn.val()}).then(()=>famRef.child('weeks').remove()); } }); } });
+  famRef.child('weeks').once('value',sn=>{ if(isAluna()&&sn.val()){ cloudRef.once('value',d=>{ if(isAluna()&&!d.val()){ cloudRef.set({weeks:sn.val()}).then(()=>famRef.child('weeks').remove()); } }); } });
   // presença
   const meRef=famRef.child('online/'+USER.id);
   db.ref('.info/connected').on('value',sn=>{ if(sn.val()){ meRef.onDisconnect().remove(); meRef.set({t:firebase.database.ServerValue.TIMESTAMP}); } });
@@ -819,16 +860,17 @@ function mergeRemote(remote){
     const local={}; lw.days.forEach(d=>d.tasks.forEach(t=>local[t.id]=t));
     (rw.days||[]).forEach(d=>(d.tasks||[]).forEach(rt=>{
       const lt=local[rt.id]; if(!lt) return;
+      if(JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null)){lt.reacts=rt.reacts||null;changed=true;}
       const diff = rt.status!==lt.status || JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null) || (rt.pics||0)!==(lt.pics||0) || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day || !!rt.important!==!!lt.important;
-      if(diff && ((rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){ lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
+      if(diff && (!isAluna() || (rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){ lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; lt.day=rt.day; lt.important=!!rt.important; lt.u=rt.u; changed=true; }
     }));
   });
   return changed;
 }
 function cloudPush(now){
-  if(!cloudRef||!cloudReady) return;
+  if(!cloudRef||!cloudReady||!isAluna()) return;
   clearTimeout(pushTimer);
-  const doIt=()=>{ const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.set(JSON.parse(json)).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
+  const doIt=()=>{ if(!isAluna()||!cloudRef||!cloudReady) return; const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.transaction(remote=>{ if(!isAluna()) return; const next=JSON.parse(json); const reactions={}; Object.values(remote?.weeks||{}).forEach(w=>(w.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{reactions[t.id]=t.reacts||null;}))); Object.values(next.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{if(Object.prototype.hasOwnProperty.call(reactions,t.id)) t.reacts=reactions[t.id];}))); return next; }).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
   if(now) doIt(); else pushTimer=setTimeout(doIt,400);
 }
 function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b) return;
@@ -848,6 +890,7 @@ function openLogin(after,preId){
   document.getElementById('pinBack').addEventListener('click',()=>{usersEl.style.display='';pinBox.style.display='none';});
   if(preId){ const b=sheet.querySelector('.uopt[data-u="'+preId+'"]'); if(b) b.click(); }
   const enter=()=>{const v=document.getElementById('pinTxt').value.trim(); if(v!==pick.pin){vibrate([40,40,40]);toast('Código errado. Tenta de novo');return;}
+    clearTimeout(pushTimer);
     USER=pick; try{localStorage.setItem(KEY+'-user',USER.id);}catch(e){}
     if(famRef){famRef.child('online').off();famRef.child('perfis').off();famRef.child('chat').off();}
     if(cloudRef){cloudRef.off();cloudRef=null;cloudReady=false;lastPushed='';}
@@ -1263,7 +1306,7 @@ function render(){
   const imp=allTasks(w).filter(t=>t.important&&pass(t)).sort((a,b)=>order.indexOf(a.day)-order.indexOf(b.day));
   const impPend=imp.filter(t=>t.status!=='done').length;
   if(!(filtering&&!imp.length)) html+=`<details class="imp" data-date="imp" ${openState['imp']?'open':''}><summary><span class="n">⭐ Importantes</span><span class="cnt">${impPend?impPend+' Pendente'+(impPend>1?'s':''):'✓ Tudo feito'}</span><span class="arrow">▼</span></summary>
-    <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join(''):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':'Segura o dedo em uma tarefa e escolhe “Marcar como mais importante”. Ela vai aparecer aqui.'}</p>`}</div></details>`;
+    <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join(''):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':(isAluna()?'Segura o dedo em uma tarefa e escolhe “Marcar como mais importante”. Ela vai aparecer aqui.':'As tarefas que a Maria marcar como importantes aparecem aqui.')}</p>`}</div></details>`;
   const inWeek=w.days.some(d=>d.date===TODAY);
   html+='<div class="days">';
   const tomorrowDate=(()=>{const d=new Date(TODAY+'T12:00:00');d.setDate(d.getDate()+1);return iso(d);})();
@@ -1310,11 +1353,11 @@ function taskHtml(t,inImp){
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
   const status=((t.pics||0)?`<span class="st pics">📸 ${t.pics}</span>`:'')+(t.off?`<span class="st canc">🚫 Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(t.status==='doing'?'<span class="st">⏳ Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">✓ Feito</span>':'')+moved;
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''}" data-id="${t.id}">
-    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[NEXT_R[t.status]||'done'][0]}</div>
-    <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${SWLBL[NEXT_L[t.status]||'doing'][0]}</div>
+${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[NEXT_R[t.status]||'done'][0]}</div>
+    <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${SWLBL[NEXT_L[t.status]||'doing'][0]}</div>`: ''}
     <div class="tin">
-      <div class="t"><div class="tg">${dchip}${subj}${status}</div><div class="tx">${t.text}</div>
-        ${(t.reacts&&Object.keys(t.reacts).length)?`<div class="trea">${Object.values(t.reacts).map(r=>`<span class="r">${r.e} <b>${esc(r.n||'')}</b></span>`).join('')}</div>`:''}${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">🚫 <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
+      <div class="t"><div class="tg">${dchip}${subj}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>`<span class="r">${r.e} <b>${esc(r.n||'')}</b></span>`).join('')}</span>`:''}</div><div class="tx">${t.text}</div>
+        ${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">🚫 <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
     </div>
   </div>`;
 }
@@ -1345,7 +1388,7 @@ function sparks(x,y,color){for(let i=0;i<10;i++){const e=document.createElement(
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1800);}
 function colorOf(el){return getComputedStyle(el).getPropertyValue('--c').trim()||'#2EB88A';}
 
-function setStatus(id,status,el){
+function setStatus(id,status,el){ if(!isAluna()) return;
   const t=findTask(id); const w=DB.weeks[current];
   const dayEl=document.querySelector(`.day[data-date="${w.days.find(d=>d.k===t.day).date}"]`);
   const wasComplete=dayEl&&dayEl.classList.contains('complete');
@@ -1373,6 +1416,12 @@ function bindTasks(root=document.getElementById('app')){
   root.querySelectorAll('[data-pics]').forEach(g=>g.addEventListener('click',e=>{e.stopPropagation();openPics(g.dataset.pics);}));
   root.querySelectorAll('.task').forEach(el=>{
     const id=el.dataset.id, tin=el.querySelector('.tin');
+    if(!isAluna()){
+      el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label','Ver tarefa e opções de acompanhamento');
+      el.addEventListener('click',()=>openMenu(id));
+      el.addEventListener('keydown',e=>{if(e.target===el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openMenu(id);}});
+      return;
+    }
     let timer=null, sx=0, sy=0, dx=0, mode=null; // mode: null | 'h' | 'v'
     const cancelPress=()=>{clearTimeout(timer);el.classList.remove('pressing');};
     el.addEventListener('touchstart',ev=>{const t=ev.touches[0];sx=t.clientX;sy=t.clientY;dx=0;mode=null;
@@ -1403,7 +1452,7 @@ function bindTasks(root=document.getElementById('app')){
 /* ================= SHEETS ================= */
 const veil=document.getElementById('veil'), sheet=document.getElementById('sheet');
 let scrollY0=0;
-function show(html){sheet.classList.toggle('chatsheet',/class="chat"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
+function show(html){sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
   if(!veil.classList.contains('on')){scrollY0=window.scrollY;document.body.classList.add('locked');document.body.style.top=(-scrollY0)+'px';}
   veil.classList.add('on');sheet.scrollTop=0;sheet.querySelector('.x')?.addEventListener('click',hide);}
 function hide(){closePop();veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
@@ -1422,16 +1471,17 @@ function openMenu(id){
   const t=findTask(id);
   show(`<h2>📝 Tarefa <button class="x">✕</button></h2>
    <p class="quiet" style="margin:0 0 12px">${SUBJ[t.subj]} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
-   <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
+   ${isAluna()?`<button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>`:''}
    ${CLOUD_CFG?'<button class="opt" data-a="chat"><span class="ic">📨</span>Mandar para a conversa</button>':''}
-   <button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>
-   ${t.off?'<button class="opt" data-a="undel"><span class="ic">↩️</span>Voltar a valer</button>':'<button class="opt danger" data-a="del"><span class="ic">🚫</span>Cancelar a tarefa</button>'}
-   ${(CLOUD_CFG&&!isAluna())?`<button class="opt" data-a="rea"><span class="ic">💛</span>Deixar um carinho para a Maria</button>`:''}
-   ${CLOUD_CFG?`<button class="opt" data-a="pics"><span class="ic">📸</span>${(t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'}</button>`:''}
-   <button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
-   ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`);
+   ${isAluna()?`<button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>
+   ${t.off?'<button class="opt" data-a="undel"><span class="ic">↩️</span>Voltar a valer</button>':'<button class="opt danger" data-a="del"><span class="ic">🚫</span>Cancelar a tarefa</button>'}`:''}
+   ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">💛</span>Deixar um carinho para a Maria</button>`:''}
+   ${CLOUD_CFG?`<button class="opt" data-a="pics"><span class="ic">📸</span>${isAluna()?((t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'):('Ver fotos'+((t.pics||0)?' ('+t.pics+')':''))}</button>`:''}
+   ${isAluna()?`<button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
+   ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`:''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
     const a=b.dataset.a;
+    if(['imp','move','del','undel','note','delnote'].includes(a)&&!isAluna()) return;
     if(a==='imp'){t.important=!t.important;t.u=Date.now();save();hide();render();vibrate(20);toast(t.important?'⭐ Agora é uma das mais importantes':'Saiu das mais importantes');if(t.important)window.scrollTo({top:0,behavior:'smooth'});}
     if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
     if(a==='del') openCancel(id);
@@ -1445,14 +1495,33 @@ function openMenu(id){
 }
 const TREACTS=[['🎉','Parabéns!'],['👏','Mandou bem'],['⭐','Caprichou'],['💛','Orgulho'],['💪','Força'],['🤗','Tamo junto'],['🙂','Tudo bem'],['😕','Fiquei triste'],['⏰','Não esquece']];
 function openTaskReact(id){
+  if(!isResponsavel()) return;
   const t=findTask(id); if(!t) return; const mine=(t.reacts&&USER)?t.reacts[USER.id]:null;
   show(`<h2>💛 Um carinho para a Maria <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div class="rgrid">${TREACTS.map(([e,n])=>`<button data-e="${e}" class="${mine&&mine.e===e?'on':''}"><span>${e}</span>${n}</button>`).join('')}</div>
     ${mine?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu carinho</button>':''}`);
   sheet.querySelectorAll('[data-e]').forEach(b=>b.addEventListener('click',()=>{
-    t.reacts=t.reacts||{}; t.reacts[USER.id]={e:b.dataset.e,n:USER.nome,t:Date.now()}; t.u=Date.now(); save(); hide(); render(); vibrate(20); SFX.pop(); toast('Carinho enviado '+b.dataset.e); }));
-  const del=document.getElementById('reaDel'); if(del) del.addEventListener('click',()=>{ delete t.reacts[USER.id]; t.u=Date.now(); save(); hide(); render(); toast('Tirei seu carinho'); });
+    writeTaskReaction(id,b.dataset.e); }));
+  const del=document.getElementById('reaDel'); if(del) del.addEventListener('click',()=>{ writeTaskReaction(id,null); });
+}
+async function writeTaskReaction(id,emoji){
+  if(!isResponsavel()||!cloudRef||!cloudReady) return;
+  if(!cloudOnline){toast('Conecte à internet para enviar seu carinho');return;}
+  const actor=USER.id, name=USER.nome, ref=cloudRef;
+  try{
+    const snap=await ref.once('value');
+    if(!isResponsavel()||USER.id!==actor||cloudRef!==ref) return;
+    let path=null;
+    Object.entries(snap.val()?.weeks||{}).forEach(([week,w])=>(w.days||[]).forEach((d,di)=>(d.tasks||[]).forEach((t,ti)=>{if(t.id===id)path='weeks/'+week+'/days/'+di+'/tasks/'+ti+'/reacts/'+actor;})));
+    if(!path){toast('Essa tarefa ainda não está disponível para receber carinhos');return;}
+    const reaction=emoji?{e:emoji,n:name,t:Date.now()}:null;
+    await ref.child(path).set(reaction);
+    if(USER?.id!==actor) return;
+    const t=findTask(id); if(t){t.reacts=t.reacts||{};if(reaction)t.reacts[actor]=reaction;else delete t.reacts[actor];}
+    mem=DB;try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}
+    hide();render();vibrate(20);SFX.pop();toast(emoji?'Carinho enviado '+emoji:'Tirei seu carinho');
+  }catch(e){toast('Não consegui salvar o carinho. Tente novamente.');}
 }
 let reaSeen=0; try{reaSeen=+localStorage.getItem(KEY+'-reaseen')||0;}catch(e){}
 function allReacts(){ const out=[];
@@ -1466,10 +1535,11 @@ function updateReaFab(){ const list=allReacts(); const n=reaNew(); const show=is
     const b=document.getElementById('reaBadge'); b.textContent=n>9?'9+':n; b.classList.toggle('on',n>0); }
 }
 function openReacts(){
+  if(!isAluna()) return;
   const list=allReacts();
   show(`<h2>💛 Carinhos que você recebeu <button class="x">✕</button></h2>
     ${list.length?`<div class="realist">${list.map(r=>{ const d=DB.weeks[r.week].days.find(x=>x.k===r.task.day); const novo=(r.t||0)>reaSeen;
-      return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><b>${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}${novo?' · novo ✨':''}</b>${esc(plain(r.task.text))}<br><small class="quiet">${SUBJ[r.task.subj]||''} · ${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</small></span></button>`; }).join('')}</div>`
+      return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}${novo?' · novo ✨':''}</span><span class="rea-activity">${esc(plain(r.task.text))}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${SUBJ[r.task.subj]}</span>`:''}<span class="rea-date">${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</span></span></span></button>`; }).join('')}</div>`
       :'<p class="quiet" style="text-align:center;padding:16px 0">Ainda não tem carinhos. Faça as tarefas que logo chegam! 💛</p>'}`);
   sheet.querySelectorAll('.it2').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
     const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
@@ -1484,24 +1554,24 @@ function openPics(id){
   show(`<h2>📸 Fotos da tarefa <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div id="galBox"><p class="quiet" style="text-align:center;padding:10px 0">Carregando…</p></div>
-    <button class="opt primary" id="picAdd" style="justify-content:center">📷 Tirar foto agora</button>`);
-  document.getElementById('picAdd').addEventListener('click',()=>document.getElementById('taskFoto').click());
+    ${isAluna()?'<button class="opt primary" id="picAdd" style="justify-content:center">📷 Tirar foto agora</button>':''}`);
+  document.getElementById('picAdd')?.addEventListener('click',()=>{if(isAluna())document.getElementById('taskFoto').click();});
   if(!picsRef(id)){ document.getElementById('galBox').innerHTML='<p class="quiet" style="text-align:center">Precisa de internet para ver as fotos.</p>'; return; }
   picsRef(id).once('value').then(sn=>{ const v=sn.val()||{}; const ks=Object.keys(v).sort(); const box=document.getElementById('galBox'); if(!box) return;
-    box.innerHTML=ks.length?`<div class="gal">${ks.map(k=>`<div class="cell"><img src="${v[k].data}" data-big="${k}" alt=""><button class="del" data-del="${k}" aria-label="Apagar">✕</button></div>`).join('')}</div>`
-      :'<p class="quiet" style="text-align:center;padding:10px 0">Ainda não tem foto. Tira uma para mostrar o que você fez! 📷</p>';
+    box.innerHTML=ks.length?`<div class="gal">${ks.map(k=>`<div class="cell"><img src="${v[k].data}" data-big="${k}" alt="">${isAluna()?`<button class="del" data-del="${k}" aria-label="Apagar">✕</button>`:''}</div>`).join('')}</div>`
+      :'<p class="quiet" style="text-align:center;padding:10px 0">Ainda não há fotos desta tarefa. 📷</p>';
     box.querySelectorAll('[data-big]').forEach(im=>im.addEventListener('click',()=>{ const k=im.dataset.big;
       show(`<h2>📸 Foto <button class="x">✕</button></h2><div class="viewer"><img src="${v[k].data}" alt=""></div><div class="row"><button class="opt" id="picBack">Voltar</button><a class="opt primary" style="justify-content:center;text-decoration:none" href="${v[k].data}" download="tarefa.jpg">⬇️ Salvar</a></div>`);
       document.getElementById('picBack').addEventListener('click',()=>openPics(id)); sheet.querySelector('.x').addEventListener('click',()=>openPics(id),{once:true}); }));
-    box.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ picsRef(id).child(b.dataset.del).remove().then(()=>{ countPics(id); openPics(id); toast('Foto apagada'); }); }));
+    box.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ if(!isAluna()) return; picsRef(id).child(b.dataset.del).remove().then(()=>{ countPics(id); openPics(id); toast('Foto apagada'); }); }));
   });
 }
-function countPics(id){ if(!picsRef(id)) return; picsRef(id).once('value').then(sn=>{ const v=sn.val()||{}; const ks=Object.keys(v).sort();
-  const t=findTask(id); if(!t) return; t.pics=ks.length; t.thumbs=ks.slice(-4).map(k=>v[k].thumb||v[k].data); t.u=Date.now(); save(); render(); }); }
-document.getElementById('taskFoto').addEventListener('change',ev=>{ const f=ev.target.files[0]; ev.target.value=''; if(!f||!picTaskId) return;
+function countPics(id){ if(!isAluna()) return; if(!picsRef(id)) return; picsRef(id).once('value').then(sn=>{ const v=sn.val()||{}; const ks=Object.keys(v).sort();
+  const t=findTask(id); if(!isAluna()||!t) return; t.pics=ks.length; t.thumbs=ks.slice(-4).map(k=>v[k].thumb||v[k].data); t.u=Date.now(); save(); render(); }); }
+document.getElementById('taskFoto').addEventListener('change',ev=>{ const f=ev.target.files[0]; ev.target.value=''; if(!isAluna()||!f||!picTaskId) return;
   openCropper(f,{out:1280,q:.8,aspects:[['Original',4/3],['Quadrado',1],['3:4',3/4]]}).then(full=>{ if(!full){ openPics(picTaskId); return; }
     const im=new Image(); im.onload=()=>{ const k=Math.min(1,260/Math.max(im.width,im.height)); const c=document.createElement('canvas'); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k); c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-      const id=picTaskId; toast('Enviando foto…');
+      if(!isAluna()) return; const id=picTaskId; toast('Enviando foto…');
       picsRef(id).push({data:full,thumb:c.toDataURL('image/jpeg',.7),by:USER?USER.id:'',t:Date.now()}).then(()=>{ countPics(id); SFX.pop(); vibrate(20); toast('Foto guardada 📸'); openPics(id); }).catch(()=>toast('Não consegui enviar'));
     }; im.src=full; }); });
 function askPhotoAfterDone(id){
@@ -1512,7 +1582,7 @@ function askPhotoAfterDone(id){
   document.getElementById('npNo').addEventListener('click',hide);
   document.getElementById('npYes').addEventListener('click',()=>{ picTaskId=id; document.getElementById('taskFoto').click(); });
 }
-function openCancel(id){
+function openCancel(id){ if(!isAluna()) return;
   const t=findTask(id);
   show(`<h2>🚫 Cancelar a tarefa <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc((t.text||'').replace(/<[^>]+>/g,''))}</p>
@@ -1522,26 +1592,26 @@ function openCancel(id){
   document.getElementById('cancelTxt').focus();
   document.getElementById('cancelNo').addEventListener('click',()=>openMenu(id));
   document.getElementById('cancelOk').addEventListener('click',()=>{
-    const v=document.getElementById('cancelTxt').value.trim();
+    if(!isAluna()) return; const v=document.getElementById('cancelTxt').value.trim();
     if(v.length<3){ vibrate([40,40,40]); SFX.err(); toast('Escreve o motivo para cancelar'); document.getElementById('cancelTxt').focus(); return; }
     t.off=true; t.offWhy=v; t.offBy=USER?USER.nome:''; t.status='todo'; t.u=Date.now(); save(); hide(); render(); refreshReminder(); vibrate(20); toast('Tarefa cancelada'); });
 }
-function openMove(id){
+function openMove(id){ if(!isAluna()) return;
   const t=findTask(id), w=DB.weeks[current];
   show(`<h2>📆 Mudar para qual dia? <button class="x">✕</button></h2>
    ${w.days.map(d=>`<button class="opt ${d.k===t.day?'d':''}" style="--c:${dayCss(d.k)}" data-k="${d.k}"><span class="ic">${d.k===t.day?'📍':'📆'}</span>${DAYMETA[d.k][0]} ${fmt(d.date)}${d.k===t.day?' <small>(está aqui)</small>':''}${d.k===t.origin&&d.k!==t.day?' <small>(dia de antes)</small>':''}</button>`).join('')}`);
   sheet.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click',()=>{
-    t.day=b.dataset.k; t.u=Date.now(); save(); hide(); openState[w.days.find(d=>d.k===t.day).date]=true; render(); vibrate(20); toast('Mudou para '+DAYMETA[t.day][0]);
+    if(!isAluna()) return; t.day=b.dataset.k; t.u=Date.now(); save(); hide(); openState[w.days.find(d=>d.k===t.day).date]=true; render(); vibrate(20); toast('Mudou para '+DAYMETA[t.day][0]);
   }));
 }
-function openNote(id){
+function openNote(id){ if(!isAluna()) return;
   const t=findTask(id);
   show(`<h2>💬 Observação <button class="x">✕</button></h2>
    <textarea id="noteTxt" placeholder="Escreve aqui. Exemplo: a professora deixou entregar na quinta">${esc(t.note||'')}</textarea>
    <div class="row"><button class="opt" id="noteCancel">Cancelar</button><button class="opt primary" id="noteSave">Salvar</button></div>`);
   document.getElementById('noteTxt').focus();
   document.getElementById('noteCancel').addEventListener('click',hide);
-  document.getElementById('noteSave').addEventListener('click',()=>{t.note=document.getElementById('noteTxt').value.trim();t.noteBy=USER?USER.nome:'';t.u=Date.now();save();hide();render();vibrate(20);toast(t.note?'Observação salva':'Observação apagada');});
+  document.getElementById('noteSave').addEventListener('click',()=>{if(!isAluna()) return;t.note=document.getElementById('noteTxt').value.trim();t.noteBy=USER?USER.nome:'';t.u=Date.now();save();hide();render();vibrate(20);toast(t.note?'Observação salva':'Observação apagada');});
 }
 function openMain(){
   const n=unread();
@@ -1602,7 +1672,7 @@ function reminderHtml(){
   const doing=allTasks(w).filter(t=>t.status==='doing'&&!t.off&&!secs[0][1].includes(t));
   if(doing.length) secs.push(['⏳ O que você está fazendo', doing]);
   const total=secs.reduce((a,[,l])=>a+l.length,0);
-  const nome=USER?', '+USER.nome:''; const dica=isAluna()?'Arrasta para a direita quando terminar. Arrasta para a esquerda se ainda está fazendo.':'Você está acompanhando as tarefas da Maria. Segura em uma tarefa para deixar uma observação.';
+  const nome=USER?', '+USER.nome:''; const dica=isAluna()?'Arrasta para a direita quando terminar. Arrasta para a esquerda se ainda está fazendo.':'Você está acompanhando as tarefas da Maria. Toque em uma tarefa para ver fotos ou deixar um carinho.';
   return `<div class="rem"><h2>${greet}${nome}! 👋 <button class="x">✕</button></h2>
     ${total?secs.filter(([,l])=>l.length).map(([h,l])=>`<div class="sec"><h3>${h}</h3>${l.map(t=>`<div class="rw" style="--c:${dayCss(t.day)}">${taskHtml(t,true)}</div>`).join('')}</div>`).join(''):'<div class="ok">Tudo em dia! 🎉<br><small class="quiet">Não tem nada para fazer agora.</small></div>'}
     <p class="quiet" style="margin:4px 0 10px;font-size:13px;text-align:center">${dica}</p>
@@ -1618,6 +1688,7 @@ function hintFirst(){
   },600);
 }
 function openReminder(){
+  if(!isAluna()) return;
   const html=reminderHtml(); if(!html) return;
   show(html); bindTasks(sheet); hintFirst();
   const doneRem=()=>{ try{localStorage.setItem(KEY+'-rem',TODAY);}catch(e){} };
