@@ -17,7 +17,7 @@
   :root{
     --selected-bg:#DCD3FF; --selected-ink:#3B2A8F;
     --paper:#FFFDF7; --ink:#26243A; --soft:#6B6880; --line:#E8E4D8;
-    --dom:#9B8CBA; --seg:#B57BE8; --ter:#8E5BE0; --qua:#A44FC7; --qui:#6B46C1; --sex:#4C3499; --fab:#26243A; --gold:#D9A21B;
+    --dom:#9B8CBA; --seg:#B57BE8; --ter:#8E5BE0; --qua:#A44FC7; --qui:#6B46C1; --sex:#4C3499; --fab:#26243A; --gold:#BE7A15;
     --ok:#2EB88A; --acc:#2F8FE0;
     --lilas:#8E5BE0; --lilas-bg:#F6F1FD; --lilas-bg2:#EFE7FB; --lilas-line:#E0D3F2; --lilas-ink:#3F2764; --lilas-soft:#7A6B9B;
     --bring:#F3F4F7; --home:#E8EFFF; --alert:#FFE1DD; --doing:#FFE9B3; --amber:#E9C46A; --imp:#E4443F;
@@ -45,7 +45,7 @@
   .nav button{border:2px solid var(--line);background:#fff;border-radius:999px;width:36px;height:36px;font-size:18px;font-weight:900;color:var(--ink)}
   .nav button:disabled{opacity:.35}
   /* filtros (fixos ao rolar) */
-  .top{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--lilas-bg),var(--lilas-bg2));border-bottom:1px solid var(--lilas-line);margin:0 -16px 22px;padding:10px 16px 6px;box-shadow:0 10px 14px -10px rgba(63,39,100,.22)}
+  .top{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--lilas-bg),var(--lilas-bg2));border-bottom:1px solid var(--lilas-line);margin:-20px -16px 22px;padding:30px 16px 6px;box-shadow:0 10px 14px -10px rgba(63,39,100,.22)}
   .top h1{color:var(--lilas-ink)}
   .top h1{margin-bottom:8px}
   .top .fam{margin-bottom:8px}
@@ -76,7 +76,7 @@
   .imp summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--gold);color:#fff}
   .imp summary .n{font-size:23px;font-weight:900;line-height:1}
   .imp summary::-webkit-details-marker{display:none}
-  .imp summary .cnt{margin-left:auto;background:#fff;color:var(--gold);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:900;white-space:nowrap}
+  .imp summary .cnt{margin-left:auto;background:#fff;color:var(--gold);border-radius:999px;padding:4px 10px;font-size:14px;font-weight:900;white-space:nowrap}
   .imp summary .arrow{font-size:14px;opacity:.85;transition:transform .2s}
   .imp[open] summary .arrow{transform:rotate(180deg)}
   .imp .ib{padding:0 14px 12px}
@@ -97,7 +97,7 @@
   .dl .n{font-size:23px;font-weight:900;line-height:1}
   .dl .d{opacity:.9;font-size:15px}
   .tags{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-  .tag{background:#fff;color:var(--c);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:900;white-space:nowrap;line-height:1.2}
+  .tag{background:#fff;color:var(--c);border-radius:999px;padding:4px 10px;font-size:14px;font-weight:900;white-space:nowrap;line-height:1.2}
   .day summary .arrow{font-size:14px;opacity:.85;flex:none;transition:transform .2s}
   .day[open] summary .arrow{transform:rotate(180deg)}
   .body{padding:12px 14px 14px}
@@ -188,7 +188,7 @@
   .rem .ok{text-align:center;font-size:18px;font-weight:900;padding:16px 0 6px}
   .rem .rw .task{--tbg:#F7F5FC;border-top:0;margin-bottom:6px;background:#F7F5FC}
   .rem .rw .task.doing{--tbg:var(--doing);background:var(--doing)}
-  .next{background:#fff;border:3px dashed var(--line);border-radius:22px;padding:14px 16px}
+  .next{background:#fff;border:3px dashed var(--lilas-line);border-radius:22px;padding:14px 16px}
   .next h2{margin:0 0 6px;font-size:19px;font-weight:900}
   /* flutuante */
   .fabs{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -346,6 +346,14 @@
   .sw2 .fnt{width:100%;min-width:0;aspect-ratio:auto;height:44px;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px;font-weight:800;color:var(--ink);background:#F7F5FC}
   .sw2 .fnt.on::after{display:none}
   .looklbl{margin:0 0 6px;font-weight:900;font-size:15px}
+  .corp{margin:0 0 10px}
+  .corp .nm{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:var(--ink);margin:0 0 6px}
+  .corp .nm .av{width:30px;height:30px;border-radius:50%;background:#EDE5FA;border:2px solid var(--lilas-line);display:flex;align-items:center;justify-content:center;font-size:15px;overflow:hidden;flex:none}
+  .corp .nm .av img{width:100%;height:100%;object-fit:cover}
+  .sw2.cores{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0}
+  .sw2.cores button{border-radius:50%;border-width:2px}
+  .sw2.cores button.on{border:3px solid var(--lilas-ink);box-shadow:0 0 0 3px rgba(63,39,100,.14)}
+  .sw2.cores button.on::after{right:auto;bottom:auto;left:50%;top:50%;transform:translate(-50%,-50%);font-size:14px}
   #lookPrev{height:auto!important}
   #lookPrev .msgs{border-radius:14px}
   #lookPrev .msg .av{width:34px;height:34px;font-size:18px}
@@ -470,12 +478,12 @@
     .wrap{max-width:840px;padding:28px 28px 130px}
     h1{font-size:36px;margin-bottom:10px}
     .prog .row{font-size:17px} .prog .row b{font-size:20px} .prog .bar{height:26px} .prog .pct{font-size:26px}
-    .top{margin:0 -28px 26px;padding:12px 28px 8px}
+    .top{margin:-28px -28px 26px;padding:40px 28px 8px}
     .filters{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
     .chip{font-size:15px;padding:8px 16px}
     .filters{overflow:visible}
     .filters .chip{flex:1;text-align:center}
-    .dl .n{font-size:27px} .dl .d{font-size:17px} .tag{font-size:14px;padding:5px 12px}
+    .dl .n{font-size:27px} .dl .d{font-size:17px} .tag{font-size:15px;padding:5px 12px}
     .imp summary .n{font-size:27px}
     .aulas span{font-size:14px;padding:5px 12px}
     .body{padding:14px 16px 16px}
@@ -655,11 +663,9 @@
   .searchbar input:focus{outline:none;border-color:var(--gold)}
   .searchbar .qcnt{font-size:12px;font-weight:900;color:var(--soft);white-space:nowrap}
   .searchbar .qx{border:0;background:var(--line);color:var(--ink);border-radius:50%;width:34px;height:34px;font-size:15px;font-weight:900;flex:none;display:flex;align-items:center;justify-content:center}
-  .qall{display:none;width:100%;margin:0 0 10px;border:2px dashed var(--line);background:#fff;color:var(--ink);border-radius:14px;padding:10px;font:inherit;font-size:14px;font-weight:800}
+  .qall{display:none;width:100%;margin:0 0 10px;border:2px dashed var(--lilas-line);background:#fff;color:var(--ink);border-radius:14px;padding:10px;font:inherit;font-size:14px;font-weight:800}
   .qall.on{display:block}
   @media print{.filter-row,.searchbar,.qall{display:none}}
-  .tag.complete-tag{font-size:14px}
-  @media(min-width:700px){.tag.complete-tag{font-size:15px}}
 </style>
 </head>
 <body>
@@ -710,9 +716,9 @@ const FIREBASE = {
 /* Família e usuários. Troque os códigos (PIN) aqui quando quiser. */
 const FAMILIA = "queiroz";
 const USERS = [
-  { id:'maria',  nome:'Maria',  emoji:'👧', pin:'1234', papel:'aluna', cor:'#E0479E' },
-  { id:'edson',  nome:'Edson',  emoji:'👨', pin:'2026', papel:'responsavel', cor:'#2F8FE0' },
-  { id:'thaysa', nome:'Thaysa', emoji:'👩', pin:'2025', papel:'responsavel', cor:'#8E5BE0' }
+  { id:'maria',  nome:'Maria',  emoji:'👧', pin:'1234', papel:'aluna', cor:'#8E5BE0' },
+  { id:'edson',  nome:'Edson',  emoji:'👨', pin:'2026', papel:'responsavel', cor:'#6B46C1' },
+  { id:'thaysa', nome:'Thaysa', emoji:'👩', pin:'2025', papel:'responsavel', cor:'#4C3499' }
 ];
 
 /* ================= DADOS =================
@@ -1213,7 +1219,7 @@ function dayLabel(d){ if(d===TODAY) return 'Hoje'; if(d===addDays(TODAY,-1)) ret
   const dt=new Date(d+'T12:00:00'); const dias=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
   const diff=(new Date(TODAY+'T12:00:00')-dt)/86400000; return (diff<7? dias[dt.getDay()]+', ':'')+fmt(d); }
 function msgHtml(m,i,arr){
-  const u=USERS.find(x=>x.id===m.by)||{emoji:'👤',nome:m.by,id:m.by,cor:'#8A8A9A'}; const me=USER&&m.by===USER.id;
+  const u=USERS.find(x=>x.id===m.by)||{emoji:'👤',nome:m.by,id:m.by,cor:'#7A6B9B'}; const me=USER&&m.by===USER.id;
   const prev=arr[i-1]; const cont=prev&&prev.by===m.by&&(m.t||0)-(prev.t||0)<5*60*1000&&!m.reply;
   const onlyEmo=!m.att&&/^(\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u200d|\ufe0f|\s){1,6}$/u.test(m.text||'');
   const att=m.att?(m.att.kind==='img'?`<img class="pic" src="${m.att.thumb}" data-open="${m.k}" alt="foto">`:`<span class="file" data-open="${m.k}">📄 <span>${esc(m.att.name||'arquivo')}<small>${fmtSize(m.att.size||0)}</small></span></span>`):'';
@@ -1221,7 +1227,7 @@ function msgHtml(m,i,arr){
   const tick=me?`<span class="tick ${seenAll?'seen':''}" title="${seenAll?'Visto por todos':seenAny?'Visto por alguém':'Enviada'}">${seenAny?'✓✓':'✓'}</span>`:'';
   const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${u.cor||'#8A8A9A'}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')}</div>${reactsHtml(m)}</div></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')}</div>${reactsHtml(m)}</div></div>`;
 }
 function chatHtml(){
   if(chatQ.length>=2){ const ql=chatQ.toLowerCase();
@@ -1232,7 +1238,7 @@ function chatHtml(){
   if(!CHAT.length) return '<div class="empty">Ainda não tem mensagens.<br>Manda um oi! 👋</div>';
   const groups=[]; CHAT.forEach(m=>{ const d=iso(new Date(m.t||0)); const g=groups[groups.length-1]; if(g&&g.d===d) g.msgs.push(m); else groups.push({d,msgs:[m]}); });
   return groups.map(g=>{ const inner=g.msgs.map((m,i,arr)=>msgHtml(m,i,arr)).join('');
-    if(g.d===TODAY) return `<details class="daygrp hoje" data-day="${g.d}"${chatOpenDays[g.d]===false?'':' open'}><summary>Hoje<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
+    if(g.d===TODAY) return `<details class="daygrp hoje" data-day="${g.d}"${chatOpenDays[g.d]===false?'':' open'}><summary>Hoje · ${g.msgs.length} ${g.msgs.length>1?'mensagens':'mensagem'}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
     const open=chatOpenDays[g.d]?' open':'';
     return `<details class="daygrp" data-day="${g.d}"${open}><summary>${dayLabel(g.d)} · ${g.msgs.length} ${g.msgs.length>1?'mensagens':'mensagem'}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`; }).join('');
 }
@@ -1304,7 +1310,9 @@ function sendAttachment(f){
   } else { const r=new FileReader(); r.onload=()=>finish({kind:'file',name:f.name,size:f.size},r.result,f.type||'application/octet-stream'); r.readAsDataURL(f); }
 }
 document.getElementById('attFile').addEventListener('change',ev=>{ const f=ev.target.files[0]; ev.target.value=''; sendAttachment(f); });
-let CHATPREF={bg:'lilas',font:'nunito',size:'m',foto:''}; try{Object.assign(CHATPREF,JSON.parse(localStorage.getItem(KEY+'-chatpref')||'{}'));}catch(e){}
+let CHATPREF={bg:'lilas',font:'nunito',size:'m',foto:'',cores:{}}; try{Object.assign(CHATPREF,JSON.parse(localStorage.getItem(KEY+'-chatpref')||'{}'));}catch(e){}
+const CORES_BALAO=['#B57BE8','#8E5BE0','#7C4DC4','#6B46C1','#4C3499','#A44FC7','#8E2A63','#2F8FE0','#2EB88A','#BE7A15','#E0479E','#6B7A99'];
+function corDe(u){ return (u&&CHATPREF.cores&&CHATPREF.cores[u.id])||(u&&u.cor)||'#7A6B9B'; }
 function savePref(){ try{localStorage.setItem(KEY+'-chatpref',JSON.stringify(CHATPREF));}catch(e){} applyPref(); }
 const BGCOL={lilas:['#B48BF5','#8E5BE0'],claro:['#7FB2F0','#4A7FE0'],verde:['#5FD3A5','#2EB88A'],azul:['#6FB6F5','#2F8FE0'],rosa:['#F58FC8','#E0479E'],amarelo:['#FFD06B','#F0A93C'],noite:['#4A4770','#26243A'],bolinhas:['#C9A8FF','#8E5BE0'],estrelas:['#8FB8FF','#4A7FE0'],foto:['#8E5BE0','#5B3FC4']};
 function applyPref(){
@@ -1316,11 +1324,16 @@ function applyPref(){
 function openChatLook(){
   const BGS=[['lilas','#F7F5FC'],['claro','#FFFFFF'],['verde','#E6F6EE'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
   const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
+  const OUTRO=USERS.find(u=>!USER||u.id!==USER.id)||USERS[0];
   show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px;padding:0"><div class="msgs" id="lookMsgs" style="min-height:0;max-height:none;padding:10px 8px;overflow:hidden">
-      <div class="msg" style="--uc:#E0479E"><span class="av">${avatarHtml(USERS[0])}</span><div><div class="b"><span class="hd"><small>20:41</small><b>Maria</b></span>Oi! Assim fica o balão dela 😊</div></div></div>
-      <div class="msg me" style="--uc:${USER.cor||'#2F8FE0'}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><small>20:42 <span class="tick seen">✓✓</span></small><b>Eu</b></span>E assim fica o seu</div></div></div>
+      <div class="msg" data-pu="${OUTRO.id}" style="--uc:${corDe(OUTRO)}"><span class="av">${avatarHtml(OUTRO)}</span><div><div class="b"><span class="hd"><small>20:41</small><b>${esc(OUTRO.nome)}</b></span>Oi! Assim fica o balão dele(a) 😊</div></div></div>
+      <div class="msg me" data-pu="${USER.id}" style="--uc:${corDe(USER)}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><small>20:42 <span class="tick seen">✓✓</span></small><b>Eu</b></span>E assim fica o seu</div></div></div>
     </div></div>
+    <p class="looklbl">💬 Cor dos balões</p>
+    ${USERS.map(u=>`<div class="corp"><span class="nm"><span class="av">${avatarHtml(u)}</span><b>${esc(u.nome)}${USER&&u.id===USER.id?' (você)':''}</b></span>
+      <div class="sw2 cores">${CORES_BALAO.map(c=>`<button data-uc="${u.id}" data-c="${c}" class="${corDe(u).toLowerCase()===c.toLowerCase()?'on':''}" style="background:${c}" aria-label="Cor ${c}"></button>`).join('')}</div></div>`).join('')}
+    <button class="opt" id="corReset" style="justify-content:center;margin:0 0 14px">↺ Voltar às cores de fábrica</button>
     <p class="looklbl">🎨 Plano de fundo</p>
     <div class="sw2">${BGS.map(([k,c])=>`<button data-bg="${k}" class="${CHATPREF.bg===k?'on':''}" style="background:${c};${c.startsWith('radial')?'background-size:14px 14px;':''}" title="${k}"></button>`).join('')}
       <button data-bg="foto" class="${CHATPREF.bg==='foto'?'on':''}" style="font-size:22px;${CHATPREF.foto?`background-image:url(${CHATPREF.foto})`:''}" title="Foto">${CHATPREF.foto?'<span style="position:absolute;left:3px;top:2px;font-size:13px">📷</span>':'📷'}</button></div>
@@ -1334,6 +1347,12 @@ function openChatLook(){
   sheet.querySelectorAll('[data-bg]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.bg==='foto'&&(!CHATPREF.foto||CHATPREF.bg==='foto')){ document.getElementById('bgFile').click(); return; } CHATPREF.bg=b.dataset.bg; savePref(); mark('[data-bg]','bg',CHATPREF.bg); }));
   sheet.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{ CHATPREF.font=b.dataset.f; savePref(); mark('[data-f]','f',CHATPREF.font); }));
   sheet.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>{ CHATPREF.size=b.dataset.s; savePref(); mark('[data-s]','s',CHATPREF.size); }));
+  const pintaPrev=()=>sheet.querySelectorAll('#lookPrev .msg[data-pu]').forEach(m=>{ const u=USERS.find(x=>x.id===m.dataset.pu); if(u) m.style.setProperty('--uc',corDe(u)); });
+  sheet.querySelectorAll('[data-uc]').forEach(b=>b.addEventListener('click',()=>{
+    CHATPREF.cores=CHATPREF.cores||{}; CHATPREF.cores[b.dataset.uc]=b.dataset.c; savePref(); vibrate(15);
+    sheet.querySelectorAll(`[data-uc="${b.dataset.uc}"]`).forEach(x=>x.classList.toggle('on',x===b)); pintaPrev(); }));
+  document.getElementById('corReset').addEventListener('click',()=>{ CHATPREF.cores={}; savePref(); vibrate(15);
+    sheet.querySelectorAll('[data-uc]').forEach(x=>{ const u=USERS.find(y=>y.id===x.dataset.uc); x.classList.toggle('on',!!u&&corDe(u).toLowerCase()===x.dataset.c.toLowerCase()); }); pintaPrev(); toast('Cores de fábrica 💜'); });
   const done=()=>{ openChat(); }; document.getElementById('lookOk').addEventListener('click',done); sheet.querySelector('.x').addEventListener('click',done,{once:true});
 }
 document.getElementById('bgFile').addEventListener('change',ev=>{ const f=ev.target.files[0]; ev.target.value=''; if(!f) return;
@@ -1975,11 +1994,11 @@ function openMain(){
   sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='summary')openSummary(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='user')openLogin(); if(m==='chat')openChat();}));
 }
 const SUMMARY_STATES=[
-  {key:'todo',label:'Falta fazer',color:'#E87973',light:'#FFB4AB'},
-  {key:'doing',label:'Fazendo',color:'#D9A21B',light:'#F5D67A'},
-  {key:'late',label:'Esquecido',color:'#B3261E',light:'#E5675D'},
-  {key:'done',label:'Feito',color:'#229F76',light:'#65D4AC'},
-  {key:'off',label:'Cancelada',color:'#9290A3',light:'#C6C3D4'}
+  {key:'todo',label:'Falta fazer',color:'#B98BEA',light:'#D8C2F5'},
+  {key:'doing',label:'Fazendo',color:'#BE7A15',light:'#E6B45A'},
+  {key:'late',label:'Esquecido',color:'#8E2A63',light:'#C4568F'},
+  {key:'done',label:'Feito',color:'#5B3A9E',light:'#8E6BD4'},
+  {key:'off',label:'Cancelada',color:'#9C93AE',light:'#C8C1D6'}
 ];
 function summaryState(t,w){
   if(t.off) return 'off';
