@@ -536,6 +536,56 @@
   .themes .sw{width:100%;height:44px;border-radius:12px;position:static;opacity:1}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   @media print{.fab,.veil,.filters,.chips{display:none} .day{break-inside:avoid} details:not([open])>.body{display:block}}
+
+  /* Conversa: acabamento integrado, inclusive após as regras de tablet/desktop. */
+  body .sheet.chatsheet{
+    padding:0; border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 24%,#fff);
+    border-radius:28px 28px 0 0; overflow:hidden; isolation:isolate;
+    background:#F8F5FD;
+    box-shadow:0 -8px 40px rgba(63,39,100,.14),0 20px 64px rgba(63,39,100,.18);
+  }
+  body .sheet.chatsheet>.grip{top:9px;width:36px;height:4px;border-radius:99px;background:rgba(255,255,255,.55)}
+  .chatsheet>.chat{width:100%;min-width:0;overflow:hidden}
+  .chatsheet .chathead{
+    padding:24px 20px 17px;
+    background:radial-gradient(ellipse at top left,rgba(255,255,255,.2),transparent 65%),linear-gradient(120deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));
+    border-bottom:1px solid rgba(255,255,255,.18);
+  }
+  .chatsheet .chat h2{gap:8px;font-size:18px;line-height:1.3;margin:0 0 12px;letter-spacing:-.3px}
+  .chatsheet .chat-title{flex:1;min-width:0}
+  body .chatsheet .chat h2 .gear,body .chatsheet .chat h2 .x{
+    width:40px;height:40px;margin:0;border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.17);color:#fff;box-shadow:none;font-size:17px;
+    transition:background .18s,transform .18s;
+  }
+  .chatsheet .chatwho{gap:6px;font-size:11px}
+  .chatsheet .chatwho span{padding:5px 9px;background:rgba(40,17,75,.16);font-weight:700}
+  .chatsheet .msgs{padding:20px 16px;gap:12px;scrollbar-width:thin;scrollbar-color:#D7C8EC transparent}
+  .chatsheet .msg .b{padding:10px 14px 8px;line-height:1.45;box-shadow:0 2px 8px rgba(63,39,100,.06)}
+  .chatsheet .daygrp>summary,.chatsheet .daysep{font-weight:700;font-size:11px;padding:6px 12px}
+  .chatsheet .chatin{
+    gap:8px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));
+    background:color-mix(in srgb,var(--c2,#8E5BE0) 5%,#fff);
+    border-top:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 15%,#fff);
+  }
+  body .chatsheet .chatin input{
+    height:46px;padding:10px 14px;border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 22%,#fff);
+    color:var(--ink);box-shadow:0 2px 6px rgba(63,39,100,.025);
+  }
+  body .chatsheet .chatin input:focus{border-color:var(--c2,#8E5BE0);box-shadow:0 0 0 3px color-mix(in srgb,var(--c2,#8E5BE0) 14%,transparent)}
+  body .chatsheet .chatin button{width:44px;height:44px;box-shadow:none}
+  body .chatsheet .chatin .emo,body .chatsheet .chatin .clip{border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 16%,#fff);background:#fff;color:var(--ink)}
+  body .chatsheet .chatin #chatSend{background:linear-gradient(135deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--c2,#8E5BE0) 24%,transparent)}
+  .chatsheet button:focus-visible,.chatsheet summary:focus-visible,.chatsheet .cfbar input:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  @media(hover:hover){body .chatsheet .chat h2 button:hover{background:rgba(255,255,255,.3)}.chatsheet .chatin button:hover{transform:translateY(-1px)}}
+  @media(min-width:600px){body .sheet.chatsheet{border-radius:28px;margin-bottom:16px;height:min(88dvh,780px)}}
+  @media(max-width:380px){
+    .chatsheet .chathead{padding:23px 12px 14px}
+    .chatsheet .chat h2{font-size:16px;gap:5px}
+    .chatsheet .chatin{padding-left:10px;padding-right:10px;gap:6px}
+    body .chatsheet .chatin button{width:40px;height:44px}
+  }
+  @media(prefers-reduced-motion:reduce){.chatsheet,.chatsheet *{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -1126,11 +1176,11 @@ function openMsgMenu(k){
 }
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
-  show(`<div class="chat"><div class="chathead"><h2>💬 Conversa da família <button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem…" autocomplete="off"><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
+  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title">💬 Conversa da família</span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem…" autocomplete="off"><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
-    <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">😊</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button><input id="chatTxt" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" aria-label="Enviar">➤</button></div>
+    <div class="chatin"><button class="emo" id="emoBtn" aria-label="Emojis">😊</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button><input id="chatTxt" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"><button id="chatSend" aria-label="Enviar">➤</button></div>
     </div>`);
   applyPref(); markRead(); scrollMsgs(); bindMsgs(); editingKey=null; replyTo=null;
   document.getElementById('chatLook').addEventListener('click',openChatLook);
