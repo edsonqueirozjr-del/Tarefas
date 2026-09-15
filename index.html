@@ -428,7 +428,7 @@
   .msg .b.emo{font-size:30px !important;line-height:1.15;padding:6px 12px 4px}
   .msg.me .b small{color:rgba(255,255,255,.85);opacity:1}
   .chatin>button{flex:none}
-  .chatin input,.chatin textarea{flex:1;min-width:0;border:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 30%,#fff);border-radius:22px;padding:11px 16px;font:inherit;font-size:16px;line-height:1.35;background:#fff;resize:none;max-height:130px;overflow-y:auto;scrollbar-width:thin}
+  .chatin input,.chatin textarea{flex:1;min-width:0;border:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 30%,#fff);border-radius:22px;padding:11px 16px;font:inherit;font-size:16px;line-height:1.35;background:#fff;resize:none;max-height:130px;overflow-y:hidden;scrollbar-width:thin}
   .chatin input:focus,.chatin textarea:focus{outline:none;border-color:var(--c2)}
   .chatin button{width:46px;height:46px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-size:20px;flex:none;box-shadow:0 4px 10px -4px rgba(0,0,0,.35);transition:transform .15s}
   .chatin button:active{transform:scale(.9)}
@@ -700,11 +700,11 @@
   @keyframes msnshake{0%,100%{transform:translate(0,0)}10%{transform:translate(-9px,4px)}20%{transform:translate(8px,-6px)}30%{transform:translate(-7px,-4px)}40%{transform:translate(9px,5px)}50%{transform:translate(-8px,6px)}60%{transform:translate(7px,-5px)}70%{transform:translate(-6px,3px)}80%{transform:translate(5px,-3px)}90%{transform:translate(-3px,2px)}}
   body.shake .wrap,body.shake .fabs,body.shake .sheet>*,body.shake .toast{animation:msnshake .8s cubic-bezier(.36,.07,.19,.97)}
   @media(prefers-reduced-motion:reduce){body.shake .wrap,body.shake .fabs,body.shake .sheet>*,body.shake .toast{animation:none}}
-  .nudge-msg{align-self:center;display:inline-flex;align-items:center;justify-content:center;gap:6px;max-width:96%;margin:4px auto;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--uc,#8E5BE0) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,#8E5BE0) 35%,#fff);color:var(--ink);font-size:12px;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap}
+  .nudge-msg{align-self:center;display:inline-flex;align-items:baseline;justify-content:center;gap:6px;max-width:96%;margin:4px auto;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--uc,#8E5BE0) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,#8E5BE0) 35%,#fff);color:var(--ink);font-size:12px;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap}
   .nudge-msg .nt{white-space:nowrap}
-  .nudge-msg .hand{flex:none;font-size:15px}
+  .nudge-msg .hand{flex:none;font-size:15px;align-self:center}
   .nudge-msg b{color:var(--uc,#8E5BE0);font-weight:900}
-  .nudge-msg small{font-size:10px;opacity:.65;flex:none}
+  .nudge-msg small{font-size:10px;opacity:.65;flex:none;align-self:baseline}
   .nudge-msg .hand{display:inline-block;animation:wavehand 1.6s ease-in-out infinite;transform-origin:70% 70%}
   @keyframes wavehand{0%,100%{transform:rotate(0)}15%{transform:rotate(18deg)}30%{transform:rotate(-10deg)}45%{transform:rotate(14deg)}60%{transform:rotate(-6deg)}75%{transform:rotate(0)}}
   @media(prefers-reduced-motion:reduce){.nudge-msg .hand{animation:none}}
@@ -1902,7 +1902,6 @@ function openChat(){
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="audpanel nodrag" id="audPanel">
-      <div class="aph"><span>💡 Áudios prontos · segura o 🎤 para gravar o seu</span><button id="apClose" aria-label="Fechar">✕</button></div>
       <div class="apgrid">${SONS.map((x,i)=>`<div class="apitem"><span class="apn">${x.ico} ${esc(x.nome)}</span><button data-ap-play="${i}" aria-label="Ouvir">▶</button><button data-ap-send="${i}" class="go" aria-label="Enviar">➤</button></div>`).join('')}</div>
     </div>
     <div class="typing" id="typing" aria-live="polite"></div>
@@ -1922,7 +1921,6 @@ function openChat(){
   document.getElementById('chatFind').addEventListener('click',()=>{ const on=!bar.classList.contains('on'); bar.classList.toggle('on',on); vibrate(15);
     if(on){ setTimeout(()=>cft.focus(),150); } else { chatQ=''; cft.value=''; upd(); } });
   document.getElementById('attBtn').addEventListener('click',()=>document.getElementById('attFile').click());
-  document.getElementById('apClose').addEventListener('click',()=>audPanel(false));
   sheet.querySelectorAll('[data-ap-play]').forEach(b=>b.addEventListener('click',()=>ouvirSom(+b.dataset.apPlay,b)));
   sheet.querySelectorAll('[data-ap-send]').forEach(b=>b.addEventListener('click',()=>{ enviarSom(+b.dataset.apSend); audPanel(false); }));
   if('speechSynthesis' in window) speechSynthesis.getVoices();
@@ -1936,7 +1934,7 @@ function openChat(){
   const send=()=>{ const v=inp.value.trim(); if(!v) return;
     if(editingKey){ famRef.child('chat/'+editingKey).update({text:v,edited:true}); cancelEdit(); vibrate(15); return; }
     const msg={by:USER.id,text:v,t:firebase.database.ServerValue.TIMESTAMP}; if(replyTo) msg.reply=replyTo;
-    famRef.child('chat').push(msg); inp.value=''; inp.style.height='auto'; replyTo=null; document.getElementById('editbar').classList.remove('on'); inp.focus(); vibrate(15); SFX.send(); setTyping(false); updSendBtn(); };
+    famRef.child('chat').push(msg); inp.value=''; inp.style.height='auto'; inp.style.overflowY='hidden'; replyTo=null; document.getElementById('editbar').classList.remove('on'); inp.focus(); vibrate(15); SFX.send(); setTyping(false); updSendBtn(); };
   inp.addEventListener('input',()=>setTyping(inp.value.trim().length>0));
   inp.addEventListener('blur',()=>setTyping(false));
   { const sb=document.getElementById('chatSend'); let holdT=null, held=false, y0=0, pid=null;
@@ -1953,7 +1951,7 @@ function openChat(){
     sb.addEventListener('pointerup',solta); sb.addEventListener('pointercancel',solta); }
   inp.addEventListener('input',updSendBtn); updSendBtn();
   inp.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); } });
-  const cresce=()=>{ inp.style.height='auto'; inp.style.height=Math.min(130,inp.scrollHeight)+'px'; };
+  const cresce=()=>{ inp.style.height='auto'; const borda=inp.offsetHeight-inp.clientHeight; const h=inp.scrollHeight+borda; inp.style.height=Math.min(130,h)+'px'; inp.style.overflowY=h>130?'auto':'hidden'; };
   inp.addEventListener('input',cresce); cresce();
   const picker=document.getElementById('picker');
   document.getElementById('emoBtn').addEventListener('click',()=>{ const on=!picker.classList.contains('on'); if(on){ inp.blur(); setTimeout(()=>{picker.classList.add('on');scrollMsgs();},120); } else { picker.classList.remove('on'); inp.focus(); } });
