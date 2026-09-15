@@ -366,8 +366,8 @@
   .msg .b .q{display:block;border-left:3px solid var(--sex);background:rgba(0,0,0,.06);border-radius:8px;padding:4px 8px;margin-bottom:6px;font-size:13px;line-height:1.25;color:var(--ink);cursor:pointer}
   .msg.me .b .q{background:rgba(255,255,255,.22);border-left-color:#fff;color:#fff}
   .msg .b .q b{display:block;font-size:11px;margin:0;color:inherit;opacity:.85}
-  .msg .b .qt{border-left-color:var(--gold);background:#FFF3D1;color:var(--ink)}
-  .msg.me .b .qt{background:rgba(255,255,255,.9);border-left-color:var(--gold)}
+  .msg .b .qt,.msg.me .b .qt{border-left-color:var(--gold);background:#F8F5FC;color:#352C49;padding:8px 10px;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+  .msg .b .qt b{display:block;color:#514565;opacity:1;font-size:12px;line-height:1.4;margin:0 0 4px}
   .msg .b small .tick{margin-left:6px;font-weight:900;letter-spacing:-2px}
   .msg .b small .tick.seen{color:#8fe3ff}
   .msg.flash .b{animation:flashb 1.2s}
@@ -627,12 +627,29 @@
   .tg .trea .r{border-width:1px;padding:2px 7px;font-size:12px;line-height:1.2;box-shadow:none}
   body .fab.chatfab{background:#485166;color:#fff;border:1px solid #D4D9E4;box-shadow:0 5px 14px rgba(38,36,58,.2)}
   .task .st.todo{background:#E7EAF0;color:#485166}
+
+  /* Carinhos no cabeçalho: apenas o coração, com área de toque confortável. */
+  .top-title{position:relative;min-height:48px}
+  .top-title:has(.reafab.on) h1{padding-left:48px;padding-right:48px}
+  body .top-title .reafab{position:absolute;top:0;right:0;width:44px;height:44px;background:transparent;border:0;border-radius:12px;box-shadow:none;font-size:32px;animation:none;z-index:1}
+  .top-title .heart-icon{display:block;line-height:1;transform-origin:center;animation:heart-beat 2s ease-in-out infinite}
+  .top-title .reafab:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .top-title .reafab .badge{top:-2px;right:-3px;min-width:18px;height:18px;font-size:10px;padding:0 4px}
+  @keyframes heart-beat{0%,38%,100%{transform:scale(1)}12%{transform:scale(1.13)}22%{transform:scale(1)}30%{transform:scale(1.08)}}
+  @media(prefers-reduced-motion:reduce){.top-title .heart-icon{animation:none}}
+  .subject-flag{display:inline-block;width:1.25em;height:.84em;vertical-align:-.08em;border-radius:2px;overflow:hidden;flex-shrink:0}
+  .next .topic-list{display:flex;flex-direction:column;gap:8px;margin:0;line-height:1.5}
+  .next h2{margin-bottom:12px}
+  body .aulas.fill-row{flex-wrap:nowrap}
+  body .aulas.fill-row>span{flex:1 0 auto;text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
-    <h1>Gestão de tarefas 🎒</h1>
+    <div class="top-title"><h1>Gestão de tarefas 🎒</h1>
+      <button class="fab reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="heart-icon" aria-hidden="true">💛</span><span class="badge" id="reaBadge"></span></button>
+    </div>
     <div class="fam" id="fam"></div>
   </div>
   <div class="prog" id="prog"></div>
@@ -642,7 +659,6 @@
 </div>
 
 <div class="fabs" id="fabs">
-  <button class="fab reafab" id="reaFab" aria-label="Carinhos">💛<span class="badge" id="reaBadge"></span></button>
   <button class="fab chatfab" id="chatFab" aria-label="Conversa">💬<span class="badge" id="chatBadge"></span></button>
   <button class="fab" id="fab" aria-label="Menu">☰</button>
 </div>
@@ -686,6 +702,12 @@ const SUBJ = {
   ing:'🇬🇧 Inglês', pdv:'🌱 Projeto de Vida', geo:'🌎 Geografia', his:'🏛️ História', esp:'🇪🇸 Espanhol',
   art:'🎨 Arte', fil:'🤔 Filosofia'
 };
+// Bandeiras incorporadas: não dependem do suporte a emojis do aparelho.
+function subjectVisual(value){
+  const gb='<svg class="subject-flag" viewBox="0 0 60 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path fill="#012169" d="M0 0h60v40H0z"/><path stroke="#fff" stroke-width="8" d="m0 0 60 40M60 0 0 40"/><path stroke="#C8102E" stroke-width="3" d="m0 0 60 40M60 0 0 40"/><path stroke="#fff" stroke-width="13" d="M30 0v40M0 20h60"/><path stroke="#C8102E" stroke-width="8" d="M30 0v40M0 20h60"/></svg>';
+  const es='<svg class="subject-flag" viewBox="0 0 60 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path fill="#AA151B" d="M0 0h60v40H0z"/><path fill="#F1BF00" d="M0 10h60v20H0z"/><path fill="#AA151B" d="M16 17h8v8q-4 5-8 0z"/><path fill="#F8E5BC" d="M17 18h6v6h-6z"/><path fill="#AA151B" d="M19 18h2v6h-2z"/><path fill="#AA151B" d="M17 15h6v2h-6z"/></svg>';
+  return String(value||'').replaceAll('🇬🇧',gb).replaceAll('🇪🇸',es);
+}
 const TIMETABLE = {
   turma:'7º ANO D', hours:['07:20','08:05','08:50','09:55','10:40','11:25'],
   days:{ seg:['cie','por','mat','rel','por','edf'], ter:['ing','por','pdv','mat','por','mat'],
@@ -918,7 +940,7 @@ function openSearch(){
         hits.push({w:id,t,txt}); }); });
     if(!hits.length){ res.innerHTML='<p class="none">Não achei nada com “'+esc(q)+'”.</p>'; return; }
     res.innerHTML=hits.slice(0,60).map(h=>{ const d=DB.weeks[h.w].days.find(x=>x.k===h.t.day); const est=h.t.off?'🚫':(h.t.status==='done'?'✓':(h.t.status==='doing'?'⏳':'📝'));
-      return `<button class="hit" data-w="${h.w}" data-id="${h.t.id}"><b>${est} ${SUBJ[h.t.subj]||''} · ${DAYMETA[h.t.day][0]} ${d?fmt(d.date):''} · ${DB.weeks[h.w].label}</b>${hl(h.txt,q)}</button>`; }).join('');
+      return `<button class="hit" data-w="${h.w}" data-id="${h.t.id}"><b>${est} ${subjectVisual(SUBJ[h.t.subj]||'')} · ${DAYMETA[h.t.day][0]} ${d?fmt(d.date):''} · ${DB.weeks[h.w].label}</b>${hl(h.txt,q)}</button>`; }).join('');
     res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
       const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
       setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500); } },200); }));
@@ -1083,7 +1105,7 @@ function msgHtml(m,i,arr){
   const att=m.att?(m.att.kind==='img'?`<img class="pic" src="${m.att.thumb}" data-open="${m.k}" alt="foto">`:`<span class="file" data-open="${m.k}">📄 <span>${esc(m.att.name||'arquivo')}<small>${fmtSize(m.att.size||0)}</small></span></span>`):'';
   const others=USERS.filter(x=>x.id!==m.by); const seenAll=others.every(x=>(READS[x.id]||0)>=(m.t||0)); const seenAny=others.some(x=>(READS[x.id]||0)>=(m.t||0));
   const tick=me?`<span class="tick ${seenAll?'seen':''}" title="${seenAll?'Visto por todos':seenAny?'Visto por alguém':'Enviada'}">${seenAny?'✓✓':'✓'}</span>`:'';
-  const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${SUBJ[m.reply.task.subj]||''} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
+  const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
   return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${(me&&THEME==='lilas')?'#8E5BE0':(u.cor||'#8A8A9A')}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><b>${esc(u.nome)}</b>${q}${att}${chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')}<small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></div>${reactsHtml(m)}</div></div>`;
 }
@@ -1213,9 +1235,12 @@ function openMsgMenu(k){
   if(me){
     menu.querySelector('[data-a=edit]').addEventListener('click',()=>{ closePop(); editingKey=k; replyTo=null; const inp=document.getElementById('chatTxt'); inp.value=m.text||'';
       const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Editando:</b> '+esc((m.text||'').slice(0,50)); inp.focus(); });
-    menu.querySelector('[data-a=del]').addEventListener('click',()=>{ menu.innerHTML='<button data-a="yes" class="danger">🗑️ Apagar para todos</button><button data-a="no">Cancelar</button>';
-      menu.querySelector('[data-a=yes]').addEventListener('click',()=>{famRef.child('chat/'+k).remove(); vibrate([30,30]); toast('Mensagem apagada'); closePop();});
-      menu.querySelector('[data-a=no]').addEventListener('click',closePop); });
+    menu.querySelector('[data-a=del]').addEventListener('click',async()=>{
+      if(!famRef||!USER||m.by!==USER.id) return;
+      const button=menu.querySelector('[data-a=del]'); if(button.disabled) return; button.disabled=true;
+      try{ await famRef.child('chat/'+k).remove(); vibrate([30,30]); toast('Mensagem apagada para todos'); closePop(); }
+      catch(e){ button.disabled=false; toast('Não consegui apagar. Tente novamente.'); }
+    });
   }
 }
 function openChat(){
@@ -1275,7 +1300,7 @@ function findTask(id){for(const w of Object.values(DB.weeks)){const t=allTasks(w
 function dayCss(k){return `var(${DAYMETA[k][1]})`;}
 
 function renderFilters(){
-  const types=[['all','Todas'],['todo','📝 Falta fazer'],['doing','⏳ Fazendo'],['done','✅ Feito'],['late','❌ Esquecido']];
+  const types=[['all','Todas'],['todo','Falta fazer'],['doing','Fazendo'],['done','Feito'],['late','Esquecido']];
   document.getElementById('fType').innerHTML=types.map(([k,l])=>`<button class="chip ${k} ${fType===k?'on':''}" data-t="${k}">${l}</button>`).join('');
   const w=DB.weeks[current]; const used=[...new Set(allTasks(w).map(t=>t.subj))];
   const lista=Object.keys(SUBJ).filter(k=>used.includes(k));
@@ -1283,11 +1308,11 @@ function renderFilters(){
   if(!subjOpen && fSubj==='all'){
     el.innerHTML=`<button class="chip wide" data-open-subj="1">📚 Ver matérias</button>`;
   } else if(!subjOpen){
-    el.innerHTML=`<button class="chip on" data-s="${fSubj}">${SUBJ[fSubj]} ✕</button><button class="chip wide" data-open-subj="1">📚 Ver matérias <span class="arw">▼</span></button>`;
+    el.innerHTML=`<button class="chip on" data-s="${fSubj}">${subjectVisual(SUBJ[fSubj])} ✕</button><button class="chip wide" data-open-subj="1">📚 Ver matérias <span class="arw">▼</span></button>`;
   } else {
     el.innerHTML=`<button class="chip wide on" data-open-subj="0">📚 Matérias</button>`+
       `<button class="chip ${fSubj==='all'?'on':''}" data-s="all">Todas</button>`+
-      lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${SUBJ[k]}</button>`).join('');
+      lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${subjectVisual(SUBJ[k])}</button>`).join('');
   }
   el.querySelectorAll('[data-open-subj]').forEach(b=>b.addEventListener('click',()=>{ subjOpen=b.dataset.openSubj==='1'; vibrate(15); SFX.pop(); subjAnim=subjOpen?'opening':'closing'; render(); }));
   if(subjAnim){ el.classList.add(subjAnim); const a=subjAnim; subjAnim=null; setTimeout(()=>el.classList.remove(a),600); }
@@ -1329,31 +1354,52 @@ function render(){
       const passed=boxPassed(w,d,type);
       return `<div class="box ${type} ${passed?'past':''}"><h3>${title}${now}</h3>${list.length?list.map(t=>taskHtml(t,false)).join(''):`<div class="empty">${emptyTxt}</div>`}</div>`;
     };
-    const bx=((d.k==='dom'||d.feriado)?'':box(B,'🎒 Levar para a escola','Nada para levar hoje 🙂'))+box(H,d.k==='sex'?'🏠 Fazer no fim de semana':'🏠 Fazer em casa para amanhã','Nada para fazer em casa 🎉');
+    const bx=((d.k==='dom'||d.feriado)?'':box(B,'Levar para a escola','Nada para levar hoje 🙂'))+box(H,d.k==='sex'?'Fazer no fim de semana':'Fazer em casa para amanhã','Nada para fazer em casa 🎉');
     const boxes=bx?`<div class="boxes ${d.k==='dom'?'one':''}">${bx}</div>`:'';
     html+=`<details class="day ${past&&!isToday?'past':''} ${isToday?'today':''} ${complete?'complete':''}" style="--c:var(${cv})" data-date="${d.date}" ${open?'open':''}>
       <summary><div class="dl"><span class="n">${name}</span><span class="d">${fmt(d.date)}</span></div>
-        <div class="tags">${cntTag}${isToday?'<span class="tag">HOJE</span>':''}${isTomorrow?'<span class="tag">AMANHÃ</span>':''}${complete?'<span class="tag">🎉 Tudo feito!</span>':''}</div>
+        <div class="tags">${cntTag}${isToday?'<span class="tag">HOJE</span>':''}${isTomorrow?'<span class="tag">AMANHÃ</span>':''}${complete?'<span class="tag">Tudo feito!</span>':''}</div>
         <span class="arrow">▼</span></summary>
       <div class="body">
-        <div class="aulas">${d.feriado?`<span>🎉 Feriado: ${d.feriado}</span>`:((TIMETABLE.days[d.k]||[]).map(k=>`<span>${SUBJ[k]}</span>`).join('')||'<span>😴 Sem aula</span>')}</div>
+        <div class="aulas">${d.feriado?`<span>🎉 Feriado: ${d.feriado}</span>`:((TIMETABLE.days[d.k]||[]).map(k=>`<span>${subjectVisual(SUBJ[k])}</span>`).join('')||'<span>😴 Sem aula</span>')}</div>
         ${boxes||'<div class="empty">Nada aqui com esse filtro.</div>'}
       </div></details>`;
   });
   html+='</div>';
-  if(w.topics&&!filtering) html+=`<div class="next"><h2>📌 O que cada matéria está estudando</h2><p class="quiet" style="margin:0">${w.topics}</p></div>`;
+  if(w.topics&&!filtering) html+=`<div class="next"><h2>📌 O que cada matéria está estudando</h2><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${subjectVisual(line)}</div>`).join('')}</div></div>`;
   document.getElementById('app').innerHTML=html;
+  fitSubjectRows();
   if(typeof appBadge==='function') appBadge();
   if(typeof updateReaFab==='function') updateReaFab();
   document.querySelectorAll('.day,.imp').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
   bindTasks();
 }
+// Preenche a largura apenas quando todas as matérias cabem em uma linha.
+function fitSubjectRows(){
+  fitSubjectRows.observer?.disconnect();
+  const rows=[...document.querySelectorAll('#app .aulas')];
+  const fit=row=>{
+    if(!row.isConnected)return;
+    row.classList.remove('fill-row');
+    const width=row.getBoundingClientRect().width; if(!width)return;
+    const items=[...row.children]; if(!items.length)return;
+    const gap=parseFloat(getComputedStyle(row).columnGap)||0;
+    const needed=items.reduce((sum,item)=>sum+item.getBoundingClientRect().width,0)+gap*(items.length-1);
+    row.classList.toggle('fill-row',needed<=width+.1);
+  };
+  rows.forEach(fit);
+  if(typeof ResizeObserver!=='undefined'){
+    fitSubjectRows.observer=new ResizeObserver(entries=>entries.forEach(entry=>fit(entry.target)));
+    rows.forEach(row=>fitSubjectRows.observer.observe(row));
+  }
+  document.fonts?.ready.then(()=>rows.forEach(fit));
+}
 function taskHtml(t,inImp){
   const moved = t.day!==t.origin ? `<span class="st mv">Mudou de dia</span>` : '';
   const dchip = inImp ? `<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
-  const subj = `<span class="st sj">${SUBJ[t.subj]}</span>`;
+  const subj = `<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span>`;
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
-  const status=((t.pics||0)?`<span class="st pics">📸 ${t.pics}</span>`:'')+(t.off?`<span class="st canc">🚫 Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">📝 Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">⏳ Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">✓ Feito</span>':'')+moved;
+  const status=((t.pics||0)?`<span class="st pics">📸 ${t.pics}</span>`:'')+(t.off?`<span class="st canc">🚫 Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'')+moved;
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''}" data-id="${t.id}">
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[NEXT_R[t.status]||'done'][0]}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${SWLBL[NEXT_L[t.status]||'doing'][0]}</div>`: ''}
@@ -1390,18 +1436,42 @@ function sparks(x,y,color){for(let i=0;i<10;i++){const e=document.createElement(
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1800);}
 function colorOf(el){return getComputedStyle(el).getPropertyValue('--c').trim()||'#2EB88A';}
 
-function setStatus(id,status,el){ if(!isAluna()) return;
-  const t=findTask(id); const w=DB.weeks[current];
-  const dayEl=document.querySelector(`.day[data-date="${w.days.find(d=>d.k===t.day).date}"]`);
-  const wasComplete=dayEl&&dayEl.classList.contains('complete');
-  t.status=status; t.u=Date.now(); save();
-  if(status==='done'){vibrate([30,30,60]);SFX.done();const r=el.querySelector('.tin').getBoundingClientRect();sparks(r.left+24,r.top+r.height/2,colorOf(el.closest('.day')||el.closest('.imp')||el.closest('.rw')||el));}
-  if(status==='doing'){vibrate(25);SFX.doing();}
-  const dayLive=allTasks(w).filter(x=>x.day===t.day&&!x.off); const complete=dayLive.length>0&&dayLive.every(x=>x.status==='done');
-  render(); refreshReminder();
-  if(status==='done'&&!t.off) setTimeout(()=>askPhotoAfterDone(id),600);
-  if(complete&&!wasComplete){vibrate([60,40,60,40,120]);SFX.party();const c=colorOf(document.querySelector(`.day[data-date="${dayEl.dataset.date}"]`));
-    for(let k=0;k<6;k++)setTimeout(()=>sparks(window.innerWidth*Math.random(),120+Math.random()*200,c),k*90);}
+function setStatus(id,status,el){
+  const tin=el?.querySelector('.tin'); if(tin)tin.style.transform='';
+  el?.classList.remove('show-r','show-l','drag','pressing');
+  if(!isAluna()||!['todo','doing','done'].includes(status)) return;
+  const task=findTask(id); if(!task||task.off||task.status===status) return;
+  const previous=task.status, week=current;
+  const labels={done:['✅ Marcar como feito?','Sim, concluir'],doing:['⏳ Marcar como fazendo?','Sim, estou fazendo'],todo:['↩️ Reabrir esta tarefa?','Sim, reabrir']};
+  show(`<h2>${labels[status][0]} <button class="x" aria-label="Cancelar">✕</button></h2>
+    <p class="quiet" style="margin:0 0 16px">${esc(plain(task.text))}</p>
+    <div class="row"><button class="opt" id="statusCancel" style="justify-content:center">Cancelar</button><button class="opt primary" id="statusConfirm" style="justify-content:center">${labels[status][1]}</button></div>`);
+  document.getElementById('statusCancel').addEventListener('click',hide);
+  document.getElementById('statusConfirm').addEventListener('click',()=>{
+    if(!isAluna()) return;
+    const t=findTask(id); if(!t||t.off||current!==week||t.status!==previous){hide();toast('A tarefa mudou. Confira antes de tentar novamente.');return;}
+    const confirm=document.getElementById('statusConfirm'); if(!confirm||confirm.disabled)return; confirm.disabled=true;
+    hide();
+    const w=DB.weeks[current], day=w.days.find(d=>d.k===t.day);
+    const dayEl=day?document.querySelector(`.day[data-date="${day.date}"]`):null;
+    const wasComplete=dayEl&&dayEl.classList.contains('complete');
+    const taskEl=document.querySelector(`#app .task[data-id="${id}"]`)||el;
+    t.status=status; t.u=Date.now(); save();
+    if(status==='done'){
+      vibrate([30,30,60]);SFX.done();
+      if(taskEl?.isConnected){const r=taskEl.querySelector('.tin').getBoundingClientRect();sparks(r.left+24,r.top+r.height/2,colorOf(taskEl.closest('.day')||taskEl.closest('.imp')||taskEl));}
+    }
+    if(status==='doing'){vibrate(25);SFX.doing();}
+    const dayLive=allTasks(w).filter(x=>x.day===t.day&&!x.off);
+    const complete=dayLive.length>0&&dayLive.every(x=>x.status==='done');
+    render(); refreshReminder(); toast(SWMSG[status]);
+    if(status==='done') setTimeout(()=>askPhotoAfterDone(id),600);
+    if(complete&&!wasComplete&&day){
+      vibrate([60,40,60,40,120]);SFX.party();
+      const updated=document.querySelector(`.day[data-date="${day.date}"]`), c=updated?colorOf(updated):'#2EB88A';
+      for(let k=0;k<6;k++)setTimeout(()=>sparks(window.innerWidth*Math.random(),120+Math.random()*200,c),k*90);
+    }
+  });
 }
 // Para a direita: falta → fazendo → concluída → reabrir (falta) → ...  Para a esquerda: o caminho inverso.
 const NEXT_R={todo:'doing',doing:'done',done:'todo'}, NEXT_L={todo:'done',done:'doing',doing:'todo'};
@@ -1412,7 +1482,7 @@ function swipeAction(id,dir,el){
   const t=findTask(id);
   if(t.off){ el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast('Essa tarefa está cancelada. Segura nela para voltar a valer'); return; }
   const status = dir>0 ? NEXT_R[t.status]||'done' : NEXT_L[t.status]||'doing';
-  setStatus(id,status,el); toast(SWMSG[status]);
+  setStatus(id,status,el);
 }
 function bindTasks(root=document.getElementById('app')){
   root.querySelectorAll('[data-pics]').forEach(g=>g.addEventListener('click',e=>{e.stopPropagation();openPics(g.dataset.pics);}));
@@ -1472,7 +1542,7 @@ veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 function openMenu(id){
   const t=findTask(id);
   show(`<h2>📝 Tarefa <button class="x">✕</button></h2>
-   <p class="quiet" style="margin:0 0 12px">${SUBJ[t.subj]} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
+   <p class="quiet" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
    ${isAluna()?`<button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
    <button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
    ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`:''}
@@ -1541,7 +1611,7 @@ function openReacts(){
   const list=allReacts();
   show(`<h2>💛 Carinhos que você recebeu <button class="x">✕</button></h2>
     ${list.length?`<div class="realist">${list.map(r=>{ const d=DB.weeks[r.week].days.find(x=>x.k===r.task.day); const novo=(r.t||0)>reaSeen;
-      return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}${novo?' · novo ✨':''}</span><span class="rea-activity">${esc(plain(r.task.text))}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${SUBJ[r.task.subj]}</span>`:''}<span class="rea-date">${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</span></span></span></button>`; }).join('')}</div>`
+      return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}${novo?' · novo ✨':''}</span><span class="rea-activity">${esc(plain(r.task.text))}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</span></span></span></button>`; }).join('')}</div>`
       :'<p class="quiet" style="text-align:center;padding:16px 0">Ainda não tem carinhos. Faça as tarefas que logo chegam! 💛</p>'}`);
   sheet.querySelectorAll('.it2').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
     const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
@@ -1636,16 +1706,15 @@ function openTimetable(){
   const idx=k=>keys.indexOf(k);
   const mark=k=>k===tomK?'tom':(idx(k)<=idx(todayK)?'past':'');
   let g=`<div class="h"></div>`+ks.map(k=>`<div class="dh ${mark(k)}" style="background:${dayCss(k)}">${DAYMETA[k][0].slice(0,3)}${k===tomK?'<small>amanhã</small>':k===todayK?'<small>hoje</small>':''}</div>`).join('');
-  TIMETABLE.hours.forEach((h,i)=>{g+=`<div class="h">${h}</div>`+ks.map(k=>{const sk=TIMETABLE.days[k][i];const em=SUBJ[sk].split(' ')[0];
+  TIMETABLE.hours.forEach((h,i)=>{g+=`<div class="h">${h}</div>`+ks.map(k=>{const sk=TIMETABLE.days[k][i];const em=subjectVisual(SUBJ[sk].split(' ')[0]);
     return `<div class="c ${mark(k)}" data-sk="${sk}" style="--dc:${col(k)}"><b>${em}</b><span>${SHORT[sk]}</span></div>`;}).join('');});
-  show(`<h2>📅 Aulas do ${TIMETABLE.turma} <button class="x">✕</button></h2><div class="tt" id="tt">${g}</div><p class="ttnote" id="ttnote">Toca em uma matéria para ver todos os dias dela.</p>`);
+  show(`<h2>📅 Aulas do ${TIMETABLE.turma} <button class="x">✕</button></h2><div class="tt" id="tt">${g}</div>`);
   let picked=null;
-  const tt=document.getElementById('tt'), note=document.getElementById('ttnote');
+  const tt=document.getElementById('tt');
   tt.querySelectorAll('.c').forEach(c=>c.addEventListener('click',()=>{
     const sk=c.dataset.sk; picked = picked===sk ? null : sk; vibrate(15);
     tt.classList.toggle('pick',!!picked);
     tt.querySelectorAll('.c').forEach(x=>x.classList.toggle('hit',!!picked&&x.dataset.sk===picked));
-    note.textContent = picked ? SUBJ[picked]+': '+tt.querySelectorAll('.c.hit').length+' aulas na semana. Toca de novo para voltar.' : 'Toca em uma matéria para ver todos os dias dela.';
   }));
 }
 function openWeeks(){
