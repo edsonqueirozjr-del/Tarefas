@@ -493,7 +493,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='5.9';
+const APP_VERSION='6.0';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -674,7 +674,7 @@ function cloudStart(){
   famRef.child('perfis').on('value',sn=>{ PERFIS=sn.val()||{}; try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){} renderFam(); refreshChat(); });
   famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; const prevLen=CHAT.length; CHAT=Object.keys(v).sort().map(k=>({k,...v[k]}));
     updateChatBadge(); refreshChat();
-    const last=CHAT[CHAT.length-1]; if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && !(sheet.querySelector('.chat')&&!document.hidden)){ vibrate([30,30,30]); if(document.hidden){ notifyMsg(last); } else toast('💬 '+uname(last.by)+': '+msgPreview(last).slice(0,60)); } });
+    const last=CHAT[CHAT.length-1]; if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && !(sheet.querySelector('.chat')&&!document.hidden)){ vibrate([30,30,30]); SFX.msg(); if(document.hidden){ notifyMsg(last); } else toast('💬 '+uname(last.by)+': '+msgPreview(last).slice(0,60)); } });
   cloudRef.on('value',sn=>{
     cloudErr=''; const remote=sn.val();
     if(!remote||!remote.weeks){ cloudReady=true; cloudPush(true); return; }
@@ -723,7 +723,7 @@ function openLogin(after,preId){
     USER=pick; try{localStorage.setItem(KEY+'-user',USER.id);}catch(e){}
     if(famRef){famRef.child('online').off();famRef.child('perfis').off();famRef.child('chat').off();}
     if(cloudRef){cloudRef.off();cloudRef=null;cloudReady=false;lastPushed='';}
-    cloudStart(); hide(); render(); vibrate(20); toast('Oi, '+USER.nome+'! '+USER.emoji); startReminders(); if(after) setTimeout(after,300);};
+    cloudStart(); hide(); render(); vibrate(20); toast('Oi, '+USER.nome+'! '+USER.emoji); SFX.party(); startReminders(); if(after) setTimeout(after,300);};
   document.getElementById('pinOk').addEventListener('click',enter);
   document.getElementById('pinTxt').addEventListener('keydown',e=>{if(e.key==='Enter')enter();});
 }
@@ -872,7 +872,7 @@ function bindMsgs(){
   });
 }
 function toggleReact(k,e){ if(!famRef||!USER) return; const m=CHAT.find(x=>x.k===k); const mine=m&&m.reacts&&m.reacts[e]&&m.reacts[e][USER.id];
-  famRef.child('chat/'+k+'/reacts/'+e+'/'+USER.id)[mine?'remove':'set'](true); vibrate(15); }
+  famRef.child('chat/'+k+'/reacts/'+e+'/'+USER.id)[mine?'remove':'set'](true); vibrate(15); SFX.pop(); }
 let editingKey=null, replyTo=null, chatOpenDays={};
 function fmtSize(b){ return b>1048576?(b/1048576).toFixed(1)+' MB':b>1024?Math.round(b/1024)+' KB':b+' B'; }
 function msgPreview(m){ return m.att?(m.att.kind==='img'?'📷 Foto':'📎 '+(m.att.name||'Arquivo'))+(m.text?' · '+m.text:''):(m.text||''); }
@@ -988,7 +988,7 @@ function openChat(){
   const send=()=>{ const v=inp.value.trim(); if(!v) return;
     if(editingKey){ famRef.child('chat/'+editingKey).update({text:v,edited:true}); cancelEdit(); vibrate(15); return; }
     const msg={by:USER.id,text:v,t:firebase.database.ServerValue.TIMESTAMP}; if(replyTo) msg.reply=replyTo;
-    famRef.child('chat').push(msg); inp.value=''; replyTo=null; document.getElementById('editbar').classList.remove('on'); inp.focus(); vibrate(15); };
+    famRef.child('chat').push(msg); inp.value=''; replyTo=null; document.getElementById('editbar').classList.remove('on'); inp.focus(); vibrate(15); SFX.send(); };
   document.getElementById('chatSend').addEventListener('click',send);
   inp.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
   const picker=document.getElementById('picker');
@@ -1107,6 +1107,24 @@ function taskHtml(t,inImp){
 }
 
 /* ================= INTERAÇÃO ================= */
+let SOUND=true; try{SOUND=localStorage.getItem(KEY+'-sound')!=='0';}catch(e){}
+let AC=null;
+function tone(seq){ if(!SOUND) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume();
+  let t=AC.currentTime+0.01;
+  seq.forEach(([f,d,v,type])=>{ const o=AC.createOscillator(), g=AC.createGain(); o.type=type||'sine'; o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v||0.18,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d+0.02); t+=d*0.85; });
+}catch(e){} }
+const SFX={
+  done:()=>tone([[660,.10],[880,.10],[1175,.20]]),        // concluiu: subindo
+  doing:()=>tone([[520,.09],[700,.12]]),                   // fazendo
+  undo:()=>tone([[520,.10],[380,.14]]),                    // reabriu: descendo
+  party:()=>tone([[784,.10],[988,.10],[1175,.10],[1568,.28]]), // dia inteiro feito
+  msg:()=>tone([[1046,.07,.14],[1318,.12,.14]]),           // mensagem nova
+  send:()=>tone([[880,.06,.10]]),
+  pop:()=>tone([[660,.05,.10]]),
+  err:()=>tone([[300,.12,.16,'square'],[220,.16,.14,'square']])
+};
 function vibrate(p){if(navigator.vibrate){try{navigator.vibrate(p)}catch(e){}}}
 function sparks(x,y,color){for(let i=0;i<10;i++){const e=document.createElement('i');e.className='spark';e.style.left=x+'px';e.style.top=y+'px';e.style.background=color;
   const a=Math.random()*Math.PI*2,r=40+Math.random()*50;e.style.setProperty('--dx',Math.cos(a)*r+'px');e.style.setProperty('--dy',Math.sin(a)*r+'px');
@@ -1119,11 +1137,11 @@ function setStatus(id,status,el){
   const dayEl=document.querySelector(`.day[data-date="${w.days.find(d=>d.k===t.day).date}"]`);
   const wasComplete=dayEl&&dayEl.classList.contains('complete');
   t.status=status; t.u=Date.now(); save();
-  if(status==='done'){vibrate(40);const r=el.querySelector('.tin').getBoundingClientRect();sparks(r.left+24,r.top+r.height/2,colorOf(el.closest('.day')||el.closest('.imp')||el.closest('.rw')||el));}
-  if(status==='doing'){vibrate(20);}
+  if(status==='done'){vibrate([30,30,60]);SFX.done();const r=el.querySelector('.tin').getBoundingClientRect();sparks(r.left+24,r.top+r.height/2,colorOf(el.closest('.day')||el.closest('.imp')||el.closest('.rw')||el));}
+  if(status==='doing'){vibrate(25);SFX.doing();}
   const dayLive=allTasks(w).filter(x=>x.day===t.day&&!x.off); const complete=dayLive.length>0&&dayLive.every(x=>x.status==='done');
   render(); refreshReminder();
-  if(complete&&!wasComplete){vibrate([60,40,60,40,120]);const c=colorOf(document.querySelector(`.day[data-date="${dayEl.dataset.date}"]`));
+  if(complete&&!wasComplete){vibrate([60,40,60,40,120]);SFX.party();const c=colorOf(document.querySelector(`.day[data-date="${dayEl.dataset.date}"]`));
     for(let k=0;k<6;k++)setTimeout(()=>sparks(window.innerWidth*Math.random(),120+Math.random()*200,c),k*90);}
 }
 // Para a direita: falta → fazendo → concluída → reabrir (falta) → ...  Para a esquerda: o caminho inverso.
@@ -1217,7 +1235,7 @@ function openCancel(id){
   document.getElementById('cancelNo').addEventListener('click',()=>openMenu(id));
   document.getElementById('cancelOk').addEventListener('click',()=>{
     const v=document.getElementById('cancelTxt').value.trim();
-    if(v.length<3){ vibrate([40,40,40]); toast('Escreve o motivo para cancelar'); document.getElementById('cancelTxt').focus(); return; }
+    if(v.length<3){ vibrate([40,40,40]); SFX.err(); toast('Escreve o motivo para cancelar'); document.getElementById('cancelTxt').focus(); return; }
     t.off=true; t.offWhy=v; t.offBy=USER?USER.nome:''; t.status='todo'; t.u=Date.now(); save(); hide(); render(); refreshReminder(); vibrate(20); toast('Tarefa cancelada'); });
 }
 function openMove(id){
@@ -1242,10 +1260,11 @@ function openMain(){
   show(`<h2>☰ Menu <button class="x">✕</button></h2>
    <button class="opt" data-m="tt"><span class="ic">📅</span>Aulas da semana</button>
    <button class="opt" data-m="wk"><span class="ic">🗂️</span>Semanas e histórico</button>
+   <button class="opt" data-m="sound"><span class="ic">${SOUND?'🔊':'🔇'}</span>Sons ${SOUND?'ligados':'desligados'}</button>
    <button class="opt" data-m="theme"><span class="ic">✨</span>Tema do app${THEME==='lilas'?' <small class="quiet">(Lilás)</small>':''}</button>
    ${CLOUD_CFG?`<p class="quiet" id="syncBadge" style="margin:4px 0 0;text-align:center;font-size:13px"></p>`:''}`);
   updateSyncBadge();
-  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='tt')openTimetable(); if(m==='wk')openWeeks(); if(m==='theme')openTheme(); if(m==='foto')openFoto(); if(m==='user')openLogin(); if(m==='chat')openChat();}));
+  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='tt')openTimetable(); if(m==='wk')openWeeks(); if(m==='theme')openTheme(); if(m==='sound'){ SOUND=!SOUND; try{localStorage.setItem(KEY+'-sound',SOUND?'1':'0');}catch(e){} if(SOUND)SFX.pop(); vibrate(15); openMain(); } if(m==='foto')openFoto(); if(m==='user')openLogin(); if(m==='chat')openChat();}));
 }
 function openTimetable(){
   const dow=new Date().getDay();
@@ -1314,7 +1333,7 @@ function openReminder(){
   const html=reminderHtml(); if(!html) return;
   show(html); bindTasks(sheet); hintFirst();
   const doneRem=()=>{ try{localStorage.setItem(KEY+'-rem',TODAY);}catch(e){} };
-  document.getElementById('remGo').addEventListener('click',()=>{doneRem();hide();vibrate(20);});
+  document.getElementById('remGo').addEventListener('click',()=>{doneRem();hide();vibrate(20);SFX.pop();});
   sheet.querySelector('.x').addEventListener('click',doneRem,{once:true});
 }
 function refreshReminder(){
@@ -1342,6 +1361,7 @@ document.getElementById('fab').addEventListener('click',openMain);
 })();
 if(!CLOUD_CFG) document.getElementById('chatFab').style.display='none';
 setInterval(()=>{ if(!document.hidden) renderFam(); },60*1000);
+document.addEventListener('pointerdown',()=>{ if(SOUND&&!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(AC&&AC.state==='suspended') AC.resume(); },{once:false,passive:true});
 document.addEventListener('contextmenu',e=>{ if(!e.target.closest('input,textarea')) e.preventDefault(); });
 
 /* ================= LEMBRETES (notificações locais) =================
