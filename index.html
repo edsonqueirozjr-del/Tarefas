@@ -407,9 +407,8 @@
   .msg.me .b .hd b{color:rgba(255,255,255,.9)}
   .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:0}
   .daygrp{border:0;margin:0;flex:none}
-  .daygrp>summary{position:sticky;top:0;z-index:2;background:#E9E5F2;box-shadow:0 0 0 4px #F7F5FC}
-  .msgs.bg-claro .daygrp>summary{box-shadow:0 0 0 4px #fff}
-  .msgs.bg-noite .daygrp>summary{background:#4A4770;box-shadow:0 0 0 4px #26243A}
+  .daygrp>summary{position:sticky;top:0;z-index:2;background:#E9E5F2;border:0;box-shadow:none}
+  .msgs.bg-noite .daygrp>summary{background:#4A4770}
   .msgs>*{flex:none}
   .msgs::before{content:"";margin-top:auto}
   .daygrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 8px;background:#E9E5F2;border-radius:999px;padding:5px 14px;font-size:13px;font-weight:900;color:var(--ink);width:fit-content;max-width:100%}
@@ -586,7 +585,15 @@
   body .chatsheet .chatin #chatSend{background:linear-gradient(135deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--c2,#8E5BE0) 24%,transparent)}
   .chatsheet button:focus-visible,.chatsheet summary:focus-visible,.chatsheet .cfbar input:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
   @media(hover:hover){body .chatsheet .chat h2 button:hover{background:rgba(255,255,255,.3)}.chatsheet .chatin button:hover{transform:translateY(-1px)}}
-  @media(min-width:600px){body .sheet.chatsheet{border-radius:28px 28px 0 0;margin-bottom:0;height:min(88dvh,780px)} .veil:has(.chatsheet){align-items:flex-end}}
+  /* Tablet: usa a area disponivel em ambas as orientacoes. */
+  @media screen and (min-width:600px){
+    .wrap{width:100%;max-width:none;min-height:100vh;min-height:100dvh}
+    body .sheet.chatsheet{width:100%;max-width:none;height:100vh;height:100dvh;max-height:100dvh;border:0;border-radius:0;margin:0;box-shadow:none}
+    .veil:has(.chatsheet){align-items:stretch}
+    .chatsheet .chathead{padding-top:calc(24px + env(safe-area-inset-top));padding-left:calc(20px + env(safe-area-inset-left));padding-right:calc(20px + env(safe-area-inset-right))}
+    .chatsheet .msgs{padding-left:calc(16px + env(safe-area-inset-left));padding-right:calc(16px + env(safe-area-inset-right))}
+    .chatsheet .chatin{padding-left:calc(14px + env(safe-area-inset-left));padding-right:calc(14px + env(safe-area-inset-right))}
+  }
   @media(max-width:380px){
     .chatsheet .chathead{padding:23px 12px 14px}
     .chatsheet .chat h2{font-size:17px;gap:5px}
