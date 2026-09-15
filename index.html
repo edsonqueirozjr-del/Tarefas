@@ -256,7 +256,7 @@
   .badge.on{display:flex}
   .sheet.chatsheet{display:flex;flex-direction:column;height:min(92dvh,780px);max-height:none}
   .chatsheet .grip{margin:4px auto 6px}
-  .chatsheet{padding:0;position:relative;overflow:hidden}
+  .chatsheet{padding:0;position:relative;overflow:hidden;border:3px solid var(--c2,#4A7FE0);box-shadow:0 -6px 30px rgba(38,36,58,.25)}
   .chatsheet>.grip{position:absolute;left:50%;transform:translateX(-50%);top:7px;background:rgba(255,255,255,.65);z-index:3;margin:0;width:38px;height:4px}
   .chat{height:100%;display:flex;flex-direction:column;min-height:0}
   .chathead{flex:none;padding:18px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
@@ -265,7 +265,13 @@
   .chat h2 .gear.find{margin-left:auto}
   .chat h2 .x{margin-left:0}
   .chatwho{font-size:12px;margin:0;display:flex;gap:6px;flex-wrap:wrap}
-  .cfbar{margin:8px 0 0}
+  .cfbar{display:none;gap:8px;align-items:center;margin:10px 0 0}
+  .cfbar.on{display:flex}
+  .cfbar input{flex:1;min-width:0;border:0;border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;background:rgba(255,255,255,.95);color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+  .cfbar input:focus{outline:none}
+  .cfbar button{border:0;background:rgba(255,255,255,.25);color:#fff;border-radius:50%;width:38px;height:38px;font-size:16px;font-weight:900;flex:none;display:flex;align-items:center;justify-content:center}
+  .cfbar button:active{background:rgba(255,255,255,.4)}
+  .cfbar .cnt{color:#fff;font-size:12px;font-weight:900;white-space:nowrap}
   .chatwho span{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.22);border-radius:999px;padding:3px 10px;color:#fff;font-weight:700}
   .chatwho b{font-weight:900}
   .chatwho i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);display:inline-block}
@@ -342,7 +348,7 @@
   .msg .b small{display:block;font-size:10px;opacity:.7;margin-top:2px;text-align:right}
   .msg .b b{display:block;font-size:11.5px;color:var(--soft);margin-bottom:1px;font-weight:900}
   .msg.me .b b{display:none}
-  .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line)}
+  .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 35%,#fff)}
   .daygrp{border:0;margin:0;flex:none}
   .msgs>*{flex:none}
   .msgs::before{content:"";margin-top:auto}
@@ -367,7 +373,7 @@
   .msg.me .b>b{display:none !important}
   .msg.me .b small{color:rgba(255,255,255,.85);opacity:1}
   .chatin>button{flex:none}
-  .chatin input{flex:1;min-width:0;border:2px solid var(--line);border-radius:999px;padding:11px 16px;font:inherit;font-size:16px;background:#fff}
+  .chatin input{flex:1;min-width:0;border:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 30%,#fff);border-radius:999px;padding:11px 16px;font:inherit;font-size:16px;background:#fff}
   .chatin input:focus{outline:none;border-color:var(--c2)}
   .chatin button{width:46px;height:46px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-size:20px;flex:none;box-shadow:0 4px 10px -4px rgba(0,0,0,.35);transition:transform .15s}
   .chatin button:active{transform:scale(.9)}
@@ -398,11 +404,10 @@
   .rrow{display:flex;gap:6px;justify-content:space-between;margin:4px 0 12px}
   .rrow button{border:0;background:#F2F0FA;border-radius:14px;font-size:26px;flex:1;padding:8px 0;transition:transform .15s}
   .rrow button:active{transform:scale(1.2)}
-  .picker{display:none;flex-wrap:wrap;gap:4px;padding:10px 12px 0;max-height:150px;overflow:auto;flex:none;background:#fff;border-top:1px solid var(--line)}
+  .picker{display:none;flex-wrap:wrap;gap:4px;padding:10px 12px;max-height:150px;overflow:auto;flex:none;background:color-mix(in srgb,var(--c2,#4A7FE0) 8%,#fff);border-top:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 30%,#fff)}
   .picker.on{display:flex}
   .picker button{border:0;background:#F7F5FC;border-radius:10px;font-size:24px;width:44px;height:40px}
-  .chatin .emo{background:#F2F0FA;color:var(--ink);font-size:22px}
-  .chatin .clip{background:#F2F0FA;color:var(--ink);font-size:20px}
+  .chatin .emo,.chatin .clip{background:#fff;color:var(--ink);border:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 30%,#fff);font-size:20px}
   .msg .b img.pic{display:block;max-width:220px;max-height:260px;border-radius:12px;margin:2px 0 4px;cursor:pointer}
   .msg .b .file{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.06);border-radius:12px;padding:8px 10px;margin:2px 0 4px;cursor:pointer;font-size:14px}
   .msg.me .b .file{background:rgba(255,255,255,.22)}
@@ -563,7 +568,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='8.4';
+const APP_VERSION='8.6';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -1052,7 +1057,8 @@ function savePref(){ try{localStorage.setItem(KEY+'-chatpref',JSON.stringify(CHA
 const BGCOL={lilas:['#B48BF5','#8E5BE0'],claro:['#7FB2F0','#4A7FE0'],verde:['#5FD3A5','#2EB88A'],azul:['#6FB6F5','#2F8FE0'],rosa:['#F58FC8','#E0479E'],amarelo:['#FFD06B','#F0A93C'],noite:['#4A4770','#26243A'],bolinhas:['#C9A8FF','#8E5BE0'],estrelas:['#8FB8FF','#4A7FE0'],foto:['#8E5BE0','#5B3FC4']};
 function applyPref(){
   const pairs=[[sheet.querySelector('.chat:not(#lookPrev)'),document.getElementById('msgs')],[document.getElementById('lookPrev'),document.getElementById('lookMsgs')]];
-  const col=BGCOL[CHATPREF.bg]||BGCOL.lilas; const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);} sheet.style.setProperty('--c2',col[1]);
+  const col=BGCOL[CHATPREF.bg]||BGCOL.lilas; const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);}
+  if(sheet.classList.contains('chatsheet')) sheet.style.setProperty('--c2',col[1]); sheet.style.setProperty('--c2',col[1]);
   const ci=sheet.querySelector('.chatin'); if(ci){ci.style.setProperty('--c1',col[0]);ci.style.setProperty('--c2',col[1]);}
   pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg; m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
 function openChatLook(){
