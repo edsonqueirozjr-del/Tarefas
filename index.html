@@ -228,12 +228,12 @@
   .chatfab.moving{transform:scale(1.14);box-shadow:0 14px 28px rgba(38,36,58,.45)}
   .badge{position:absolute;top:-2px;right:-2px;background:#E4443F;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
   .badge.on{display:flex}
-  .sheet.chatsheet{display:flex;flex-direction:column;height:min(94dvh,780px);max-height:none;overflow:hidden;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .sheet.chatsheet{background:linear-gradient(180deg,var(--c2,#4A7FE0) 0,var(--c2,#4A7FE0) 96px,#fff 96px);display:flex;flex-direction:column;height:min(94dvh,780px);max-height:none;overflow:hidden;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
   .chatsheet .grip{margin:4px auto 6px}
   .chatsheet{padding-left:0;padding-right:0;padding-top:0;position:relative}
   .chatsheet>.grip{position:absolute;left:50%;transform:translateX(-50%);top:6px;background:rgba(255,255,255,.75);z-index:2;margin:0}
   .chat{padding:0 14px}
-  .chathead{margin:0 -14px 10px;padding:16px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));border-radius:24px 24px 26px 26px;color:#fff;box-shadow:0 6px 14px -8px rgba(0,0,0,.35)}
+  .chathead{margin:0 -14px 10px;padding:18px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));border-radius:24px 24px 26px 26px;color:#fff;box-shadow:0 6px 14px -8px rgba(0,0,0,.35)}
   .chatsheet .grip{margin-top:0}
   .chat h2{font-size:19px;margin:0 0 6px;color:#fff}
   .chat h2 .gear,.chat h2 .x{background:rgba(255,255,255,.25);color:#fff}
@@ -287,15 +287,18 @@
   .chat.s-p .msg .b{font-size:13px} .chat.s-g .msg .b{font-size:17px}
   .chat h2 .gear{margin-left:auto;margin-right:8px;border:0;background:#F2F0FA;border-radius:50%;width:34px;height:34px;font-size:18px}
   .chat h2 .x{margin-left:0}
-  .sw2{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:6px 0 16px}
-  .sw2 button{width:100%;aspect-ratio:1;border-radius:16px;border:2px solid var(--line);background:#F2F0FA;position:relative;background-size:cover;background-position:center}
+  .sw2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:6px 0 14px;width:100%}
+  .sw2 button{width:100%;min-width:0;aspect-ratio:1;border-radius:14px;border:2px solid var(--line);background:#F2F0FA;position:relative;background-size:cover;background-position:center}
   .sw2 button.on{border:3px solid var(--ink);box-shadow:0 0 0 3px rgba(38,36,58,.12)}
   .sw2 button.on::after{content:"✓";position:absolute;right:4px;bottom:2px;font-size:13px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
-  .sw2.fonts{grid-template-columns:repeat(2,1fr)}
-  .sw2.sizes{grid-template-columns:repeat(3,1fr)}
-  .sw2 .fnt{width:100%;aspect-ratio:auto;height:46px;font-size:16px;font-weight:800;color:var(--ink);background:#F7F5FC}
+  .sw2.fonts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sw2.sizes{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .sw2 .fnt{width:100%;min-width:0;aspect-ratio:auto;height:44px;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px;font-weight:800;color:var(--ink);background:#F7F5FC}
   .sw2 .fnt.on::after{display:none}
   .looklbl{margin:0 0 6px;font-weight:900;font-size:15px}
+  #lookPrev .msg .av{width:34px;height:34px;font-size:18px}
+  #lookPrev .msg .b{font-size:13px}
+  .sheet{overflow-x:hidden}
   .shdays{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
   .shdays button{display:flex;align-items:center;gap:10px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;font-size:16px;font-weight:800;color:var(--ink);text-align:left}
   .shdays button.on{border-color:var(--ink);background:#F7F5FC}
@@ -534,7 +537,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='7.1';
+const APP_VERSION='7.3';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -1020,14 +1023,14 @@ function savePref(){ try{localStorage.setItem(KEY+'-chatpref',JSON.stringify(CHA
 const BGCOL={lilas:['#B48BF5','#8E5BE0'],claro:['#7FB2F0','#4A7FE0'],verde:['#5FD3A5','#2EB88A'],azul:['#6FB6F5','#2F8FE0'],rosa:['#F58FC8','#E0479E'],amarelo:['#FFD06B','#F0A93C'],noite:['#4A4770','#26243A'],bolinhas:['#C9A8FF','#8E5BE0'],estrelas:['#8FB8FF','#4A7FE0'],foto:['#8E5BE0','#5B3FC4']};
 function applyPref(){
   const pairs=[[sheet.querySelector('.chat:not(#lookPrev)'),document.getElementById('msgs')],[document.getElementById('lookPrev'),document.getElementById('lookMsgs')]];
-  const col=BGCOL[CHATPREF.bg]||BGCOL.lilas; const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);}
+  const col=BGCOL[CHATPREF.bg]||BGCOL.lilas; const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);} sheet.style.setProperty('--c2',col[1]);
   const ci=sheet.querySelector('.chatin'); if(ci){ci.style.setProperty('--c1',col[0]);ci.style.setProperty('--c2',col[1]);}
   pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg; m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
 function openChatLook(){
   const BGS=[['lilas','#F7F5FC'],['claro','#FFFFFF'],['verde','#E6F6EE'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
   const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
   show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
-    <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px"><div class="msgs" id="lookMsgs" style="min-height:0;padding:10px 8px">
+    <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px;padding:0"><div class="msgs" id="lookMsgs" style="min-height:0;max-height:none;padding:10px 8px;overflow:hidden">
       <div class="msg" style="--uc:#E0479E"><span class="av">${avatarHtml(USERS[0])}</span><div><div class="b"><b>Maria</b>Oi! Assim fica o balão dela 😊<small>20:41</small></div></div></div>
       <div class="msg me" style="--uc:${THEME==='lilas'?'#8E5BE0':(USER.cor||'#2F8FE0')}"><span class="av">${avatarHtml(USER)}</span><div><div class="b">E assim fica o seu<small>20:42 <span class="tick seen">✓✓</span></small></div></div></div>
     </div></div>
