@@ -48,7 +48,18 @@
   .chip{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:800;white-space:nowrap;flex:none;transition:transform .15s}
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink);transform:scale(1.04)}
   .chip .arw{font-size:10px;opacity:.7;margin-left:2px}
-  .chip.wide{font-weight:900}
+  .chip.wide{font-weight:900;position:relative;overflow:hidden}
+  .chip.wide:active{transform:scale(.94)}
+  .chips.opening .chip{animation:chipIn .34s cubic-bezier(.34,1.56,.5,1) both}
+  .chips.opening .chip:nth-child(1){animation-delay:0s} .chips.opening .chip:nth-child(2){animation-delay:.03s}
+  .chips.opening .chip:nth-child(3){animation-delay:.06s} .chips.opening .chip:nth-child(4){animation-delay:.09s}
+  .chips.opening .chip:nth-child(5){animation-delay:.12s} .chips.opening .chip:nth-child(6){animation-delay:.15s}
+  .chips.opening .chip:nth-child(7){animation-delay:.18s} .chips.opening .chip:nth-child(8){animation-delay:.21s}
+  .chips.opening .chip:nth-child(9){animation-delay:.24s} .chips.opening .chip:nth-child(10){animation-delay:.27s}
+  .chips.opening .chip:nth-child(n+11){animation-delay:.3s}
+  @keyframes chipIn{from{opacity:0;transform:translateY(-10px) scale(.8)}to{opacity:1;transform:none}}
+  .chips.closing .chip{animation:chipOut .18s ease-in both}
+  @keyframes chipOut{to{opacity:0;transform:scale(.85)}}
   .chip.on.todo{background:var(--sex);border-color:var(--sex)}.chip.on.doing{background:#D89A00;border-color:#D89A00}.chip.on.done{background:var(--ter);border-color:var(--ter)}.chip.on.late{background:#B3261E;border-color:#B3261E}
   /* importantes */
   .imp{background:#fff;border:3px solid var(--gold);border-radius:22px;margin-bottom:18px;--c:var(--gold);overflow:hidden}
@@ -213,16 +224,16 @@
   .uopt .av{width:56px;height:56px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#F2F0FA}
   .uopt .av img{width:100%;height:100%;object-fit:cover}
   /* conversa */
-  .chatfab{bottom:calc(16px + 62px + 12px + env(safe-area-inset-bottom));background:var(--sex);transition:transform .15s,left .2s,top .2s,right .2s,bottom .2s}
-  .chatfab.moving{transition:none;transform:scale(1.12);box-shadow:0 12px 26px rgba(38,36,58,.4)}
+  .chatfab{bottom:calc(16px + 62px + 12px + env(safe-area-inset-bottom));background:var(--sex);touch-action:none;transition:transform .15s}
+  .chatfab.moving{transform:scale(1.14);box-shadow:0 14px 28px rgba(38,36,58,.45)}
   .badge{position:absolute;top:-2px;right:-2px;background:#E4443F;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
   .badge.on{display:flex}
   .sheet.chatsheet{display:flex;flex-direction:column;height:min(94dvh,780px);max-height:none;overflow:hidden;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
   .chatsheet .grip{margin:4px auto 6px}
-  .chatsheet{padding-left:0;padding-right:0}
-  .chatsheet>.grip{background:rgba(255,255,255,.7)}
+  .chatsheet{padding-left:0;padding-right:0;padding-top:0}
+  .chatsheet>.grip{background:rgba(38,36,58,.18);margin:6px auto 4px}
   .chat{padding:0 14px}
-  .chathead{margin:0 -14px 10px;padding:6px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));border-radius:0 0 26px 26px;color:#fff;box-shadow:0 6px 14px -8px rgba(0,0,0,.35)}
+  .chathead{margin:-6px -14px 10px;padding:10px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));border-radius:24px 24px 26px 26px;color:#fff;box-shadow:0 6px 14px -8px rgba(0,0,0,.35)}
   .chatsheet .grip{margin-top:0}
   .chat h2{font-size:19px;margin:0 0 6px;color:#fff}
   .chat h2 .gear,.chat h2 .x{background:rgba(255,255,255,.25);color:#fff}
@@ -234,7 +245,7 @@
   .chatwho i.on{background:#7CF5C0;box-shadow:0 0 0 3px rgba(124,245,192,.3)}
   .chat{flex:1;min-height:0;display:flex;flex-direction:column}
   .chat h2{flex:none}
-  .msgs{flex:1;min-height:0;overflow:auto;padding:12px 10px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;background:#F7F5FC;border-radius:22px;border:2px solid rgba(38,36,58,.06)}
+  .msgs{flex:1;min-height:0;overflow:auto;padding:12px 10px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;overscroll-behavior:contain;background:#F7F5FC;border-radius:22px;border:2px solid rgba(38,36,58,.06)}
   .msg{display:flex;gap:8px;align-items:flex-end;max-width:85%}
   .msg.me{align-self:flex-end;flex-direction:row-reverse}
   .msg .av{width:46px;height:46px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex:none;border:3px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18)}
@@ -269,17 +280,39 @@
   .chat.s-p .msg .b{font-size:13px} .chat.s-g .msg .b{font-size:17px}
   .chat h2 .gear{margin-left:auto;margin-right:8px;border:0;background:#F2F0FA;border-radius:50%;width:34px;height:34px;font-size:18px}
   .chat h2 .x{margin-left:0}
-  .sw2{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
-  .sw2 button{width:52px;height:52px;border-radius:14px;border:3px solid transparent;background:#F2F0FA}
-  .sw2 button.on{border-color:var(--ink)}
-  .sw2 .fnt{width:auto;padding:0 12px;height:44px;font-size:16px;font-weight:700;color:var(--ink)}
+  .sw2{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:6px 0 16px}
+  .sw2 button{width:100%;aspect-ratio:1;border-radius:16px;border:2px solid var(--line);background:#F2F0FA;position:relative;background-size:cover;background-position:center}
+  .sw2 button.on{border:3px solid var(--ink);box-shadow:0 0 0 3px rgba(38,36,58,.12)}
+  .sw2 button.on::after{content:"✓";position:absolute;right:4px;bottom:2px;font-size:13px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+  .sw2.fonts{grid-template-columns:repeat(2,1fr)}
+  .sw2.sizes{grid-template-columns:repeat(3,1fr)}
+  .sw2 .fnt{width:100%;aspect-ratio:auto;height:46px;font-size:16px;font-weight:800;color:var(--ink);background:#F7F5FC}
+  .sw2 .fnt.on::after{display:none}
+  .looklbl{margin:0 0 6px;font-weight:900;font-size:15px}
+  .shdays{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
+  .shdays button{display:flex;align-items:center;gap:10px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;font-size:16px;font-weight:800;color:var(--ink);text-align:left}
+  .shdays button.on{border-color:var(--ink);background:#F7F5FC}
+  .shdays .dot2{width:14px;height:14px;border-radius:50%;flex:none}
+  .shdays small{margin-left:auto;color:var(--soft);font-weight:700;font-size:13px}
+  .shprev{white-space:pre-wrap;background:#F7F5FC;border:2px solid var(--line);border-radius:16px;padding:12px;font-size:14px;line-height:1.45;max-height:34vh;overflow:auto;margin:0 0 12px;font-family:inherit}
+  .srch{display:flex;gap:8px;align-items:center;margin:0 0 10px}
+  .srch input{flex:1;min-width:0;border:2px solid var(--line);border-radius:999px;padding:11px 16px;font:inherit;font-size:16px;background:#fff}
+  .srch input:focus{outline:none;border-color:var(--ink)}
+  .res{display:flex;flex-direction:column;gap:8px;max-height:58vh;overflow:auto}
+  .res .hit{border:2px solid var(--line);border-radius:16px;padding:10px 12px;background:#fff;text-align:left;font-size:15px;line-height:1.3;color:var(--ink);font-weight:600}
+  .res .hit b{display:block;font-size:12px;font-weight:900;color:var(--soft);margin-bottom:2px}
+  .res .hit mark{background:#FFE9A8;color:inherit;border-radius:4px;padding:0 2px}
+  .res .none{color:var(--soft);text-align:center;padding:16px 0}
+  .chat h2 .gear.find{margin-left:auto;margin-right:6px}
+  .chat h2 .gear+.gear{margin-left:0}
   .msg .b{background:#fff;border-radius:20px;padding:8px 13px 6px;font-size:15px;line-height:1.35;box-shadow:0 2px 6px rgba(38,36,58,.10);min-width:64px}
   .msg.me .b{color:#fff}
   .msg .b small{display:block;font-size:10px;opacity:.7;margin-top:2px;text-align:right}
   .msg .b b{display:block;font-size:11.5px;color:var(--soft);margin-bottom:1px;font-weight:900}
   .msg.me .b b{display:none}
   .chatin{flex:none;display:flex;gap:8px;padding-top:8px;margin-top:4px}
-  .daygrp{border:0;margin:0}
+  .daygrp{border:0;margin:0;flex:none}
+  .msgs>*{flex:none}
   .daygrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:2px auto 8px;background:rgba(38,36,58,.08);border-radius:999px;padding:5px 14px;font-size:12px;font-weight:900;color:var(--ink);width:fit-content;max-width:100%}
   .daygrp>summary::-webkit-details-marker{display:none}
   .daygrp>summary .arw{font-size:10px;opacity:.7;transition:transform .2s}
@@ -493,7 +526,7 @@
 /* ================= SINCRONIZAÇÃO (Firebase) =================
    Cole aqui a configuração do seu projeto Firebase (Console > Configurações do projeto > Seus apps > SDK).
    Enquanto apiKey estiver vazio, o app funciona só no aparelho, como antes. */
-const APP_VERSION='6.0';
+const APP_VERSION='6.9';
 const FIREBASE = {
   apiKey: "AIzaSyDX6jWGttjGpWZyYDmWKCX9Lt7bAV0c17M",
   authDomain: "tarefas-8231d.firebaseapp.com",
@@ -645,7 +678,7 @@ function weekIdFor(dateIso){ const d=new Date(dateIso+'T12:00:00'); d.setDate(d.
 const weekIds=()=>Object.keys(DB.weeks).sort();
 let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(i=>i<=weekIdFor(TODAY)).pop() || weekIds()[0]);
 const openState={};
-let fType='all', fSubj='all', subjOpen=false;
+let fType='all', fSubj='all', subjOpen=false, subjAnim=null;
 
 /* ================= NUVEM ================= */
 const CLOUD_CFG = !!FIREBASE.apiKey;
@@ -732,6 +765,75 @@ function openLogin(after,preId){
 let THEME='padrao'; try{THEME=localStorage.getItem(KEY+'-theme')||'padrao';}catch(e){}
 function applyTheme(){ document.body.classList.toggle('t-lilas',THEME==='lilas'); const mt=document.querySelector('meta[name=theme-color]'); if(mt) mt.content=THEME==='lilas'?'#8E5BE0':'#7D5BE6'; }
 applyTheme();
+function hl(txt,q){ const t=esc(txt); if(!q) return t; const i=t.toLowerCase().indexOf(q.toLowerCase()); if(i<0) return t; return t.slice(0,i)+'<mark>'+t.slice(i,i+q.length)+'</mark>'+t.slice(i+q.length); }
+function plain(t){ return (t||'').replace(/<[^>]+>/g,''); }
+function openSearch(){
+  show(`<h2>🔎 Buscar tarefa <button class="x">✕</button></h2>
+    <div class="srch"><input id="srchTxt" placeholder="Ex.: biomas, página 52, Inglês…" autocomplete="off"></div>
+    <div class="res" id="srchRes"><p class="none">Escreve para procurar em todas as semanas.</p></div>`);
+  const inp=document.getElementById('srchTxt'), res=document.getElementById('srchRes');
+  const run=()=>{ const q=inp.value.trim(); if(q.length<2){ res.innerHTML='<p class="none">Escreve pelo menos 2 letras.</p>'; return; }
+    const ql=q.toLowerCase(); const hits=[];
+    weekIds().slice().reverse().forEach(id=>{ const w=DB.weeks[id];
+      allTasks(w).forEach(t=>{ const txt=plain(t.text); if(txt.toLowerCase().includes(ql)||(SUBJ[t.subj]||'').toLowerCase().includes(ql)||(t.note||'').toLowerCase().includes(ql))
+        hits.push({w:id,t,txt}); }); });
+    if(!hits.length){ res.innerHTML='<p class="none">Não achei nada com “'+esc(q)+'”.</p>'; return; }
+    res.innerHTML=hits.slice(0,60).map(h=>{ const d=DB.weeks[h.w].days.find(x=>x.k===h.t.day); const est=h.t.off?'🚫':(h.t.status==='done'?'✓':(h.t.status==='doing'?'⏳':'📝'));
+      return `<button class="hit" data-w="${h.w}" data-id="${h.t.id}"><b>${est} ${SUBJ[h.t.subj]||''} · ${DAYMETA[h.t.day][0]} ${d?fmt(d.date):''} · ${DB.weeks[h.w].label}</b>${hl(h.txt,q)}</button>`; }).join('');
+    res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
+      const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
+      setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500); } },200); }));
+  };
+  inp.addEventListener('input',run); setTimeout(()=>inp.focus(),300);
+}
+function resumoDia(w,d){
+  const ts=allTasks(w).filter(t=>t.day===d.k);
+  const L=[]; L.push(`🎒 Tarefas de ${DAYMETA[d.k][0]} ${fmt(d.date)}`);
+  const bloco=(titulo,lista)=>{ if(!lista.length) return; L.push(''); L.push(titulo);
+    lista.forEach(t=>{ const ic=t.off?'🚫':(t.status==='done'?'✅':(t.status==='doing'?'⏳':(taskPassed(t)?'❗':'⬜')));
+      L.push(`${ic} ${SUBJ[t.subj]||''} · ${plain(t.text)}`);
+      if(t.off&&t.offWhy) L.push(`     🚫 Cancelada: ${t.offWhy}`);
+      if(t.note) L.push(`     📝 ${t.note}`); }); };
+  bloco('🎒 LEVAR PARA A ESCOLA', ts.filter(t=>t.type===B));
+  bloco(d.k==='sex'?'🏠 FAZER NO FIM DE SEMANA':'🏠 FAZER EM CASA PARA AMANHÃ', ts.filter(t=>t.type===H));
+  const live=ts.filter(t=>!t.off), feitas=live.filter(t=>t.status==='done').length;
+  L.push(''); L.push(`📊 ${feitas} de ${live.length} concluídas${live.length&&feitas===live.length?' 🎉 Tudo feito!':''}`);
+  const falta=live.filter(t=>t.status!=='done').length; if(falta) L.push(`⬜ Ainda falta: ${falta}`);
+  L.push(''); L.push('— enviado pelo app Gestão de tarefas');
+  return L.join('\n');
+}
+function resumoSemana(w){
+  const L=[`🎒 Semana ${w.label}`];
+  w.days.forEach(d=>{ const ts=allTasks(w).filter(t=>t.day===d.k&&!t.off); if(!ts.length) return;
+    const f=ts.filter(t=>t.status==='done').length; L.push(`\n📅 ${DAYMETA[d.k][0]} ${fmt(d.date)} — ${f}/${ts.length}`);
+    ts.forEach(t=>{ const ic=t.status==='done'?'✅':(t.status==='doing'?'⏳':(taskPassed(t)?'❗':'⬜')); L.push(`${ic} ${SUBJ[t.subj]||''} · ${plain(t.text)}`); }); });
+  const all=allTasks(w).filter(t=>t.type===H&&!t.off), fe=all.filter(t=>t.status==='done').length;
+  L.push(`\n📊 ${fe} de ${all.length} tarefas de casa concluídas (${all.length?Math.round(fe/all.length*100):0}%)`);
+  L.push('\n— enviado pelo app Gestão de tarefas');
+  return L.join('\n');
+}
+function openShare(){
+  const w=DB.weeks[current];
+  show(`<h2>📤 Compartilhar <button class="x">✕</button></h2>
+    <p class="quiet" style="margin:0 0 10px">Escolhe o que quer mandar:</p>
+    <div class="shdays">
+      ${w.days.map(d=>{ const ts=allTasks(w).filter(t=>t.day===d.k&&!t.off); const f=ts.filter(t=>t.status==='done').length;
+        return `<button data-d="${d.k}"><span class="dot2" style="background:${dayCss(d.k)}"></span>${DAYMETA[d.k][0]} ${fmt(d.date)}<small>${f}/${ts.length}</small></button>`; }).join('')}
+      <button data-d="all"><span class="dot2" style="background:var(--ink)"></span>Semana inteira<small>${w.label}</small></button>
+    </div>
+    <div id="shBox"></div>`);
+  sheet.querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>{
+    sheet.querySelectorAll('[data-d]').forEach(x=>x.classList.toggle('on',x===b)); vibrate(15);
+    const txt=b.dataset.d==='all'?resumoSemana(w):resumoDia(w,w.days.find(x=>x.k===b.dataset.d));
+    document.getElementById('shBox').innerHTML=`<p class="looklbl">👀 Como vai ficar</p><pre class="shprev" id="shTxt">${esc(txt)}</pre>
+      <div class="row"><button class="opt" id="shCopy">📋 Copiar</button><button class="opt primary" id="shGo">📤 Enviar</button></div>`;
+    document.getElementById('shCopy').addEventListener('click',()=>{ navigator.clipboard?.writeText(txt).then(()=>{SFX.pop();toast('Copiado! É só colar no WhatsApp');},()=>toast('Não consegui copiar')); });
+    document.getElementById('shGo').addEventListener('click',()=>{ SFX.pop();
+      if(navigator.share){ navigator.share({title:'Gestão de tarefas',text:txt}).catch(()=>{}); }
+      else { window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank'); } });
+  }));
+  const hoje=w.days.find(d=>d.date===TODAY); const alvo=sheet.querySelector(`[data-d="${hoje?hoje.k:w.days[0].k}"]`); if(alvo) alvo.click();
+}
 function openTheme(){
   show(`<h2>✨ Tema do app <button class="x">✕</button></h2>
     <div class="themes">
@@ -908,26 +1010,41 @@ function applyPref(){
   const col=BGCOL[CHATPREF.bg]||BGCOL.lilas; const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);}
   const ci=sheet.querySelector('.chatin'); if(ci){ci.style.setProperty('--c1',col[0]);ci.style.setProperty('--c2',col[1]);}
   pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg; m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
+function openChatSearch(){
+  show(`<h2>🔎 Buscar na conversa <button class="x">✕</button></h2>
+    <div class="srch"><input id="cfTxt" placeholder="Procurar mensagem…" autocomplete="off"></div>
+    <div class="res" id="cfRes"><p class="none">Escreve para procurar.</p></div>`);
+  const inp=document.getElementById('cfTxt'), res=document.getElementById('cfRes');
+  const run=()=>{ const q=inp.value.trim(); if(q.length<2){ res.innerHTML='<p class="none">Escreve pelo menos 2 letras.</p>'; return; }
+    const ql=q.toLowerCase(); const hits=CHAT.filter(m=>(m.text||'').toLowerCase().includes(ql)||(m.att&&(m.att.name||'').toLowerCase().includes(ql))).reverse();
+    if(!hits.length){ res.innerHTML='<p class="none">Nenhuma mensagem com “'+esc(q)+'”.</p>'; return; }
+    res.innerHTML=hits.slice(0,60).map(m=>`<button class="hit" data-k="${m.k}"><b>${esc(uname(m.by))} · ${fmtT(m.t)}</b>${hl(msgPreview(m),q)}</button>`).join('');
+    res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ const k=b.dataset.k; const m=CHAT.find(x=>x.k===k); if(m) chatOpenDays[iso(new Date(m.t||0))]=true;
+      openChat(); setTimeout(()=>{ const box=document.getElementById('msgs'); const el=box&&box.querySelector(`.msg[data-k="${k}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1400); } },250); }));
+  };
+  inp.addEventListener('input',run); setTimeout(()=>inp.focus(),300);
+  sheet.querySelector('.x').addEventListener('click',()=>openChat(),{once:true});
+}
 function openChatLook(){
-  const BGS=[['lilas','#F7F5FC'],['claro','#fff'],['verde','#E6F6EE'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
+  const BGS=[['lilas','#F7F5FC'],['claro','#FFFFFF'],['verde','#E6F6EE'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
   const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
   show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px"><div class="msgs" id="lookMsgs" style="min-height:0;padding:10px 8px">
       <div class="msg" style="--uc:#E0479E"><span class="av">${avatarHtml(USERS[0])}</span><div><div class="b"><b>Maria</b>Oi! Assim fica o balão dela 😊<small>20:41</small></div></div></div>
       <div class="msg me" style="--uc:${THEME==='lilas'?'#8E5BE0':(USER.cor||'#2F8FE0')}"><span class="av">${avatarHtml(USER)}</span><div><div class="b">E assim fica o seu<small>20:42 <span class="tick seen">✓✓</span></small></div></div></div>
     </div></div>
-    <p class="quiet" style="margin:0 0 4px"><b>Plano de fundo</b></p>
-    <div class="sw2">${BGS.map(([k,c])=>`<button data-bg="${k}" class="${CHATPREF.bg===k?'on':''}" style="background:${c};background-size:14px 14px" title="${k}"></button>`).join('')}
-      <button data-bg="foto" class="${CHATPREF.bg==='foto'?'on':''}" style="font-size:22px;${CHATPREF.foto?`background:url(${CHATPREF.foto}) center/cover`:''}">${CHATPREF.foto?'':'📷'}</button></div>
-    <p class="quiet" style="margin:0 0 4px"><b>Fonte</b></p>
-    <div class="sw2">${FONTS.map(([k,n])=>`<button data-f="${k}" class="fnt f-${k} ${CHATPREF.font===k?'on':''}">${n}</button>`).join('')}</div>
-    <p class="quiet" style="margin:0 0 4px"><b>Tamanho da letra</b></p>
-    <div class="sw2">${[['p','Pequena'],['m','Média'],['g','Grande']].map(([k,n])=>`<button data-s="${k}" class="fnt ${CHATPREF.size===k?'on':''}">${n}</button>`).join('')}</div>
+    <p class="looklbl">🎨 Plano de fundo</p>
+    <div class="sw2">${BGS.map(([k,c])=>`<button data-bg="${k}" class="${CHATPREF.bg===k?'on':''}" style="background:${c};${c.startsWith('radial')?'background-size:14px 14px;':''}" title="${k}"></button>`).join('')}
+      <button data-bg="foto" class="${CHATPREF.bg==='foto'?'on':''}" style="font-size:22px;${CHATPREF.foto?`background-image:url(${CHATPREF.foto})`:''}" title="Foto">${CHATPREF.foto?'<span style="position:absolute;left:3px;top:2px;font-size:13px">📷</span>':'📷'}</button></div>
+    <p class="looklbl">🔤 Fonte</p>
+    <div class="sw2 fonts">${FONTS.map(([k,n])=>`<button data-f="${k}" class="fnt f-${k} ${CHATPREF.font===k?'on':''}">${n}</button>`).join('')}</div>
+    <p class="looklbl">🔎 Tamanho da letra</p>
+    <div class="sw2 sizes">${[['p','Pequena'],['m','Média'],['g','Grande']].map(([k,n])=>`<button data-s="${k}" class="fnt ${CHATPREF.size===k?'on':''}">${n}</button>`).join('')}</div>
     <p class="quiet" style="margin:0;font-size:13px">Essas escolhas valem só neste aparelho.</p>
     <button class="opt primary" id="lookOk" style="justify-content:center;margin-top:12px">Pronto</button>`);
   applyPref();
   const mark=(sel,attr,val)=>sheet.querySelectorAll(sel).forEach(b=>b.classList.toggle('on',b.dataset[attr]===val));
-  sheet.querySelectorAll('[data-bg]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.bg==='foto'&&!CHATPREF.foto){ document.getElementById('bgFile').click(); return; } CHATPREF.bg=b.dataset.bg; savePref(); mark('[data-bg]','bg',CHATPREF.bg); }));
+  sheet.querySelectorAll('[data-bg]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.bg==='foto'&&(!CHATPREF.foto||CHATPREF.bg==='foto')){ document.getElementById('bgFile').click(); return; } CHATPREF.bg=b.dataset.bg; savePref(); mark('[data-bg]','bg',CHATPREF.bg); }));
   sheet.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{ CHATPREF.font=b.dataset.f; savePref(); mark('[data-f]','f',CHATPREF.font); }));
   sheet.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>{ CHATPREF.size=b.dataset.s; savePref(); mark('[data-s]','s',CHATPREF.size); }));
   const done=()=>{ openChat(); }; document.getElementById('lookOk').addEventListener('click',done); sheet.querySelector('.x').addEventListener('click',done,{once:true});
@@ -973,7 +1090,7 @@ function openMsgMenu(k){
 }
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
-  show(`<div class="chat"><div class="chathead"><h2>💬 Conversa da família <button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div></div>
+  show(`<div class="chat"><div class="chathead"><h2>💬 Conversa da família <button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div></div>
     <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
@@ -981,6 +1098,7 @@ function openChat(){
     </div>`);
   applyPref(); markRead(); scrollMsgs(); bindMsgs(); editingKey=null; replyTo=null;
   document.getElementById('chatLook').addEventListener('click',openChatLook);
+  document.getElementById('chatFind').addEventListener('click',openChatSearch);
   document.getElementById('attBtn').addEventListener('click',()=>document.getElementById('attFile').click());
   const inp=document.getElementById('chatTxt');
   const cancelEdit=()=>{ if(editingKey) inp.value=''; editingKey=null; replyTo=null; document.getElementById('editbar').classList.remove('on'); };
@@ -1034,7 +1152,8 @@ function renderFilters(){
       `<button class="chip ${fSubj==='all'?'on':''}" data-s="all">Todas</button>`+
       lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${SUBJ[k]}</button>`).join('');
   }
-  el.querySelectorAll('[data-open-subj]').forEach(b=>b.addEventListener('click',()=>{subjOpen=b.dataset.openSubj==='1';vibrate(15);render();}));
+  el.querySelectorAll('[data-open-subj]').forEach(b=>b.addEventListener('click',()=>{ subjOpen=b.dataset.openSubj==='1'; vibrate(15); SFX.pop(); subjAnim=subjOpen?'opening':'closing'; render(); }));
+  if(subjAnim){ el.classList.add(subjAnim); const a=subjAnim; subjAnim=null; setTimeout(()=>el.classList.remove(a),600); }
   document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{fType=b.dataset.t;vibrate(15);render();});
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ fSubj=(fSubj===b.dataset.s&&b.dataset.s!=='all')?'all':b.dataset.s; subjOpen=false; vibrate(15); render(); });
 }
@@ -1107,7 +1226,7 @@ function taskHtml(t,inImp){
 }
 
 /* ================= INTERAÇÃO ================= */
-let SOUND=true; try{SOUND=localStorage.getItem(KEY+'-sound')!=='0';}catch(e){}
+const SOUND=true;
 let AC=null;
 function tone(seq){ if(!SOUND) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume();
   let t=AC.currentTime+0.01;
@@ -1258,13 +1377,13 @@ function openNote(id){
 function openMain(){
   const n=unread();
   show(`<h2>☰ Menu <button class="x">✕</button></h2>
+   <button class="opt" data-m="find"><span class="ic">🔎</span>Buscar tarefa</button>
    <button class="opt" data-m="tt"><span class="ic">📅</span>Aulas da semana</button>
+   <button class="opt" data-m="share"><span class="ic">📤</span>Compartilhar tarefas</button>
    <button class="opt" data-m="wk"><span class="ic">🗂️</span>Semanas e histórico</button>
-   <button class="opt" data-m="sound"><span class="ic">${SOUND?'🔊':'🔇'}</span>Sons ${SOUND?'ligados':'desligados'}</button>
    <button class="opt" data-m="theme"><span class="ic">✨</span>Tema do app${THEME==='lilas'?' <small class="quiet">(Lilás)</small>':''}</button>
-   ${CLOUD_CFG?`<p class="quiet" id="syncBadge" style="margin:4px 0 0;text-align:center;font-size:13px"></p>`:''}`);
-  updateSyncBadge();
-  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='tt')openTimetable(); if(m==='wk')openWeeks(); if(m==='theme')openTheme(); if(m==='sound'){ SOUND=!SOUND; try{localStorage.setItem(KEY+'-sound',SOUND?'1':'0');}catch(e){} if(SOUND)SFX.pop(); vibrate(15); openMain(); } if(m==='foto')openFoto(); if(m==='user')openLogin(); if(m==='chat')openChat();}));
+`);
+  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='find')openSearch(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='theme')openTheme(); if(m==='foto')openFoto(); if(m==='user')openLogin(); if(m==='chat')openChat();}));
 }
 function openTimetable(){
   const dow=new Date().getDay();
@@ -1350,9 +1469,10 @@ document.getElementById('fab').addEventListener('click',openMain);
     x=Math.max(m,Math.min(window.innerWidth-w-m,x)); y=Math.max(m,Math.min(window.innerHeight-h-m,y));
     b.style.left=x+'px'; b.style.top=y+'px'; b.style.right='auto'; b.style.bottom='auto'; }
   try{ const p=JSON.parse(localStorage.getItem(KEY+'-fabpos')||'null'); if(p) place(p.x,p.y); }catch(e){}
-  b.addEventListener('pointerdown',e=>{ const r=b.getBoundingClientRect(); sx=e.clientX; sy=e.clientY; ox=e.clientX-r.left; oy=e.clientY-r.top; moved=false; drag=true; b.setPointerCapture(e.pointerId); });
-  b.addEventListener('pointermove',e=>{ if(!drag) return; if(!moved&&(Math.abs(e.clientX-sx)>6||Math.abs(e.clientY-sy)>6)){ moved=true; b.classList.add('moving'); vibrate(15); }
-    if(moved) place(e.clientX-ox,e.clientY-oy); });
+  b.addEventListener('pointerdown',e=>{ e.preventDefault(); const r=b.getBoundingClientRect(); sx=e.clientX; sy=e.clientY; ox=e.clientX-r.left; oy=e.clientY-r.top; moved=false; drag=true; try{b.setPointerCapture(e.pointerId);}catch(err){} });
+  b.addEventListener('pointermove',e=>{ if(!drag) return; e.preventDefault(); if(!moved&&(Math.abs(e.clientX-sx)>5||Math.abs(e.clientY-sy)>5)){ moved=true; b.classList.add('moving'); vibrate(15); }
+    if(moved) place(e.clientX-ox,e.clientY-oy); },{passive:false});
+  b.addEventListener('touchmove',e=>{ if(drag) e.preventDefault(); },{passive:false});
   const end=()=>{ if(!drag) return; drag=false; b.classList.remove('moving');
     if(moved){ const r=b.getBoundingClientRect(); try{localStorage.setItem(KEY+'-fabpos',JSON.stringify({x:r.left,y:r.top}));}catch(e){} } };
   b.addEventListener('pointerup',end); b.addEventListener('pointercancel',end);
@@ -1386,6 +1506,10 @@ function hourlyReminder(){ if(!USER||USER.papel!=='aluna') return; const h=new D
 function startReminders(){ clearInterval(notifTimer); askNotif(); if(!USER||USER.papel!=='aluna') return; askNotif().then(ok=>{ if(!ok) return; hourlyReminder(); notifTimer=setInterval(hourlyReminder,60*1000); }); }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyReminder(); });
 render();
+// ao abrir, rola até o dia de hoje (uma vez por abertura)
+setTimeout(()=>{ const el=document.querySelector('.day.today'); if(!el) return;
+  const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector('.top')?.offsetHeight||0)-10;
+  window.scrollTo({top:Math.max(0,top),behavior:'smooth'}); },500);
 let remSeen=false; try{remSeen=localStorage.getItem(KEY+'-rem')===TODAY;}catch(e){}   // lembrete: uma vez por dia
 if(CLOUD_CFG && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
 else { cloudStart(); startReminders(); if(!remSeen) setTimeout(openReminder,350); }
