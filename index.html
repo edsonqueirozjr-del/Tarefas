@@ -697,9 +697,13 @@
   @keyframes msnshake{0%,100%{transform:translate(0,0)}10%{transform:translate(-9px,4px)}20%{transform:translate(8px,-6px)}30%{transform:translate(-7px,-4px)}40%{transform:translate(9px,5px)}50%{transform:translate(-8px,6px)}60%{transform:translate(7px,-5px)}70%{transform:translate(-6px,3px)}80%{transform:translate(5px,-3px)}90%{transform:translate(-3px,2px)}}
   body.shake .wrap,body.shake .fabs,body.shake .sheet>*,body.shake .toast{animation:msnshake .8s cubic-bezier(.36,.07,.19,.97)}
   @media(prefers-reduced-motion:reduce){body.shake .wrap,body.shake .fabs,body.shake .sheet>*,body.shake .toast{animation:none}}
-  .nudge-msg{align-self:center;display:inline-flex;align-items:center;gap:6px;max-width:92%;margin:4px auto;padding:7px 14px;border-radius:999px;background:color-mix(in srgb,var(--uc,#8E5BE0) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,#8E5BE0) 35%,#fff);color:var(--ink);font-size:13px;font-weight:700;text-align:center}
+  .nudge-msg{align-self:center;display:inline-flex;align-items:center;justify-content:center;gap:6px;max-width:min(92%,360px);margin:4px auto;padding:6px 12px;border-radius:16px;background:color-mix(in srgb,var(--uc,#8E5BE0) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,#8E5BE0) 35%,#fff);color:var(--ink);font-size:12.5px;font-weight:700;text-align:center;line-height:1.3}
+  .nudge-msg .nt{display:flex;flex-direction:column;align-items:flex-start;gap:1px;white-space:nowrap;text-align:left}
+  .nudge-msg .l1{display:flex;align-items:baseline;gap:6px}
+  .nudge-msg .l2{font-size:11.5px;font-weight:700;opacity:.85}
+  .nudge-msg .hand{flex:none;font-size:20px}
   .nudge-msg b{color:var(--uc,#8E5BE0);font-weight:900}
-  .nudge-msg small{font-size:10px;opacity:.65;margin-left:2px}
+  .nudge-msg small{font-size:10px;opacity:.65;flex:none}
   .nudge-msg .hand{display:inline-block;animation:wavehand 1.6s ease-in-out infinite;transform-origin:70% 70%}
   @keyframes wavehand{0%,100%{transform:rotate(0)}15%{transform:rotate(18deg)}30%{transform:rotate(-10deg)}45%{transform:rotate(14deg)}60%{transform:rotate(-6deg)}75%{transform:rotate(0)}}
   @media(prefers-reduced-motion:reduce){.nudge-msg .hand{animation:none}}
@@ -1044,10 +1048,11 @@ const openState={};
 let fType='all', fSubj='all', fQ='', subjOpen=false, subjAnim=null, filtroTocado=false;
 const fSet=()=>fType==='all'?[]:fType.split('+');
 const fHas=k=>fType!=='all'&&fSet().includes(k);
-function hojeTemPendencia(){ const w=DB.weeks[current]; const d=w&&w.days.find(x=>x.date===TODAY); if(!d) return false;
-  return allTasks(w).some(t=>t.type===H&&t.day===d.k&&(t.status==='todo'||t.status==='doing')&&!t.off&&!taskPassed(t)); }
-// enquanto ninguem mexe nos filtros, o app escolhe sozinho: "Falta fazer" + "Fazendo" marcados (se hoje tem pendencia)
-function filtroPadrao(){ if(filtroTocado) return; fType=hojeTemPendencia()?'todo+doing':'all'; }
+// alguma tarefa de casa da semana ainda pendente (falta fazer ou fazendo), dentro do prazo e nao cancelada
+function semanaTemPendencia(){ const w=DB.weeks[current]; if(!w) return false;
+  return allTasks(w).some(t=>t.type===H&&(t.status==='todo'||t.status==='doing')&&!t.off&&!taskPassed(t)); }
+// enquanto ninguem mexe nos filtros, o app escolhe sozinho: "Falta fazer" + "Fazendo" marcados sempre que a semana tiver pendencia
+function filtroPadrao(){ if(filtroTocado) return; fType=semanaTemPendencia()?'todo+doing':'all'; }
 function passaSituacao(t,k){ return k==='late' ? (t.status!=='done'&&taskPassed(t)) : (t.status===k && !(t.status==='todo'&&taskPassed(t))); }
 
 /* ================= NUVEM ================= */
@@ -1433,7 +1438,7 @@ function animaEmojis(html){ if(!html) return ''; return html.replace(/(\p{Extend
 function msgHtml(m,i,arr){
   const u=USERS.find(x=>x.id===m.by)||{emoji:'👤',nome:m.by,id:m.by,cor:'#7A6B9B'}; const me=USER&&m.by===USER.id;
   if(m.att&&m.att.kind==='nudge'){ const hm0=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-    return `<div class="nudge-msg" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="hand" aria-hidden="true">👋</span><b>${me?'Você':esc(u.nome)}</b> ${me?'chamou a atenção de todo mundo':'chamou a sua atenção'}<small>${hm0}</small></div>`; }
+    return `<div class="nudge-msg" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="hand" aria-hidden="true">👋</span><span class="nt"><span class="l1"><b>${me?'Você':esc(u.nome)}</b><small>${hm0}</small></span><span class="l2">chamou a atenção</span></span></div>`; }
   const prev=arr[i-1]; const cont=prev&&prev.by===m.by&&(m.t||0)-(prev.t||0)<5*60*1000&&!m.reply&&!(prev.att&&prev.att.kind==='nudge');
   const onlyEmo=!m.att&&/^(\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u200d|\ufe0f|\s){1,6}$/u.test(m.text||'');
   const att=m.att?(m.att.kind==='img'?`<img class="pic" src="${m.att.thumb}" data-open="${m.k}" alt="foto">`:m.att.kind==='fala'?`<span class="aud fala" data-fala="${esc(m.att.texto||'')}" role="button" tabindex="0" aria-label="Ouvir"><span class="pl" aria-hidden="true"></span><span class="ft">🗣️ ${esc(m.att.texto||'')}</span></span>`:m.att.kind==='audio'?`<span class="aud" data-aud="${m.k}" role="button" tabindex="0" aria-label="Tocar áudio"><span class="pl" aria-hidden="true"></span><span class="wv" aria-hidden="true">${'<i></i>'.repeat(14)}</span><small>${fmtDur(m.att.dur||0)}</small></span>`:`<span class="file" data-open="${m.k}">📄 <span>${esc(m.att.name||'arquivo')}<small>${fmtSize(m.att.size||0)}</small></span></span>`):'';
