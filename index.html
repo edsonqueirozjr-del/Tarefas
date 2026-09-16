@@ -33,8 +33,8 @@
   .top .prog{margin:0 0 4px}
   .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:15px;color:var(--soft);margin-bottom:4px;line-height:1.3}
   .prog .row b{color:var(--ink);font-size:15px;font-weight:600}
-  .prog .bar{height:30px;border-radius:999px;background:#DFD4F0;overflow:hidden;position:relative;border:1px solid #CDBDE8;box-shadow:inset 0 2px 4px rgba(63,39,100,.14)}
-  .prog .bar i{display:block;height:100%;border-radius:999px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width .6s cubic-bezier(.4,0,.2,1)}
+  .prog .bar{height:30px;border-radius:12px;background:#DFD4F0;overflow:hidden;position:relative;border:1px solid #CDBDE8;box-shadow:inset 0 2px 4px rgba(63,39,100,.14)}
+  .prog .bar i{display:block;height:100%;border-radius:12px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width .6s cubic-bezier(.4,0,.2,1)}
   @keyframes progflow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
   @media(prefers-reduced-motion:reduce){.prog .bar i{animation:none}.prog .bar i::after{display:none}}
   .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
@@ -63,7 +63,7 @@
   .filters{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 6px;margin:8px -16px 2px;scrollbar-width:none}
   .filters::-webkit-scrollbar{display:none}
   .chips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 8px;margin:0}
-  .chip{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:800;white-space:nowrap;flex:none;transition:transform .15s}
+  .chip{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:16px;padding:6px 12px;font-size:14px;font-weight:800;white-space:nowrap;flex:none;transition:transform .15s}
   .chip.on{background:var(--selected-bg);color:var(--selected-ink);border-color:var(--selected-bg)}
   .chip .arw{font-size:10px;opacity:.7;margin-left:2px}
   .chip .cnt{display:inline-block;margin-left:6px;min-width:18px;padding:0 5px;border-radius:999px;background:#EFEDF7;color:var(--soft);font-size:12px;font-weight:900;text-align:center;vertical-align:1px}
@@ -226,7 +226,7 @@
   textarea{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;min-height:100px;resize:vertical}
   .row{display:flex;gap:8px;margin-top:10px}
   .row .opt{margin:0;justify-content:center}
-  .primary{background:var(--ok)!important;color:#fff!important}
+  .primary{background:linear-gradient(135deg,#9B6BE8,#7C4DC4)!important;color:#fff!important}
   .tt{display:grid;grid-template-columns:36px repeat(5,minmax(0,1fr));gap:5px;width:100%}
   .tt .h{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--soft)}
   .tt .dh{border-radius:12px;color:#fff;font-weight:900;font-size:14px;height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
@@ -315,7 +315,7 @@
   .cfbar .cnt{color:#fff;font-size:12px;font-weight:900;white-space:nowrap}
   .cfbar .cfdate{position:relative;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:17px;flex:none;cursor:pointer;overflow:hidden}
   .cfbar .cfdate input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0;margin:0}
-  .chatwho span{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.22);border-radius:999px;padding:3px 10px;color:#fff;font-weight:700}
+  .chatwho span{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.22);border-radius:999px;padding:3px 10px;color:#fff;font-weight:400}
   .chatwho b{font-weight:900}
   .chatwho .chat-lastseen{font:inherit}
   .chatwho i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);display:inline-block}
@@ -410,27 +410,22 @@
   .msg .b .hd small{display:inline;margin:0;text-align:left;white-space:nowrap;flex:none}
   .msg.me .b .hd b{color:rgba(255,255,255,.9)}
   .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:0}
-  .daygrp{border:0;margin:0;flex:none}
-  .msgs .daygrp>summary{display:none}
-  .daybar{flex:none;display:flex;justify-content:center;flex-wrap:wrap;gap:6px;padding:8px 8px 6px;background:var(--msgs-bg,#F7F5FC);position:relative;z-index:4}
-  .daybar button{display:flex;align-items:center;gap:6px;background:#E9E5F2;border:0;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;font-weight:900;color:var(--ink);cursor:pointer;white-space:nowrap}
-  .daybar button .arw{font-size:10px;opacity:.7;transition:transform .2s}
-  .daybar button.on .arw{transform:rotate(180deg)}
-  .daybar button:not(.on){opacity:.75}
+  .daybar{flex:none;display:flex;justify-content:flex-start;flex-wrap:nowrap;gap:6px;padding:8px 10px 6px;background:var(--msgs-bg,#F7F5FC);position:relative;z-index:4;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain}
+  .daybar::-webkit-scrollbar{display:none}
+  .daybar button{flex:none;display:flex;align-items:center;gap:6px;background:#E9E5F2;border:0;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;font-weight:900;color:var(--ink);cursor:pointer;white-space:nowrap;opacity:.7;text-transform:capitalize;transition:opacity .15s,background .15s}
+  .daybar button.on{opacity:1;background:var(--lilas);color:#fff}
   @media screen and (max-width:599px){ .daybar{flex-wrap:nowrap;gap:5px;padding:7px 6px 5px} .daybar button{padding:5px 10px;font-size:12.5px} .daybar .pal{display:none} }
   .chat-history:has(.msgs.bg-noite) .daybar{background:transparent}
   .chat-history:has(.msgs.bg-noite) .daybar button{background:#4A4770;color:#fff}
-  .msgs.bg-noite .daygrp>summary{background:#4A4770}
   .msgs>*{flex:none}
   .msgs::before{content:"";margin-top:auto}
-  .daygrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 8px;background:#E9E5F2;border-radius:999px;padding:5px 14px;font-size:13px;font-weight:900;color:var(--ink);width:fit-content;max-width:100%}
+  .zz-daygrp-removido{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 8px;background:#E9E5F2;border-radius:999px;padding:5px 14px;font-size:13px;font-weight:900;color:var(--ink);width:fit-content;max-width:100%}
   .daygrp>summary::-webkit-details-marker{display:none}
   .daygrp>summary .arw{font-size:10px;opacity:.7;transition:transform .2s}
   .daygrp[open]>summary .arw{transform:rotate(180deg)}
   .daygrp .inner{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
   .chatsheet .msgs>.msg{margin-bottom:10px}
-  .daysep{text-align:center;font-size:13px;font-weight:900;color:var(--ink);background:rgba(38,36,58,.08);border-radius:999px;padding:4px 14px;margin:2px auto 2px;width:fit-content}
-  .msgs.bg-noite .daygrp>summary{background:#4A4770;color:#fff}
+  .daysep{text-align:center;font-size:13px;font-weight:900;color:var(--ink);background:rgba(38,36,58,.08);border-radius:999px;padding:4px 14px;margin:2px auto 2px;width:fit-content;text-transform:capitalize}
   .msgs.bg-noite .daysep{background:rgba(255,255,255,.16);color:#fff}
   .msg .b .q{display:block;border-left:3px solid var(--acc);background:rgba(0,0,0,.06);border-radius:8px;padding:4px 8px;margin-bottom:6px;font-size:13px;line-height:1.25;color:var(--ink);cursor:pointer}
   .msg.me .b .q{background:rgba(255,255,255,.22);border-left-color:#fff;color:#fff}
@@ -619,7 +614,7 @@
     transition:background .18s,transform .18s;
   }
   .chatsheet .chatwho{gap:6px;font-size:13px}
-  .chatsheet .chatwho span{padding:5px 9px;background:rgba(40,17,75,.16);font-weight:700}
+  .chatsheet .chatwho span{padding:5px 9px;background:rgba(40,17,75,.16);font-weight:400}
   .chatsheet .msgs{padding:8px 16px 20px;gap:0;scrollbar-width:thin;scrollbar-color:#D7C8EC transparent}
   /* Transicao suave nas bordas da conversa: um veu por cima das mensagens.
      Fica ABAIXO da pilula do dia (que e sticky, z-index 2), entao ela continua solida. */
@@ -644,7 +639,7 @@
   .chat-history::after{bottom:0;height:40px;background:linear-gradient(to top,var(--msgs-bg) 0%,color-mix(in srgb,var(--msgs-bg) 55%,transparent) 55%,transparent 100%)}
 
   .chatsheet .msg .b{padding:10px 14px 8px;line-height:1.45;box-shadow:0 2px 8px rgba(63,39,100,.06)}
-  .chatsheet .daygrp>summary,.chatsheet .daysep{font-weight:700;font-size:13px;padding:6px 12px}
+  .chatsheet .daysep{font-weight:700;font-size:13px;padding:6px 12px}
   .chatsheet .daybar button{font-weight:700;padding:6px 12px}
   .chatsheet .chatin{
     gap:8px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));
@@ -814,17 +809,18 @@
   .filter-row{display:flex;flex-wrap:nowrap;align-items:stretch;gap:6px;margin:8px 0 8px;min-width:0}
   .filter-row>.filters{flex:1 1 0;min-width:0;margin:0;padding:2px 2px;overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;overscroll-behavior-x:contain}
   .filter-row .filters .chip{flex:1 0 auto;text-align:center}
-  .filter-search{flex:0 0 40px;width:40px;height:40px;align-self:center;margin:0;display:flex;align-items:center;justify-content:center;padding:0;border:0;border-radius:50%;background:var(--lilas);color:#fff;box-shadow:none;transition:background .15s}
+  .filter-search{flex:0 0 40px;width:40px;height:40px;align-self:center;margin:0;display:flex;align-items:center;justify-content:center;padding:0;border:0;border-radius:16px;background:var(--lilas);color:#fff;box-shadow:none;transition:background .15s}
   .filter-search:hover{background:#7C4DC4}
   .filter-search:active{background:#6B46C1}
   .filter-search:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   .filter-search.on{background:var(--lilas-ink);color:#fff}
+  #app{padding-top:10px}   /* com os 8px da barra de filtros, fecha os mesmos 18px que separam os cartoes */
   .searchbar{display:none;gap:8px;align-items:center;margin:0 0 8px}
   .searchbar.on{display:flex}
-  .searchbar input{flex:1;min-width:0;height:40px;border:2px solid var(--line);border-radius:999px;padding:6px 16px;font:inherit;font-size:14px;font-weight:800;background:#fff;color:var(--ink)}
+  .searchbar input{flex:1;min-width:0;height:40px;border:2px solid var(--line);border-radius:16px;padding:6px 16px;font:inherit;font-size:14px;font-weight:800;background:#fff;color:var(--ink)}
   .searchbar input:focus{outline:none;border-color:var(--lilas);box-shadow:0 0 0 3px rgba(142,91,224,.14)}
   .searchbar .qcnt{font-size:12px;font-weight:900;color:var(--soft);white-space:nowrap}
-  .searchbar .qx{border:0;background:var(--line);color:var(--ink);border-radius:50%;width:40px;height:40px;font-size:15px;font-weight:900;flex:none;display:flex;align-items:center;justify-content:center}
+  .searchbar .qx{border:0;background:var(--line);color:var(--ink);border-radius:16px;width:40px;height:40px;font-size:15px;font-weight:900;flex:none;display:flex;align-items:center;justify-content:center}
   .qall{display:none;width:100%;margin:0 0 10px;border:2px dashed var(--lilas-line);background:#fff;color:var(--ink);border-radius:14px;padding:10px;font:inherit;font-size:14px;font-weight:800}
   .qall.on{display:block}
   @media print{.filter-row,.searchbar,.qall{display:none}}
@@ -1084,7 +1080,9 @@
   @media screen and (min-width:600px) and (min-height:600px){
     body .fam .p{font-size:18px}
     body .fam .p small{font-size:15px}
-    body .chip{font-size:17px}
+    body .chip{font-size:17px;border-radius:16px}
+    body .prog .bar,body .prog .bar i{border-radius:16px}
+    body .filter-row .mobile-filter-toggle,body .filter-row>.filter-search,body .searchbar input,body .searchbar .qx{border-radius:22px}
     body .filter-row .mobile-filter-toggle{font-size:17px}
     body .searchbar input{height:var(--tablet-filter-height,58px);font-size:17px;padding:6px 20px}
     body .searchbar .qx{width:var(--tablet-filter-height,58px);height:var(--tablet-filter-height,58px);font-size:19px}
@@ -1096,7 +1094,7 @@
     body .chatsheet .chatwho{font-size:16px}
     body .chatsheet .chatwho b,body .chatsheet .chatwho .chat-lastseen{font-size:16px}
     body .chatsheet .chatwho span{padding:6px 11px}
-    body .chatsheet .daygrp>summary,body .chatsheet .daysep{font-size:14px}
+    body .chatsheet .daysep{font-size:14px}
     body .chatsheet .daybar button{font-size:14px}
     body .chatsheet .nudge-msg{font-size:13px}
     body .chatsheet .nudge-msg .hand{font-size:16px}
@@ -1108,6 +1106,7 @@
     body .chatsheet .chat h2{gap:10px;margin-bottom:14px}
     body .chatsheet .chatin{gap:10px;padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
     body .chatsheet .chatin button{width:56px;height:56px;font-size:25px}
+    body .chatsheet .chatin .chatcompose textarea{min-height:56px;padding:16px 4px 16px 16px}
     body .chatsheet .chatin .emo,body .chatsheet .chatin .mic{font-size:25px}
     body .chatsheet .chatin #chatSend{font-size:25px}
     body .chatsheet .chatin input,body .chatsheet .chatin textarea{min-height:0;padding:15px 18px;font-size:18px;border-radius:26px}
@@ -1778,7 +1777,6 @@ function openFoto(){
       <button class="opt primary" id="fotoPick" style="justify-content:center;max-width:320px">Escolher foto ou tirar uma</button>
       ${PERFIS[USER.id]&&PERFIS[USER.id].foto?'<button class="opt danger" id="fotoDel" style="justify-content:center;max-width:320px">Tirar a foto</button>':''}
       <button class="opt" id="fotoSwap" style="justify-content:center;max-width:320px">👤 Trocar de usuário</button>
-      <p class="quiet" style="margin:0;font-size:13px;text-align:center">Dica: toque na foto de outra pessoa lá em cima para entrar como ela.</p>
     </div>`);
   document.getElementById('fotoSwap').addEventListener('click',()=>openLogin());
   document.getElementById('fotoPick').addEventListener('click',()=>document.getElementById('fotoFile').click());
@@ -1873,7 +1871,10 @@ function reactsHtml(m){ const r=m.reacts||{}; const ks=Object.keys(r).filter(e=>
   return `<div class="reacts">${ks.map(e=>`<button class="react ${USER&&r[e][USER.id]?'mine':''}" data-r="${e}" data-k="${m.k}">${e} ${Object.keys(r[e]).length}</button>`).join('')}</div>`; }
 function dayLabel(d){ const chatToday=iso(new Date()); if(d===chatToday) return 'Hoje'; if(d===addDays(chatToday,-1)) return 'Ontem';
   const dt=new Date(d+'T12:00:00'); const dias=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
-  const diff=(new Date(chatToday+'T12:00:00')-dt)/86400000; return (diff<7? dias[dt.getDay()]+', ':'')+fmt(d); }
+  const diff=Math.round((new Date(chatToday+'T12:00:00')-dt)/86400000);
+  if(diff<7) return dias[dt.getDay()];                 // dentro da semana: só o dia da semana
+  const [y,m,dd]=d.split('-'); return dd+'/'+m+'/'+y;  // mais antigo que isso: a data inteira
+}
 // Emojis das mensagens ganham vida: cada familia tem um movimento, sempre no mesmo tamanho.
 const EMO_ANIM=[
   ['beat',  '❤️🧡💛💚💙💜🖤🤍🤎💖💗💓💞💕❣️💘💝😍🥰😘💋'],
@@ -1959,23 +1960,10 @@ function chatHtml(){ const chatToday=iso(new Date());
     return hits.map((m,i,arr)=>`<div class="daysep">${dayLabel(iso(new Date(m.t||0)))}</div>`+msgHtml(m,i,arr)).join('');
   }
   if(!CHAT.length) return '<div class="empty">Ainda não tem mensagens.<br>Manda um oi! 👋</div>';
-  // tres grupos: tudo antes de ontem junto em "Antes", depois "Ontem" e "Hoje"
-  const chatOntem=addDays(chatToday,-1);
-  const chaveDe=d=>d===chatToday?'hoje':(d===chatOntem?'ontem':'antes');
-  const groups=[]; CHAT.forEach(m=>{ const d=iso(new Date(m.t||0)); const k=chaveDe(d); const g=groups[groups.length-1];
-    if(g&&g.k===k) g.msgs.push(m); else groups.push({k,d,msgs:[m]}); });
-  const qtd=n=>n+' '+(n>1?'mensagens':'mensagem');
-  return groups.map(g=>{
-    if(g.k==='antes'){ // dentro do "Antes", cada dia ganha sua divisoria
-      const dias=[]; g.msgs.forEach(m=>{ const d=iso(new Date(m.t||0)); const u=dias[dias.length-1]; if(u&&u.d===d) u.msgs.push(m); else dias.push({d,msgs:[m]}); });
-      const inner=dias.map(x=>`<div class="daysep">${dayLabel(x.d)}</div>`+chatMessagesHtml(x.msgs)).join('');
-      const open=chatOpenDays['antes']?' open':'';
-      return `<details class="daygrp" data-day="antes"${open}><summary>Antes · ${qtd(g.msgs.length)}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
-    }
-    const inner=chatMessagesHtml(g.msgs);
-    if(g.k==='hoje') return `<details class="daygrp hoje" data-day="hoje"${chatOpenDays['hoje']===false?'':' open'}><summary>Hoje · ${qtd(g.msgs.length)}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
-    const open=chatOpenDays['ontem']?' open':'';
-    return `<details class="daygrp" data-day="ontem"${open}><summary>Ontem · ${qtd(g.msgs.length)}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`; }).join('');
+  // tudo aberto, separado por dia: Hoje, Ontem, o dia da semana e, mais para tras, a data inteira
+  const dias=[]; CHAT.forEach(m=>{ const d=iso(new Date(m.t||0)); const u=dias[dias.length-1];
+    if(u&&u.d===d) u.msgs.push(m); else dias.push({d,msgs:[m]}); });
+  return dias.map(x=>`<div class="daysep" data-day="${x.d}">${dayLabel(x.d)}</div>`+chatMessagesHtml(x.msgs)).join('');
 }
 function openNudgeMenu(chaves,el){
   if(!famRef||!chaves.length) return;
@@ -2038,21 +2026,33 @@ function verLeitores(k,el){
 // pilulas Antes · Ontem · Hoje sempre no topo da conversa: tocar abre (e vai ate la) ou fecha o grupo
 function renderDayBar(){
   const bar=document.getElementById('dayBar'), box=document.getElementById('msgs'); if(!bar||!box) return;
-  const grupos=[...box.querySelectorAll('.daygrp')];
-  bar.innerHTML=grupos.map(g=>{ const sm=g.querySelector('summary'); const txt=(sm?sm.textContent:'').replace('▼','').trim();
-    const [nome,resto='']=txt.split(' · '); const num=resto.replace(/\D+$/,''), pal=resto.slice(num.length);
-    return `<button type="button" role="tab" data-day="${g.dataset.day}" class="${g.open?'on':''}" aria-selected="${g.open?'true':'false'}" aria-label="${esc(txt)}">${esc(nome)}${num?` · ${esc(num)}<span class="pal">${esc(pal)}</span>`:''}<span class="arw" aria-hidden="true">▼</span></button>`; }).join('');
-  bar.style.display=grupos.length?'':'none';
-  bar.querySelectorAll('[data-day]').forEach(b=>b.addEventListener('click',()=>{
-    const g=box.querySelector(`.daygrp[data-day="${b.dataset.day}"]`); if(!g) return; vibrate(10);
-    if(g.open){ g.open=false; }
-    else { g.open=true; requestAnimationFrame(()=>{ const top=g.offsetTop-box.offsetTop; box.scrollTo({top:Math.max(0,top-6),behavior:'smooth'}); }); }
+  const seps=[...box.querySelectorAll('.daysep[data-day]')];
+  bar.innerHTML=seps.map(sp=>{ const n=contaDoDia(box,sp);
+    return `<button type="button" data-day="${sp.dataset.day}">${esc(sp.textContent)}${n?` · ${n}`:''}</button>`; }).join('');
+  bar.style.display=seps.length?'':'none';
+  bar.querySelectorAll('[data-day]').forEach(b=>b.addEventListener('click',()=>{ vibrate(10);
+    const sp=box.querySelector(`.daysep[data-day="${b.dataset.day}"]`); if(!sp) return;
+    box.scrollTo({top:Math.max(0,sp.offsetTop-box.offsetTop-6),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
   }));
+  marcaDiaNaBarra();
+}
+// quantas mensagens tem aquele dia (as que vem depois da divisoria, ate a proxima)
+function contaDoDia(box,sp){ let n=0,el=sp.nextElementSibling;
+  while(el&&!el.classList.contains('daysep')){ if(el.classList.contains('msg')||el.classList.contains('nudge-msg')) n++; el=el.nextElementSibling; }
+  return n; }
+// acende na barra o dia que esta aparecendo na tela
+function marcaDiaNaBarra(){
+  const bar=document.getElementById('dayBar'), box=document.getElementById('msgs'); if(!bar||!box) return;
+  const seps=[...box.querySelectorAll('.daysep[data-day]')]; if(!seps.length) return;
+  const lim=box.scrollTop+8; let atual=seps[0];
+  seps.forEach(sp=>{ if(sp.offsetTop-box.offsetTop<=lim) atual=sp; });
+  bar.querySelectorAll('[data-day]').forEach(b=>{ const on=b.dataset.day===atual.dataset.day;
+    b.classList.toggle('on',on); if(on&&b.scrollIntoView) b.scrollIntoView({block:'nearest',inline:'nearest'}); });
 }
 function bindMsgs(){
   const box=document.getElementById('msgs'); if(!box) return;
   box.querySelectorAll('.react').forEach(b=>b.addEventListener('click',()=>toggleReact(b.dataset.k,b.dataset.r)));
-  box.querySelectorAll('.daygrp').forEach(g=>g.addEventListener('toggle',()=>{chatOpenDays[g.dataset.day]=g.open; renderDayBar();}));
+  box.addEventListener('scroll',()=>{ clearTimeout(window.__db); window.__db=setTimeout(marcaDiaNaBarra,80); },{passive:true});
   renderDayBar();
   box.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',e=>{e.stopPropagation(); openAtt(a.dataset.open);}));
   box.querySelectorAll('.nudge-msg[data-nk]').forEach(el=>{
@@ -2077,7 +2077,9 @@ function bindMsgs(){
   box.querySelectorAll('.q:not(.qt)').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=box.querySelector(`.msg[data-k="${q.dataset.go}"]`); if(t){t.scrollIntoView({behavior:'smooth',block:'center'}); t.classList.add('flash'); setTimeout(()=>t.classList.remove('flash'),1300);} }));
   box.querySelectorAll('.msg').forEach(el=>{
     let timer=null,sx=0,sy=0,mdx=0,mmode=null,ico=null,armado=false;
-    const start=(x,y)=>{ if(selMode) return; sx=x;sy=y;mdx=0;mmode=null;armado=false;el.classList.add('pressing');timer=setTimeout(()=>{el.classList.remove('pressing');vibrate(30);openMsgMenu(el.dataset.k);},450);};
+    let pulaClique=false;
+    const start=(x,y)=>{ if(selMode) return; sx=x;sy=y;mdx=0;mmode=null;armado=false;el.classList.add('pressing');
+      timer=setTimeout(()=>{ el.classList.remove('pressing'); vibrate(30); pulaClique=true; entraSel(el.dataset.k); },450); };
     const cancel=()=>{clearTimeout(timer);el.classList.remove('pressing');};
     const limpa=()=>{ el.classList.remove('sdrag','armed'); el.style.transform=''; if(ico){ico.remove();ico=null;} mdx=0; mmode=null; armado=false; };
     const move=(x,y)=>{
@@ -2097,7 +2099,14 @@ function bindMsgs(){
       return true;
     };
     const solta=()=>{ cancel(); if(mmode==='h'&&Math.abs(mdx)>=56){ vibrate(20); SFX.pop(); const k=el.dataset.k; limpa(); startReply(k); return; } limpa(); };
-    el.addEventListener('click',e=>{ if(!selMode) return; if(e.target.closest('.rbtn')) return; const k=el.dataset.k; if(selKeys.has(k)) selKeys.delete(k); else selKeys.add(k); vibrate(8); atualizaSel(); });
+    el.addEventListener('click',e=>{
+      if(e.target.closest('.rbtn')) return;
+      if(pulaClique){ pulaClique=false; return; }                       // o toque que veio logo depois de segurar nao conta
+      if(selMode){ const k=el.dataset.k; if(selKeys.has(k)) selKeys.delete(k); else selKeys.add(k); vibrate(8); atualizaSel(); return; }
+      if(e.target.closest('button,a,.aud,.pic,.file,.q,.qt,.react,.lido')) return;   // toque nos botoes do balao faz o que eles fazem
+      if(mmode==='h') return;                                            // acabou de arrastar para responder
+      vibrate(10); openMsgMenu(el.dataset.k);
+    });
     el.addEventListener('touchstart',e=>{ if(e.target.closest('.rbtn')) return; start(e.touches[0].clientX,e.touches[0].clientY); },{passive:true});
     el.addEventListener('touchmove',e=>{ const t=e.touches[0]; if(move(t.clientX,t.clientY)) e.preventDefault(); },{passive:false});
     el.addEventListener('touchend',solta); el.addEventListener('touchcancel',solta);
@@ -2509,8 +2518,6 @@ function initChatJump(){
   const update=()=>{ frame=0; button.hidden=box.scrollHeight-box.scrollTop-box.clientHeight<=96; };
   const schedule=()=>{ if(!frame) frame=requestAnimationFrame(update); };
   const jump=()=>{
-    const days=box.querySelectorAll('.daygrp'); const last=days[days.length-1];
-    if(last) last.open=true;
     box.scrollTo({top:box.scrollHeight,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
   };
   box.addEventListener('scroll',schedule,{passive:true});
@@ -2686,7 +2693,7 @@ function render(){
   const w=DB.weeks[current];
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=3'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; sapoProg(); posicionaFrase(); }
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; sapoProg(); posicionaFrase(); }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -2700,7 +2707,7 @@ function render(){
   const imp=allTasks(w).filter(t=>impVale(t)&&pass(t)).sort((a,b)=>order.indexOf(a.day)-order.indexOf(b.day));
   const impPend=imp.length;
   const impGuardadas=allTasks(w).filter(t=>t.type===H&&t.important&&!impVale(t)).length;
-  if(!(filtering&&!imp.length)) html+=`<details class="imp" data-date="imp" ${openState['imp']?'open':''}><summary><span class="n">Importantes</span><span class="cnt">${impPend?impPend+' Pendente'+(impPend>1?'s':''):'✓ Tudo em dia'}</span><span class="arrow">▼</span></summary>
+  if(imp.length) html+=`<details class="imp" data-date="imp" ${openState['imp']?'open':''}><summary><span class="n">Importantes</span><span class="cnt">${impPend?impPend+' Pendente'+(impPend>1?'s':''):'✓ Tudo em dia'}</span><span class="arrow">▼</span></summary>
     <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join(''):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':(impGuardadas?'Nada de importante para agora. Aqui só ficam as que ainda dá para fazer.':(isAluna()?'Toca na estrelinha de uma tarefa para ela aparecer aqui.':'As tarefas marcadas com a estrelinha aparecem aqui.'))}</p>`}</div></details>`;
   const inWeek=w.days.some(d=>d.date===TODAY);
   html+='<div class="days">';
@@ -2846,7 +2853,7 @@ function posicionaFrase(){ const bar=document.querySelector('#prog .bar'), f=doc
 // Sapo da porcentagem: comeca parado; toque nele faz pular por 20 s (e coaxar por 3 s)
 let sapoAte=0, sapoTimer=null;
 function sapoProg(){ const im=document.querySelector('.sapo-prog'); if(!im) return; const anim=Date.now()<sapoAte;
-  const alvo=anim?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=3'; if(!im.getAttribute('src').endsWith(alvo)) im.src=alvo;
+  const alvo=anim?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'; if(!im.getAttribute('src').endsWith(alvo)) im.src=alvo;
   im.classList.toggle('pulando',anim);   // so fica na frente do topo congelado enquanto pula
   clearTimeout(sapoTimer); if(anim) sapoTimer=setTimeout(sapoProg,sapoAte-Date.now()+60); }
 function acordaSapo(){ sapoAte=Date.now()+20000; sapoProg(); playFx('sapo',{loop:true,ms:3000}); vibrate(15); }
@@ -3418,8 +3425,6 @@ function tlAbreMensagem(k){
   setTimeout(()=>{
     const box=document.getElementById('msgs'); if(!box) return;
     let el=box.querySelector(`[data-k="${k}"]`);
-    if(!el){ box.querySelectorAll('details.daygrp').forEach(d=>{ d.open=true; chatOpenDays[d.dataset.day]=true; });
-      el=box.querySelector(`[data-k="${k}"]`); }
     if(!el){ toast('Essa mensagem não está mais aqui'); return; }
     el.scrollIntoView({behavior:'smooth',block:'center'});
     el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1400);
@@ -3819,7 +3824,6 @@ if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serv
   let day=iso(new Date()), timer;
   const update=()=>{
     const next=iso(new Date()); if(next===day) return;
-    if(chatOpenDays[day]===undefined) chatOpenDays[day]=true;
     day=next;
     renderFam();
     if(chatAbertoAgora()) refreshChat();
