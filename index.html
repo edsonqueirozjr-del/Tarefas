@@ -517,9 +517,11 @@
   .msg .rbtn:active{background:rgba(124,77,196,.28);transform:scale(.92)}
   /* modo de marcar mensagens para copiar */
   .msg .ck{display:none;flex:none;align-self:center;width:24px;height:24px;border-radius:50%;border:2px solid var(--lilas-soft);background:#fff;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;transition:background .15s,border-color .15s}
-  /* modo de marcar: a bolinha aparece ao lado, sem mexer no lugar de nada */
-  .msgs.sel .msg .ck{display:flex;position:absolute;top:50%;transform:translateY(-50%);left:100%;margin-left:8px}
-  .msgs.sel .msg.me .ck{left:auto;right:100%;margin-left:0;margin-right:8px}
+  /* modo de marcar: a bolinha fica na beirada da tela, sem mexer no lugar de nada */
+  .msgs.sel .msg{max-width:none;align-self:stretch}                 /* a linha ocupa a largura toda... */
+  .msgs.sel .msg>div{max-width:calc(85% - 60px)}                    /* ...mas o balao continua do mesmo tamanho */
+  .msgs.sel .msg .ck{display:flex;position:absolute;top:50%;transform:translateY(-50%);right:2px;left:auto}
+  .msgs.sel .msg.me .ck{right:auto;left:2px}
   .msgs.sel .msg .bacts{visibility:hidden}
   .msgs.sel .msg{cursor:pointer}
   .msg.sel-on .ck{background:var(--lilas);border-color:var(--lilas)}
@@ -947,7 +949,10 @@
   .audpanel .aph{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;font-weight:900;color:var(--lilas-ink)}
   .audpanel .aph button{border:0;background:rgba(0,0,0,.06);color:var(--ink);border-radius:50%;width:30px;height:30px;font-size:14px;font-weight:900;flex:none}
   .audpanel .apgrid{display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0;padding-right:2px}
-  .audpanel .apitem{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--lilas-line);border-radius:14px;padding:6px 6px 6px 12px}
+  .audpanel .apitem{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--lilas-line);border-radius:14px;padding:6px 6px 6px 8px}
+  .apitem button.so-play{background:transparent!important;border:0!important;box-shadow:none!important;color:var(--lilas)!important;width:30px!important;height:30px!important;display:flex;align-items:center;justify-content:center;padding:0}
+  .apitem button.so-play .ico{width:19px;height:19px}
+  .apitem button.so-play:active{transform:scale(.86)}
   .audpanel .apn{flex:1;min-width:0;font-size:14px;font-weight:800;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .audpanel .apitem button{width:36px;height:36px;border-radius:50%;border:1px solid var(--lilas-line);background:#F6F1FD;color:var(--lilas-ink);font-size:14px;font-weight:900;flex:none}
   .audpanel .apitem button.go{background:linear-gradient(135deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));color:#fff;border:0}
@@ -962,7 +967,7 @@
   .trea .ra.tocando .pl::after{border:0;width:6px;height:6px;background:#fff;border-radius:1px;transform:translate(-50%,-50%);left:50%}
   .trea .ra:active{transform:scale(.95)}
   .alist{display:flex;flex-direction:column;gap:6px;margin:0 0 12px}
-  .alist .apitem{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--lilas-line);border-radius:14px;padding:6px 6px 6px 12px}
+  .alist .apitem{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--lilas-line);border-radius:14px;padding:6px 6px 6px 8px}
   .alist .apitem.on{border-color:var(--lilas);background:#F6F1FD}
   .alist .apn{flex:1;min-width:0;font-size:15px;font-weight:800;color:var(--ink)}
   .alist .apitem button{width:38px;height:38px;border-radius:50%;border:1px solid var(--lilas-line);background:#F6F1FD;color:var(--lilas-ink);font-size:15px;font-weight:900;flex:none}
@@ -1136,6 +1141,8 @@
     body .chatsheet .recbar{font-size:15px;padding:10px 16px}
     body .chatsheet .recbar .rnum{font-size:26px;min-width:32px}
     body .chatsheet .audpanel .apitem button{width:44px;height:44px;font-size:17px}
+    body .chatsheet .apitem button.so-play{width:36px!important;height:36px!important}
+    body .chatsheet .apitem button.so-play .ico{width:23px;height:23px}
     body .chatsheet .audpanel .apn{font-size:16px}
     /* Resumo no tablet: abas e subtitulo um pouco maiores */
     body .summary-tabs button{font-size:16px;padding:9px 4px}
@@ -2576,7 +2583,7 @@ function openChat(){
     <div class="chat-history"><div class="daybar nodrag" id="dayBar" role="tablist" aria-label="Partes da conversa"></div><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="audpanel nodrag" id="audPanel">
-      <div class="apgrid">${SONS.map((x,i)=>`<div class="apitem"><span class="apn">${x.ico} ${esc(x.nome)}</span><button data-ap-play="${i}" aria-label="Ouvir">▶</button><button data-ap-send="${i}" class="go" aria-label="Enviar">➤</button></div>`).join('')}</div>
+      <div class="apgrid">${SONS.map((x,i)=>`<div class="apitem"><button class="so-play" data-ap-play="${i}" aria-label="Ouvir" title="Ouvir"><svg class="ico" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M8 5.6v12.8L19 12Z"/></svg></button><span class="apn">${x.ico} ${esc(x.nome)}</span><button data-ap-send="${i}" class="go" aria-label="Enviar">➤</button></div>`).join('')}</div>
     </div>
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
@@ -3157,7 +3164,7 @@ function openTaskAudio(id){
   if(!isResponsavel()) return; const t=findTask(id); if(!t) return; const mine=(t.reacts&&USER)?t.reacts[USER.id]:null;
   show(`<h2>${ICO.som} Um áudio para a Maria <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
-    <div class="alist">${FX_REA.map(x=>`<div class="apitem ${mine&&mine.a===x.fx?'on':''}"><span class="apn">${x.ico} ${x.nome}</span><button data-fxp="${x.fx}" aria-label="Ouvir">▶</button><button data-fxs="${x.fx}" data-nome="${x.nome}" class="go" aria-label="Mandar">✓</button></div>`).join('')}</div>
+    <div class="alist">${FX_REA.map(x=>`<div class="apitem ${mine&&mine.a===x.fx?'on':''}"><button class="so-play" data-fxp="${x.fx}" aria-label="Ouvir" title="Ouvir"><svg class="ico" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M8 5.6v12.8L19 12Z"/></svg></button><span class="apn">${x.ico} ${x.nome}</span><button data-fxs="${x.fx}" data-nome="${x.nome}" class="go" aria-label="Mandar">✓</button></div>`).join('')}</div>
     ${mine&&mine.a?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu áudio</button>':''}`);
   sheet.querySelectorAll('[data-fxp]').forEach(b=>b.addEventListener('click',()=>{ alternaFx(b.dataset.fxp,b); vibrate(10); }));
   sheet.querySelectorAll('[data-fxs]').forEach(b=>b.addEventListener('click',()=>{ playFx(b.dataset.fxs); writeTaskReaction(id,'🔊',{a:b.dataset.fxs,an:b.dataset.nome}); }));
@@ -3844,6 +3851,45 @@ document.getElementById('qAll').addEventListener('click',()=>openSearch(fQ));
   document.addEventListener('touchmove',e=>{ if(timer&&e.touches[0]&&(Math.abs(e.touches[0].clientX-x0)>10||Math.abs(e.touches[0].clientY-y0)>10)) cancela(); },true);
   document.addEventListener('click',e=>{ if(suprime){ suprime=false; e.stopPropagation(); e.preventDefault(); } },true);
   document.addEventListener('pointerdown',()=>{ if(dica) fecha(); });
+})();
+// ===== passar o dedo para o lado troca de tela: Principal -> Conversa -> Menu -> Principal =====
+(function(){
+  const TELAS=['principal','conversa','menu'];
+  // onde estou agora (null = numa janelinha que nao faz parte do rodizio)
+  function telaAgora(){
+    const v=document.getElementById('veil'), sh=document.getElementById('sheet');
+    if(!v||!v.classList.contains('on')) return 0;
+    if(!sh) return null;
+    if(sh.classList.contains('chatsheet')) return 1;
+    if(sh.querySelector('[data-m]')) return 2;
+    return null;
+  }
+  function vaiPara(n){
+    const de=telaAgora(); if(de===n) return;
+    if(de!==0) hide();
+    const abre=()=>{ if(n===1) openChat(); else if(n===2) openMain(); };
+    if(n===0) return;                       // so fechou: ja esta na principal
+    setTimeout(abre, de===0?0:180);         // deixa a janelinha sair antes de abrir a outra
+  }
+  // lugares onde o arrasto para o lado ja faz outra coisa
+  const PROIBIDO='.msg,.nudge-msg,.dock,.summary-hero,.summary-body,.summary-nav,.daybar,.filters,.chips,.filter-row,.apgrid,.alist,.picker,.tt,.crop,.viewer,input,textarea,.searchbar,.recbar,.chatin,.realist,.tl-body';
+  let x0=0,y0=0,ativo=false,pid=null;
+  document.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='mouse'&&e.button!==0) return;
+    if(e.target.closest(PROIBIDO)){ ativo=false; return; }
+    if(telaAgora()===null){ ativo=false; return; }
+    x0=e.clientX; y0=e.clientY; pid=e.pointerId; ativo=true;
+  },true);
+  document.addEventListener('pointerup',e=>{
+    if(!ativo||e.pointerId!==pid) return; ativo=false;
+    const dx=e.clientX-x0, dy=e.clientY-y0;
+    if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.8) return;   // tem que ser um arrasto claro para o lado
+    const de=telaAgora(); if(de===null) return;
+    const n=((de+(dx<0?1:-1))%3+3)%3;                            // para a esquerda avanca, para a direita volta
+    vibrate(12); vaiPara(n);
+  },true);
+  document.addEventListener('pointercancel',()=>{ativo=false;},true);
+  window.__telas={telaAgora,vaiPara};
 })();
 document.getElementById('fab').addEventListener('click',openMain);
 document.getElementById('chatFab').addEventListener('click',openChat);
