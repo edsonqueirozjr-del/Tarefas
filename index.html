@@ -411,7 +411,15 @@
   .msg.me .b .hd b{color:rgba(255,255,255,.9)}
   .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:0}
   .daygrp{border:0;margin:0;flex:none}
-  .daygrp>summary{position:sticky;top:0;z-index:3;background:#E9E5F2;border:0;box-shadow:0 0 0 5px var(--msgs-bg,#F7F5FC)}
+  .msgs .daygrp>summary{display:none}
+  .daybar{flex:none;display:flex;justify-content:center;flex-wrap:wrap;gap:6px;padding:8px 8px 6px;background:var(--msgs-bg,#F7F5FC);position:relative;z-index:4}
+  .daybar button{display:flex;align-items:center;gap:6px;background:#E9E5F2;border:0;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;font-weight:900;color:var(--ink);cursor:pointer;white-space:nowrap}
+  .daybar button .arw{font-size:10px;opacity:.7;transition:transform .2s}
+  .daybar button.on .arw{transform:rotate(180deg)}
+  .daybar button:not(.on){opacity:.75}
+  @media screen and (max-width:599px){ .daybar{flex-wrap:nowrap;gap:5px;padding:7px 6px 5px} .daybar button{padding:5px 10px;font-size:12.5px} .daybar .pal{display:none} }
+  .chat-history:has(.msgs.bg-noite) .daybar{background:transparent}
+  .chat-history:has(.msgs.bg-noite) .daybar button{background:#4A4770;color:#fff}
   .msgs.bg-noite .daygrp>summary{background:#4A4770}
   .msgs>*{flex:none}
   .msgs::before{content:"";margin-top:auto}
@@ -497,7 +505,11 @@
   .msg .rbtn:active{background:rgba(124,77,196,.28);transform:scale(.92)}
   /* modo de marcar mensagens para copiar */
   .msg .ck{display:none;flex:none;align-self:center;width:24px;height:24px;border-radius:50%;border:2px solid var(--lilas-soft);background:#fff;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;transition:background .15s,border-color .15s}
-  .msgs.sel .msg .ck{display:flex}
+  .msgs.sel .msg .ck{display:flex;position:absolute;top:50%;transform:translateY(-50%);right:0}
+  .msgs.sel .msg.me .ck{right:auto;left:0}
+  .msgs.sel .msg{max-width:none;align-self:stretch;padding-right:36px}
+  .msgs.sel .msg.me{padding-right:0;padding-left:36px}
+  .msgs.sel .msg>div{max-width:85%}
   .msgs.sel .msg .bacts{display:none}
   .msgs.sel .msg{cursor:pointer}
   .msg.sel-on .ck{background:var(--lilas);border-color:var(--lilas)}
@@ -633,6 +645,7 @@
 
   .chatsheet .msg .b{padding:10px 14px 8px;line-height:1.45;box-shadow:0 2px 8px rgba(63,39,100,.06)}
   .chatsheet .daygrp>summary,.chatsheet .daysep{font-weight:700;font-size:13px;padding:6px 12px}
+  .chatsheet .daybar button{font-weight:700;padding:6px 12px}
   .chatsheet .chatin{
     gap:8px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));
     background:color-mix(in srgb,var(--c2,#8E5BE0) 5%,#fff);
@@ -981,6 +994,14 @@
   @media(prefers-reduced-motion:reduce){.msg .b .em{animation:none!important}}
   /* abertura: o sapinho por cima do app (fundo transparente), some sozinho */
   body.abrindo{overflow:hidden;touch-action:none;overscroll-behavior:none}
+  /* abertura: cobre tudo com um fundo neutro ate os dados chegarem (nada aparece aos pedacos) */
+  .carregando{position:fixed;inset:0;z-index:250;background:#F6F1FD;display:flex;align-items:center;justify-content:center;transition:opacity .4s ease}
+  .carregando.off{opacity:0;pointer-events:none}
+  body.carregando .dock{visibility:hidden}
+  .cg{display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--lilas-ink);font-weight:800;font-size:15px;letter-spacing:.2px}
+  .cg-anel{width:46px;height:46px;border-radius:50%;border:4px solid #E4D9F7;border-top-color:#7C4DC4;animation:cgGira .85s linear infinite}
+  @keyframes cgGira{to{transform:rotate(360deg)}}
+  @media(prefers-reduced-motion:reduce){.cg-anel{animation:none;border-top-color:#E4D9F7}}
   .splash{position:fixed;inset:0;z-index:300;touch-action:none;overscroll-behavior:contain;display:flex;align-items:center;justify-content:center;background:rgba(246,241,253,.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:1;transition:opacity .6s ease}
   .splash img{width:min(96vw,882px);max-width:882px;max-height:82vh;object-fit:contain;filter:drop-shadow(0 14px 28px rgba(63,39,100,.25));animation:splashIn .7s cubic-bezier(.36,1.4,.5,1) both}
   .splash img{pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none}
@@ -1076,6 +1097,7 @@
     body .chatsheet .chatwho b,body .chatsheet .chatwho .chat-lastseen{font-size:16px}
     body .chatsheet .chatwho span{padding:6px 11px}
     body .chatsheet .daygrp>summary,body .chatsheet .daysep{font-size:14px}
+    body .chatsheet .daybar button{font-size:14px}
     body .chatsheet .nudge-msg{font-size:13px}
     body .chatsheet .nudge-msg .hand{font-size:16px}
     body .chatsheet .nudge-msg small{font-size:11px}
@@ -1175,21 +1197,22 @@
     .dock-mid #reaBadge{font-size:16px}
   }
   @media(max-width:359px){ .dock-b .dt{display:none} }
-  /* passar o dedo na barra: a fila de opcoes do menu entra por cima (Resumo, Aulas, Compartilhar...) */
+  /* passar o dedo na barra: o icone dentro do circulo vai trocando (Resumo, Aulas, Compartilhar...) */
   .dock-b{touch-action:pan-y}
-  .dock-menu{position:absolute;inset:0;grid-column:1/-1;display:none;align-items:center;pointer-events:auto;z-index:5;
-    background:linear-gradient(90deg,#A472EE,#7C4DC4 50%,#4C3499);transition:transform .22s ease-out,opacity .22s;will-change:transform}
-  .dock-menu.arrastando{display:flex;transition:none}
-  .dock-menu.on{display:flex;transform:none}
-  .dock-menu-fila{display:flex;align-items:center;gap:8px;padding:0 12px;width:100%;height:100%;box-sizing:border-box;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
-  .dock-menu-fila::-webkit-scrollbar{display:none}
-  .dm{flex:none;display:inline-flex;align-items:center;gap:6px;border:1.5px solid rgba(255,255,255,.45);background:rgba(255,255,255,.16);color:#fff;border-radius:999px;height:40px;padding:0 14px;font:inherit;font-size:15px;font-weight:800;white-space:nowrap;cursor:pointer}
-  .dm:active{background:rgba(255,255,255,.32)}
-  .dm .ic{font-size:19px;line-height:1}
-  .dm.x{width:40px;padding:0;justify-content:center;font-size:16px}
-  .dock.menu-aberto .dock-mid,.dock:has(.dock-menu.arrastando) .dock-mid{opacity:0;pointer-events:none;transform:translateX(-50%) scale(.6)}
+  .dock-mid{touch-action:pan-y;overflow:visible}
+  .dock-mid .dk-ico{display:none;position:absolute;inset:0;align-items:center;justify-content:center;font-size:30px;line-height:1;border-radius:50%;overflow:hidden}
+  .dock-mid.alt .dk-ico{display:flex}
+  .dock-mid.alt .di{visibility:hidden}
+  .dock-mid.alt{background:linear-gradient(140deg,#fff,#EFE6FB)}
+  .dock-mid .dk-ico.vai-esq{animation:dkEsq .24s ease-out}
+  .dock-mid .dk-ico.vai-dir{animation:dkDir .24s ease-out}
+  @keyframes dkEsq{from{transform:translateX(70%);opacity:0}to{transform:none;opacity:1}}
+  @keyframes dkDir{from{transform:translateX(-70%);opacity:0}to{transform:none;opacity:1}}
+  .dock-mid .dk-cap{display:none;position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);white-space:nowrap;background:#3F2764;color:#fff;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;pointer-events:none;box-shadow:0 2px 8px rgba(63,39,100,.25)}
+  .dock-mid.alt .dk-cap{display:block;animation:capIn .2s ease-out}
+  @keyframes capIn{from{opacity:0;transform:translate(-50%,4px)}to{opacity:1;transform:translateX(-50%)}}
   @media screen and (min-width:600px) and (min-height:600px){
-    .dm{height:46px;font-size:17px;padding:0 18px} .dm .ic{font-size:22px} .dm.x{width:46px}
+    .dock-mid .dk-ico{font-size:35px} .dock-mid .dk-cap{font-size:13px}
   }
   /* ===== festa da estrela ao marcar como importante ===== */
   .estrela-festa{position:fixed;z-index:500;width:0;height:0;pointer-events:none}
@@ -1256,9 +1279,16 @@
     .tl-mais{font-size:16px}
   }
   @media print{.tl{display:none}}
+  /* cabecalho da conversa: lupa, anexo, chamar atencao e tema no centro; X sozinho a direita */
+  body .chatsheet .chat h2{position:relative;justify-content:center;gap:8px}
+  body .chatsheet .chat h2 .chat-title{display:none}
+  body .chatsheet .chat h2 .gear.find{margin-left:0;margin-right:0}
+  body .chatsheet .chat h2 .gear+.gear{margin-left:0}
+  body .chatsheet .chat h2 .x{position:absolute;right:0;top:50%;transform:translateY(-50%);margin:0;background:#fff;color:var(--lilas-ink)}
 </style>
 </head>
-<body>
+<body class="carregando">
+<div class="carregando" id="carregando" aria-hidden="true"><div class="cg"><span class="cg-anel"></span><span class="cg-tx">Carregando…</span></div></div>
 <div class="splash" id="splash" aria-hidden="true"><img src="bailarina.gif" alt="" decoding="async" draggable="false" onerror="this.closest('.splash').remove()"></div>
 <div class="wrap">
   <div class="top">
@@ -1279,7 +1309,7 @@
   <button class="dock-b" id="fab" aria-label="Menu"><span class="di" aria-hidden="true">☰</span><span class="dt">Menu</span></button>
   <span class="dock-gap" aria-hidden="true"></span>
   <button class="dock-b chatfab" id="chatFab" aria-label="Conversa"><span class="di chat-icon"><svg class="bolha" viewBox="0 0 48 46" aria-hidden="true"><path d="M10 2.5h28A7.5 7.5 0 0 1 45.5 10v18a7.5 7.5 0 0 1-7.5 7.5h-9L24 43.5 19 35.5h-9A7.5 7.5 0 0 1 2.5 28V10A7.5 7.5 0 0 1 10 2.5Z" fill="currentColor"/><text id="chatBadge" x="24" y="19" text-anchor="middle" dominant-baseline="central"></text></svg></span><span class="dt">Conversa</span></button>
-  <button class="dock-mid reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="di heart-icon"><svg class="coracao" viewBox="0 0 48 44" aria-hidden="true"><defs><linearGradient id="gcor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9BB3"/><stop offset=".55" stop-color="#F4557E"/><stop offset="1" stop-color="#D62F5C"/></linearGradient></defs><path d="M24 41.2C24 41.2 2.5 28.6 2.5 15.1 2.5 8.2 8 2.7 14.9 2.7c4.2 0 7.7 2.1 9.1 5 1.4-2.9 4.9-5 9.1-5 6.9 0 12.4 5.5 12.4 12.4C45.5 28.6 24 41.2 24 41.2Z" fill="url(#gcor)"/><text id="reaBadge" x="24" y="19.5" text-anchor="middle" dominant-baseline="central"></text></svg><span class="mao" aria-hidden="true">👋</span></span></button>
+  <button class="dock-mid reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="dk-cap" id="dockCap" aria-hidden="true"></span><span class="dk-ico" id="dockIco" aria-hidden="true"></span><span class="di heart-icon"><svg class="coracao" viewBox="0 0 48 44" aria-hidden="true"><defs><linearGradient id="gcor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9BB3"/><stop offset=".55" stop-color="#F4557E"/><stop offset="1" stop-color="#D62F5C"/></linearGradient></defs><path d="M24 41.2C24 41.2 2.5 28.6 2.5 15.1 2.5 8.2 8 2.7 14.9 2.7c4.2 0 7.7 2.1 9.1 5 1.4-2.9 4.9-5 9.1-5 6.9 0 12.4 5.5 12.4 12.4C45.5 28.6 24 41.2 24 41.2Z" fill="url(#gcor)"/><text id="reaBadge" x="24" y="19.5" text-anchor="middle" dominant-baseline="central"></text></svg><span class="mao" aria-hidden="true">👋</span></span></button>
 </nav>
 <input type="file" id="fotoFile" accept="image/*" style="display:none">
 <input type="file" id="bgFile" accept="image/*" style="display:none">
@@ -1471,11 +1501,24 @@ const famCode=FAMILIA;
 let USER=null; try{const u=localStorage.getItem(KEY+'-user'); USER=USERS.find(x=>x.id===u)||null;}catch(e){}
 const isAluna=()=>!!USER&&USER.id==='maria'&&USER.papel==='aluna';
 const isResponsavel=()=>!!USER&&['edson','thaysa'].includes(USER.id)&&USER.papel==='responsavel';
+// ===== abertura: tela neutra ate os dados chegarem (perfis, conversa e tarefas) =====
+const PRONTO={perfis:false,chat:false,dados:false}; let carregTimer=null;
+function mostraCarregando(){
+  let c=document.getElementById('carregando');
+  if(!c){ c=document.createElement('div'); c.id='carregando'; c.className='carregando'; c.setAttribute('aria-hidden','true');
+    c.innerHTML='<div class="cg"><span class="cg-anel"></span><span class="cg-tx">Carregando…</span></div>'; document.body.prepend(c); }
+  c.classList.remove('off'); document.body.classList.add('carregando'); Object.keys(PRONTO).forEach(k=>PRONTO[k]=false);
+  clearTimeout(carregTimer); carregTimer=setTimeout(tiraCarregando,7000);   // sem resposta da nuvem, mostra o que tem
+}
+function marcaPronto(k){ if(k) PRONTO[k]=true; if(Object.values(PRONTO).every(Boolean)) tiraCarregando(); }
+function tiraCarregando(){ clearTimeout(carregTimer); document.body.classList.remove('carregando');
+  const c=document.getElementById('carregando'); if(!c||c.classList.contains('off')) return; c.classList.add('off'); setTimeout(()=>c.remove(),500); }
 function cloudStart(){
-  if(!CLOUD_ON||!USER) return;
+  if(!CLOUD_ON||!USER){ tiraCarregando(); return; }
+  clearTimeout(carregTimer); carregTimer=setTimeout(tiraCarregando,7000);
   if(!firebase.apps.length) firebase.initializeApp(FIREBASE);
   const db=firebase.database();
-  db.ref('.info/connected').on('value',sn=>{cloudOnline=!!sn.val(); updateSyncBadge();});
+  db.ref('.info/connected').on('value',sn=>{cloudOnline=!!sn.val(); updateSyncBadge(); if(!cloudOnline) setTimeout(()=>{ if(!cloudOnline) tiraCarregando(); },3000);});
   famRef=db.ref('familias/'+famCode);
   cloudRef=famRef.child('dados');
   // migração: versão anterior gravava as semanas na raiz da família
@@ -1495,8 +1538,8 @@ function cloudStart(){
   famRef.child('perfis/'+USER.id).update({nome:USER.nome,lastSeen:firebase.database.ServerValue.TIMESTAMP});
   clearInterval(seenTimer); seenTimer=setInterval(()=>{ if(famRef&&USER&&!document.hidden) famRef.child('perfis/'+USER.id).update({lastSeen:firebase.database.ServerValue.TIMESTAMP}); },60*1000);
   document.addEventListener('visibilitychange',()=>{ if(famRef&&USER) famRef.child('perfis/'+USER.id).update({lastSeen:firebase.database.ServerValue.TIMESTAMP}); });
-  famRef.child('perfis').on('value',sn=>{ PERFIS=sn.val()||{}; try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){} renderFam(); refreshChat(); });
-  famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; const prevLen=CHAT.length;
+  famRef.child('perfis').on('value',sn=>{ PERFIS=sn.val()||{}; marcaPronto('perfis'); try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){} renderFam(); refreshChat(); });
+  famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; marcaPronto('chat'); const prevLen=CHAT.length;
     const antes={}; CHAT.forEach(m=>antes[m.k]=m);
     CHAT=Object.keys(v).sort().map(k=>({k,...v[k]}));
     updateChatBadge(); refreshChat();
@@ -1517,7 +1560,7 @@ function cloudStart(){
         if(sumiu.length&&!chatAberto) notifyEvt('🗑️ Mensagem apagada','Alguém apagou uma mensagem na conversa','chatdel'); }
     } });
   cloudRef.on('value',sn=>{
-    cloudErr=''; const remote=sn.val();
+    cloudErr=''; const remote=sn.val(); marcaPronto('dados');
     if(!remote||!remote.weeks){ cloudReady=true; cloudPush(true); return; }
     const before=(()=>{let n=0;Object.values(DB.weeks).forEach(w=>allTasks(w).forEach(t=>{n+=t.reacts?Object.keys(t.reacts).length:0;}));return n;})();
     const primeira=!cloudReady;
@@ -1527,7 +1570,7 @@ function cloudStart(){
       if(after>before&&!primeira){ vibrate([40,40,80]); SFX.party(); toast('💛 Você recebeu um carinho! Toca no 💛'); notifyEvt('💛 Um carinho para você','Alguém reagiu a uma tarefa sua','carinho'); } updateReaFab(); }
     if(changed){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} render(); refreshReminder(); }
     cloudPush(); // envia o que só existe aqui (ex.: semana nova)
-  },err=>{ cloudErr=err&&err.code||'erro'; updateSyncBadge(); toast('Sem permissão no banco. Confira as regras do Firebase.'); });
+  },err=>{ cloudErr=err&&err.code||'erro'; tiraCarregando(); updateSyncBadge(); toast('Sem permissão no banco. Confira as regras do Firebase.'); });
 }
 const STLBL={todo:'falta fazer',doing:'fazendo',done:'feito'};
 const STVERB={todo:'reabriu',doing:'começou',done:'concluiu'};
@@ -1598,7 +1641,7 @@ document.getElementById('pinTxt').value='';document.getElementById('pinTxt').foc
     USER=pick; try{localStorage.setItem(KEY+'-user',USER.id);}catch(e){}
     if(famRef){famRef.child('online').off();famRef.child('perfis').off();famRef.child('chat').off();famRef.child('digitando').off();famRef.child('eventos').off();}
     if(cloudRef){cloudRef.off();cloudRef=null;cloudReady=false;lastPushed='';}
-    cloudStart(); hide(); render(); vibrate(20); toast('Oi, '+USER.nome+'! '+USER.emoji); SFX.party(); startReminders(); if(after) setTimeout(after,300);};
+    mostraCarregando(); cloudStart(); hide(); render(); vibrate(20); toast('Oi, '+USER.nome+'! '+USER.emoji); SFX.party(); startReminders(); if(after) setTimeout(after,300);};
   document.getElementById('pinOk').addEventListener('click',enter);
   document.getElementById('pinTxt').addEventListener('keydown',e=>{if(e.key==='Enter')enter();});
 }
@@ -1725,7 +1768,7 @@ function renderFam(){
     // última vez: o maior entre o registro de presença, a última leitura do chat e a última mensagem enviada
     let ls=Math.max(PERFIS[u.id]&&PERFIS[u.id].lastSeen||0, READS[u.id]||0, ...CHAT.filter(m=>m.by===u.id).map(m=>m.t||0));
     const sub=u.id===USER.id?'':(on?'online':(ls?fmtSeen(ls):''));
-    return `<button class="p ${on?'on':''} ${u.id===USER.id?'me':''}" data-u="${u.id}"><span class="avw"><span class="av">${avatarHtml(u)}</span><i class="dot"></i></span><span>${u.nome}${u.id===USER.id?' (você)':''}</span><small>${sub}</small></button>`;}).join('');
+    return `<button class="p ${on?'on':''} ${u.id===USER.id?'me':''}" data-u="${u.id}"><span class="avw"><span class="av">${avatarHtml(u)}</span><i class="dot"></i></span><span>${u.nome}</span><small>${u.id===USER.id?('(você)'+(sub?' · '+sub:'')):sub}</small></button>`;}).join('');
   el.querySelectorAll('.p').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.u===USER.id) openFoto(); else openLogin(null,b.dataset.u); }));
 }
 function openFoto(){
@@ -1992,10 +2035,25 @@ function verLeitores(k,el){
   pop.style.top=top+'px'; pop.style.left=left+'px';
   wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
 }
+// pilulas Antes · Ontem · Hoje sempre no topo da conversa: tocar abre (e vai ate la) ou fecha o grupo
+function renderDayBar(){
+  const bar=document.getElementById('dayBar'), box=document.getElementById('msgs'); if(!bar||!box) return;
+  const grupos=[...box.querySelectorAll('.daygrp')];
+  bar.innerHTML=grupos.map(g=>{ const sm=g.querySelector('summary'); const txt=(sm?sm.textContent:'').replace('▼','').trim();
+    const [nome,resto='']=txt.split(' · '); const num=resto.replace(/\D+$/,''), pal=resto.slice(num.length);
+    return `<button type="button" role="tab" data-day="${g.dataset.day}" class="${g.open?'on':''}" aria-selected="${g.open?'true':'false'}" aria-label="${esc(txt)}">${esc(nome)}${num?` · ${esc(num)}<span class="pal">${esc(pal)}</span>`:''}<span class="arw" aria-hidden="true">▼</span></button>`; }).join('');
+  bar.style.display=grupos.length?'':'none';
+  bar.querySelectorAll('[data-day]').forEach(b=>b.addEventListener('click',()=>{
+    const g=box.querySelector(`.daygrp[data-day="${b.dataset.day}"]`); if(!g) return; vibrate(10);
+    if(g.open){ g.open=false; }
+    else { g.open=true; requestAnimationFrame(()=>{ const top=g.offsetTop-box.offsetTop; box.scrollTo({top:Math.max(0,top-6),behavior:'smooth'}); }); }
+  }));
+}
 function bindMsgs(){
   const box=document.getElementById('msgs'); if(!box) return;
   box.querySelectorAll('.react').forEach(b=>b.addEventListener('click',()=>toggleReact(b.dataset.k,b.dataset.r)));
-  box.querySelectorAll('.daygrp').forEach(g=>g.addEventListener('toggle',()=>{chatOpenDays[g.dataset.day]=g.open;}));
+  box.querySelectorAll('.daygrp').forEach(g=>g.addEventListener('toggle',()=>{chatOpenDays[g.dataset.day]=g.open; renderDayBar();}));
+  renderDayBar();
   box.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',e=>{e.stopPropagation(); openAtt(a.dataset.open);}));
   box.querySelectorAll('.nudge-msg[data-nk]').forEach(el=>{
     const chaves=el.dataset.nk.split(','); let pt=null,x0=0,y0=0;
@@ -2472,7 +2530,7 @@ function initChatJump(){
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
   show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear" id="attBtn" aria-label="Anexar" title="Anexar">📎</button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção">👋</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><span class="cflupa" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="cfTxt" placeholder="Procurar mensagem" autocomplete="off"><label class="cfdate" title="Escolher a data" aria-label="Escolher a data"><span aria-hidden="true">📅</span><input type="date" id="cfDate"></label><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
-    <div class="chat-history"><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
+    <div class="chat-history"><div class="daybar nodrag" id="dayBar" role="tablist" aria-label="Partes da conversa"></div><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="audpanel nodrag" id="audPanel">
       <div class="apgrid">${SONS.map((x,i)=>`<div class="apitem"><span class="apn">${x.ico} ${esc(x.nome)}</span><button data-ap-play="${i}" aria-label="Ouvir">▶</button><button data-ap-send="${i}" class="go" aria-label="Enviar">➤</button></div>`).join('')}</div>
@@ -3112,7 +3170,7 @@ function allReacts(){ const out=[];
 }
 function reaNew(){ return allReacts().filter(r=>(r.t||0)>reaSeen).length; }
 function updateReaFab(){ const n=reaNew(), cor=isAluna()&&n>0;   // coracao so com carinho novo; sem carinho, vira o "chamar atencao"
-  const f=document.getElementById('reaFab'); if(f){
+  const f=document.getElementById('reaFab'); if(f&&!f.classList.contains('alt')){
     f.classList.toggle('on',cor); f.classList.toggle('pulse',cor); f.classList.toggle('tem',cor);
     f.classList.toggle('aluna',cor);
     f.setAttribute('aria-label',cor?('Carinhos recebidos: '+n+' novo'+(n>1?'s':'')):'Chamar atenção');
@@ -3122,16 +3180,15 @@ function updateReaFab(){ const n=reaNew(), cor=isAluna()&&n>0;   // coracao so c
   marcaTopo();
 }
 function openReacts(){
-  if(!isAluna()) return;
-  const list=allReacts();
-  show(`<h2>💛 Carinhos que você recebeu <button class="x">✕</button></h2>
+  const list=allReacts(), aluna=isAluna();
+  show(`<h2>💛 ${aluna?'Carinhos que você recebeu':'Carinhos enviados'} <button class="x">✕</button></h2>
     ${list.length?`<div class="realist">${list.map(r=>{ const d=DB.weeks[r.week].days.find(x=>x.k===r.task.day); const novo=(r.t||0)>reaSeen;
       return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}${novo?' · novo ✨':''}</span><span class="rea-activity">${esc(plain(r.task.text))}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</span></span></span></button>`; }).join('')}</div>`
-      :'<p class="quiet" style="text-align:center;padding:16px 0">Ainda não tem carinhos. Faça as tarefas que logo chegam! 💛</p>'}`);
+      :`<p class="quiet" style="text-align:center;padding:16px 0">${aluna?'Ainda não tem carinhos. Faça as tarefas que logo chegam! 💛':'Ainda não foi mandado nenhum carinho. Segure numa tarefa e escolha Reagir 💛'}</p>`}`);
   sheet.querySelectorAll('.it2').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
     const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
     setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500);} },200); }));
-  const top=list[0]&&list[0].t||0; if(top>reaSeen){ reaSeen=top; try{localStorage.setItem(KEY+'-reaseen',String(reaSeen));}catch(e){} }
+  const top=list[0]&&list[0].t||0; if(aluna&&top>reaSeen){ reaSeen=top; try{localStorage.setItem(KEY+'-reaseen',String(reaSeen));}catch(e){} }
   setTimeout(updateReaFab,300);
 }
 let picTaskId=null;
@@ -3300,10 +3357,28 @@ function tlEventos(){
   EVENTOS.forEach(e=>{ if(e&&e.t&&TL_TIPOS[e.tipo]) out.push(e); });
   // sem repetidos (mesma pessoa, mesmo tipo, mesmo segundo)
   const visto=new Set();
-  return out.filter(e=>{ const c=e.tipo+'|'+e.by+'|'+Math.round((e.t||0)/1000)+'|'+(e.det||'').slice(0,20);
+  return out.filter(tlPassaFiltro).filter(e=>{ const c=e.tipo+'|'+e.by+'|'+Math.round((e.t||0)/1000)+'|'+(e.det||'').slice(0,20);
     if(visto.has(c)) return false; visto.add(c); return true; }).sort((a,b)=>(b.t||0)-(a.t||0));
 }
 const tlHora=t=>String(new Date(t||0).getHours()).padStart(2,'0')+':'+String(new Date(t||0).getMinutes()).padStart(2,'0');
+// a linha do tempo respeita os filtros de cima: materia e busca sempre; status so depois que alguem mexeu nele
+function tlPassaFiltro(e){
+  const porStatus=filtroTocado&&fType!=='all', porMat=fSubj!=='all', porBusca=fQ.length>=2, ql=fQ.toLowerCase();
+  if(!porStatus&&!porMat&&!porBusca) return true;
+  const t=e.id?findTask(e.id):null;
+  if(t){
+    if(porMat&&t.subj!==fSubj) return false;
+    if(porStatus&&!fSet().some(k=>passaSituacao(t,k))) return false;
+    if(porBusca&&!(qMatch(t)||(e.det||'').toLowerCase().includes(ql)||(e.nome||'').toLowerCase().includes(ql))) return false;
+    return true;
+  }
+  // mensagem, chamado de atencao, foto, audio: so entra se fizer referencia ao que esta filtrado
+  const m=e.k?CHAT.find(x=>x.k===e.k):null, rt=m&&m.reply&&m.reply.task;
+  if(porMat&&!(rt&&rt.subj===fSubj)) return false;
+  if(porStatus){ const tt=rt&&findTask(rt.id); if(!tt||!fSet().some(k=>passaSituacao(tt,k))) return false; }
+  if(porBusca&&!((e.det||'').toLowerCase().includes(ql)||uname(e.by).toLowerCase().includes(ql)||(rt&&(rt.text||'').toLowerCase().includes(ql)))) return false;
+  return true;
+}
 // junta acoes iguais seguidas da mesma pessoa no mesmo dia: vira uma linha so, com quantas vezes e de que hora ate que hora
 function tlAgrupado(){
   const gs=[];
@@ -3393,9 +3468,10 @@ function openMain(){
    <button class="opt" data-m="tt"><span class="ic">📅</span>Aulas da semana</button>
    <button class="opt" data-m="share"><span class="ic">📤</span>Compartilhar tarefas</button>
    <button class="opt" data-m="wk"><span class="ic">🗂️</span>Ver semana</button>
+   <button class="opt" data-m="rea"><span class="ic">💛</span>${isAluna()?'Carinhos recebidos':'Carinhos enviados'}</button>
    ${CLOUD_CFG?'<button class="opt" data-m="nudge"><span class="ic">👋</span>Chamar atenção</button>':''}
 `);
-  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='summary')openSummary(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='nudge'){ hide(); chamarAtencao(); } if(m==='user')openLogin(); if(m==='chat')openChat();}));
+  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='summary')openSummary(); if(m==='rea')openReacts(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='nudge'){ hide(); chamarAtencao(); } if(m==='user')openLogin(); if(m==='chat')openChat();}));
 }
 const SUMMARY_STATES=[
   {key:'todo',label:'Falta fazer',color:'#B98BEA',light:'#D8C2F5'},
@@ -3611,7 +3687,37 @@ function refreshReminder(){
   sheet.querySelector('.x').addEventListener('click',hide); bindTasks(sheet);
   document.getElementById('remGo').addEventListener('click',()=>{hide();vibrate(20);});
 }
-document.getElementById('reaFab').addEventListener('click',function(){ if(this.classList.contains('aluna')) openReacts(); else chamarAtencao(); });
+document.getElementById('reaFab').addEventListener('click',function(){ if(dockAlt.roda()) return; if(this.classList.contains('aluna')) openReacts(); else chamarAtencao(); });
+// ===== passar o dedo para o lado na barra de baixo: o icone do circulo vai trocando de funcao =====
+const dockAlt=(function(){
+  const dock=document.getElementById('fabs'), mid=document.getElementById('reaFab'), ico=document.getElementById('dockIco'), cap=document.getElementById('dockCap');
+  if(!dock||!mid) return {roda:()=>false};
+  const OPC=[{k:'summary',ico:'📊',nome:'Resumo',go:()=>openSummary()},
+             {k:'tt',ico:'📅',nome:'Aulas da semana',go:()=>openTimetable()},
+             {k:'share',ico:'📤',nome:'Compartilhar',go:()=>openShare()},
+             {k:'wk',ico:'🗂️',nome:'Ver semana',go:()=>openWeeks()},
+             {k:'nudge',ico:'👋',nome:'Chamar atenção',go:()=>chamarAtencao(),so:()=>mid.classList.contains('aluna')}];   // so entra quando o circulo esta mostrando o coracao
+  let idx=0, timer=null, p0=null, arrast=false, passo=0, suprime=false;
+  const PASSO=()=>Math.max(48,Math.min(80,dock.clientWidth*0.16));   // quanto o dedo anda para trocar um icone
+  const lista=()=>OPC.filter(o=>!o.so||o.so());
+  function mostra(dir){ const l=lista(); if(idx>l.length) idx=0;
+    if(!idx){ mid.classList.remove('alt'); ico.textContent=''; cap.textContent=''; mid.removeAttribute('data-alt'); updateReaFab(); clearTimeout(timer); return; }
+    const o=l[idx-1]; ico.textContent=o.ico; cap.textContent=o.nome; mid.classList.add('alt'); mid.setAttribute('data-alt',o.k);
+    mid.setAttribute('aria-label',o.nome); mid.setAttribute('title',o.nome);
+    ico.classList.remove('vai-esq','vai-dir'); void ico.offsetWidth; if(dir) ico.classList.add(dir<0?'vai-esq':'vai-dir');
+    clearTimeout(timer); timer=setTimeout(()=>{ idx=0; mostra(0); },6000); }   // parado um tempo, volta ao normal
+  function vai(dir){ const n=lista().length+1; idx=(idx+dir+n)%n; vibrate(10); mostra(dir); }
+  function roda(){ if(suprime) return true; if(!idx) return false; const o=lista()[idx-1]; idx=0; mostra(0); vibrate(14); if(o) o.go(); return true; }
+  dock.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse'&&e.button!==0) return; p0={x:e.clientX,y:e.clientY,id:e.pointerId,el:e.target}; arrast=false; passo=0; });
+  dock.addEventListener('pointermove',e=>{ if(!p0) return; const dx=e.clientX-p0.x, dy=e.clientY-p0.y;
+    if(!arrast){ if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.5){ arrast=true; try{ p0.el.setPointerCapture(p0.id); }catch(_){ } } else return; }
+    const q=Math.trunc(dx/PASSO()); if(q!==passo){ const d=q>passo?1:-1; passo=q; vai(-d); }   // dedo para a esquerda = proxima opcao
+    e.preventDefault(); });
+  function fim(){ if(!p0) return; const foi=arrast; p0=null; if(!foi) return; suprime=true; setTimeout(()=>suprime=false,350); }
+  dock.addEventListener('pointerup',fim); dock.addEventListener('pointercancel',fim);
+  dock.addEventListener('click',e=>{ if(suprime&&!e.target.closest('.dock-mid')){ e.stopPropagation(); e.preventDefault(); } },true);
+  return {roda,vai,get idx(){return idx;}};
+})();
 function toggleSearchBar(force){
   const bar=document.getElementById('searchBar'), inp=document.getElementById('qTxt'), btn=document.getElementById('filterSearch');
   const on = force===undefined ? !bar.classList.contains('on') : !!force;
@@ -3624,45 +3730,6 @@ document.getElementById('qClose').addEventListener('click',()=>toggleSearchBar(f
 document.getElementById('qTxt').addEventListener('input',e=>{ fQ=e.target.value.trim(); render(); });
 document.getElementById('qAll').addEventListener('click',()=>openSearch(fQ));
 document.getElementById('fab').addEventListener('click',openMain);
-// ===== passar o dedo para o lado na barra de baixo: as opcoes do menu entram em fila =====
-(function(){
-  const dock=document.getElementById('fabs'); if(!dock) return;
-  const strip=document.createElement('div'); strip.className='dock-menu'; strip.id='dockMenu'; strip.setAttribute('aria-label','Opções do menu');
-  dock.appendChild(strip);
-  let aberto=false, timer=null, p0=null, arrast=false, dir=1, suprime=false;
-  const LARG=()=>Math.max(120,dock.clientWidth*0.55);   // quanto o dedo precisa andar para abrir tudo
-  function monta(){
-    strip.innerHTML='<div class="dock-menu-fila">'
-      +'<button class="dm x" data-m="fechar" aria-label="Fechar opções">✕</button>'
-      +'<button class="dm" data-m="summary"><span class="ic">📊</span>Resumo</button>'
-      +'<button class="dm" data-m="tt"><span class="ic">📅</span>Aulas</button>'
-      +'<button class="dm" data-m="share"><span class="ic">📤</span>Compartilhar</button>'
-      +'<button class="dm" data-m="wk"><span class="ic">🗂️</span>Semanas</button>'
-      +(CLOUD_CFG?'<button class="dm" data-m="nudge"><span class="ic">👋</span>Chamar atenção</button>':'')
-      +'</div>';
-  }
-  function abre(){ aberto=true; monta(); dock.classList.add('menu-aberto'); strip.classList.add('on'); strip.style.transform=''; strip.style.opacity='';
-    const f=strip.querySelector('.dock-menu-fila'); if(f) f.scrollLeft=0; vibrate(10); reinicia(); document.addEventListener('pointerdown',fora,true); }
-  function fecha(){ aberto=false; dock.classList.remove('menu-aberto'); strip.classList.remove('on','arrastando'); strip.style.transform=''; strip.style.opacity=''; clearTimeout(timer); document.removeEventListener('pointerdown',fora,true); }
-  function fora(e){ if(!strip.contains(e.target)) fecha(); }
-  function reinicia(){ clearTimeout(timer); timer=setTimeout(fecha,8000); }   // some sozinha depois de um tempo parada
-  strip.addEventListener('scroll',reinicia,true); strip.addEventListener('pointerdown',reinicia);
-  strip.addEventListener('click',e=>{ const b=e.target.closest('[data-m]'); if(!b) return; const m=b.dataset.m; fecha(); vibrate(12);
-    if(m==='summary') openSummary(); else if(m==='tt') openTimetable(); else if(m==='share') openShare(); else if(m==='wk') openWeeks(); else if(m==='nudge') chamarAtencao(); });
-  dock.addEventListener('pointerdown',e=>{ if(aberto||e.target.closest('.dock-mid')||e.target.closest('.dock-menu')) return; if(e.pointerType==='mouse'&&e.button!==0) return;
-    p0={x:e.clientX,y:e.clientY,id:e.pointerId,el:e.target}; arrast=false; });
-  dock.addEventListener('pointermove',e=>{ if(!p0||aberto) return; const dx=e.clientX-p0.x, dy=e.clientY-p0.y;
-    if(!arrast){ if(Math.abs(dx)>14&&Math.abs(dx)>Math.abs(dy)*1.5){ arrast=true; dir=dx<0?1:-1; monta(); strip.classList.add('arrastando'); try{ p0.el.setPointerCapture(p0.id); }catch(_){ } } else return; }
-    const prog=Math.max(0,Math.min(1,(dx*-dir)/LARG()));
-    strip.style.transform='translateX('+(dir*(1-prog)*100).toFixed(1)+'%)'; strip.style.opacity=String(.3+.7*prog); e.preventDefault(); });
-  function fim(e){ if(!p0) return; const dx=e.clientX-p0.x, foi=arrast; p0=null; if(!foi) return;
-    suprime=true; setTimeout(()=>suprime=false,350);
-    strip.classList.remove('arrastando'); strip.style.transform=''; strip.style.opacity='';
-    if((dx*-dir)/LARG()>0.35) abre(); else fecha(); }
-  dock.addEventListener('pointerup',fim); dock.addEventListener('pointercancel',fim);
-  dock.addEventListener('click',e=>{ if(suprime&&!e.target.closest('.dock-menu')){ e.stopPropagation(); e.preventDefault(); } },true);
-  window.__dockMenu={abre,fecha};
-})();
 document.getElementById('chatFab').addEventListener('click',openChat);
 document.getElementById('chatFab').classList.toggle('on',!!CLOUD_CFG); marcaTopo();
 setInterval(()=>{ if(!document.hidden) renderFam(); },60*1000);
@@ -3743,7 +3810,7 @@ setTimeout(()=>{ const el=document.querySelector('.day.today'); if(!el) return;
   const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector('.top')?.offsetHeight||0)-10;
   window.scrollTo({top:Math.max(0,top),behavior:'smooth'}); },500);
 let remSeen=false; try{ const v=localStorage.getItem(KEY+'-rem')||''; const t=+v; remSeen=(t>0&&Date.now()-t<2*60*60*1000)||v===TODAY; }catch(e){}   // lembrete: de novo so depois de 2 h
-if(CLOUD_CFG && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
+if(CLOUD_CFG && !USER){ tiraCarregando(); setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
 else { cloudStart(); startReminders(); if(!remSeen) setTimeout(openReminder,350); }
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 
