@@ -161,6 +161,7 @@
   .tg .st,.tg .dchip{margin:0;vertical-align:0}
   .st.sj{background:#F2F0FA;color:var(--ink)}
   .st.no{background:#FFD9D6;color:#B3261E}
+  .st.todo{background:#FFD9D6;color:#B3261E}
   .tag.no{background:#FFD9D6;color:#B3261E}
   .box.past{opacity:1}
   .task.late .tx{color:var(--soft)}
@@ -745,13 +746,12 @@
   .summary-state[aria-pressed=true]{background:#fff;border-color:var(--state);box-shadow:0 3px 10px rgba(38,36,58,.05)}
   .summary-state:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   .summary-counts{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
-  .scount{display:inline-flex;align-items:center;gap:6px;border:1px solid color-mix(in srgb,var(--s) 35%,#fff);background:color-mix(in srgb,var(--s) 10%,#fff);color:var(--ink);border-radius:999px;padding:4px 11px;font-size:13px;font-weight:800;line-height:1.2}
-  .scount i{width:9px;height:9px;border-radius:50%;background:var(--s);flex:none}
-  .scount b{font-size:14px;font-weight:900;color:var(--s)}
-  .summary-item .sstat{display:inline-flex;align-items:center;margin-left:8px;border-radius:999px;padding:1px 8px;background:color-mix(in srgb,var(--s) 16%,#fff);color:color-mix(in srgb,var(--s) 78%,#26243A);font-size:11px;font-weight:900;letter-spacing:.1px}
+  .summary-counts .st{margin:0;padding:4px 11px;font-size:13px;vertical-align:0}
+  .summary-counts .st b{font-weight:900;opacity:.75;margin-left:2px}
+  .summary-item .st{margin-left:8px;vertical-align:0;font-size:11px}
   @media screen and (min-width:600px) and (min-height:600px){
-    .scount{font-size:14px} .scount b{font-size:15px}
-    .summary-item .sstat{font-size:12px}
+    .summary-counts .st{font-size:14px}
+    .summary-item .st{font-size:12px}
   }
   .summary-note{font-size:12px;color:var(--soft);line-height:1.5;margin:12px 2px 16px}
   .summary-detail h3{font-size:16px;margin:16px 0 8px}
@@ -1099,18 +1099,23 @@
   .tl-l1{font-size:14px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .tl-l1 b{font-weight:900;color:var(--uc,var(--lilas-ink))}
   .tl-txt small{font-size:12px;font-weight:600;color:var(--soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
-  .tl-item time{flex:none;font-size:11px;font-weight:800;color:var(--soft);font-variant-numeric:tabular-nums}
+  .tl-item time{flex:none;white-space:nowrap;font-size:11px;font-weight:800;color:var(--soft);font-variant-numeric:tabular-nums}
+  .tl-l1 i{font-style:normal;font-weight:800;color:var(--soft);font-size:12px}
+  .tl-x{position:absolute;right:-5px;bottom:-4px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--c);color:#fff;font-size:10px;font-weight:900;line-height:17px;text-align:center;border:2px solid #fff}
+  .tl-item.multi .tl-dot{background:color-mix(in srgb,var(--c) 20%,#fff)}
   .tl-mais{display:block;width:100%;margin:10px 0 2px;border:2px dashed var(--lilas-line);background:#FBF9FE;color:var(--lilas-ink);border-radius:14px;padding:10px;font:inherit;font-size:14px;font-weight:800}
   .tl-mais:active{background:#F2EBFC}
   .tl-vazio{margin:8px 2px;font-size:14px;color:var(--soft);line-height:1.5}
   @media screen and (min-width:600px) and (min-height:600px){
-    .tl-head-tx{font-size:19px} .tl-head-ic{font-size:22px} .tl-n{font-size:13px}
-    .tl-item{grid-template-columns:34px 34px minmax(0,1fr) auto;gap:11px}
-    .tl-item::before{left:18px}
-    .tl-dot{width:34px;height:34px} .tl-ic{font-size:16px}
-    .tl-av{width:34px;height:34px;font-size:17px}
-    .tl-l1{font-size:15px} .tl-txt small{font-size:13px} .tl-item time{font-size:12px}
-    .tl-dia{font-size:13px}
+    .tl-head-tx{font-size:20px} .tl-head-ic{font-size:23px} .tl-n{font-size:14px}
+    .tl-item{grid-template-columns:36px 36px minmax(0,1fr) auto;gap:12px}
+    .tl-item::before{left:19px}
+    .tl-dot{width:36px;height:36px} .tl-ic{font-size:17px}
+    .tl-av{width:36px;height:36px;font-size:18px}
+    .tl-l1{font-size:16px} .tl-l1 i{font-size:13px} .tl-txt small{font-size:14px}
+    .tl-item time{font-size:13px}
+    .tl-dia{font-size:14px} .tl-x{min-width:19px;height:19px;line-height:19px;font-size:11px}
+    .tl-mais{font-size:15px}
   }
   @media print{.tl{display:none}}
 </style>
@@ -2446,7 +2451,6 @@ function render(){
     <button class="tl-head" id="tlToggle" type="button" aria-expanded="${tlAberta}" aria-controls="tlBody">
       <span class="tl-head-ic" aria-hidden="true">🕘</span>
       <span class="tl-head-tx">Linha do tempo</span>
-      <span class="tl-n" id="tlN">0</span>
       <span class="arrow" aria-hidden="true">▼</span>
     </button>
     <div class="tl-body" id="tlBody" ${tlAberta?'':'hidden'}></div>
@@ -3008,9 +3012,9 @@ const TL_TIPOS={
   nudge:    {ic:'👋',cor:'var(--gold)',  txt:()=>'chamou a atenção'},
   carinho:  {ic:'💛',cor:'var(--gold)',  txt:e=>'deixou um carinho '+(e.emoji||'')},
   audio_rea:{ic:'🔊',cor:'var(--lilas)', txt:e=>'reagiu com áudio'+(e.nome?' · '+e.nome:'')},
-  done:     {ic:'✅',cor:'var(--ok)',    txt:()=>'marcou como feito'},
-  doing:    {ic:'⏳',cor:'var(--amber)', txt:()=>'começou a fazer'},
-  todo:     {ic:'↩️',cor:'var(--dom)',   txt:()=>'reabriu a tarefa'},
+  done:     {ic:'✅',cor:'#1E7A55',      txt:()=>'marcou como feito'},
+  doing:    {ic:'⏳',cor:'#B07B12',      txt:()=>'começou a fazer'},
+  todo:     {ic:'↩️',cor:'#B3261E',      txt:()=>'reabriu a tarefa'},
   imp_on:   {ic:'⭐',cor:'var(--gold)',  txt:()=>'marcou como importante'},
   imp_off:  {ic:'☆', cor:'var(--dom)',   txt:()=>'tirou das importantes'},
   cancel:   {ic:'🚫',cor:'var(--imp)',   txt:()=>'cancelou a tarefa'},
@@ -3040,31 +3044,39 @@ function tlEventos(){
   return out.filter(e=>{ const c=e.tipo+'|'+e.by+'|'+Math.round((e.t||0)/1000)+'|'+(e.det||'').slice(0,20);
     if(visto.has(c)) return false; visto.add(c); return true; }).sort((a,b)=>(b.t||0)-(a.t||0));
 }
-function tlHtml(){
-  const evs=tlEventos();
-  if(!evs.length) return '<p class="tl-vazio">Ainda não tem nada por aqui. Assim que alguém mexer numa tarefa ou mandar uma mensagem, aparece.</p>';
-  const mostrar=evs.slice(0,tlMax);
-  let dia='', html='';
-  mostrar.forEach(e=>{
-    const d=iso(new Date(e.t||0));
-    if(d!==dia){ dia=d; html+=`<div class="tl-dia">${dayLabel(d)}</div>`; }
-    const tp=TL_TIPOS[e.tipo]||TL_TIPOS.msg, u=tlUsuario(e.by);
-    const hm=String(new Date(e.t||0).getHours()).padStart(2,'0')+':'+String(new Date(e.t||0).getMinutes()).padStart(2,'0');
-    const det=(e.det||'').trim();
-    html+=`<div class="tl-item" style="--c:${tp.cor};--uc:${corDe(u)}">
-      <span class="tl-dot"><span class="tl-ic">${tp.ic}</span></span>
-      <span class="tl-av">${avatarHtml(u)}</span>
-      <span class="tl-txt"><span class="tl-l1"><b>${esc(USER&&u.id===USER.id?'Você':u.nome)}</b> ${esc(tp.txt(e))}</span>${det?`<small>${esc(det.length>90?det.slice(0,90)+'…':det)}</small>`:''}</span>
-      <time>${hm}</time></div>`;
+const tlHora=t=>String(new Date(t||0).getHours()).padStart(2,'0')+':'+String(new Date(t||0).getMinutes()).padStart(2,'0');
+// junta acoes iguais seguidas da mesma pessoa no mesmo dia: vira uma linha so, com quantas vezes e de que hora ate que hora
+function tlAgrupado(){
+  const gs=[];
+  tlEventos().forEach(e=>{
+    const d=iso(new Date(e.t||0)), g=gs[gs.length-1];
+    if(g&&g.tipo===e.tipo&&g.by===e.by&&g.dia===d){ g.n++; g.tIni=e.t||0; if(!g.det&&e.det) g.det=e.det; return; }
+    gs.push({tipo:e.tipo,by:e.by,dia:d,det:e.det,emoji:e.emoji,nome:e.nome,dias:e.dia,n:1,tFim:e.t||0,tIni:e.t||0,t:e.t||0});
   });
-  if(evs.length>mostrar.length) html+=`<button class="tl-mais" id="tlMais">Ver mais (${evs.length-mostrar.length})</button>`;
+  return gs;
+}
+function tlHtml(){
+  const gs=tlAgrupado();
+  if(!gs.length) return '<p class="tl-vazio">Ainda não tem nada por aqui. Assim que alguém mexer numa tarefa ou mandar uma mensagem, aparece.</p>';
+  const mostrar=gs.slice(0,tlMax);
+  let dia='', html='';
+  mostrar.forEach(g=>{
+    if(g.dia!==dia){ dia=g.dia; html+=`<div class="tl-dia">${dayLabel(g.dia)}</div>`; }
+    const tp=TL_TIPOS[g.tipo]||TL_TIPOS.msg, u=tlUsuario(g.by);
+    const det=(g.det||'').trim();
+    const varias=g.n>1, faixa=varias&&tlHora(g.tIni)!==tlHora(g.tFim);
+    html+=`<div class="tl-item ${varias?'multi':''}" style="--c:${tp.cor};--uc:${corDe(u)}">
+      <span class="tl-dot"><span class="tl-ic">${tp.ic}</span>${varias?`<span class="tl-x">${g.n}</span>`:''}</span>
+      <span class="tl-av">${avatarHtml(u)}</span>
+      <span class="tl-txt"><span class="tl-l1"><b>${esc(USER&&u.id===USER.id?'Você':u.nome)}</b> ${esc(tp.txt({emoji:g.emoji,nome:g.nome,dia:g.dias,vazia:g.vazia}))}${varias?` <i>${g.n} vezes</i>`:''}</span>${det&&!varias?`<small>${esc(det.length>90?det.slice(0,90)+'…':det)}</small>`:(varias&&det?`<small>último: ${esc(det.length>70?det.slice(0,70)+'…':det)}</small>`:'')}</span>
+      <time>${faixa?`${tlHora(g.tIni)}–${tlHora(g.tFim)}`:tlHora(g.tFim)}</time></div>`;
+  });
+  if(gs.length>mostrar.length) html+=`<button class="tl-mais" id="tlMais">Ver mais (${gs.length-mostrar.length})</button>`;
   return html;
 }
 function renderTimeline(){
   const sec=document.getElementById('tl'); if(!sec) return;
   const corpo=document.getElementById('tlBody'), bt=document.getElementById('tlToggle');
-  const n=tlEventos().length;
-  const cnt=document.getElementById('tlN'); if(cnt) cnt.textContent=n>99?'99+':n;
   sec.classList.toggle('aberta',tlAberta);
   if(bt) bt.setAttribute('aria-expanded',String(tlAberta));
   if(!corpo) return;
@@ -3113,6 +3125,8 @@ function summaryData(w){
   return SUMMARY_STATES.map(state=>({...state,tasks:tasks.filter(t=>summaryState(t,w)===state.key)}));
 }
 // ===== Resumo: três visões (Situação, Matéria, Dia) com setas e arrastar para o lado =====
+// cada situacao usa a mesma etiqueta (e a mesma cor) que aparece dentro dos dias
+const CLASSE_ST={todo:'todo',doing:'',late:'no',done:'ok',off:'canc'};
 const SUMMARY_MODOS=[
   {key:'status',nome:'Situação',sub:'Todas as matérias'},
   {key:'subj',  nome:'Matéria', sub:'Por matéria'},
@@ -3206,9 +3220,9 @@ function openSummary(modoInicial){
       const detail=document.getElementById('summaryDetail');
       const estadoDe=t=>SUMMARY_STATES.find(x=>x.key===summaryState(t,w))||SUMMARY_STATES[0];
       const contagem=d?SUMMARY_STATES.map(st=>({st,n:d.tasks.filter(t=>summaryState(t,w)===st.key).length})).filter(x=>x.n):[];
-      const barrinha=d&&d.tasks.length?`<div class="summary-counts">${contagem.map(x=>`<span class="scount" style="--s:${x.st.color}"><i aria-hidden="true"></i>${esc(x.st.label)} <b>${x.n}</b></span>`).join('')}</div>`:'';
+      const barrinha=d&&d.tasks.length?`<div class="summary-counts">${contagem.map(x=>`<span class="st ${CLASSE_ST[x.st.key]||''}">${esc(x.st.label)} <b>${x.n}</b></span>`).join('')}</div>`:'';
       detail.innerHTML=d?`<h3>${esc(d.label)} · ${d.tasks.length}</h3>${barrinha}${d.tasks.length?d.tasks.map(t=>{ const e=estadoDe(t);
-        return `<button class="summary-item" data-task-id="${t.id}"><small>${subjectVisual(SUBJ[t.subj]||'')} · ${DAYMETA[t.day]?DAYMETA[t.day][0]:''}<span class="sstat" style="--s:${e.color};--sl:${e.light}">${esc(e.label)}</span></small>${esc(plain(t.text))}</button>`; }).join(''):'<div class="summary-empty">Nenhuma tarefa aqui.</div>'}`:'';
+        return `<button class="summary-item" data-task-id="${t.id}"><small>${subjectVisual(SUBJ[t.subj]||'')} · ${DAYMETA[t.day]?DAYMETA[t.day][0]:''}<span class="st ${CLASSE_ST[e.key]||''}">${esc(e.label)}</span></small>${esc(plain(t.text))}</button>`; }).join(''):'<div class="summary-empty">Nenhuma tarefa aqui.</div>'}`:'';
       detail.querySelectorAll('[data-task-id]').forEach(b=>b.addEventListener('click',()=>openMenu(b.dataset.taskId)));
     };
     sheet.querySelectorAll('[data-select]').forEach(b=>b.addEventListener('click',()=>select(b.dataset.select)));
