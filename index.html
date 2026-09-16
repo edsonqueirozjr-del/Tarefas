@@ -35,9 +35,7 @@
   .prog .row b{color:var(--ink);font-size:15px;font-weight:600}
   .prog .bar{height:30px;border-radius:999px;background:#DFD4F0;overflow:hidden;position:relative;border:1px solid #CDBDE8;box-shadow:inset 0 2px 4px rgba(63,39,100,.14)}
   .prog .bar i{display:block;height:100%;border-radius:999px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width .6s cubic-bezier(.4,0,.2,1)}
-  .prog .bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 38%,rgba(255,255,255,.42) 50%,transparent 62%);animation:progshine 3.2s ease-in-out infinite}
   @keyframes progflow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-  @keyframes progshine{0%{transform:translateX(-110%)}60%,100%{transform:translateX(110%)}}
   @media(prefers-reduced-motion:reduce){.prog .bar i{animation:none}.prog .bar i::after{display:none}}
   .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
   .prog .frase{position:absolute;top:0;height:100%;display:flex;align-items:center;font-size:12px;font-weight:800;white-space:nowrap;pointer-events:none;visibility:hidden;letter-spacing:.1px}
@@ -101,9 +99,7 @@
   .day.past{opacity:.7}
   .day.today{animation:glow 2.2s ease-in-out infinite}
   .day.today summary{position:relative;overflow:hidden}
-  .day.today summary::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 3s ease-in-out infinite}
   @keyframes glow{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 0%,transparent)}50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--c) 28%,transparent)}}
-  @keyframes shine{0%{left:-60%}40%,100%{left:120%}}
   .day summary{list-style:none;cursor:pointer;background:var(--c);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
   .day summary::-webkit-details-marker{display:none}
   .dl{display:flex;align-items:baseline;gap:8px;flex:none}
@@ -920,7 +916,8 @@
   .trea .ra b{font-size:11px;color:var(--soft);font-weight:800}
   .trea .ra .pl{width:18px;height:18px;border-radius:50%;background:var(--lilas);position:relative;flex:none}
   .trea .ra .pl::after{content:"";position:absolute;left:55%;top:50%;transform:translate(-50%,-50%);border-left:6px solid #fff;border-top:4px solid transparent;border-bottom:4px solid transparent}
-  .trea .ra.tocando .pl{animation:recpulse .5s ease-in-out 3}
+  .trea .ra.tocando .pl{animation:recpulse .7s ease-in-out infinite}
+  .trea .ra.tocando .pl::after{border:0;width:6px;height:6px;background:#fff;border-radius:1px;transform:translate(-50%,-50%);left:50%}
   .trea .ra:active{transform:scale(.95)}
   .alist{display:flex;flex-direction:column;gap:6px;margin:0 0 12px}
   .alist .apitem{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--lilas-line);border-radius:14px;padding:6px 6px 6px 12px}
@@ -1025,6 +1022,7 @@
   }
   /* Conversa no celular: toda a area util, inclusive quando o teclado reduz a tela. */
   @media screen and (max-width:599px){
+    body .sheet.resumosheet{max-height:100dvh;height:auto;border-radius:0;margin:0}
     body .sheet.chatsheet{width:100%;max-width:none;height:100vh;height:100dvh;max-height:100dvh;margin:0;border:0;border-radius:0;box-shadow:none}
     .veil:has(.chatsheet){align-items:stretch}
     .chatsheet .chathead{padding-top:calc(24px + env(safe-area-inset-top))}
@@ -1102,19 +1100,19 @@
   .tl-dia::after{content:"";display:block;height:1px;background:var(--lilas-line);margin-top:6px}
   /* cada linha: trilho, bolinha com icone, avatar, texto e hora */
   /* ===== barra de ações no rodapé (Menu · coração · Conversa) ===== */
-  .dock{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:stretch;width:100%;
+  .dock{position:fixed;left:0;right:0;bottom:0;z-index:60;display:grid;grid-template-columns:1fr 72px 1fr;align-items:stretch;width:100%;
     height:calc(58px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);border-radius:0;
     background:transparent;box-shadow:none;pointer-events:none}
   .dock-b{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;gap:9px;pointer-events:auto;
     border:0;color:#fff;font:inherit;font-size:18px;font-weight:900;border-radius:0;transition:filter .15s;
     box-shadow:0 -2px 10px rgba(63,39,100,.14)}
-  #fab{background:linear-gradient(90deg,#A472EE,#7C4DC4);border-radius:0;padding:0 38px 0 14px}
-  #chatFab{background:linear-gradient(90deg,#7C4DC4,#4C3499);border-radius:0;padding:0 0 0 52px}
+  #fab{background:linear-gradient(90deg,#A472EE,#7C4DC4);border-radius:0;padding:0}
+  #chatFab{background:linear-gradient(90deg,#7C4DC4,#4C3499);border-radius:0;padding:0}
   .dock-b:active{filter:brightness(.92)}
   .dock-b:focus-visible{outline:2px solid #fff;outline-offset:-4px}
   .dock-b .di{font-size:23px;line-height:1}
   .dock-b .dt{white-space:nowrap}
-  .dock-gap{display:none}
+  .dock-gap{display:block;background:#7C4DC4}   /* coluna do meio: mesma cor da emenda, fica atras da bolinha */
   .dock .chatfab{display:none}
   .dock .chatfab.on{display:flex}
   .dock-mid{pointer-events:auto;position:absolute;left:50%;top:auto;bottom:calc(env(safe-area-inset-bottom) + 5px);margin:0;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;
@@ -1139,21 +1137,20 @@
   .dock .chat-icon{display:flex;align-items:center;justify-content:center}
   .dock .bolha{width:25px;height:24px;display:block;color:#fff;overflow:visible}
   .dock .chatfab.pulse .bolha{animation:chat-beat 2.4s ease-in-out infinite;transform-origin:center}
-  .dock #chatBadge{display:none;font-family:inherit;font-size:13px;font-weight:900;fill:var(--lilas-ink);letter-spacing:-.4px}
+  .dock #chatBadge{display:none;font-family:inherit;font-size:14px;font-weight:900;fill:#E4443F;letter-spacing:-.4px}
   .dock #chatBadge.on{display:block}
   .dock .chatfab.tem .bolha{width:30px;height:29px}
   @media screen and (min-width:600px) and (min-height:600px){
     .dock{height:calc(70px + env(safe-area-inset-bottom))}
     .dock .bolha{width:34px;height:33px} .dock .chatfab.tem .bolha{width:40px;height:38px}
-    .dock #chatBadge{font-size:18px}
-    .dock #chatBadge{font-size:18px}
+    .dock #chatBadge{font-size:16px}
     .dock-b{font-size:21px;gap:11px} .dock-b .di{font-size:27px}
-    #fab{padding:0 66px 0 24px} #chatFab{padding:0 24px 0 66px}
+    .dock{grid-template-columns:1fr 84px 1fr}
     .dock-mid{width:74px;height:74px;border-width:5px;bottom:calc(env(safe-area-inset-bottom) + 6px)} .dock-mid .di{font-size:32px}
     .dock-mid .coracao{width:37px;height:34px} .dock-mid.aluna.tem .coracao{width:43px;height:39px}
     .dock-mid #reaBadge{font-size:16px}
   }
-  @media(max-width:359px){ .dock-b .dt{display:none} .dock-gap{width:74px} }
+  @media(max-width:359px){ .dock-b .dt{display:none} }
   /* ===== festa da estrela ao marcar como importante ===== */
   .estrela-festa{position:fixed;z-index:500;width:0;height:0;pointer-events:none}
   .estrela-festa .astro{position:absolute;left:0;top:0;transform:translate(-50%,-50%);font-size:30px;line-height:1;
@@ -1231,7 +1228,7 @@
     <div class="fam" id="fam"></div>
     <div class="prog" id="prog"></div>
   </div>
-  <div class="filter-row"><button class="chip mobile-filter-toggle" id="mobileStatusToggle" aria-expanded="false" aria-controls="fType">📋 Ver status</button><button class="chip mobile-filter-toggle" id="mobileSubjectToggle" aria-expanded="false" aria-controls="fSubj">📚 Ver matérias</button><div class="filters" id="fType"></div><button class="filter-search" id="filterSearch" aria-label="Buscar tarefa" title="Buscar tarefa" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button></div>
+  <div class="filter-row"><button class="chip mobile-filter-toggle" id="mobileStatusToggle" aria-expanded="false" aria-controls="fType">Ver status</button><button class="chip mobile-filter-toggle" id="mobileSubjectToggle" aria-expanded="false" aria-controls="fSubj">Ver matérias</button><div class="filters" id="fType"></div><button class="filter-search" id="filterSearch" aria-label="Buscar tarefa" title="Buscar tarefa" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button></div>
   <div class="searchbar" id="searchBar"><input id="qTxt" type="search" placeholder="Procurar tarefa…" autocomplete="off" aria-label="Procurar tarefa nesta semana"><span class="qcnt" id="qCnt"></span><button class="qx" id="qClose" aria-label="Fechar busca">✕</button></div>
   <button class="qall" id="qAll">🔎 Procurar em todas as semanas</button>
   <div class="chips" id="fSubj"></div>
@@ -2839,7 +2836,13 @@ function toggleImp(id,btn){
 function bindTasks(root=document.getElementById('app')){
   root.querySelectorAll('[data-pics]').forEach(g=>g.addEventListener('click',e=>{e.stopPropagation();openPics(g.dataset.pics);}));
   root.querySelectorAll('[data-rfx]').forEach(b=>{ ['pointerdown','touchstart','mousedown'].forEach(ev=>b.addEventListener(ev,e=>e.stopPropagation(),{passive:true}));
-    b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); playFx(b.dataset.rfx); vibrate(10); b.classList.remove('tocando'); void b.offsetWidth; b.classList.add('tocando'); setTimeout(()=>b.classList.remove('tocando'),1500); }); });
+    b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault();
+      const nome=b.dataset.rfx;
+      if(fxTocando(nome)){ pararFx(); b.classList.remove('tocando'); vibrate(8); return; }   // segundo toque: para
+      pararFx(); document.querySelectorAll('[data-rfx].tocando').forEach(x=>x.classList.remove('tocando'));
+      playFx(nome); vibrate(10); b.classList.add('tocando');
+      if(FXEL){ FXEL._nome=nome; const el=FXEL; el.addEventListener('ended',()=>{ if(FXEL===el) FXEL=null; b.classList.remove('tocando'); },{once:true}); }
+    }); });
   root.querySelectorAll('.task').forEach(el=>{
     const id=el.dataset.id, tin=el.querySelector('.tin');
     if(findTask(id)?.type===B){el.querySelector('[data-move-notice]')?.addEventListener('click',()=>openMove(id));return;}
@@ -2908,7 +2911,7 @@ function bindTasks(root=document.getElementById('app')){
 /* ================= SHEETS ================= */
 const veil=document.getElementById('veil'), sheet=document.getElementById('sheet');
 let scrollY0=0;
-function show(html){initChatJump.cleanup?.();sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
+function show(html){initChatJump.cleanup?.();sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.classList.toggle('resumosheet',/id="sumBody"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
   if(!veil.classList.contains('on')){scrollY0=window.scrollY;document.body.classList.add('locked');document.body.style.top=(-scrollY0)+'px';}
   veil.classList.add('on');sheet.scrollTop=0;sheet.querySelector('.x')?.addEventListener('click',hide);}
 function hide(){initChatJump.cleanup?.();closePop();setTyping(false);if(REC)stopRec(true);if(RECDONE){RECDONE=null;}if(recPrev){try{recPrev.pause();}catch(e){}recPrev=null;}veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
