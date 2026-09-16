@@ -32,7 +32,7 @@
   .prog{margin:-10px 0 14px}
   .top .prog{margin:0 0 4px}
   .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:13px;color:var(--soft);margin-bottom:4px;line-height:1.3}
-  .prog .row b{color:var(--ink);font-size:15px}
+  .prog .row b{color:var(--ink);font-size:15px;font-weight:600}
   .prog .bar{height:30px;border-radius:999px;background:#EDE7F7;overflow:hidden;position:relative;box-shadow:inset 0 1px 3px rgba(63,39,100,.10)}
   .prog .bar i{display:block;height:100%;border-radius:999px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width .6s cubic-bezier(.4,0,.2,1)}
   .prog .bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 38%,rgba(255,255,255,.42) 50%,transparent 62%);animation:progshine 3.2s ease-in-out infinite}
@@ -47,7 +47,8 @@
   .prog .pctin.claro{color:#fff;text-shadow:0 1px 2px rgba(63,39,100,.35)}
   .prog .frase-baixo{font-size:12px;font-weight:800;color:var(--lilas-soft);text-align:right;margin-top:3px;min-height:0;line-height:1.2}
   .prog .frase-baixo:empty{display:none}
-  .prog .sapo-prog{width:24px;height:24px;object-fit:contain;vertical-align:bottom;margin-left:12px;transform:scale(2);transform-origin:50% 100%;object-position:50% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));cursor:pointer;pointer-events:auto;position:relative;z-index:25}
+  .prog .sapo-prog{width:24px;height:24px;object-fit:contain;vertical-align:bottom;margin-left:12px;transform:scale(2);transform-origin:50% 100%;object-position:50% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));cursor:pointer;pointer-events:auto;position:relative;z-index:1}
+  .prog .sapo-prog.pulando{z-index:25}
   .prog .sapo-prog:active{transform:scale(1.8)}
   .prog .row>span:last-child{display:inline-flex;align-items:flex-end;gap:2px}
   .prog .done .bar i{background:linear-gradient(90deg,var(--ter),var(--qua),var(--gold));background-size:220% 100%}
@@ -301,12 +302,16 @@
   .chathead{flex:none;padding:18px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
   .chat h2{font-size:20px;margin:0 0 8px;color:#fff;display:flex;align-items:center;gap:8px}
   .chat h2 .gear,.chat h2 .x{background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:18px;flex:none;display:flex;align-items:center;justify-content:center}
+  .chat h2 .x{background:#fff;color:var(--lilas-ink)}
+  body .chatsheet .chat h2 .x{background:#fff;color:var(--lilas-ink);border-color:#fff}
   .chat h2 .gear.find{margin-left:auto}
   .chat h2 .x{margin-left:0}
   .chatwho{font-size:13px;margin:0;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;text-align:center;width:100%}
   .cfbar{display:none;gap:8px;align-items:center;margin:10px 0 0}
   .cfbar.on{display:flex}
-  .cfbar input{flex:1;min-width:0;border:0;border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;background:rgba(255,255,255,.95);color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+  .cfbar{position:relative}
+  .cfbar .cflupa{position:absolute;left:14px;top:50%;transform:translateY(-50%);display:flex;color:var(--soft);pointer-events:none;z-index:1}
+  .cfbar input{flex:1;min-width:0;border:0;border-radius:999px;padding:10px 16px 10px 38px;font:inherit;font-size:15px;background:rgba(255,255,255,.95);color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12)}
   .cfbar input:focus{outline:none}
   .cfbar button{border:0;background:rgba(255,255,255,.25);color:#fff;border-radius:50%;width:38px;height:38px;font-size:16px;font-weight:900;flex:none;display:flex;align-items:center;justify-content:center}
   .cfbar button:active{background:rgba(255,255,255,.4)}
@@ -429,6 +434,20 @@
   .msg .b .qt b{display:block;color:#514565;opacity:1;font-size:12px;line-height:1.4;margin:0 0 4px}
   .msg .b small .tick{margin-left:6px;font-weight:900;letter-spacing:-2px}
   .msg .b small .tick.seen{color:#8fe3ff}
+  .msg.me .b{position:relative;padding-bottom:9px}
+  .msg .b .lido{position:absolute;right:7px;bottom:3px;width:17px;height:17px;padding:0;border:1.5px solid rgba(255,255,255,.55);border-radius:50%;background:transparent;color:#8fe3ff;font-size:11px;font-weight:900;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,transform .12s}
+  .msg .b .lido.seen{border-color:#8fe3ff}
+  .msg .b .lido.todos{background:#8fe3ff;border-color:#8fe3ff;color:var(--uc)}
+  .msg .b .lido:active{transform:scale(.85)}
+  .leitores{display:flex;flex-direction:column;gap:6px;margin:0 0 6px}
+  .leitor{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--lilas-line);border-radius:14px;background:#fff}
+  .leitor.viu{background:#F6F1FD;border-color:var(--lilas)}
+  .leitor .av{width:34px;height:34px;border-radius:50%;background:#EDE5FA;display:flex;align-items:center;justify-content:center;font-size:17px;overflow:hidden;flex:none}
+  .leitor .av img{width:100%;height:100%;object-fit:cover}
+  .leitor .nm{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+  .leitor .nm small{font-size:12px;color:var(--soft);font-weight:700}
+  .leitor .mk{flex:none;font-size:16px;font-weight:900;color:var(--soft)}
+  .leitor.viu .mk{color:var(--lilas)}
   .msg.flash .b{animation:flashb 1.2s}
   @keyframes flashb{0%,60%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:none}}
   .fam .p small{font-size:11px;font-weight:700;color:var(--lilas-soft);line-height:1}
@@ -566,8 +585,8 @@
   .chatsheet .msgs{padding:8px 16px 20px;gap:0;scrollbar-width:thin;scrollbar-color:#D7C8EC transparent}
   /* Transicao suave nas bordas da conversa, em celular e tablet. */
   .chatsheet .msgs{
-    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 24px,#000 calc(100% - 20px),transparent 100%);
-    mask-image:linear-gradient(to bottom,transparent 0,#000 24px,#000 calc(100% - 20px),transparent 100%);
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 26px,rgba(0,0,0,.8) 56px,#000 84px,#000 calc(100% - 28px),transparent 100%);
+    mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 26px,rgba(0,0,0,.8) 56px,#000 84px,#000 calc(100% - 28px),transparent 100%);
     -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
     -webkit-mask-size:100% 100%;mask-size:100% 100%;
   }
@@ -676,7 +695,17 @@
   body .aulas.fill-row>span{flex:1 0 auto;text-align:center}
 
   /* Resumo da semana */
-  .summary-sub{margin:-3px 0 16px;color:var(--soft);font-size:15px}
+  .summary-sub{margin:-3px 0 10px;color:var(--soft);font-size:15px}
+  .summary-nav{display:flex;align-items:center;gap:6px;margin:0 0 12px}
+  .summary-nav .snav{flex:none;width:32px;height:32px;border:0;border-radius:50%;background:#F2EEFA;color:var(--lilas-ink);font-size:20px;font-weight:900;line-height:1;display:flex;align-items:center;justify-content:center}
+  .summary-nav .snav:active{background:#E4D9F6}
+  .summary-tabs{flex:1;display:flex;gap:4px;background:#F2EEFA;border-radius:999px;padding:3px}
+  .summary-tabs button{flex:1;border:0;background:transparent;border-radius:999px;padding:7px 4px;font:inherit;font-size:14px;font-weight:800;color:var(--lilas-soft);transition:background .15s,color .15s}
+  .summary-tabs button.on{background:#fff;color:var(--lilas-ink);box-shadow:0 1px 4px rgba(63,39,100,.12)}
+  .summary-body{touch-action:pan-y}
+  .summary-body.desliza{animation:sumIn .28s ease-out}
+  @keyframes sumIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
+  @media(prefers-reduced-motion:reduce){.summary-body.desliza{animation:none}}
   .summary-hero{border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,#fff,#F8F9FC);padding:20px 14px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
   .summary-ring{position:relative;width:min(100%,270px);aspect-ratio:1;margin:auto}
   .summary-ring svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 8px 10px rgba(38,36,58,.10))}
@@ -719,13 +748,26 @@
   .qall.on{display:block}
   @media print{.filter-row,.searchbar,.qall{display:none}}
 
+  /* ===== tablet (600px+): fotos maiores e +1px nas etiquetas, materias e estrela ===== */
+  @media(min-width:600px){
+    .fam .p .av{width:74px;height:74px;font-size:36px}
+    .st{font-size:13px}
+    .tg .trea .r,.tg .trea .r b{font-size:13px}
+    .trea .r{font-size:14px} .trea .r b{font-size:12px}
+    body .aulas span{font-size:14px}
+    .star{font-size:22px}
+    .tag,.imp summary .cnt{font-size:15px}
+  }
   /* ===== ajustes de hoje ===== */
   .rpill .emos{display:flex;align-items:center;gap:2px;min-width:0;overflow-x:auto;scrollbar-width:none}
   .rpill .emos::-webkit-scrollbar{display:none}
   .rpill .sep{flex:none;width:1px;align-self:stretch;margin:4px 6px;background:rgba(255,255,255,.22)}
   .rpill .acts{display:flex;align-items:center;gap:2px;flex:none}
-  .rpill button.act{color:#fff;font-size:21px;width:38px;height:38px;line-height:1}
+  .rpill button.act{color:#fff;width:40px;height:40px;line-height:0;display:flex;align-items:center;justify-content:center;border-radius:12px;transition:background .15s,transform .12s}
+  .rpill button.act svg{width:21px;height:21px;display:block}
+  .rpill button.act:active{background:rgba(255,255,255,.18);transform:scale(.9)}
   .rpill button.act.danger{color:#FF9B93}
+  .rpill button.act.danger:active{background:rgba(255,155,147,.2)}
   .rpill>button.more{flex:none;margin-left:2px}
   /* chamar atencao (zumbido) */
   @keyframes msnshake{0%,100%{transform:translate(0,0)}10%{transform:translate(-9px,4px)}20%{transform:translate(8px,-6px)}30%{transform:translate(-7px,-4px)}40%{transform:translate(9px,5px)}50%{transform:translate(-8px,6px)}60%{transform:translate(7px,-5px)}70%{transform:translate(-6px,3px)}80%{transform:translate(5px,-3px)}90%{transform:translate(-3px,2px)}}
@@ -1558,10 +1600,12 @@ function msgHtml(m,i,arr){
   const att=m.att?(m.att.kind==='img'?`<img class="pic" src="${m.att.thumb}" data-open="${m.k}" alt="foto">`:m.att.kind==='fala'?`<span class="aud fala" data-fala="${esc(m.att.texto||'')}" role="button" tabindex="0" aria-label="Ouvir"><span class="pl" aria-hidden="true"></span><span class="ft">🗣️ ${esc(m.att.texto||'')}</span></span>`:m.att.kind==='audio'?`<span class="aud" data-aud="${m.k}" role="button" tabindex="0" aria-label="Tocar áudio"><span class="pl" aria-hidden="true"></span><span class="wv" aria-hidden="true">${'<i></i>'.repeat(14)}</span><small>${fmtDur(m.att.dur||0)}</small></span>`:`<span class="file" data-open="${m.k}">📄 <span>${esc(m.att.name||'arquivo')}<small>${fmtSize(m.att.size||0)}</small></span></span>`):'';
   const others=USERS.filter(x=>x.id!==m.by); const seenAll=others.every(x=>(READS[x.id]||0)>=(m.t||0)); const seenAny=others.some(x=>(READS[x.id]||0)>=(m.t||0));
   // sem marca enquanto ninguém viu; um ✓ quando alguém viu
-  const tick=(me&&seenAny)?`<span class="tick seen" title="${seenAll?'Visto por todos':'Visto por alguém'}">✓</span>`:'';
+  const leram=others.filter(x=>(READS[x.id]||0)>=(m.t||0));
+  const tick=''; // o visto agora fica no rodape do balao
+  const selo=me?`<button type="button" class="lido ${seenAll?'todos':(seenAny?'seen':'')}" data-lido="${m.k}" aria-label="${seenAny?('Visto por '+leram.map(x=>x.nome).join(' e ')):'Ainda não foi visto'}" title="${seenAny?('Visto por '+leram.map(x=>x.nome).join(' e ')):'Ainda não foi visto'}">${seenAny?'✓':''}</button>`:'';
   const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}</div>${reactsHtml(m)}</div></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><b>${me?'Eu':esc(u.nome)}</b><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}${selo}</div>${reactsHtml(m)}</div></div>`;
 }
 // entende "15/09", "15/9/26", "15/09/2026", "hoje" e "ontem"; devolve a data ISO ou null
 function dataDaBusca(q){ const chatToday=iso(new Date()); q=(q||'').trim().toLowerCase(); if(q==='hoje') return chatToday; if(q==='ontem') return addDays(chatToday,-1);
@@ -1577,17 +1621,39 @@ function chatHtml(){ const chatToday=iso(new Date());
     return hits.map((m,i,arr)=>`<div class="daysep">${dayLabel(iso(new Date(m.t||0)))}</div>`+msgHtml(m,i,arr)).join('');
   }
   if(!CHAT.length) return '<div class="empty">Ainda não tem mensagens.<br>Manda um oi! 👋</div>';
-  const groups=[]; CHAT.forEach(m=>{ const d=iso(new Date(m.t||0)); const g=groups[groups.length-1]; if(g&&g.d===d) g.msgs.push(m); else groups.push({d,msgs:[m]}); });
-  return groups.map(g=>{ const inner=chatMessagesHtml(g.msgs);
-    if(g.d===chatToday) return `<details class="daygrp hoje" data-day="${g.d}"${chatOpenDays[g.d]===false?'':' open'}><summary>Hoje · ${g.msgs.length} ${g.msgs.length>1?'mensagens':'mensagem'}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
-    const open=chatOpenDays[g.d]?' open':'';
-    return `<details class="daygrp" data-day="${g.d}"${open}><summary>${dayLabel(g.d)} · ${g.msgs.length} ${g.msgs.length>1?'mensagens':'mensagem'}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`; }).join('');
+  // tres grupos: tudo antes de ontem junto em "Antes", depois "Ontem" e "Hoje"
+  const chatOntem=addDays(chatToday,-1);
+  const chaveDe=d=>d===chatToday?'hoje':(d===chatOntem?'ontem':'antes');
+  const groups=[]; CHAT.forEach(m=>{ const d=iso(new Date(m.t||0)); const k=chaveDe(d); const g=groups[groups.length-1];
+    if(g&&g.k===k) g.msgs.push(m); else groups.push({k,d,msgs:[m]}); });
+  const qtd=n=>n+' '+(n>1?'mensagens':'mensagem');
+  return groups.map(g=>{
+    if(g.k==='antes'){ // dentro do "Antes", cada dia ganha sua divisoria
+      const dias=[]; g.msgs.forEach(m=>{ const d=iso(new Date(m.t||0)); const u=dias[dias.length-1]; if(u&&u.d===d) u.msgs.push(m); else dias.push({d,msgs:[m]}); });
+      const inner=dias.map(x=>`<div class="daysep">${dayLabel(x.d)}</div>`+chatMessagesHtml(x.msgs)).join('');
+      const open=chatOpenDays['antes']?' open':'';
+      return `<details class="daygrp" data-day="antes"${open}><summary>Antes · ${qtd(g.msgs.length)}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
+    }
+    const inner=chatMessagesHtml(g.msgs);
+    if(g.k==='hoje') return `<details class="daygrp hoje" data-day="hoje"${chatOpenDays['hoje']===false?'':' open'}><summary>Hoje · ${qtd(g.msgs.length)}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
+    const open=chatOpenDays['ontem']?' open':'';
+    return `<details class="daygrp" data-day="ontem"${open}><summary>Ontem · ${qtd(g.msgs.length)}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`; }).join('');
+}
+function verLeitores(k){
+  const m=CHAT.find(x=>x.k===k); if(!m) return;
+  const outros=USERS.filter(x=>x.id!==m.by);
+  const linha=u=>{ const t=READS[u.id]||0, viu=t>=(m.t||0);
+    return `<div class="leitor ${viu?'viu':''}"><span class="av">${avatarHtml(u)}</span><span class="nm"><b>${esc(u.nome)}</b><small>${viu?('Visto '+fmtSeen(t).replace('visto ','')):'Ainda não viu'}</small></span><span class="mk">${viu?'✓':'·'}</span></div>`; };
+  chatDraftOpen(`<h2>👀 Quem viu <button class="x">✕</button></h2>
+    <p class="quiet" style="margin:0 0 10px">${esc((msgPreview(m)||'').slice(0,90))}</p>
+    <div class="leitores">${outros.map(linha).join('')}</div>`);
 }
 function bindMsgs(){
   const box=document.getElementById('msgs'); if(!box) return;
   box.querySelectorAll('.react').forEach(b=>b.addEventListener('click',()=>toggleReact(b.dataset.k,b.dataset.r)));
   box.querySelectorAll('.daygrp').forEach(g=>g.addEventListener('toggle',()=>{chatOpenDays[g.dataset.day]=g.open;}));
   box.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',e=>{e.stopPropagation(); openAtt(a.dataset.open);}));
+  box.querySelectorAll('[data-lido]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); verLeitores(b.dataset.lido); }));
   box.querySelectorAll('[data-fala]').forEach(a=>{ const go=e=>{e.stopPropagation(); falar(a.dataset.fala,a);};
     a.addEventListener('click',go); a.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ') go(e); }); });
   box.querySelectorAll('[data-aud]').forEach(a=>{ const go=e=>{e.stopPropagation(); playAudio(a.dataset.aud,a);};
@@ -1929,8 +1995,8 @@ function openChatLook(){
   const OUTRO=USERS.find(u=>!USER||u.id!==USER.id)||USERS[0];
   show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px;padding:0"><div class="msgs" id="lookMsgs" style="min-height:0;max-height:none;padding:10px 8px;overflow:hidden">
-      <div class="msg" data-pu="${OUTRO.id}" style="--uc:${corDe(OUTRO)}"><span class="av">${avatarHtml(OUTRO)}</span><div><div class="b"><span class="hd"><small>20:41</small><b>${esc(OUTRO.nome)}</b></span>Oi! Assim fica o balão dele(a) 😊</div></div></div>
-      <div class="msg me" data-pu="${USER.id}" style="--uc:${corDe(USER)}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><small>20:42 <span class="tick seen">✓</span></small><b>Eu</b></span>E assim fica o seu</div></div></div>
+      <div class="msg" data-pu="${OUTRO.id}" style="--uc:${corDe(OUTRO)}"><span class="av">${avatarHtml(OUTRO)}</span><div><div class="b"><span class="hd"><b>${esc(OUTRO.nome)}</b><small>20:41</small></span>Oi! Assim fica o balão dele(a) 😊</div></div></div>
+      <div class="msg me" data-pu="${USER.id}" style="--uc:${corDe(USER)}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><b>Eu</b><small>20:42 <span class="tick seen">✓</span></small></span>E assim fica o seu</div></div></div>
     </div></div>
     <p class="looklbl">💬 Cor dos balões</p>
     ${USERS.map(u=>`<div class="corp"><span class="nm"><span class="av">${avatarHtml(u)}</span><b>${esc(u.nome)}${USER&&u.id===USER.id?' (você)':''}</b></span>
@@ -1984,7 +2050,7 @@ function openMsgMenu(k){
   const r=el.querySelector('.b').getBoundingClientRect();
   const wrap=document.createElement('div'); wrap.className='popwrap';
   const mine=e=>m.reacts&&m.reacts[e]&&USER&&m.reacts[e][USER.id];
-  wrap.innerHTML=`<div class="rpill" id="rpill"><span class="emos" id="rEmos">${REACTS.map(e=>`<button data-r="${e}" class="${mine(e)?'mine':''}">${e}</button>`).join('')}</span><button class="more" data-more="1" aria-label="Mais emojis">＋</button><span class="sep" aria-hidden="true"></span><span class="acts"><button class="act" data-a="reply" title="Responder" aria-label="Responder">↩</button>${me?`<button class="act" data-a="edit" title="Editar" aria-label="Editar">✎</button><button class="act danger" data-a="del" title="Apagar" aria-label="Apagar">🗑</button>`:''}</span></div>`;
+  wrap.innerHTML=`<div class="rpill" id="rpill"><span class="emos" id="rEmos">${REACTS.map(e=>`<button data-r="${e}" class="${mine(e)?'mine':''}">${e}</button>`).join('')}</span><button class="more" data-more="1" aria-label="Mais emojis">＋</button><span class="sep" aria-hidden="true"></span><span class="acts"><button class="act" data-a="reply" title="Responder" aria-label="Responder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h7a9 9 0 0 1 9 9v2"/></svg></button>${me?`<button class="act" data-a="edit" title="Editar" aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7.5 18.5 3 20l1.5-4.5Z"/></svg></button><button class="act danger" data-a="del" title="Apagar" aria-label="Apagar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button>`:''}</span></div>`;
   document.body.appendChild(wrap);
   const pill=wrap.querySelector('#rpill'), menu=pill, emos=wrap.querySelector('#rEmos');
   const place=()=>{
@@ -2044,7 +2110,7 @@ function initChatJump(){
 }
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
-  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear" id="attBtn" aria-label="Anexar" title="Anexar">📎</button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção">👋</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem ou data (15/09)…" autocomplete="off"><label class="cfdate" title="Escolher a data" aria-label="Escolher a data"><span aria-hidden="true">📅</span><input type="date" id="cfDate"></label><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
+  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear" id="attBtn" aria-label="Anexar" title="Anexar">📎</button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção">👋</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><span class="cflupa" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="cfTxt" placeholder="Procurar mensagem" autocomplete="off"><label class="cfdate" title="Escolher a data" aria-label="Escolher a data"><span aria-hidden="true">📅</span><input type="date" id="cfDate"></label><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
     <div class="chat-history"><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="audpanel nodrag" id="audPanel">
@@ -2333,6 +2399,7 @@ function posicionaFrase(){ const bar=document.querySelector('#prog .bar'), f=doc
 let sapoAte=Date.now()+20000, sapoTimer=null;
 function sapoProg(){ const im=document.querySelector('.sapo-prog'); if(!im) return; const anim=Date.now()<sapoAte;
   const alvo=anim?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=2'; if(!im.getAttribute('src').endsWith(alvo)) im.src=alvo;
+  im.classList.toggle('pulando',anim);   // so fica na frente do topo congelado enquanto pula
   clearTimeout(sapoTimer); if(anim) sapoTimer=setTimeout(sapoProg,sapoAte-Date.now()+60); }
 function acordaSapo(){ sapoAte=Date.now()+20000; sapoProg(); playFx('sapo',{loop:true,ms:3000}); vibrate(15); }
 function sapinho(el){
@@ -2790,59 +2857,114 @@ function summaryData(w){
   const tasks=allTasks(w);
   return SUMMARY_STATES.map(state=>({...state,tasks:tasks.filter(t=>summaryState(t,w)===state.key)}));
 }
-function openSummary(){
+// ===== Resumo: três visões (Situação, Matéria, Dia) com setas e arrastar para o lado =====
+const SUMMARY_MODOS=[
+  {key:'status',nome:'Situação',sub:'Todas as matérias'},
+  {key:'subj',  nome:'Matéria', sub:'Por matéria'},
+  {key:'dia',   nome:'Dia',     sub:'Por dia da semana'}
+];
+const CORES_MATERIA=[['#8E5BE0','#B98BEA'],['#A44FC7','#CD8FE3'],['#6B46C1','#9B7BDD'],['#4C3499','#8064C4'],
+  ['#B57BE8','#D4B8F5'],['#8E2A63','#C4568F'],['#5B3A9E','#8E6BD4'],['#7C4DC4','#A98BE0'],
+  ['#9B8CBA','#C3B8D8'],['#C74FA8','#E28FC9'],['#3F2764','#6E5A94'],['#A46BE8','#CBA8F2']];
+function clarear(hex,f){ const n=parseInt(hex.slice(1),16), r=n>>16, g=(n>>8)&255, b=n&255;
+  const m=(v)=>Math.round(v+(255-v)*f); return '#'+[m(r),m(g),m(b)].map(v=>v.toString(16).padStart(2,'0')).join(''); }
+function corDoDia(k){ const v=getComputedStyle(document.documentElement).getPropertyValue(DAYMETA[k][1]).trim(); return v||'#8E5BE0'; }
+// dados de cada visão: sempre [{key,label,color,light,tasks}]
+function summaryDataModo(modo,w){
+  const tasks=allTasks(w);
+  if(modo==='subj'){
+    const usados=Object.keys(SUBJ).filter(k=>tasks.some(t=>t.subj===k));
+    return usados.map((k,i)=>{ const [c,l]=CORES_MATERIA[i%CORES_MATERIA.length];
+      return {key:k,label:SUBJ[k],color:c,light:l,tasks:tasks.filter(t=>t.subj===k)}; }).filter(d=>d.tasks.length);
+  }
+  if(modo==='dia'){
+    return Object.keys(DAYMETA).filter(k=>k!=='sab').map(k=>{ const c=corDoDia(k);
+      return {key:k,label:DAYMETA[k][0],color:c,light:clarear(c,.42),tasks:tasks.filter(t=>t.day===k)}; }).filter(d=>d.tasks.length);
+  }
+  return summaryData(w).filter(d=>d.tasks.length||modo==='status');
+}
+function openSummary(modoInicial){
   const w=DB.weeks[current];if(!w)return;
-  const data=summaryData(w),total=data.reduce((n,d)=>n+d.tasks.length,0);
-  const pct=n=>total?(100*n/total).toLocaleString('pt-BR',{maximumFractionDigits:1}):'0';
-  let offset=0; const labels=[];
-  const arcs=data.filter(d=>d.tasks.length).map(d=>{
-    const share=d.tasks.length/total*100;
-    const arc=`<circle data-state="${d.key}" cx="140" cy="140" r="103" fill="none" stroke="url(#summary-${d.key})" stroke-width="54" pathLength="100" stroke-dasharray="${share} ${100-share}" stroke-dashoffset="${-offset}" transform="rotate(-90 140 140)"><title>${d.label}: ${d.tasks.length} (${pct(d.tasks.length)}%)</title></circle>`;
-    const angle=(offset+share/2)*Math.PI/50-Math.PI/2;
-    labels.push(`<text class="summary-slice-pct" data-state="${d.key}" data-start="${offset}" data-share="${share}" x="${140+103*Math.cos(angle)}" y="${140+103*Math.sin(angle)}" text-anchor="middle" dominant-baseline="central" fill="${d.key==='todo'||d.key==='off'?'#26243A':'#fff'}" visibility="hidden" aria-hidden="true">${pct(d.tasks.length)}%</text>`);
-    offset+=share;return arc;
-  }).join('');
+  let modo=modoInicial||'status';
   show(`<h2>📊 Resumo <button class="x" aria-label="Fechar resumo">✕</button></h2>
-    <p class="summary-sub">${esc(w.label)} · Todas as matérias</p>
-    <div class="summary-hero">
-      <div class="summary-ring"><svg viewBox="0 0 280 280" role="img" aria-label="Distribuição de ${total} tarefas por estado. ${data.map(d=>d.label+': '+d.tasks.length).join('; ')}">
-        <defs>${data.map(d=>`<linearGradient id="summary-${d.key}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${d.light}"/><stop offset="1" stop-color="${d.color}"/></linearGradient>`).join('')}</defs>
-        <circle cx="140" cy="140" r="103" fill="none" stroke="#EDEEF3" stroke-width="54"/>${arcs}${labels.join('')}</svg>
-        <div class="summary-center" aria-live="polite"><strong id="summaryCount">${total}</strong><span id="summaryLabel">${total===1?'tarefa na semana':'tarefas na semana'}</span></div>
-      </div>
-      <div class="summary-legend">${data.map(d=>`<button class="summary-state" data-select="${d.key}" style="--state:${d.color}" aria-pressed="false"><i aria-hidden="true"></i><span>${d.label}</span><span class="summary-values"><strong>${d.tasks.length}</strong><small>${pct(d.tasks.length)}%</small></span></button>`).join('')}</div>
+    <p class="summary-sub" id="sumSub"></p>
+    <div class="summary-nav">
+      <button class="snav" id="sumPrev" aria-label="Visão anterior">‹</button>
+      <div class="summary-tabs" id="sumTabs">${SUMMARY_MODOS.map(m=>`<button data-modo="${m.key}">${m.nome}</button>`).join('')}</div>
+      <button class="snav" id="sumNext" aria-label="Próxima visão">›</button>
     </div>
-    <div class="summary-detail" id="summaryDetail"></div>`);
-  // So mostra o percentual quando sua caixa cabe inteiramente na faixa colorida.
-  const fitLabels=()=>{
-    sheet.querySelectorAll('.summary-slice-pct').forEach(label=>{
-      const b=label.getBBox(), pad=3, x0=b.x-pad, x1=b.x+b.width+pad, y0=b.y-pad, y1=b.y+b.height+pad;
-      const nearX=Math.max(x0,Math.min(140,x1)), nearY=Math.max(y0,Math.min(140,y1));
-      const start=+label.dataset.start, share=+label.dataset.share;
-      const corners=[[x0,y0],[x1,y0],[x0,y1],[x1,y1]];
-      const fits=Math.hypot(nearX-140,nearY-140)>=76 && corners.every(([x,y])=>{
-        const radius=Math.hypot(x-140,y-140);
-        const angle=((Math.atan2(y-140,x-140)*50/Math.PI+25)%100+100)%100;
-        return radius<=130 && (share>=99.999 || (angle-start+100)%100<=share);
+    <div class="summary-body" id="sumBody"></div>`);
+
+  const desenha=()=>{
+    const data=summaryDataModo(modo,w), total=data.reduce((n,d)=>n+d.tasks.length,0);
+    const pct=n=>total?(100*n/total).toLocaleString('pt-BR',{maximumFractionDigits:1}):'0';
+    const mi=SUMMARY_MODOS.find(m=>m.key===modo);
+    document.getElementById('sumSub').textContent=esc(w.label)+' · '+mi.sub;
+    sheet.querySelectorAll('[data-modo]').forEach(b=>b.classList.toggle('on',b.dataset.modo===modo));
+    let offset=0; const labels=[];
+    const arcs=data.filter(d=>d.tasks.length).map(d=>{
+      const share=d.tasks.length/total*100;
+      const arc=`<circle data-state="${d.key}" cx="140" cy="140" r="103" fill="none" stroke="url(#summary-${modo}-${d.key})" stroke-width="54" pathLength="100" stroke-dasharray="${share} ${100-share}" stroke-dashoffset="${-offset}" transform="rotate(-90 140 140)"><title>${esc(d.label)}: ${d.tasks.length} (${pct(d.tasks.length)}%)</title></circle>`;
+      const angle=(offset+share/2)*Math.PI/50-Math.PI/2;
+      labels.push(`<text class="summary-slice-pct" data-state="${d.key}" data-start="${offset}" data-share="${share}" x="${140+103*Math.cos(angle)}" y="${140+103*Math.sin(angle)}" text-anchor="middle" dominant-baseline="central" fill="#fff" visibility="hidden" aria-hidden="true">${pct(d.tasks.length)}%</text>`);
+      offset+=share;return arc;
+    }).join('');
+    document.getElementById('sumBody').innerHTML=`
+      <div class="summary-hero">
+        <div class="summary-ring"><svg viewBox="0 0 280 280" role="img" aria-label="${total} tarefas. ${data.map(d=>d.label+': '+d.tasks.length).join('; ')}">
+          <defs>${data.map(d=>`<linearGradient id="summary-${modo}-${d.key}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${d.light}"/><stop offset="1" stop-color="${d.color}"/></linearGradient>`).join('')}</defs>
+          <circle cx="140" cy="140" r="103" fill="none" stroke="#EDEEF3" stroke-width="54"/>${arcs}${labels.join('')}</svg>
+          <div class="summary-center" aria-live="polite"><strong id="summaryCount">${total}</strong><span id="summaryLabel">${total===1?'tarefa na semana':'tarefas na semana'}</span></div>
+        </div>
+        <div class="summary-legend">${data.map(d=>`<button class="summary-state" data-select="${d.key}" style="--state:${d.color}" aria-pressed="false"><i aria-hidden="true"></i><span>${esc(d.label)}</span><span class="summary-values"><strong>${d.tasks.length}</strong><small>${pct(d.tasks.length)}%</small></span></button>`).join('')}</div>
+      </div>
+      <div class="summary-detail" id="summaryDetail"></div>`;
+    // So mostra o percentual quando sua caixa cabe inteiramente na faixa colorida.
+    const fitLabels=()=>{
+      sheet.querySelectorAll('.summary-slice-pct').forEach(label=>{
+        const b=label.getBBox(), pad=3, x0=b.x-pad, x1=b.x+b.width+pad, y0=b.y-pad, y1=b.y+b.height+pad;
+        const nearX=Math.max(x0,Math.min(140,x1)), nearY=Math.max(y0,Math.min(140,y1));
+        const start=+label.dataset.start, share=+label.dataset.share;
+        const corners=[[x0,y0],[x1,y0],[x0,y1],[x1,y1]];
+        const fits=Math.hypot(nearX-140,nearY-140)>=76 && corners.every(([x,y])=>{
+          const radius=Math.hypot(x-140,y-140);
+          const angle=((Math.atan2(y-140,x-140)*50/Math.PI+25)%100+100)%100;
+          return radius<=130 && (share>=99.999 || (angle-start+100)%100<=share);
+        });
+        label.setAttribute('visibility',fits?'visible':'hidden');
       });
-      label.setAttribute('visibility',fits?'visible':'hidden');
-    });
+    };
+    fitLabels(); document.fonts?.ready.then(fitLabels);
+    let selected=null;
+    const select=key=>{
+      selected=selected===key?null:key;
+      const d=data.find(d=>d.key===selected);
+      sheet.querySelectorAll('[data-select]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.select===selected)));
+      sheet.querySelectorAll('.summary-ring [data-state]').forEach(c=>{c.style.opacity=!selected||c.dataset.state===selected?'1':'.25';});
+      document.getElementById('summaryCount').textContent=d?d.tasks.length:total;
+      document.getElementById('summaryLabel').textContent=d?d.label+' · '+pct(d.tasks.length)+'%':(total===1?'tarefa na semana':'tarefas na semana');
+      const detail=document.getElementById('summaryDetail');
+      detail.innerHTML=d?`<h3>${esc(d.label)} · ${d.tasks.length}</h3>${d.tasks.length?d.tasks.map(t=>`<button class="summary-item" data-task-id="${t.id}"><small>${subjectVisual(SUBJ[t.subj]||'')} · ${DAYMETA[t.day]?DAYMETA[t.day][0]:''}</small>${esc(plain(t.text))}</button>`).join(''):'<div class="summary-empty">Nenhuma tarefa aqui.</div>'}`:'';
+      detail.querySelectorAll('[data-task-id]').forEach(b=>b.addEventListener('click',()=>openMenu(b.dataset.taskId)));
+    };
+    sheet.querySelectorAll('[data-select]').forEach(b=>b.addEventListener('click',()=>select(b.dataset.select)));
+    sheet.querySelectorAll('circle[data-state]').forEach(c=>c.addEventListener('click',()=>select(c.dataset.state)));
   };
-  fitLabels(); document.fonts?.ready.then(fitLabels);
-  let selected=null;
-  const select=key=>{
-    selected=selected===key?null:key;
-    const d=data.find(d=>d.key===selected);
-    sheet.querySelectorAll('[data-select]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.select===selected)));
-    sheet.querySelectorAll('.summary-ring [data-state]').forEach(c=>{c.style.opacity=!selected||c.dataset.state===selected?'1':'.25';});
-    document.getElementById('summaryCount').textContent=d?d.tasks.length:total;
-    document.getElementById('summaryLabel').textContent=d?d.label+' · '+pct(d.tasks.length)+'%':(total===1?'tarefa na semana':'tarefas na semana');
-    const detail=document.getElementById('summaryDetail');
-    detail.innerHTML=d?`<h3>${d.label} · ${d.tasks.length}</h3>${d.tasks.length?d.tasks.map(t=>`<button class="summary-item" data-task-id="${t.id}"><small>${subjectVisual(SUBJ[t.subj]||'')} · ${DAYMETA[t.day]?DAYMETA[t.day][0]:''}</small>${esc(plain(t.text))}</button>`).join(''):'<div class="summary-empty">Nenhuma tarefa neste estado.</div>'}`:'';
-    detail.querySelectorAll('[data-task-id]').forEach(b=>b.addEventListener('click',()=>openMenu(b.dataset.taskId)));
-  };
-  sheet.querySelectorAll('[data-select]').forEach(b=>b.addEventListener('click',()=>select(b.dataset.select)));
-  sheet.querySelectorAll('circle[data-state]').forEach(c=>c.addEventListener('click',()=>select(c.dataset.state)));
+
+  const vai=(passo)=>{ const i=SUMMARY_MODOS.findIndex(m=>m.key===modo);
+    const n=(i+passo+SUMMARY_MODOS.length)%SUMMARY_MODOS.length; modo=SUMMARY_MODOS[n].key;
+    const body=document.getElementById('sumBody'); if(body){ body.classList.remove('desliza'); void body.offsetWidth; body.classList.add('desliza'); }
+    vibrate(10); desenha(); };
+  document.getElementById('sumPrev').addEventListener('click',()=>vai(-1));
+  document.getElementById('sumNext').addEventListener('click',()=>vai(1));
+  sheet.querySelectorAll('[data-modo]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.modo===modo) return; modo=b.dataset.modo; vibrate(10); desenha(); }));
+  // arrastar para o lado troca de visão
+  { const body=document.getElementById('sumBody'); let x0=0,y0=0,ativo=false;
+    body.addEventListener('pointerdown',e=>{ if(e.target.closest('[data-task-id]')) return; x0=e.clientX; y0=e.clientY; ativo=true; });
+    body.addEventListener('pointerup',e=>{ if(!ativo) return; ativo=false; const dx=e.clientX-x0, dy=e.clientY-y0;
+      if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5) vai(dx<0?1:-1); });
+    body.addEventListener('pointercancel',()=>{ativo=false;}); }
+  desenha();
 }
 function openTimetable(){
   const dow=new Date().getDay();
@@ -2909,7 +3031,7 @@ function openReminder(){
   if(!isAluna()) return;
   const html=reminderHtml(); if(!html) return;
   show(html); bindTasks(sheet); hintFirst();
-  const doneRem=()=>{ try{localStorage.setItem(KEY+'-rem',TODAY);}catch(e){} };
+  const doneRem=()=>{ try{localStorage.setItem(KEY+'-rem',String(Date.now()));}catch(e){} };
   document.getElementById('remGo').addEventListener('click',()=>{doneRem();hide();vibrate(20);SFX.pop();});
   sheet.querySelector('.x').addEventListener('click',doneRem,{once:true});
 }
@@ -3000,6 +3122,7 @@ render();
 })();
 // abertura com a bailarina: 6 s, toque não interrompe, some sozinha
 (()=>{ const sp=document.getElementById('splash'); if(!sp) return;
+  if(matchMedia('(max-width:599px)').matches){ sp.remove(); return; }   // celular: sem abertura
   document.body.classList.add('abrindo');
   const bloqueia=e=>{ if(document.body.classList.contains('abrindo')) e.preventDefault(); };
   ['touchstart','touchmove','touchend','wheel','pointerdown','gesturestart','dragstart','selectstart'].forEach(ev=>document.addEventListener(ev,bloqueia,{passive:false}));
@@ -3011,7 +3134,7 @@ render();
 setTimeout(()=>{ const el=document.querySelector('.day.today'); if(!el) return;
   const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector('.top')?.offsetHeight||0)-10;
   window.scrollTo({top:Math.max(0,top),behavior:'smooth'}); },500);
-let remSeen=false; try{remSeen=localStorage.getItem(KEY+'-rem')===TODAY;}catch(e){}   // lembrete: uma vez por dia
+let remSeen=false; try{ const v=localStorage.getItem(KEY+'-rem')||''; const t=+v; remSeen=(t>0&&Date.now()-t<2*60*60*1000)||v===TODAY; }catch(e){}   // lembrete: de novo so depois de 2 h
 if(CLOUD_CFG && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
 else { cloudStart(); startReminders(); if(!remSeen) setTimeout(openReminder,350); }
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
