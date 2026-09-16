@@ -414,7 +414,7 @@
   .msg.me .b .hd b{color:rgba(255,255,255,.9)}
   .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:0}
   .daygrp{border:0;margin:0;flex:none}
-  .daygrp>summary{position:sticky;top:0;z-index:2;background:#E9E5F2;border:0;box-shadow:none}
+  .daygrp>summary{position:sticky;top:0;z-index:3;background:#E9E5F2;border:0;box-shadow:0 0 0 5px var(--msgs-bg,#F7F5FC)}
   .msgs.bg-noite .daygrp>summary{background:#4A4770}
   .msgs>*{flex:none}
   .msgs::before{content:"";margin-top:auto}
@@ -586,13 +586,27 @@
   .chatsheet .chatwho{gap:6px;font-size:13px}
   .chatsheet .chatwho span{padding:5px 9px;background:rgba(40,17,75,.16);font-weight:700}
   .chatsheet .msgs{padding:8px 16px 20px;gap:0;scrollbar-width:thin;scrollbar-color:#D7C8EC transparent}
-  /* Transicao suave nas bordas da conversa, em celular e tablet. */
-  .chatsheet .msgs{
-    -webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 26px,rgba(0,0,0,.8) 56px,#000 84px,#000 calc(100% - 28px),transparent 100%);
-    mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 26px,rgba(0,0,0,.8) 56px,#000 84px,#000 calc(100% - 28px),transparent 100%);
-    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-    -webkit-mask-size:100% 100%;mask-size:100% 100%;
-  }
+  /* Transicao suave nas bordas da conversa: um veu por cima das mensagens.
+     Fica ABAIXO da pilula do dia (que e sticky, z-index 2), entao ela continua solida. */
+  .chat-history{--msgs-bg:#F7F5FC}
+  .chat-history:has(.msgs.bg-claro){--msgs-bg:#fff}
+  .chat-history:has(.msgs.bg-verde){--msgs-bg:#E6F6EE}
+  .chat-history:has(.msgs.bg-azul){--msgs-bg:#E6F0FB}
+  .chat-history:has(.msgs.bg-rosa){--msgs-bg:#FCE9F3}
+  .chat-history:has(.msgs.bg-amarelo){--msgs-bg:#FFF6D9}
+  .chat-history:has(.msgs.bg-noite){--msgs-bg:#26243A}
+  .chat-history:has(.msgs.bg-estrelas){--msgs-bg:#EEF3FF}
+  .chat-history:has(.msgs.bg-foto){--msgs-bg:rgba(247,245,252,.92)}
+  .chat-history::before,.chat-history::after{content:"";position:absolute;left:0;right:0;pointer-events:none;z-index:1}
+  .chat-history::before{top:0;height:190px;background:linear-gradient(to bottom,
+    var(--msgs-bg) 0%,var(--msgs-bg) 16%,
+    color-mix(in srgb,var(--msgs-bg) 92%,transparent) 30%,
+    color-mix(in srgb,var(--msgs-bg) 76%,transparent) 46%,
+    color-mix(in srgb,var(--msgs-bg) 54%,transparent) 62%,
+    color-mix(in srgb,var(--msgs-bg) 30%,transparent) 78%,
+    color-mix(in srgb,var(--msgs-bg) 12%,transparent) 90%,
+    transparent 100%)}
+  .chat-history::after{bottom:0;height:40px;background:linear-gradient(to top,var(--msgs-bg) 0%,color-mix(in srgb,var(--msgs-bg) 55%,transparent) 55%,transparent 100%)}
 
   .chatsheet .msg .b{padding:10px 14px 8px;line-height:1.45;box-shadow:0 2px 8px rgba(63,39,100,.06)}
   .chatsheet .daygrp>summary,.chatsheet .daysep{font-weight:700;font-size:13px;padding:6px 12px}
@@ -715,6 +729,8 @@
   .summary-ring circle[data-state]{cursor:pointer;transition:opacity .18s,stroke-width .18s}
   .summary-ring circle[data-state]:hover{stroke-width:56}
   .summary-slice-pct{font-family:inherit;font-size:14px;font-weight:900;pointer-events:none;transition:opacity .18s}
+  .summary-slice-pct.claro{paint-order:stroke;stroke:rgba(38,36,58,.28);stroke-width:2.5px;stroke-linejoin:round}
+  .summary-slice-pct.escuro{paint-order:stroke;stroke:rgba(255,255,255,.55);stroke-width:2.5px;stroke-linejoin:round}
   .summary-center{position:absolute;inset:28%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
   .summary-center strong{font-size:46px;line-height:1.05;letter-spacing:-2px;color:var(--ink)}
   .summary-center span{font-size:15px;color:var(--soft);line-height:1.4;margin-top:5px}
@@ -728,6 +744,15 @@
   .summary-state strong{font-size:20px;font-variant-numeric:tabular-nums}
   .summary-state[aria-pressed=true]{background:#fff;border-color:var(--state);box-shadow:0 3px 10px rgba(38,36,58,.05)}
   .summary-state:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .summary-counts{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+  .scount{display:inline-flex;align-items:center;gap:6px;border:1px solid color-mix(in srgb,var(--s) 35%,#fff);background:color-mix(in srgb,var(--s) 10%,#fff);color:var(--ink);border-radius:999px;padding:4px 11px;font-size:13px;font-weight:800;line-height:1.2}
+  .scount i{width:9px;height:9px;border-radius:50%;background:var(--s);flex:none}
+  .scount b{font-size:14px;font-weight:900;color:var(--s)}
+  .summary-item .sstat{display:inline-flex;align-items:center;margin-left:8px;border-radius:999px;padding:1px 8px;background:color-mix(in srgb,var(--s) 16%,#fff);color:color-mix(in srgb,var(--s) 78%,#26243A);font-size:11px;font-weight:900;letter-spacing:.1px}
+  @media screen and (min-width:600px) and (min-height:600px){
+    .scount{font-size:14px} .scount b{font-size:15px}
+    .summary-item .sstat{font-size:12px}
+  }
   .summary-note{font-size:12px;color:var(--soft);line-height:1.5;margin:12px 2px 16px}
   .summary-detail h3{font-size:16px;margin:16px 0 8px}
   .summary-item{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 13px;margin:6px 0;color:var(--ink);font-size:14px;line-height:1.45}
@@ -1009,9 +1034,9 @@
   @media screen and (min-width:600px) and (min-height:600px){
     body .fam .p{font-size:18px}
     body .fam .p small{font-size:15px}
-    body .chip{font-size:16px}
-    body .filter-row .mobile-filter-toggle{font-size:16px}
-    body .chip .cnt{font-size:13px}
+    body .chip{font-size:17px}
+    body .filter-row .mobile-filter-toggle{font-size:17px}
+    body .chip .cnt{font-size:14px}
     body .day .aulas span{font-size:15px}
     body .day .tg .st,body .day .tg .dchip{font-size:15px}
     body .day .tg .trea .r,body .day .tg .trea .r b{font-size:15px}
@@ -1020,7 +1045,74 @@
     body .chatsheet .daygrp>summary,body .chatsheet .daysep{font-size:14px}
     body .chatsheet .chatin input,body .chatsheet .chatin textarea{font-size:17px}
     body .chatsheet .chatin .emo,body .chatsheet .chatin .mic{font-size:21px}
+    /* conversa no tablet: botoes e campo maiores, bons para o dedo */
+    body .chatsheet .chat h2 .gear,body .chatsheet .chat h2 .x{width:52px;height:52px;font-size:22px}
+    body .chatsheet .chat h2{gap:10px;margin-bottom:14px}
+    body .chatsheet .chatin{gap:10px;padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
+    body .chatsheet .chatin button{width:56px;height:56px;font-size:25px}
+    body .chatsheet .chatin .emo,body .chatsheet .chatin .mic{font-size:25px}
+    body .chatsheet .chatin #chatSend{font-size:25px}
+    body .chatsheet .chatin input,body .chatsheet .chatin textarea{min-height:56px;padding:15px 18px;font-size:18px;border-radius:26px}
+    body .chatsheet .chat-jump{width:52px;height:52px;right:18px;bottom:14px}
+    body .chatsheet .cfbar input{padding:13px 18px 13px 44px;font-size:17px}
+    body .chatsheet .cfbar button,body .chatsheet .cfbar .cfdate{width:46px;height:46px;font-size:19px}
+    body .chatsheet .cfbar .cflupa{left:17px}
+    body .chatsheet .recbar button{width:44px;height:44px;font-size:18px}
+    body .chatsheet .recbar{font-size:15px;padding:10px 16px}
+    body .chatsheet .recbar .rnum{font-size:26px;min-width:32px}
+    body .chatsheet .audpanel .apitem button{width:44px;height:44px;font-size:17px}
+    body .chatsheet .audpanel .apn{font-size:16px}
+    /* Resumo no tablet: abas e subtitulo um pouco maiores */
+    body .summary-tabs button{font-size:15px;padding:8px 4px}
+    body .summary-nav .snav{width:34px;height:34px;font-size:21px}
+    body .summary-sub{font-size:16px}
+    body .summary-detail h3{font-size:17px}
+    body .summary-item{font-size:15px}
+    body .summary-item small{font-size:13px}
   }
+
+  /* ===================== LINHA DO TEMPO ===================== */
+  .tl{margin:18px 0 0;border:2px solid var(--lilas-line);border-radius:22px;background:#fff;overflow:hidden;transition:border-color .2s}
+  .tl.aberta{border-color:var(--lilas)}
+  .tl-head{display:flex;align-items:center;gap:10px;width:100%;border:0;background:linear-gradient(135deg,#F8F4FE,#F1EAFB);padding:13px 15px;font:inherit;color:var(--lilas-ink);text-align:left}
+  .tl.aberta .tl-head{background:linear-gradient(135deg,#EFE6FC,#E6DAF8)}
+  .tl-head:active{filter:brightness(.97)}
+  .tl-head-ic{font-size:20px;line-height:1;flex:none}
+  .tl-head-tx{flex:1;min-width:0;font-size:17px;font-weight:900;letter-spacing:-.2px}
+  .tl-n{flex:none;background:var(--lilas);color:#fff;border-radius:999px;min-width:26px;padding:2px 9px;font-size:12px;font-weight:900;text-align:center}
+  .tl-head .arrow{flex:none;font-size:13px;opacity:.7;transition:transform .2s}
+  .tl.aberta .tl-head .arrow{transform:rotate(180deg)}
+  .tl-body{padding:6px 14px 14px;position:relative}
+  .tl-body[hidden]{display:none}
+  .tl-dia{position:sticky;top:0;z-index:2;margin:10px 0 8px;padding:4px 0;background:#fff;font-size:12px;font-weight:900;color:var(--lilas-soft);text-transform:capitalize;letter-spacing:.3px}
+  .tl-dia::after{content:"";display:block;height:1px;background:var(--lilas-line);margin-top:6px}
+  /* cada linha: trilho, bolinha com icone, avatar, texto e hora */
+  .tl-item{position:relative;display:grid;grid-template-columns:30px 30px minmax(0,1fr) auto;align-items:center;gap:9px;padding:7px 0 7px 2px}
+  .tl-item::before{content:"";position:absolute;left:16px;top:0;bottom:0;width:2px;background:var(--lilas-line);z-index:0}
+  .tl-item:first-of-type::before{top:50%}
+  .tl-item:last-of-type::before{bottom:50%}
+  .tl-dot{position:relative;z-index:1;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--c) 14%,#fff);border:2px solid color-mix(in srgb,var(--c) 45%,#fff);display:flex;align-items:center;justify-content:center;flex:none}
+  .tl-ic{font-size:14px;line-height:1}
+  .tl-av{width:30px;height:30px;border-radius:50%;background:#EDE5FA;border:2px solid var(--uc,var(--lilas-line));display:flex;align-items:center;justify-content:center;font-size:15px;overflow:hidden;flex:none}
+  .tl-av img{width:100%;height:100%;object-fit:cover}
+  .tl-txt{min-width:0;display:flex;flex-direction:column;line-height:1.3}
+  .tl-l1{font-size:14px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tl-l1 b{font-weight:900;color:var(--uc,var(--lilas-ink))}
+  .tl-txt small{font-size:12px;font-weight:600;color:var(--soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+  .tl-item time{flex:none;font-size:11px;font-weight:800;color:var(--soft);font-variant-numeric:tabular-nums}
+  .tl-mais{display:block;width:100%;margin:10px 0 2px;border:2px dashed var(--lilas-line);background:#FBF9FE;color:var(--lilas-ink);border-radius:14px;padding:10px;font:inherit;font-size:14px;font-weight:800}
+  .tl-mais:active{background:#F2EBFC}
+  .tl-vazio{margin:8px 2px;font-size:14px;color:var(--soft);line-height:1.5}
+  @media screen and (min-width:600px) and (min-height:600px){
+    .tl-head-tx{font-size:19px} .tl-head-ic{font-size:22px} .tl-n{font-size:13px}
+    .tl-item{grid-template-columns:34px 34px minmax(0,1fr) auto;gap:11px}
+    .tl-item::before{left:18px}
+    .tl-dot{width:34px;height:34px} .tl-ic{font-size:16px}
+    .tl-av{width:34px;height:34px;font-size:17px}
+    .tl-l1{font-size:15px} .tl-txt small{font-size:13px} .tl-item time{font-size:12px}
+    .tl-dia{font-size:13px}
+  }
+  @media print{.tl{display:none}}
 </style>
 </head>
 <body>
@@ -1252,6 +1344,9 @@ function cloudStart(){
   famRef.child('digitando/'+USER.id).onDisconnect().remove();
   famRef.child('digitando/'+USER.id).remove();
   famRef.child('digitando').on('value',sn=>{ TYPING=sn.val()||{}; renderTyping(); });
+  famRef.child('eventos').limitToLast(300).on('value',sn=>{ const v=sn.val()||{};
+    EVENTOS=Object.keys(v).map(k=>Object.assign({k},v[k])); renderTimeline(); });
+  setTimeout(podaEventos,8000);
   famRef.child('reads').on('value',sn=>{ READS=sn.val()||{}; refreshChat(); });
   famRef.child('perfis/'+USER.id+'/lastSeen').onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
   famRef.child('perfis/'+USER.id).update({nome:USER.nome,lastSeen:firebase.database.ServerValue.TIMESTAMP});
@@ -1358,7 +1453,7 @@ document.getElementById('pinTxt').value='';document.getElementById('pinTxt').foc
   const enter=()=>{const v=document.getElementById('pinTxt').value.trim(); if(v!==pick.pin){vibrate([40,40,40]);toast('Código errado. Tenta de novo');return;}
     clearTimeout(pushTimer);
     USER=pick; try{localStorage.setItem(KEY+'-user',USER.id);}catch(e){}
-    if(famRef){famRef.child('online').off();famRef.child('perfis').off();famRef.child('chat').off();famRef.child('digitando').off();}
+    if(famRef){famRef.child('online').off();famRef.child('perfis').off();famRef.child('chat').off();famRef.child('digitando').off();famRef.child('eventos').off();}
     if(cloudRef){cloudRef.off();cloudRef=null;cloudReady=false;lastPushed='';}
     cloudStart(); hide(); render(); vibrate(20); toast('Oi, '+USER.nome+'! '+USER.emoji); SFX.party(); startReminders(); if(after) setTimeout(after,300);};
   document.getElementById('pinOk').addEventListener('click',enter);
@@ -2232,7 +2327,7 @@ function openChat(){
   window.visualViewport&&window.visualViewport.addEventListener('resize',scrollMsgs);
 }
 function chatAbertoAgora(){ return veil.classList.contains('on') && !!sheet.querySelector('#msgs'); }
-function refreshChat(){ const m=document.getElementById('msgs'); if(!m||!chatAbertoAgora()){ updateChatBadge(); return; } const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); bindMsgs(); applyPref(); if(atBottom) scrollMsgs(); markRead(); }
+function refreshChat(){ renderTimeline(); const m=document.getElementById('msgs'); if(!m||!chatAbertoAgora()){ updateChatBadge(); return; } const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); bindMsgs(); applyPref(); if(atBottom) scrollMsgs(); markRead(); }
 function scrollMsgs(){ const m=document.getElementById('msgs'); if(m) setTimeout(()=>{m.scrollTop=m.scrollHeight;},50); }
 function markRead(){ const last=CHAT[CHAT.length-1]; if(last&&(last.t||0)>lastRead){ lastRead=last.t; try{localStorage.setItem(KEY+'-read',String(lastRead));}catch(e){} }
   if(famRef&&USER&&chatAbertoAgora()&&!document.hidden&&last&&(READS[USER.id]||0)<(last.t||0)) famRef.child('reads/'+USER.id).set(last.t||firebase.database.ServerValue.TIMESTAMP);
@@ -2347,13 +2442,22 @@ function render(){
   });
   html+='</div>';
   if(w.topics&&!filtering) html+=`<div class="next"><h2>📌 O que cada matéria está estudando</h2><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${subjectVisual(line)}</div>`).join('')}</div></div>`;
+  html+=`<section class="tl ${tlAberta?'aberta':''}" id="tl">
+    <button class="tl-head" id="tlToggle" type="button" aria-expanded="${tlAberta}" aria-controls="tlBody">
+      <span class="tl-head-ic" aria-hidden="true">🕘</span>
+      <span class="tl-head-tx">Linha do tempo</span>
+      <span class="tl-n" id="tlN">0</span>
+      <span class="arrow" aria-hidden="true">▼</span>
+    </button>
+    <div class="tl-body" id="tlBody" ${tlAberta?'':'hidden'}></div>
+  </section>`;
   document.getElementById('app').innerHTML=html;
   fitSubjectRows();
   ajustaProgressoTablet();
   if(typeof appBadge==='function') appBadge();
   if(typeof updateReaFab==='function') updateReaFab();
   document.querySelectorAll('.day,.imp').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
-  bindTasks();
+  bindTasks(); bindTimeline();
 }
 // Preenche a largura apenas quando todas as matérias cabem em uma linha.
 // Usa a altura do cabecalho mais suas bordas, sem alterar os cartoes dos dias.
@@ -2509,7 +2613,7 @@ function setStatus(id,status,el){
     const dayEl=day?document.querySelector(`.day[data-date="${day.date}"]`):null;
     const wasComplete=dayEl&&dayEl.classList.contains('complete');
     const taskEl=document.querySelector(`#app .task[data-id="${id}"]`)||el;
-    t.status=status; t.u=Date.now(); save();
+    t.status=status; t.u=Date.now(); save(); logEvt(status,{id,det:plain(t.text||'')});
     if(status==='done'){
       vibrate([30,30,60]);SFX.done();
       if(taskEl?.isConnected){const r=taskEl.querySelector('.tin').getBoundingClientRect();sparks(r.left+24,r.top+r.height/2,colorOf(taskEl.closest('.day')||taskEl.closest('.imp')||taskEl));}
@@ -2663,7 +2767,7 @@ function openMenu(id){
     if(a==='imp'){ hide(); setTimeout(()=>confirmaImp(id),220); }
     if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
     if(a==='del') openCancel(id);
-    if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.u=Date.now(); save(); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
+    if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.u=Date.now(); save(); logEvt('undel',{id,det:plain(t.text||'')}); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
     if(a==='rea') openReagir(id);
     if(a==='pics') openPics(id);
     if(a==='move') openMove(id);
@@ -2707,11 +2811,11 @@ function openTaskReact(id){
 async function writeImportant(id,val,btn){
   const t=findTask(id); if(!t) return false;
   const quando=Date.now(), quem=USER?USER.nome:'';
-  if(isAluna()){ t.important=val; t.impU=quando; t.impBy=quem; t.u=quando; save(); return true; }
+  if(isAluna()){ t.important=val; t.impU=quando; t.impBy=quem; t.u=quando; save(); logEvt(val?'imp_on':'imp_off',{id,det:plain(t.text||'')}); return true; }
   if(!isResponsavel()||!cloudRef||!cloudReady){ toast('Espera a nuvem conectar para mudar as importantes'); return false; }
   if(!cloudOnline){ toast('Conecte à internet para mudar as importantes'); return false; }
   const actor=USER.id, ref=cloudRef;
-  t.important=val; t.impU=quando; t.impBy=quem; // mostra na hora, confirma depois
+  t.important=val; t.impU=quando; t.impBy=quem; logEvt(val?'imp_on':'imp_off',{id,det:plain(t.text||'')}); // mostra na hora, confirma depois
   mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}
   try{
     const snap=await ref.once('value');
@@ -2792,7 +2896,7 @@ document.getElementById('taskFoto').addEventListener('change',ev=>{ const f=ev.t
   openCropper(f,{out:1280,q:.8,aspects:[['Original',4/3],['Quadrado',1],['3:4',3/4]]}).then(full=>{ if(!full){ openPics(picTaskId); return; }
     const im=new Image(); im.onload=()=>{ const k=Math.min(1,260/Math.max(im.width,im.height)); const c=document.createElement('canvas'); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k); c.getContext('2d').drawImage(im,0,0,c.width,c.height);
       if(!isAluna()) return; const id=picTaskId; toast('Enviando foto…');
-      picsRef(id).push({data:full,thumb:c.toDataURL('image/jpeg',.7),by:USER?USER.id:'',t:Date.now()}).then(()=>{ countPics(id); SFX.pop(); vibrate(20); toast('Foto guardada 📸'); openPics(id); }).catch(()=>toast('Não consegui enviar'));
+      picsRef(id).push({data:full,thumb:c.toDataURL('image/jpeg',.7),by:USER?USER.id:'',t:Date.now()}).then(()=>{ const ft=findTask(id); logEvt('foto',{id,det:ft?plain(ft.text||''):''}); countPics(id); SFX.pop(); vibrate(20); toast('Foto guardada 📸'); openPics(id); }).catch(()=>toast('Não consegui enviar'));
     }; im.src=full; }); });
 function askPhotoAfterDone(id){
   const t=findTask(id); if(!t||!CLOUD_CFG||!isAluna()) return;
@@ -2813,7 +2917,7 @@ function openCancel(id){ if(!isAluna()) return;
   document.getElementById('cancelOk').addEventListener('click',()=>{
     if(!isAluna()) return; const v=document.getElementById('cancelTxt').value.trim();
     if(v.length<3){ vibrate([40,40,40]); SFX.err(); toast('Escreve o motivo para cancelar'); document.getElementById('cancelTxt').focus(); return; }
-    t.off=true; t.offWhy=v; t.offBy=USER?USER.nome:''; t.status='todo'; t.u=Date.now(); save(); hide(); render(); refreshReminder(); vibrate(20); toast('Tarefa cancelada'); });
+    t.off=true; t.offWhy=v; t.offBy=USER?USER.nome:''; t.status='todo'; t.u=Date.now(); save(); logEvt('cancel',{id,det:plain(t.text||'')}); hide(); render(); refreshReminder(); vibrate(20); toast('Tarefa cancelada'); });
 }
 async function writeMove(id,day){
   if(!isAluna()&&!isResponsavel()) return false;
@@ -2852,6 +2956,7 @@ function openMove(id){
     buttons.forEach(x=>x.disabled=true);
     if(!await writeMove(id,b.dataset.k)){buttons.forEach(x=>x.disabled=false);return;}
     if(!b.isConnected) return;
+    logEvt('move',{id,det:plain(t.text||''),dia:DAYMETA[t.day][0]});
     hide();openState[w.days.find(d=>d.k===t.day).date]=true;render();refreshReminder();vibrate(20);toast('Mudou para '+DAYMETA[t.day][0]);
   }));
 }
@@ -2877,8 +2982,107 @@ function openNote(id){ if(!isAluna()) return;
    <div class="row"><button class="opt" id="noteCancel">Cancelar</button><button class="opt primary" id="noteSave">Salvar</button></div>`);
   document.getElementById('noteTxt').focus();
   document.getElementById('noteCancel').addEventListener('click',hide);
-  document.getElementById('noteSave').addEventListener('click',()=>{if(!isAluna()) return;t.note=document.getElementById('noteTxt').value.trim();t.noteBy=USER?USER.nome:'';t.u=Date.now();save();hide();render();vibrate(20);toast(t.note?'Observação salva':'Observação apagada');});
+  document.getElementById('noteSave').addEventListener('click',()=>{if(!isAluna()) return;t.note=document.getElementById('noteTxt').value.trim();t.noteBy=USER?USER.nome:'';t.u=Date.now();save();logEvt('nota',{id,det:plain(t.text||''),vazia:!t.note});hide();render();vibrate(20);toast(t.note?'Observação salva':'Observação apagada');});
 }
+/* ===================== LINHA DO TEMPO =====================
+   Junta tudo o que acontece na semana: mensagens, chamados de atencao, audios,
+   fotos, carinhos, mudancas de situacao, importantes, cancelamentos, dia e observacoes.
+   Duas fontes: a conversa (que ja guarda tudo) e um registro proprio em "eventos". */
+let EVENTOS=[], tlAberta=false, tlMax=40;
+try{ tlAberta=localStorage.getItem(KEY+'-tl')==='1'; }catch(e){}
+
+function logEvt(tipo,extra){
+  if(!famRef||!USER) return;
+  try{ famRef.child('eventos').push(Object.assign({tipo,by:USER.id,t:firebase.database.ServerValue.TIMESTAMP},extra||{})); }catch(e){}
+}
+function podaEventos(){                       // evita crescer sem fim
+  if(!famRef) return;
+  famRef.child('eventos').once('value').then(sn=>{ const v=sn.val()||{}; const ks=Object.keys(v).sort();
+    if(ks.length>600){ const fora={}; ks.slice(0,ks.length-400).forEach(k=>fora['eventos/'+k]=null); famRef.update(fora); } }).catch(()=>{});
+}
+const TL_TIPOS={
+  msg:      {ic:'💬',cor:'var(--acc)',   txt:()=>'mandou uma mensagem'},
+  foto_msg: {ic:'📷',cor:'var(--qua)',   txt:()=>'mandou uma foto na conversa'},
+  arquivo:  {ic:'📎',cor:'var(--dom)',   txt:()=>'mandou um arquivo'},
+  audio_msg:{ic:'🎤',cor:'var(--ter)',   txt:()=>'mandou um áudio'},
+  nudge:    {ic:'👋',cor:'var(--gold)',  txt:()=>'chamou a atenção'},
+  carinho:  {ic:'💛',cor:'var(--gold)',  txt:e=>'deixou um carinho '+(e.emoji||'')},
+  audio_rea:{ic:'🔊',cor:'var(--lilas)', txt:e=>'reagiu com áudio'+(e.nome?' · '+e.nome:'')},
+  done:     {ic:'✅',cor:'var(--ok)',    txt:()=>'marcou como feito'},
+  doing:    {ic:'⏳',cor:'var(--amber)', txt:()=>'começou a fazer'},
+  todo:     {ic:'↩️',cor:'var(--dom)',   txt:()=>'reabriu a tarefa'},
+  imp_on:   {ic:'⭐',cor:'var(--gold)',  txt:()=>'marcou como importante'},
+  imp_off:  {ic:'☆', cor:'var(--dom)',   txt:()=>'tirou das importantes'},
+  cancel:   {ic:'🚫',cor:'var(--imp)',   txt:()=>'cancelou a tarefa'},
+  undel:    {ic:'♻️',cor:'var(--ok)',    txt:()=>'voltou a valer'},
+  move:     {ic:'📆',cor:'var(--qui)',   txt:e=>'mudou para '+(e.dia||'outro dia')},
+  nota:     {ic:'📝',cor:'var(--seg)',   txt:e=>e.vazia?'apagou a observação':'escreveu uma observação'},
+  foto:     {ic:'📸',cor:'var(--qua)',   txt:()=>'tirou uma foto da tarefa'}
+};
+function tlUsuario(id){ return USERS.find(u=>u.id===id)||{id,nome:uname(id)||'Alguém',emoji:'👤',cor:'#7A6B9B'}; }
+function tlEventos(){
+  const out=[];
+  // 1) o que veio da conversa
+  CHAT.forEach(m=>{
+    const k=m.att?(m.att.kind==='nudge'?'nudge':m.att.kind==='img'?'foto_msg':(m.att.kind==='audio'||m.att.kind==='fala')?'audio_msg':'arquivo'):'msg';
+    out.push({tipo:k,by:m.by,t:m.t||0,det:k==='msg'?plain(m.text||''):(m.text?plain(m.text):'')});
+  });
+  // 2) carinhos e audios deixados nas tarefas
+  Object.keys(DB.weeks).forEach(id=>allTasks(DB.weeks[id]).forEach(t=>{
+    if(!t.reacts) return;
+    Object.keys(t.reacts).forEach(uid=>{ const r=t.reacts[uid]; if(!r||!r.t) return;
+      out.push({tipo:r.a?'audio_rea':'carinho',by:uid,t:r.t,det:plain(t.text||''),emoji:r.e,nome:r.an}); });
+  }));
+  // 3) registro proprio
+  EVENTOS.forEach(e=>{ if(e&&e.t&&TL_TIPOS[e.tipo]) out.push(e); });
+  // sem repetidos (mesma pessoa, mesmo tipo, mesmo segundo)
+  const visto=new Set();
+  return out.filter(e=>{ const c=e.tipo+'|'+e.by+'|'+Math.round((e.t||0)/1000)+'|'+(e.det||'').slice(0,20);
+    if(visto.has(c)) return false; visto.add(c); return true; }).sort((a,b)=>(b.t||0)-(a.t||0));
+}
+function tlHtml(){
+  const evs=tlEventos();
+  if(!evs.length) return '<p class="tl-vazio">Ainda não tem nada por aqui. Assim que alguém mexer numa tarefa ou mandar uma mensagem, aparece.</p>';
+  const mostrar=evs.slice(0,tlMax);
+  let dia='', html='';
+  mostrar.forEach(e=>{
+    const d=iso(new Date(e.t||0));
+    if(d!==dia){ dia=d; html+=`<div class="tl-dia">${dayLabel(d)}</div>`; }
+    const tp=TL_TIPOS[e.tipo]||TL_TIPOS.msg, u=tlUsuario(e.by);
+    const hm=String(new Date(e.t||0).getHours()).padStart(2,'0')+':'+String(new Date(e.t||0).getMinutes()).padStart(2,'0');
+    const det=(e.det||'').trim();
+    html+=`<div class="tl-item" style="--c:${tp.cor};--uc:${corDe(u)}">
+      <span class="tl-dot"><span class="tl-ic">${tp.ic}</span></span>
+      <span class="tl-av">${avatarHtml(u)}</span>
+      <span class="tl-txt"><span class="tl-l1"><b>${esc(USER&&u.id===USER.id?'Você':u.nome)}</b> ${esc(tp.txt(e))}</span>${det?`<small>${esc(det.length>90?det.slice(0,90)+'…':det)}</small>`:''}</span>
+      <time>${hm}</time></div>`;
+  });
+  if(evs.length>mostrar.length) html+=`<button class="tl-mais" id="tlMais">Ver mais (${evs.length-mostrar.length})</button>`;
+  return html;
+}
+function renderTimeline(){
+  const sec=document.getElementById('tl'); if(!sec) return;
+  const corpo=document.getElementById('tlBody'), bt=document.getElementById('tlToggle');
+  const n=tlEventos().length;
+  const cnt=document.getElementById('tlN'); if(cnt) cnt.textContent=n>99?'99+':n;
+  sec.classList.toggle('aberta',tlAberta);
+  if(bt) bt.setAttribute('aria-expanded',String(tlAberta));
+  if(!corpo) return;
+  corpo.hidden=!tlAberta;
+  if(!tlAberta){ corpo.innerHTML=''; return; }
+  corpo.innerHTML=tlHtml();
+  const mais=document.getElementById('tlMais');
+  if(mais) mais.addEventListener('click',()=>{ tlMax+=40; renderTimeline(); });
+}
+function bindTimeline(){
+  const bt=document.getElementById('tlToggle'); if(!bt) return;
+  bt.addEventListener('click',()=>{ tlAberta=!tlAberta; tlMax=40;
+    try{localStorage.setItem(KEY+'-tl',tlAberta?'1':'0');}catch(e){}
+    vibrate(15); renderTimeline();
+    if(tlAberta) setTimeout(()=>document.getElementById('tl')?.scrollIntoView({behavior:'smooth',block:'start'}),60); });
+  renderTimeline();
+}
+
 function openMain(){
   const n=unread();
   show(`<h2>☰ Menu <button class="x">✕</button></h2>
@@ -2917,6 +3121,11 @@ const SUMMARY_MODOS=[
 const CORES_MATERIA=[['#8E5BE0','#B98BEA'],['#A44FC7','#CD8FE3'],['#6B46C1','#9B7BDD'],['#4C3499','#8064C4'],
   ['#B57BE8','#D4B8F5'],['#8E2A63','#C4568F'],['#5B3A9E','#8E6BD4'],['#7C4DC4','#A98BE0'],
   ['#9B8CBA','#C3B8D8'],['#C74FA8','#E28FC9'],['#3F2764','#6E5A94'],['#A46BE8','#CBA8F2']];
+function lumin(hex){ const n=parseInt(String(hex).replace('#',''),16);
+  const c=[(n>>16)&255,(n>>8)&255,n&255].map(v=>{ v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4); });
+  return .2126*c[0]+.7152*c[1]+.0722*c[2]; }
+// a faixa vai do tom claro ao escuro; o rotulo fica no meio, entao pesa mais o claro
+function corDoRotulo(d){ try{ return (lumin(d.light)*.6+lumin(d.color)*.4)>.40?'#26243A':'#fff'; }catch(e){ return '#fff'; } }
 function clarear(hex,f){ const n=parseInt(hex.slice(1),16), r=n>>16, g=(n>>8)&255, b=n&255;
   const m=(v)=>Math.round(v+(255-v)*f); return '#'+[m(r),m(g),m(b)].map(v=>v.toString(16).padStart(2,'0')).join(''); }
 function corDoDia(k){ const v=getComputedStyle(document.documentElement).getPropertyValue(DAYMETA[k][1]).trim(); return v||'#8E5BE0'; }
@@ -2957,7 +3166,7 @@ function openSummary(modoInicial){
       const share=d.tasks.length/total*100;
       const arc=`<circle data-state="${d.key}" cx="140" cy="140" r="103" fill="none" stroke="url(#summary-${modo}-${d.key})" stroke-width="54" pathLength="100" stroke-dasharray="${share} ${100-share}" stroke-dashoffset="${-offset}" transform="rotate(-90 140 140)"><title>${esc(d.label)}: ${d.tasks.length} (${pct(d.tasks.length)}%)</title></circle>`;
       const angle=(offset+share/2)*Math.PI/50-Math.PI/2;
-      labels.push(`<text class="summary-slice-pct" data-state="${d.key}" data-start="${offset}" data-share="${share}" x="${140+103*Math.cos(angle)}" y="${140+103*Math.sin(angle)}" text-anchor="middle" dominant-baseline="central" fill="#fff" visibility="hidden" aria-hidden="true">${pct(d.tasks.length)}%</text>`);
+      labels.push(`<text class="summary-slice-pct" data-state="${d.key}" data-start="${offset}" data-share="${share}" x="${140+103*Math.cos(angle)}" y="${140+103*Math.sin(angle)}" text-anchor="middle" dominant-baseline="central" fill="${corDoRotulo(d)}" class="${corDoRotulo(d)==='#fff'?'claro':'escuro'}" visibility="hidden" aria-hidden="true">${pct(d.tasks.length)}%</text>`);
       offset+=share;return arc;
     }).join('');
     document.getElementById('sumBody').innerHTML=`
@@ -2995,7 +3204,11 @@ function openSummary(modoInicial){
       document.getElementById('summaryCount').textContent=d?d.tasks.length:total;
       document.getElementById('summaryLabel').textContent=d?d.label+' · '+pct(d.tasks.length)+'%':(total===1?'tarefa na semana':'tarefas na semana');
       const detail=document.getElementById('summaryDetail');
-      detail.innerHTML=d?`<h3>${esc(d.label)} · ${d.tasks.length}</h3>${d.tasks.length?d.tasks.map(t=>`<button class="summary-item" data-task-id="${t.id}"><small>${subjectVisual(SUBJ[t.subj]||'')} · ${DAYMETA[t.day]?DAYMETA[t.day][0]:''}</small>${esc(plain(t.text))}</button>`).join(''):'<div class="summary-empty">Nenhuma tarefa aqui.</div>'}`:'';
+      const estadoDe=t=>SUMMARY_STATES.find(x=>x.key===summaryState(t,w))||SUMMARY_STATES[0];
+      const contagem=d?SUMMARY_STATES.map(st=>({st,n:d.tasks.filter(t=>summaryState(t,w)===st.key).length})).filter(x=>x.n):[];
+      const barrinha=d&&d.tasks.length?`<div class="summary-counts">${contagem.map(x=>`<span class="scount" style="--s:${x.st.color}"><i aria-hidden="true"></i>${esc(x.st.label)} <b>${x.n}</b></span>`).join('')}</div>`:'';
+      detail.innerHTML=d?`<h3>${esc(d.label)} · ${d.tasks.length}</h3>${barrinha}${d.tasks.length?d.tasks.map(t=>{ const e=estadoDe(t);
+        return `<button class="summary-item" data-task-id="${t.id}"><small>${subjectVisual(SUBJ[t.subj]||'')} · ${DAYMETA[t.day]?DAYMETA[t.day][0]:''}<span class="sstat" style="--s:${e.color};--sl:${e.light}">${esc(e.label)}</span></small>${esc(plain(t.text))}</button>`; }).join(''):'<div class="summary-empty">Nenhuma tarefa aqui.</div>'}`:'';
       detail.querySelectorAll('[data-task-id]').forEach(b=>b.addEventListener('click',()=>openMenu(b.dataset.taskId)));
     };
     sheet.querySelectorAll('[data-select]').forEach(b=>b.addEventListener('click',()=>select(b.dataset.select)));
