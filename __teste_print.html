@@ -1544,6 +1544,7 @@
 </style>
 </head>
 <body class="carregando">
+<script>try{localStorage.setItem("minha-semana-7D-v1-user",(window.__U||"edson"));localStorage.setItem("minha-semana-7D-v1-rem",String(Date.now()));}catch(e){}</script>
 <div class="carregando" id="carregando" aria-hidden="true"><div class="cg"><span class="cg-anel"></span><span class="cg-tx">Carregando…</span></div></div>
 <div class="splash" id="splash" aria-hidden="true"><img id="splashImg" alt="" decoding="async" draggable="false"></div>
 <script>/* abertura: uma vez a bailarina, na proxima a patinadora, e assim por diante */
@@ -4335,5 +4336,38 @@ if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serv
   schedule();
 })();
 </script>
-</body>
+
+<script>
+document.getElementById('splash')?.remove(); document.body.classList.remove('abrindo'); if(typeof tiraCarregando==='function') tiraCarregando();
+setTimeout(()=>{ try{ document.getElementById('splash')?.remove(); document.body.classList.remove('abrindo');
+  const FOTO='data:image/svg+xml;base64,'+btoa('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="#2EB88A"/><text x="40" y="52" font-size="34" text-anchor="middle" fill="#fff">F</text></svg>');
+  PERFIS={maria:{nome:'Maria',foto:FOTO,lastSeen:Date.now()-3600e3},edson:{nome:'Edson',foto:FOTO,lastSeen:Date.now()},thaysa:{nome:'Thaysa',foto:FOTO,lastSeen:Date.now()-86400e3}};
+  ONLINE={maria:{t:Date.now()}};
+  CHAT=[];
+  for(let i=0;i<26;i++) CHAT.push({k:'v'+i,by:i%2?'maria':'edson',text:'Mensagem antiga numero '+(i+1)+' para encher a conversa',t:Date.now()-86400e3*2+i*60000});
+  for(let i=0;i<8;i++) CHAT.push({k:'o'+i,by:i%2?'maria':'edson',text:'Mensagem de ontem '+(i+1),t:Date.now()-86400e3+i*60000});
+  for(let i=0;i<4;i++) CHAT.push({k:'h'+i,by:i%2?'maria':'edson',text:'Mensagem de hoje '+(i+1),t:Date.now()-7200e3+i*60000});
+  for(let i=0;i<3;i++) CHAT.push({k:'n'+i,by:'edson',att:{kind:'nudge',name:'Atenção'},t:Date.now()-2000e3+i*60000});
+  CHAT.push({k:'z1',by:'edson',text:'Última mensagem minha',t:Date.now()-600e3});
+  READS={maria:Date.now(),thaysa:0};
+  lastRead=0; renderFam(); render(); updateChatBadge();
+  if(true){ openChat(); }
+  else {
+    EVENTOS=[];
+    for(let i=0;i<9;i++) EVENTOS.push({tipo:'nudge',by:'maria',t:Date.now()-5400e3+i*70000});
+    EVENTOS.push({tipo:'audio_rea',by:'edson',t:Date.now()-2000e3,det:'Terminar a leitura de Matemática (páginas 80 a 88). Amanhã é a correção das tarefas',nome:'Rufar de tambores'});
+    EVENTOS.push({tipo:'done',by:'maria',t:Date.now()-1800e3,det:'Fazer a tarefa da página 52'});
+    EVENTOS.push({tipo:'move',by:'edson',t:Date.now()-900e3,det:'Acabar o que sobrou da sala (Language Organizer)',dia:'Quinta',id:(allTasks(DB.weeks[current])[0]||{}).id});
+    tlAberta=false; render();
+    if(false){ mobileStatusOpen=true; subjOpen=true; renderFilters(); }
+    if(false){ setTimeout(()=>openSummary('dia'),300); }
+    setTimeout(()=>{ const st=document.querySelector('#app .task .star'); if(st){ festaEstrela(st); } },200);
+    if(USER&&USER.id==='maria'){ const w=DB.weeks[current], ts=allTasks(w).filter(x=>x.type===H).slice(0,6);
+      ts.forEach((x,i)=>{ x.reacts={edson:{e:'🎉',n:'Edson',t:Date.now()-i*60000}}; }); reaSeen=0; updateReaFab(); } document.querySelectorAll('#app details').forEach(d=>d.open=false); if(!true&&!false){ const d1=document.querySelector('#app .day'); if(d1) d1.open=true; } document.querySelector('.next')?.remove(); window.scrollTo(0,0);
+  
+  }
+  setTimeout(()=>{ const g=document.querySelector('.daygrp[data-day="antes"]'); if(g) g.open=true; const m=document.getElementById('msgs'); if(m) m.scrollTop=420; },250);
+}catch(e){document.title='ERRO: '+e.message;} },400);
+</script>
+<script>setTimeout(function(){ try{ var meus=document.querySelectorAll('#msgs .msg.me'); entraSel(meus[meus.length-1].dataset.k); meus[meus.length-2].click(); }catch(e){ document.title='ERRO '+e.message; } },1500);</script></body>
 </html>
