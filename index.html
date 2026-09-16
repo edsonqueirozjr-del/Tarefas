@@ -206,7 +206,7 @@
   .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:15px;color:var(--soft);margin-bottom:4px;line-height:1.3}
   .prog .row b{color:var(--ink);font-size:15px;font-weight:600}
   .prog .bar{height:30px;border-radius:12px;background:var(--t41);overflow:hidden;position:relative;border:1px solid var(--t45);box-shadow:inset 0 2px 4px rgba(var(--r01),.14)}
-  .prog .bar i{display:block;height:100%;border-radius:12px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width 1.9s cubic-bezier(.16,.8,.24,1)}
+  .prog .bar i{display:block;height:100%;border-radius:12px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite}   /* a largura e animada pelo JS (animaBarra) */
   @keyframes progflow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
   @media(prefers-reduced-motion:reduce){.prog .bar i{animation:none}.prog .bar i::after{display:none}}
   .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
@@ -617,7 +617,7 @@
   .daygrp[open]>summary .arw{transform:rotate(180deg)}
   .daygrp .inner{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
   .chatsheet .msgs>.msg{margin-bottom:10px}
-  .daysep{text-align:center;font-size:13px;font-weight:900;color:var(--ink);background:rgba(38,36,58,.08);border-radius:999px;padding:4px 14px;margin:2px auto 2px;width:fit-content;text-transform:capitalize}
+  .daysep{text-align:center;font-size:13px;font-weight:900;color:var(--ink);background:rgba(38,36,58,.08);border-radius:999px;padding:4px 14px;margin:0 auto 10px;width:fit-content;text-transform:capitalize}   /* mesma folga de um balao para o outro */
   .msgs.bg-noite .daysep{background:rgba(255,255,255,.16);color:#fff}
   .msg .b .q{display:block;border-left:3px solid var(--acc);background:rgba(0,0,0,.06);border-radius:8px;padding:4px 8px;margin-bottom:6px;font-size:13px;line-height:1.25;color:var(--ink);cursor:pointer}
   .msg.me .b .q{background:rgba(255,255,255,.22);border-left-color:#fff;color:#fff}
@@ -3013,8 +3013,8 @@ function render(){
   const w=DB.weeks[current];
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
-    PCT_ANT=pctNaTela();     // continua de onde a barrinha esta (0 quando o app abre)
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${PCT_ANT}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; enchePro(pct); sapoProg(); posicionaFrase(); }
+    const deOndeEstava=pctNaTela();   // continua de onde a barrinha esta (0 quando o app abre)
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -3181,21 +3181,26 @@ function pctNaTela(){
   return t?Math.max(0,Math.min(100,l/t*100)):0;
 }
 let barraJaEncheu=false;
-function enchePraValer(){            // chamada quando a tela finalmente aparece
+// a barrinha enche com animacao propria (assim funciona mesmo em aparelho com "reduzir animacoes")
+function animaBarra(de,ate,ms){
+  const i=document.querySelector('.prog .bar i'); if(!i) return;
+  i.style.width=ate+'%';                       // estado final fica sempre certo
+  PCT_ANT=ate;
+  if(Math.abs(ate-de)<0.5) return;             // nada para animar
+  try{
+    i.getAnimations().forEach(a=>{ if(a.id==='enche') a.cancel(); });
+    const an=i.animate([{width:de+'%'},{width:ate+'%'}],
+      {duration:ms||1900,easing:'cubic-bezier(.16,.8,.24,1)',fill:'backwards'});
+    an.id='enche';
+  }catch(e){ }                                  // navegador antigo: fica so o valor final
+}
+function enchePraValer(){            // quando a tela finalmente aparece, enche do zero
   if(barraJaEncheu) return;
   const i=document.querySelector('.prog .bar i'); if(!i) return;
   barraJaEncheu=true;
-  const alvo=i.style.width||'0%';
-  i.style.transition='none'; i.style.width='0%'; void i.offsetWidth;   // zera sem animar...
-  i.style.transition=''; void i.offsetWidth; i.style.width=alvo;       // ...e agora enche na frente da pessoa
-  PCT_ANT=parseFloat(alvo)||0;
+  animaBarra(0,parseFloat(i.style.width)||0);
 }
-function enchePro(pct){
-  const i=document.querySelector('.prog .bar i'); if(!i) return;
-  void i.offsetWidth;          // obriga o navegador a enxergar o valor de partida...
-  i.style.width=pct+'%';       // ...para entao crescer ate o novo
-  PCT_ANT=pct;
-}
+function enchePro(pct){ animaBarra(PCT_ANT,pct); }
 function fraseProg(pct){ const i=FRASES.findIndex(([a,b])=>pct>=a&&pct<=b); if(i<0) return '';
   if(fraseAtual.faixa!==i){ const l=FRASES[i][2]; fraseAtual={faixa:i,txt:l[Math.floor(Math.random()*l.length)]}; } return fraseAtual.txt; }
 // decide onde a frase cabe: dentro da parte cheia, na parte vazia, ou embaixo da barra
