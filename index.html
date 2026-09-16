@@ -292,6 +292,7 @@
   .realist .rea-date{font-size:15px;font-weight:700;color:var(--soft);line-height:1.4}
   .badge{position:absolute;top:-4px;right:-4px;z-index:5;background:#E4443F;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
   .badge.on{display:flex}
+  #chatBadge{background:#218C55;min-width:28px;height:28px;font-size:14px;padding:0 7px;top:-5px;right:-5px}
   .sheet.chatsheet{display:flex;flex-direction:column;height:min(92dvh,780px);max-height:none}
   .chatsheet .grip{margin:4px auto 6px}
   .chatsheet{padding:0;position:relative;overflow:hidden;border:3px solid var(--c2,#4A7FE0);box-shadow:0 -6px 30px rgba(38,36,58,.25)}
@@ -322,7 +323,7 @@
   .msgs{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 12px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;background:#F7F5FC}
   .msg{display:flex;gap:8px;align-items:flex-end;max-width:85%}
   .msg.me{align-self:flex-end;flex-direction:row-reverse}
-  .msg .av{width:46px;height:46px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex:none;border:3px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18)}
+  .msg .av{width:52px;height:52px;border-radius:50%;background:#F2F0FA;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex:none;border:3px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18)}
   .msg .av img{width:100%;height:100%;object-fit:cover}
   .msg{--uc:var(--acc)}
   .msg:not(.me) .b{background:color-mix(in srgb,var(--uc) 14%,#fff);border-bottom-left-radius:6px}
@@ -563,6 +564,14 @@
   .chatsheet .chatwho{gap:6px;font-size:13px}
   .chatsheet .chatwho span{padding:5px 9px;background:rgba(40,17,75,.16);font-weight:700}
   .chatsheet .msgs{padding:8px 16px 20px;gap:0;scrollbar-width:thin;scrollbar-color:#D7C8EC transparent}
+  /* Transicao suave nas bordas da conversa, em celular e tablet. */
+  .chatsheet .msgs{
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 24px,#000 calc(100% - 20px),transparent 100%);
+    mask-image:linear-gradient(to bottom,transparent 0,#000 24px,#000 calc(100% - 20px),transparent 100%);
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+    -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  }
+
   .chatsheet .msg .b{padding:10px 14px 8px;line-height:1.45;box-shadow:0 2px 8px rgba(63,39,100,.06)}
   .chatsheet .daygrp>summary,.chatsheet .daysep{font-weight:700;font-size:13px;padding:6px 12px}
   .chatsheet .chatin{
@@ -580,10 +589,10 @@
   /* Campo e acoes compartilham uma unica barra; microfone fica externo. */
   .chatin .chatcompose{display:flex;flex:1;min-width:0;align-items:flex-end;gap:0;padding:0 3px 0 0;border:1px solid color-mix(in srgb,var(--c2,#8E5BE0) 22%,#fff);border-radius:24px;background:#fff}
   .chatin .chatcompose:focus-within{border-color:var(--c2,#8E5BE0);box-shadow:0 0 0 3px color-mix(in srgb,var(--c2,#8E5BE0) 14%,transparent)}
-  body .chatsheet .chatin .chatcompose textarea{border:0;background:transparent;border-radius:24px;box-shadow:none;min-height:44px;padding:11px 4px 11px 14px}
+  body .chatsheet .chatin .chatcompose textarea{border:0;background:transparent;border-radius:24px;box-shadow:none;min-height:44px;max-height:180px;padding:11px 4px 11px 14px}
   body .chatsheet .chatin .chatcompose textarea:focus{border:0;box-shadow:none}
   body .chatsheet .chatin .chatcompose button{border:0;background:transparent;box-shadow:none;align-self:flex-end;display:flex;align-items:center;justify-content:center;padding:0}
-  body .chatsheet .chatin #chatSend{background:linear-gradient(135deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--c2,#8E5BE0) 24%,transparent)}
+  body .chatsheet .chatin #chatSend{align-self:flex-end;background:linear-gradient(135deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--c2,#8E5BE0) 24%,transparent)}
   .chatsheet button:focus-visible,.chatsheet summary:focus-visible,.chatsheet .cfbar input:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
   @media(hover:hover){body .chatsheet .chat h2 button:hover{background:rgba(255,255,255,.3)}.chatsheet .chatin button:hover{transform:translateY(-1px)}}
   /* Tablet: usa a area disponivel em ambas as orientacoes. */
@@ -724,6 +733,8 @@
   @media(prefers-reduced-motion:reduce){body.shake .wrap,body.shake .fabs,body.shake .sheet>*,body.shake .toast{animation:none}}
   .nudge-msg{align-self:center;display:inline-flex;align-items:baseline;justify-content:center;gap:6px;max-width:96%;margin:4px auto;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--uc,#8E5BE0) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,#8E5BE0) 35%,#fff);color:var(--ink);font-size:12px;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap}
   .nudge-msg .nt{white-space:nowrap}
+  .nudge-msg.grouped{white-space:normal}
+  .nudge-msg.grouped .nt{white-space:normal;min-width:0;overflow-wrap:anywhere}
   .nudge-msg .hand{flex:none;font-size:15px;align-self:center}
   .nudge-msg b{color:var(--uc,#8E5BE0);font-weight:900}
   .nudge-msg small{font-size:10px;opacity:.65;flex:none;align-self:baseline}
@@ -878,18 +889,30 @@
     @media (min-width:700px){
       .fabs>#fab,.fabs>#chatFab{width:100.8px;height:100.8px;font-size:44.8px}
     }
-    .fam .p small{font-size:13px}
+    .top-title h1{font-size:28px}
+    .fam .p{font-size:17px}
+    .fam .p small{font-size:14px}
+    .prog .row{font-size:14px}
+    .prog .row b{font-size:16px}
+    .prog .sapo-prog{width:26px;height:26px}
+    @media (min-width:700px){
+      .top-title h1{font-size:36px}
+      .prog .row{font-size:17px}
+      .prog .row b{font-size:20px}
+    }
     .prog .bar{height:var(--tablet-progress-height,58px)}
-    .prog .frase,.prog .frase-baixo{font-size:16px}
+    .prog .frase,.prog .frase-baixo{font-size:17px}
     .prog .frase.dentro{left:14px}
     .prog .frase.fora{right:var(--tablet-pct-space,80px)}
-    .prog .pctin{font-size:20px;right:14px}
+    .prog .pctin{font-size:21px;right:14px}
     body .topacts #reaFab{width:52px;height:52px;font-size:44px}
     .top-title:has(#reaFab.on){min-height:56px}
   }
   .mobile-filter-toggle{display:none}
   @media screen and (max-width:599px), screen and (max-height:599px){
-    .chatsheet .chatwho .chat-lastseen{font-size:11px}
+    .chatsheet .chatwho b,.chatsheet .chatwho .chat-lastseen{font-size:11px}
+  }
+  @media screen{
     .filter-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 40px;gap:6px;align-items:stretch}
     .filter-row .mobile-filter-toggle{display:flex;align-items:center;justify-content:center;min-width:0;min-height:40px;padding:6px 8px;font-size:14px;white-space:nowrap;margin:0}
     #mobileStatusToggle{grid-column:1;grid-row:1}
@@ -900,6 +923,22 @@
     .filter-row>#fType.mobile-collapsed,#fSubj.mobile-collapsed{display:none}
     #fSubj{flex-wrap:wrap;gap:6px}
   }
+  @media screen and (min-width:600px) and (min-height:600px){
+    .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) var(--tablet-filter-height,58px)}
+    .filter-row .mobile-filter-toggle{height:var(--tablet-filter-height,58px);min-height:var(--tablet-filter-height,58px);font-size:15px;padding:8px 16px}
+    .filter-row>.filter-search{width:var(--tablet-filter-height,58px);height:var(--tablet-filter-height,58px)}
+  }
+  /* Conversa no celular: toda a area util, inclusive quando o teclado reduz a tela. */
+  @media screen and (max-width:599px){
+    body .sheet.chatsheet{width:100%;max-width:none;height:100vh;height:100dvh;max-height:100dvh;margin:0;border:0;border-radius:0;box-shadow:none}
+    .veil:has(.chatsheet){align-items:stretch}
+    .chatsheet .chathead{padding-top:calc(24px + env(safe-area-inset-top))}
+  }
+  .chat-history{position:relative;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+  .chat-jump{position:absolute;right:16px;bottom:12px;z-index:3;width:44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;border:1px solid var(--lilas-line);border-radius:50%;background:#fff;color:var(--lilas-ink);box-shadow:0 3px 12px rgba(63,39,100,.2);touch-action:manipulation}
+  .chat-jump[hidden]{display:none}
+  .chat-jump:active{transform:scale(.94)}
+  .chat-jump:focus-visible{outline:2px solid var(--lilas);outline-offset:3px}
 </style>
 </head>
 <body>
@@ -1097,7 +1136,7 @@ const weekIds=()=>Object.keys(DB.weeks).sort();
 let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(i=>i<=weekIdFor(TODAY)).pop() || weekIds()[0]);
 const openState={};
 const tabletFiltersMedia=matchMedia('(min-width:600px) and (min-height:600px)');
-let fType='all', fSubj='all', fQ='', subjOpen=tabletFiltersMedia.matches, subjAnim=null, filtroTocado=false;
+let fType='all', fSubj='all', fQ='', subjOpen=false, subjAnim=null, filtroTocado=false;
 let mobileStatusOpen=false;
 const fSet=()=>fType==='all'?[]:fType.split('+');
 const fHas=k=>fType!=='all'&&fSet().includes(k);
@@ -1460,16 +1499,16 @@ function ajustaTitulo(){
 window.addEventListener('resize',()=>{ clearTimeout(window.__tt); window.__tt=setTimeout(marcaTopo,150); });
 window.addEventListener('orientationchange',()=>setTimeout(marcaTopo,300));
 document.fonts&&document.fonts.ready&&document.fonts.ready.then(()=>marcaTopo());
-function fmtSeen(t){ const d=new Date(t||0); const di=iso(d); const hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-  if(di===TODAY) return 'visto hoje '+hm; if(di===addDays(TODAY,-1)) return 'visto ontem '+hm; return 'visto '+fmt(di)+' às '+hm; }
-function fmtT(t){ const d=new Date(t||0); const hoje=iso(d)===TODAY; return (hoje?'':fmt(iso(d))+' ')+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function fmtSeen(t){ const chatToday=iso(new Date()); const d=new Date(t||0); const di=iso(d); const hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  if(di===chatToday) return 'visto hoje '+hm; if(di===addDays(chatToday,-1)) return 'visto ontem '+hm; return 'visto '+fmt(di)+' às '+hm; }
+function fmtT(t){ const chatToday=iso(new Date()); const d=new Date(t||0); const hoje=iso(d)===chatToday; return (hoje?'':fmt(iso(d))+' ')+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
 const REACTS=['🐸','👍','❤️','😂','😮','😢','🎉','🔥','🙏'];
 const EMOJIS=['🐸','😀','😂','🥰','😎','🤔','😅','😴','🤩','😭','🙄','😉','🥳','👍','👏','🙏','💪','👀','🤝','❤️','💛','💙','💜','🔥','✨','⭐','🎉','🎈','🍕','🍦','🐶','🐱','🐾','📚','✏️','🎒','🏫','⏰','✅','❌','💬'];
 function reactsHtml(m){ const r=m.reacts||{}; const ks=Object.keys(r).filter(e=>r[e]&&Object.keys(r[e]).length); if(!ks.length) return '';
   return `<div class="reacts">${ks.map(e=>`<button class="react ${USER&&r[e][USER.id]?'mine':''}" data-r="${e}" data-k="${m.k}">${e} ${Object.keys(r[e]).length}</button>`).join('')}</div>`; }
-function dayLabel(d){ if(d===TODAY) return 'Hoje'; if(d===addDays(TODAY,-1)) return 'Ontem';
+function dayLabel(d){ const chatToday=iso(new Date()); if(d===chatToday) return 'Hoje'; if(d===addDays(chatToday,-1)) return 'Ontem';
   const dt=new Date(d+'T12:00:00'); const dias=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
-  const diff=(new Date(TODAY+'T12:00:00')-dt)/86400000; return (diff<7? dias[dt.getDay()]+', ':'')+fmt(d); }
+  const diff=(new Date(chatToday+'T12:00:00')-dt)/86400000; return (diff<7? dias[dt.getDay()]+', ':'')+fmt(d); }
 // Emojis das mensagens ganham vida: cada familia tem um movimento, sempre no mesmo tamanho.
 const EMO_ANIM=[
   ['beat',  '❤️🧡💛💚💙💜🖤🤍🤎💖💗💓💞💕❣️💘💝😍🥰😘💋'],
@@ -1488,10 +1527,32 @@ const EMO_ANIM=[
 ];
 function emoClass(e){ const base=e.replace(/[\ufe0f\u200d]/g,'').replace(/[\u{1F3FB}-\u{1F3FF}]/gu,''); for(const [c,set] of EMO_ANIM){ if(set.includes(base[0]+(base[1]||''))||set.includes(base)) return c; } return 'idle'; }
 function animaEmojis(html){ if(!html) return ''; return html.replace(/(\p{Extended_Pictographic}(?:\ufe0f|\p{Emoji_Modifier}|\u200d\p{Extended_Pictographic})*)/gu,e=>`<span class="em ${emoClass(e)}">${e}</span>`); }
+// Agrupa somente sequencias reais de tres ou mais chamados no mesmo dia.
+function chatMessagesHtml(messages,withDate=false){
+  const parts=[];
+  for(let i=0;i<messages.length;i++){
+    const m=messages[i]; let last=i;
+    if(m.att?.kind==='nudge'){
+      const day=iso(new Date(m.t||0));
+      while(last+1<messages.length && messages[last+1].att?.kind==='nudge' && iso(new Date(messages[last+1].t||0))===day) last++;
+    }
+    let item=m;
+    if(last-i+1>=3){
+      const senders=[...new Set(messages.slice(i,last+1).map(x=>x.by))];
+      item={...messages[last],nudgeGroup:{count:last-i+1,senders}};
+    } else last=i;
+    const prefix=withDate?`<div class="daysep">${dayLabel(iso(new Date(item.t||0)))}</div>`:'';
+    parts.push(prefix+msgHtml(item,i,messages)); i=last;
+  }
+  return parts.join('');
+}
 function msgHtml(m,i,arr){
   const u=USERS.find(x=>x.id===m.by)||{emoji:'👤',nome:m.by,id:m.by,cor:'#7A6B9B'}; const me=USER&&m.by===USER.id;
   if(m.att&&m.att.kind==='nudge'){ const hm0=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-    return `<div class="nudge-msg" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="hand" aria-hidden="true">👋</span><span class="nt"><b>${me?'Você':esc(u.nome)}</b> chamou a atenção</span><small>${hm0}</small></div>`; }
+    const group=m.nudgeGroup;
+    const names=group?group.senders.map(id=>USER&&id===USER.id?'Você':esc((USERS.find(x=>x.id===id)||{nome:id}).nome)):[];
+    const text=group?(names.length===1?`<b>${names[0]}</b> chamou a atenção <b>${group.count} vezes</b>`:`<b>${names.join(' e ')}</b> · <b>${group.count}</b> chamados de atenção`):`<b>${me?'Você':esc(u.nome)}</b> chamou a atenção`;
+    return `<div class="nudge-msg${group?' grouped':''}" data-k="${m.k}" style="--uc:${group&&names.length>1?'var(--lilas)':corDe(u)}"><span class="hand" aria-hidden="true">👋</span><span class="nt">${text}</span><small>${hm0}</small></div>`; }
   const prev=arr[i-1]; const cont=prev&&prev.by===m.by&&(m.t||0)-(prev.t||0)<5*60*1000&&!m.reply&&!(prev.att&&prev.att.kind==='nudge');
   const onlyEmo=!m.att&&/^(\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u200d|\ufe0f|\s){1,6}$/u.test(m.text||'');
   const att=m.att?(m.att.kind==='img'?`<img class="pic" src="${m.att.thumb}" data-open="${m.k}" alt="foto">`:m.att.kind==='fala'?`<span class="aud fala" data-fala="${esc(m.att.texto||'')}" role="button" tabindex="0" aria-label="Ouvir"><span class="pl" aria-hidden="true"></span><span class="ft">🗣️ ${esc(m.att.texto||'')}</span></span>`:m.att.kind==='audio'?`<span class="aud" data-aud="${m.k}" role="button" tabindex="0" aria-label="Tocar áudio"><span class="pl" aria-hidden="true"></span><span class="wv" aria-hidden="true">${'<i></i>'.repeat(14)}</span><small>${fmtDur(m.att.dur||0)}</small></span>`:`<span class="file" data-open="${m.k}">📄 <span>${esc(m.att.name||'arquivo')}<small>${fmtSize(m.att.size||0)}</small></span></span>`):'';
@@ -1503,21 +1564,22 @@ function msgHtml(m,i,arr){
   return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}</div>${reactsHtml(m)}</div></div>`;
 }
 // entende "15/09", "15/9/26", "15/09/2026", "hoje" e "ontem"; devolve a data ISO ou null
-function dataDaBusca(q){ q=(q||'').trim().toLowerCase(); if(q==='hoje') return TODAY; if(q==='ontem') return addDays(TODAY,-1);
+function dataDaBusca(q){ const chatToday=iso(new Date()); q=(q||'').trim().toLowerCase(); if(q==='hoje') return chatToday; if(q==='ontem') return addDays(chatToday,-1);
   const m=q.match(/^(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?$/); if(!m) return null;
-  const d=+m[1], mo=+m[2]; let y=m[3]?+m[3]:+TODAY.slice(0,4); if(y<100) y+=2000; if(d<1||d>31||mo<1||mo>12) return null;
+  const d=+m[1], mo=+m[2]; let y=m[3]?+m[3]:+chatToday.slice(0,4); if(y<100) y+=2000; if(d<1||d>31||mo<1||mo>12) return null;
   return y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
-function chatHtml(){
+function chatHtml(){ const chatToday=iso(new Date());
   if(chatQ.length>=2){ const ql=chatQ.toLowerCase();
     const dia=dataDaBusca(ql);
     const hits=dia?CHAT.filter(m=>iso(new Date(m.t||0))===dia):CHAT.filter(m=>(m.text||'').toLowerCase().includes(ql)||(m.att&&(m.att.name||'').toLowerCase().includes(ql)));
     if(!hits.length) return dia?'<div class="empty">Nenhuma mensagem em<br><b>'+fmt(dia)+'</b></div>':'<div class="empty">Nenhuma mensagem com<br><b>“'+esc(chatQ)+'”</b></div>';
+    if(dia) return chatMessagesHtml(hits,true);
     return hits.map((m,i,arr)=>`<div class="daysep">${dayLabel(iso(new Date(m.t||0)))}</div>`+msgHtml(m,i,arr)).join('');
   }
   if(!CHAT.length) return '<div class="empty">Ainda não tem mensagens.<br>Manda um oi! 👋</div>';
   const groups=[]; CHAT.forEach(m=>{ const d=iso(new Date(m.t||0)); const g=groups[groups.length-1]; if(g&&g.d===d) g.msgs.push(m); else groups.push({d,msgs:[m]}); });
-  return groups.map(g=>{ const inner=g.msgs.map((m,i,arr)=>msgHtml(m,i,arr)).join('');
-    if(g.d===TODAY) return `<details class="daygrp hoje" data-day="${g.d}"${chatOpenDays[g.d]===false?'':' open'}><summary>Hoje · ${g.msgs.length} ${g.msgs.length>1?'mensagens':'mensagem'}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
+  return groups.map(g=>{ const inner=chatMessagesHtml(g.msgs);
+    if(g.d===chatToday) return `<details class="daygrp hoje" data-day="${g.d}"${chatOpenDays[g.d]===false?'':' open'}><summary>Hoje · ${g.msgs.length} ${g.msgs.length>1?'mensagens':'mensagem'}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`;
     const open=chatOpenDays[g.d]?' open':'';
     return `<details class="daygrp" data-day="${g.d}"${open}><summary>${dayLabel(g.d)} · ${g.msgs.length} ${g.msgs.length>1?'mensagens':'mensagem'}<span class="arw">▼</span></summary><div class="inner">${inner}</div></details>`; }).join('');
 }
@@ -1954,10 +2016,36 @@ function openMsgMenu(k){
     });
   }
 }
+function initChatJump(){
+  initChatJump.cleanup?.();
+  const box=document.getElementById('msgs'),button=document.getElementById('chatJump');
+  if(!box||!button) return;
+  let frame=0;
+  const update=()=>{ frame=0; button.hidden=box.scrollHeight-box.scrollTop-box.clientHeight<=96; };
+  const schedule=()=>{ if(!frame) frame=requestAnimationFrame(update); };
+  const jump=()=>{
+    const days=box.querySelectorAll('.daygrp'); const last=days[days.length-1];
+    if(last) last.open=true;
+    box.scrollTo({top:box.scrollHeight,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+  };
+  box.addEventListener('scroll',schedule,{passive:true});
+  box.addEventListener('load',schedule,true);
+  button.addEventListener('click',jump);
+  const resize=typeof ResizeObserver!=='undefined'?new ResizeObserver(schedule):null;
+  resize?.observe(box);
+  const changes=new MutationObserver(schedule);
+  changes.observe(box,{childList:true,subtree:true,attributes:true,attributeFilter:['open']});
+  initChatJump.cleanup=()=>{
+    cancelAnimationFrame(frame); resize?.disconnect(); changes.disconnect();
+    box.removeEventListener('scroll',schedule); box.removeEventListener('load',schedule,true);
+    button.removeEventListener('click',jump); initChatJump.cleanup=null;
+  };
+  update();
+}
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
-  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção">👋</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem ou data (15/09)…" autocomplete="off"><label class="cfdate" title="Escolher a data" aria-label="Escolher a data"><span aria-hidden="true">📅</span><input type="date" id="cfDate"></label><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
-    <div class="msgs nodrag" id="msgs">${chatHtml()}</div>
+  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar">🔎</button><button class="gear" id="attBtn" aria-label="Anexar" title="Anexar">📎</button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção">👋</button><button class="gear" id="chatLook" aria-label="Aparência">🎨</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><input id="cfTxt" placeholder="Procurar mensagem ou data (15/09)…" autocomplete="off"><label class="cfdate" title="Escolher a data" aria-label="Escolher a data"><span aria-hidden="true">📅</span><input type="date" id="cfDate"></label><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
+    <div class="chat-history"><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="audpanel nodrag" id="audPanel">
       <div class="apgrid">${SONS.map((x,i)=>`<div class="apitem"><span class="apn">${x.ico} ${esc(x.nome)}</span><button data-ap-play="${i}" aria-label="Ouvir">▶</button><button data-ap-send="${i}" class="go" aria-label="Enviar">➤</button></div>`).join('')}</div>
@@ -1965,9 +2053,9 @@ function openChat(){
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
     <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel" aria-label="Descartar" title="Descartar">🗑</button><button class="rpause" id="recPause" aria-label="Pausar gravação" title="Pausar">⏸</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado" title="Ouvir">▶</button></div>
-    <div class="chatin"><div class="chatcompose"><textarea id="chatTxt" rows="1" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button class="emo" id="emoBtn" aria-label="Emojis">🐸</button><button class="clip" id="attBtn" aria-label="Anexar">📎</button></div><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
+    <div class="chatin"><div class="chatcompose"><textarea id="chatTxt" rows="1" enterkeyhint="enter" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button class="emo" id="emoBtn" aria-label="Emojis">🐸</button></div><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
     </div>`);
-  applyPref(); markRead(); scrollMsgs(); bindMsgs(); editingKey=null; replyTo=null;
+  applyPref(); markRead(); scrollMsgs(); bindMsgs(); initChatJump(); editingKey=null; replyTo=null;
   document.getElementById('chatLook').addEventListener('click',openChatLook);
   document.getElementById('chatNudge').addEventListener('click',chamarAtencao);
   const bar=document.getElementById('cfBar'), cft=document.getElementById('cfTxt'), cnt=document.getElementById('cfCnt');
@@ -1988,7 +2076,7 @@ function openChat(){
   document.getElementById('recPlay').addEventListener('click',ouvirRec);
   renderTyping();
   const inp=document.getElementById('chatTxt');
-  const cancelEdit=()=>{ if(editingKey) inp.value=''; editingKey=null; replyTo=null; document.getElementById('editbar').classList.remove('on'); updSendBtn(); };
+  const cancelEdit=()=>{ if(editingKey){ inp.value=''; inp.style.height='auto'; inp.style.overflowY='hidden'; } editingKey=null; replyTo=null; document.getElementById('editbar').classList.remove('on'); updSendBtn(); };
   document.getElementById('editCancel').addEventListener('click',cancelEdit);
   const send=()=>{ const v=inp.value.trim(); if(!v) return;
     if(editingKey){ famRef.child('chat/'+editingKey).update({text:v,edited:true}); cancelEdit(); vibrate(15); return; }
@@ -2009,9 +2097,8 @@ function openChat(){
       if(!REC) held=false; else setTimeout(()=>{held=false;},0); };
     sb.addEventListener('pointerup',solta); sb.addEventListener('pointercancel',solta); }
   inp.addEventListener('input',updSendBtn); updSendBtn();
-  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); } });
-  const cresce=()=>{ inp.style.height='auto'; const borda=inp.offsetHeight-inp.clientHeight; const h=inp.scrollHeight+borda; inp.style.height=Math.min(130,h)+'px'; inp.style.overflowY=h>130?'auto':'hidden'; };
-  inp.addEventListener('input',cresce); cresce();
+  const cresce=()=>{ inp.style.height='auto'; const borda=inp.offsetHeight-inp.clientHeight; const h=inp.scrollHeight+borda; inp.style.height=Math.min(180,h)+'px'; inp.style.overflowY=h>180?'auto':'hidden'; };
+  inp.addEventListener('input',cresce); inp.addEventListener('focus',cresce); cresce();
   const picker=document.getElementById('picker');
   document.getElementById('emoBtn').addEventListener('click',()=>{ const on=!picker.classList.contains('on'); if(on){ inp.blur(); setTimeout(()=>{picker.classList.add('on');scrollMsgs();},120); } else { picker.classList.remove('on'); inp.focus(); } });
   inp.addEventListener('focus',()=>{ picker.classList.remove('on'); audPanel(false); setTimeout(scrollMsgs,250); });
@@ -2062,7 +2149,6 @@ function contaTipo(k,w){
   }).length;
 }
 function renderFilters(){
-  const mobile=!tabletFiltersMedia.matches;
   const types=[['all','Todas'],['todo','Falta fazer'],['doing','Fazendo'],['done','Feito'],['late','Esquecido']];
   const ws=DB.weeks[current];
   document.getElementById('fType').innerHTML=types.map(([k,l])=>{ const n=contaTipo(k,ws);
@@ -2071,20 +2157,10 @@ function renderFilters(){
   const w=DB.weeks[current]; const used=[...new Set(allTasks(w).map(t=>t.subj))];
   const lista=Object.keys(SUBJ).filter(k=>used.includes(k));
   const el=document.getElementById('fSubj');
-  if(mobile){
     el.innerHTML=`<button class="chip ${fSubj==='all'?'on':''}" data-s="all">Todas</button>`+
       lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${subjectVisual(SUBJ[k])}</button>`).join('');
-  } else if(!subjOpen && fSubj==='all'){
-    el.innerHTML=`<button class="chip wide" data-open-subj="1">📚 Ver matérias</button>`;
-  } else if(!subjOpen){
-    el.innerHTML=`<button class="chip on" data-s="${fSubj}">${subjectVisual(SUBJ[fSubj])} ✕</button><button class="chip wide" data-open-subj="1">📚 Ver matérias <span class="arw">▼</span></button>`;
-  } else {
-    el.innerHTML=`<button class="chip wide on" data-open-subj="0">📚 Matérias</button>`+
-      `<button class="chip ${fSubj==='all'?'on':''}" data-s="all">Todas</button>`+
-      lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${subjectVisual(SUBJ[k])}</button>`).join('');
-  }
-  document.getElementById('fType').classList.toggle('mobile-collapsed',mobile&&!mobileStatusOpen);
-  el.classList.toggle('mobile-collapsed',mobile&&!subjOpen);
+  document.getElementById('fType').classList.toggle('mobile-collapsed',!mobileStatusOpen);
+  el.classList.toggle('mobile-collapsed',!subjOpen);
   const statusToggle=document.getElementById('mobileStatusToggle'), subjectToggle=document.getElementById('mobileSubjectToggle');
   statusToggle.setAttribute('aria-expanded',String(mobileStatusOpen));
   subjectToggle.setAttribute('aria-expanded',String(subjOpen));
@@ -2097,7 +2173,7 @@ function renderFilters(){
   document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ const k=b.dataset.t; filtroTocado=true; vibrate(15);
     if(k==='all'){ fType='all'; } else { const set=fSet(); const i=set.indexOf(k); if(i>=0) set.splice(i,1); else set.push(k); fType=set.length?set.join('+'):'all'; }
     render(); });
-  document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ fSubj=(fSubj===b.dataset.s&&b.dataset.s!=='all')?'all':b.dataset.s; subjOpen=tabletFiltersMedia.matches; vibrate(15); render(); });
+  document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ fSubj=(fSubj===b.dataset.s&&b.dataset.s!=='all')?'all':b.dataset.s; subjOpen=false; vibrate(15); render(); });
 }
 function render(){
   filtroPadrao();
@@ -2167,15 +2243,16 @@ function render(){
 function ajustaProgressoTablet(){
   ajustaProgressoTablet.observer?.disconnect();
   const pr=document.getElementById('prog'); if(!pr) return;
+  const filters=document.querySelector('.filter-row');
   if(!matchMedia('(min-width:600px) and (min-height:600px)').matches){
-    pr.style.removeProperty('--tablet-progress-height'); pr.style.removeProperty('--tablet-pct-space'); return;
+    pr.style.removeProperty('--tablet-progress-height'); pr.style.removeProperty('--tablet-pct-space'); filters?.style.removeProperty('--tablet-filter-height'); return;
   }
   const summary=document.querySelector('#app .day>summary');
   const sync=()=>{
     if(summary&&summary.isConnected){
       const box=getComputedStyle(summary.parentElement);
       const height=summary.getBoundingClientRect().height+(parseFloat(box.borderTopWidth)||0)+(parseFloat(box.borderBottomWidth)||0);
-      if(height>0) pr.style.setProperty('--tablet-progress-height',height+'px');
+      if(height>0){ pr.style.setProperty('--tablet-progress-height',height+'px'); filters?.style.setProperty('--tablet-filter-height',height+'px'); }
     }
     posicionaFrase();
   };
@@ -2435,10 +2512,10 @@ function bindTasks(root=document.getElementById('app')){
 /* ================= SHEETS ================= */
 const veil=document.getElementById('veil'), sheet=document.getElementById('sheet');
 let scrollY0=0;
-function show(html){sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
+function show(html){initChatJump.cleanup?.();sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
   if(!veil.classList.contains('on')){scrollY0=window.scrollY;document.body.classList.add('locked');document.body.style.top=(-scrollY0)+'px';}
   veil.classList.add('on');sheet.scrollTop=0;sheet.querySelector('.x')?.addEventListener('click',hide);}
-function hide(){closePop();setTyping(false);if(REC)stopRec(true);if(RECDONE){RECDONE=null;}if(recPrev){try{recPrev.pause();}catch(e){}recPrev=null;}veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
+function hide(){initChatJump.cleanup?.();closePop();setTyping(false);if(REC)stopRec(true);if(RECDONE){RECDONE=null;}if(recPrev){try{recPrev.pause();}catch(e){}recPrev=null;}veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
 // arrastar para baixo fecha (só começa depois de 14px de arrasto vertical para baixo)
 let ty=0,tx=0,dy=0,armed=false,dragging=false,t0=0;
 sheet.addEventListener('touchstart',e=>{armed=sheet.scrollTop<=0 && !e.target.closest('.nodrag');dragging=false;dy=0;ty=e.touches[0].clientY;tx=e.touches[0].clientX;t0=Date.now();},{passive:true});
@@ -2903,7 +2980,7 @@ window.addEventListener('resize',()=>{ ajustaProgressoTablet(); posicionaFrase()
 document.fonts?.ready.then(()=>{ ajustaProgressoTablet(); posicionaFrase(); });
 render();
 // Ao mudar entre celular e tablet, aplica o formato dos filtros sem mudar a selecao.
-(()=>{ const ajusta=()=>{ subjOpen=tabletFiltersMedia.matches; subjAnim=null; renderFilters(); };
+(()=>{ const ajusta=()=>{ subjAnim=null; renderFilters(); };
   if(tabletFiltersMedia.addEventListener) tabletFiltersMedia.addEventListener('change',ajusta);
   else tabletFiltersMedia.addListener(ajusta);
 })();
@@ -2938,6 +3015,27 @@ let remSeen=false; try{remSeen=localStorage.getItem(KEY+'-rem')===TODAY;}catch(e
 if(CLOUD_CFG && !USER){ setTimeout(()=>openLogin(remSeen?null:openReminder),350); }
 else { cloudStart(); startReminders(); if(!remSeen) setTimeout(openReminder,350); }
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
+// Atualiza Hoje/Ontem na virada do dia e ao voltar ao aplicativo instalado.
+(()=>{
+  let day=iso(new Date()), timer;
+  const update=()=>{
+    const next=iso(new Date()); if(next===day) return;
+    if(chatOpenDays[day]===undefined) chatOpenDays[day]=true;
+    day=next;
+    renderFam();
+    if(chatAbertoAgora()) refreshChat();
+  };
+  const schedule=()=>{
+    clearTimeout(timer);
+    const now=new Date(), midnight=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+    timer=setTimeout(()=>{update();schedule();},midnight-now+100);
+  };
+  const resume=()=>{if(!document.hidden){update();schedule();}};
+  document.addEventListener('visibilitychange',resume);
+  window.addEventListener('focus',resume);
+  schedule();
+})();
 </script>
 </body>
 </html>
