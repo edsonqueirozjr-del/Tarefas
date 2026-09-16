@@ -3221,7 +3221,7 @@ function openSummary(modoInicial){
       const estadoDe=t=>SUMMARY_STATES.find(x=>x.key===summaryState(t,w))||SUMMARY_STATES[0];
       const contagem=d?SUMMARY_STATES.map(st=>({st,n:d.tasks.filter(t=>summaryState(t,w)===st.key).length})).filter(x=>x.n):[];
       const barrinha=d&&d.tasks.length?`<div class="summary-counts">${contagem.map(x=>`<span class="st ${CLASSE_ST[x.st.key]||''}">${esc(x.st.label)} <b>${x.n}</b></span>`).join('')}</div>`:'';
-      detail.innerHTML=d?`<h3>${esc(d.label)} · ${d.tasks.length}</h3>${barrinha}${d.tasks.length?d.tasks.map(t=>{ const e=estadoDe(t);
+      detail.innerHTML=d?`<h3>${esc(d.label)} · ${d.tasks.length}</h3>${barrinha}${d.tasks.length?d.tasks.slice().sort((a,b)=>SUMMARY_STATES.findIndex(x=>x.key===summaryState(a,w))-SUMMARY_STATES.findIndex(x=>x.key===summaryState(b,w))).map(t=>{ const e=estadoDe(t);
         return `<button class="summary-item" data-task-id="${t.id}"><small>${subjectVisual(SUBJ[t.subj]||'')} · ${DAYMETA[t.day]?DAYMETA[t.day][0]:''}<span class="st ${CLASSE_ST[e.key]||''}">${esc(e.label)}</span></small>${esc(plain(t.text))}</button>`; }).join(''):'<div class="summary-empty">Nenhuma tarefa aqui.</div>'}`:'';
       detail.querySelectorAll('[data-task-id]').forEach(b=>b.addEventListener('click',()=>openMenu(b.dataset.taskId)));
     };
