@@ -1012,6 +1012,7 @@
     .filter-row>.filter-search{grid-column:3;grid-row:1;align-self:stretch;height:40px}
     .filter-row>#fType{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;overflow:visible;gap:6px;margin:0;padding:2px 0 0}
     .filter-row>#fType .chip{flex:0 0 auto}
+    .filter-row>#fType.linha .chip,#fSubj.linha .chip{flex:1 1 auto;text-align:center;justify-content:center}
     .filter-row>#fType.mobile-collapsed,#fSubj.mobile-collapsed{display:none}
     #fSubj{flex-wrap:wrap;gap:6px}
   }
@@ -1102,17 +1103,17 @@
   /* ===== barra de ações no rodapé (Menu · coração · Conversa) ===== */
   .dock{position:fixed;left:0;right:0;bottom:0;z-index:60;display:grid;grid-template-columns:1fr 72px 1fr;align-items:stretch;width:100%;
     height:calc(58px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);border-radius:0;
-    background:transparent;box-shadow:none;pointer-events:none}
+    background:linear-gradient(90deg,#A472EE,#7C4DC4 50%,#4C3499);box-shadow:0 -2px 10px rgba(63,39,100,.14);pointer-events:none}
   .dock-b{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;gap:9px;pointer-events:auto;
     border:0;color:#fff;font:inherit;font-size:18px;font-weight:900;border-radius:0;transition:filter .15s;
-    box-shadow:0 -2px 10px rgba(63,39,100,.14)}
-  #fab{background:linear-gradient(90deg,#A472EE,#7C4DC4);border-radius:0;padding:0}
-  #chatFab{background:linear-gradient(90deg,#7C4DC4,#4C3499);border-radius:0;padding:0}
-  .dock-b:active{filter:brightness(.92)}
+    box-shadow:none}
+  #fab{background:transparent;border-radius:0;padding:0}
+  #chatFab{background:transparent;border-radius:0;padding:0}
+  .dock-b:active{background:rgba(0,0,0,.08)}
   .dock-b:focus-visible{outline:2px solid #fff;outline-offset:-4px}
   .dock-b .di{font-size:23px;line-height:1}
   .dock-b .dt{white-space:nowrap}
-  .dock-gap{display:block;background:#7C4DC4}   /* coluna do meio: mesma cor da emenda, fica atras da bolinha */
+  .dock-gap{display:block;background:transparent}   /* coluna do meio, so para reservar o lugar da bolinha */
   .dock .chatfab{display:none}
   .dock .chatfab.on{display:flex}
   .dock-mid{pointer-events:auto;position:absolute;left:50%;top:auto;bottom:calc(env(safe-area-inset-bottom) + 5px);margin:0;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;
@@ -2545,13 +2546,24 @@ function renderFilters(){
     if(k==='all'){ fType='all'; } else { const set=fSet(); const i=set.indexOf(k); if(i>=0) set.splice(i,1); else set.push(k); fType=set.length?set.join('+'):'all'; }
     render(); });
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ fSubj=(fSubj===b.dataset.s&&b.dataset.s!=='all')?'all':b.dataset.s; subjOpen=false; vibrate(15); render(); });
+  esticaChips();
 }
+// opcoes do filtro: se todas cabem numa linha, esticam para ocupar a largura toda; se quebram, ficam no tamanho natural
+function esticaChips(){
+  ['fType','fSubj'].forEach(id=>{ const el=document.getElementById(id); if(!el) return;
+    el.classList.remove('linha'); if(!el.offsetWidth) return;
+    const chips=[...el.querySelectorAll('.chip')]; if(chips.length<2) return;
+    const gap=parseFloat(getComputedStyle(el).columnGap)||6;
+    const soma=chips.reduce((n,c)=>n+c.getBoundingClientRect().width,0)+gap*(chips.length-1);
+    el.classList.toggle('linha',soma<=el.clientWidth+0.5); });
+}
+window.addEventListener('resize',()=>{ clearTimeout(window.__ec); window.__ec=setTimeout(esticaChips,120); });
 function render(){
   filtroPadrao();
   const w=DB.weeks[current];
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=2'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; sapoProg(); posicionaFrase(); }
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=3'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; sapoProg(); posicionaFrase(); }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -2711,7 +2723,7 @@ function posicionaFrase(){ const bar=document.querySelector('#prog .bar'), f=doc
 // Sapo da porcentagem: comeca parado; toque nele faz pular por 20 s (e coaxar por 3 s)
 let sapoAte=0, sapoTimer=null;
 function sapoProg(){ const im=document.querySelector('.sapo-prog'); if(!im) return; const anim=Date.now()<sapoAte;
-  const alvo=anim?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=2'; if(!im.getAttribute('src').endsWith(alvo)) im.src=alvo;
+  const alvo=anim?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=3'; if(!im.getAttribute('src').endsWith(alvo)) im.src=alvo;
   im.classList.toggle('pulando',anim);   // so fica na frente do topo congelado enquanto pula
   clearTimeout(sapoTimer); if(anim) sapoTimer=setTimeout(sapoProg,sapoAte-Date.now()+60); }
 function acordaSapo(){ sapoAte=Date.now()+20000; sapoProg(); playFx('sapo',{loop:true,ms:3000}); vibrate(15); }
