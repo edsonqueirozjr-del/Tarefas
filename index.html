@@ -192,7 +192,7 @@
     --dom:#9B8CBA; --seg:var(--t50); --ter:var(--t53); --qua:var(--t55); --qui:var(--t58); --sex:var(--t62); --fab:#26243A; --gold:#D6B60E;
     --ok:var(--t56); --acc:var(--t53);
     --lilas:var(--t53); --lilas-bg:var(--t07); --lilas-bg2:var(--t20); --lilas-line:var(--t40); --lilas-ink:var(--t67); --lilas-soft:#7A6B9B;
-    --bring:var(--t71); --home:var(--t68); --alert:var(--t28); --doing:#FBF0B0; --amber:#F5E04F; --imp:var(--t65);
+    --bring:var(--t71); --home:var(--t68); --alert:var(--t28); --doing:var(--t29); --amber:#F5E04F; --imp:var(--t65);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
   body{user-select:none;-webkit-user-select:none}
@@ -206,7 +206,7 @@
   .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:15px;color:var(--soft);margin-bottom:4px;line-height:1.3}
   .prog .row b{color:var(--ink);font-size:15px;font-weight:600}
   .prog .bar{height:30px;border-radius:12px;background:var(--t41);overflow:hidden;position:relative;border:1px solid var(--t45);box-shadow:inset 0 2px 4px rgba(var(--r01),.14)}
-  .prog .bar i{display:block;height:100%;border-radius:12px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width .6s cubic-bezier(.4,0,.2,1)}
+  .prog .bar i{display:block;height:100%;border-radius:12px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width .9s cubic-bezier(.22,.9,.25,1)}
   @keyframes progflow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
   @media(prefers-reduced-motion:reduce){.prog .bar i{animation:none}.prog .bar i::after{display:none}}
   .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
@@ -1244,6 +1244,12 @@
     .filter-row>#fType{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;overflow:visible;gap:6px;margin:0;padding:2px 0 0}
     .filter-row>#fType .chip{flex:0 0 auto}
     .filter-row>#fType.grade:not(.mobile-collapsed),#fSubj.grade:not(.mobile-collapsed){display:grid;gap:6px;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
+    @media(max-width:599px){   /* celular: situacao numa linha so */
+      .filter-row>#fType:not(.mobile-collapsed){display:flex!important;flex-wrap:nowrap;gap:5px;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain}
+      .filter-row>#fType::-webkit-scrollbar{display:none}
+      .filter-row>#fType .chip{flex:1 1 0;min-width:0;padding-left:4px;padding-right:4px;justify-content:center;white-space:nowrap}
+      .filter-row>#fType .chip .cnt{margin-left:4px}
+    }
     .filter-row>#fType.grade .chip,#fSubj.grade .chip{flex:none;width:auto;min-width:0;text-align:center;padding-left:4px;padding-right:4px}
     .filter-row>#fType.mobile-collapsed,#fSubj.mobile-collapsed{display:none}
     #fSubj{flex-wrap:wrap;gap:6px}
@@ -1404,6 +1410,32 @@
   .tema-ok{color:var(--lilas);display:flex;align-items:center}
   .tema-ok .ico{width:22px;height:22px}
   @media screen and (min-width:600px) and (min-height:600px){ .tema-op{font-size:19px;padding:14px 16px} .tema-bola{width:40px;height:40px} }
+  /* aviso de mensagem nova, com Responder e Ignorar */
+  .aviso-msg{position:fixed;z-index:420;left:50%;top:calc(10px + env(safe-area-inset-top));width:min(94vw,420px);
+    transform:translate(-50%,0);opacity:1;animation:avisoEntra .3s cubic-bezier(.2,.9,.3,1) both;
+    background:#fff;border:2px solid var(--uc,var(--lilas));border-radius:20px;padding:11px 13px 10px;
+    box-shadow:0 14px 34px rgba(var(--r01),.28);cursor:pointer}
+  .aviso-msg.saindo{animation:avisoSai .24s ease-in forwards}
+  @keyframes avisoEntra{from{transform:translate(-50%,-150%);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+  @keyframes avisoSai{to{transform:translate(-50%,-150%);opacity:0}}
+  .aviso-msg .av-topo{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+  .aviso-msg .av-foto{width:30px;height:30px;border-radius:50%;overflow:hidden;flex:none;background:var(--t10);display:flex;align-items:center;justify-content:center;font-size:16px}
+  .aviso-msg .av-foto img{width:100%;height:100%;object-fit:cover}
+  .aviso-msg .av-nome{font-size:15px;font-weight:900;color:var(--uc,var(--lilas-ink));min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .aviso-msg .av-mais{font-size:11px;font-weight:900;background:var(--uc,var(--lilas));color:#fff;border-radius:999px;padding:2px 8px;flex:none}
+  .aviso-msg .av-hora{margin-left:auto;font-size:12px;font-weight:800;color:var(--soft);flex:none}
+  .aviso-msg .av-txt{margin:0 0 9px;font-size:15px;font-weight:700;color:var(--ink);line-height:1.35;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .aviso-msg .av-bt{display:flex;gap:8px}
+  .aviso-msg .av-bt button{flex:1;border:0;border-radius:13px;padding:9px 10px;font:inherit;font-size:14px;font-weight:900;cursor:pointer}
+  .aviso-msg .av-ig{background:var(--t10);color:var(--lilas-ink)}
+  .aviso-msg .av-re{background:linear-gradient(135deg,var(--t48),var(--uc,var(--lilas)));color:#fff}
+  .aviso-msg .av-bt button:active{transform:scale(.96)}
+  @media screen and (min-width:600px) and (min-height:600px){
+    .aviso-msg{width:min(70vw,460px);padding:13px 15px 12px}
+    .aviso-msg .av-nome{font-size:17px} .aviso-msg .av-txt{font-size:16px} .aviso-msg .av-bt button{font-size:15px;padding:10px}
+  }
+  @media(prefers-reduced-motion:reduce){.aviso-msg,.aviso-msg.saindo{animation:none}}
   .dica{position:fixed;z-index:400;background:var(--lilas-ink);color:#fff;font-size:13px;font-weight:800;line-height:1.25;
     padding:7px 12px;border-radius:12px;box-shadow:0 8px 20px rgba(var(--r01),.3);pointer-events:none;
     opacity:0;transform:translateY(5px);transition:opacity .16s ease,transform .16s ease;max-width:76vw;text-align:center}
@@ -1696,7 +1728,7 @@ let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(
 const openState={};
 const tabletFiltersMedia=matchMedia('(min-width:600px) and (min-height:600px)');
 let fType='all', fSubj='all', fQ='', subjOpen=false, subjAnim=null, filtroTocado=false;
-let mobileStatusOpen=false;
+let mobileStatusOpen=true;   // o filtro de situacao ja comeca aberto
 const fSet=()=>fType==='all'?[]:fType.split('+');
 const fHas=k=>fType!=='all'&&fSet().includes(k);
 // alguma tarefa de casa da semana ainda pendente (falta fazer ou fazendo), dentro do prazo e nao cancelada
@@ -1759,7 +1791,7 @@ function cloudStart(){
     const last=CHAT[CHAT.length-1];
     const ehNudge=!!(last&&last.att&&last.att.kind==='nudge');
     if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && ehNudge){ zumbido(uname(last.by)); }
-    if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && !chatAberto && !ehNudge){ vibrate([30,30,30]); SFX.msg(); notifyMsg(last); if(!document.hidden) toast('💬 '+uname(last.by)+': '+msgPreview(last).slice(0,60)); }
+    if(CHAT.length>prevLen && prevLen>0 && last && last.by!==USER.id && !chatAberto && !ehNudge){ vibrate([30,30,30]); SFX.msg(); notifyMsg(last); if(!document.hidden) avisoMsg(last,CHAT.length-prevLen); }
     if(prevLen>0){ // mudanças na conversa: edição, apagada e reação
       CHAT.forEach(m=>{ const a=antes[m.k]; if(!a) return;
         if(m.by!==USER.id && (m.text||'')!==(a.text||'')){ if(!chatAberto) notifyEvt('✏️ '+uname(m.by)+' mudou uma mensagem',msgPreview(m).slice(0,80),'chated-'+m.k); if(!document.hidden&&!chatAberto) toast('✏️ '+uname(m.by)+' mudou uma mensagem'); }
@@ -1944,9 +1976,9 @@ function resumoSemana(w){
   L.push('\n'+ASSINA);
   return L.join('\n');
 }
-function openShare(){
+function openShare(diaInicial){
   const w=DB.weeks[current];
-  const sel=new Set();
+  const sel=new Set(diaInicial&&w.days.some(d=>d.k===diaInicial)?[diaInicial]:[]);
   show(`<h2>${ICO.compart} Compartilhar <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">Escolhe o que quer mandar. Pode marcar mais de um dia.</p>
     <div class="shdays">
@@ -1975,7 +2007,8 @@ function openShare(){
     else { sel.delete('all'); if(sel.has(k)) sel.delete(k); else sel.add(k); }
     atualiza();
   }));
-  const hoje=w.days.find(d=>d.date===TODAY); sel.add(hoje?hoje.k:w.days[0].k); atualiza();
+  if(!sel.size){ const hoje=w.days.find(d=>d.date===TODAY); sel.add(hoje?hoje.k:w.days[0].k); }
+  atualiza();
 }
 
 /* ================= FAMÍLIA / FOTO / CONVERSA ================= */
@@ -2647,7 +2680,7 @@ function applyPref(){
   const col=(BGCOL[CHATPREF.bg]||BGCOL.lilas).map(corT);   // no visual padrao, a conversa segue o tema do app const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);}
   if(sheet.classList.contains('chatsheet')) sheet.style.setProperty('--c2',col[1]); sheet.style.setProperty('--c2',col[1]);
   const ci=sheet.querySelector('.chatin'); if(ci){ci.style.setProperty('--c1',col[0]);ci.style.setProperty('--c2',col[1]);}
-  pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg; m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
+  pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg+((m.id==='msgs'&&selMode)?' sel':''); m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
 function openChatLook(){
   const BGS=[['lilas','#F7F5FC'],['claro','#FFFFFF'],['verde','#EFE7FB'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
   const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
@@ -2782,7 +2815,7 @@ function openChat(){
     <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel" aria-label="Descartar" title="Descartar">🗑</button><button class="rpause" id="recPause" aria-label="Pausar gravação" title="Pausar">⏸</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado" title="Ouvir">▶</button></div>
     <div class="chatin"><div class="chatcompose"><textarea id="chatTxt" rows="1" enterkeyhint="enter" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button class="emo" id="emoBtn" aria-label="Emojis">${ICO.sorriso}</button></div><button id="chatSend" class="mic" aria-label="Gravar áudio">${ICO.micro}</button></div>
     </div>`);
-  selMode=false; selKeys=new Set(); applyPref(); markRead(); scrollMsgs(); bindMsgs(); initChatJump(); editingKey=null; replyTo=null;
+  fechaAviso(); selMode=false; selKeys=new Set(); applyPref(); markRead(); scrollMsgs(); bindMsgs(); initChatJump(); editingKey=null; replyTo=null;
   document.getElementById('selCopy').addEventListener('click',copiaSel); document.getElementById('selCancel').addEventListener('click',()=>{ saiSel(); vibrate(8); });
   document.getElementById('chatLook').addEventListener('click',openChatLook);
   document.getElementById('chatNudge').addEventListener('click',chamarAtencao);
@@ -2845,7 +2878,7 @@ function openChat(){
   window.visualViewport&&window.visualViewport.addEventListener('resize',scrollMsgs);
 }
 function chatAbertoAgora(){ return veil.classList.contains('on') && !!sheet.querySelector('#msgs'); }
-function refreshChat(){ renderTimeline(); const m=document.getElementById('msgs'); if(!m||!chatAbertoAgora()){ updateChatBadge(); return; } const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); bindMsgs(); applyPref(); if(atBottom) scrollMsgs(); markRead(); }
+function refreshChat(){ renderTimeline(); const m=document.getElementById('msgs'); if(!m||!chatAbertoAgora()){ updateChatBadge(); return; } const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); bindMsgs(); applyPref(); if(selMode) atualizaSel(); if(atBottom) scrollMsgs(); markRead(); }
 function scrollMsgs(){ const m=document.getElementById('msgs'); if(m) setTimeout(()=>{m.scrollTop=m.scrollHeight;},50); }
 function markRead(){ const last=CHAT[CHAT.length-1]; if(last&&(last.t||0)>lastRead){ lastRead=last.t; try{localStorage.setItem(KEY+'-read',String(lastRead));}catch(e){} }
   if(famRef&&USER&&chatAbertoAgora()&&!document.hidden&&last&&(READS[USER.id]||0)<(last.t||0)) famRef.child('reads/'+USER.id).set(last.t||firebase.database.ServerValue.TIMESTAMP);
@@ -2927,7 +2960,7 @@ function render(){
   const w=DB.weeks[current];
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; sapoProg(); posicionaFrase(); }
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${PCT_ANT}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; enchePro(pct); sapoProg(); posicionaFrase(); }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -2978,7 +3011,7 @@ function render(){
       </div></details>`;
   });
   html+='</div>';
-  if(w.topics&&!filtering) html+=`<div class="next"><h2>${ICO.livro} O que cada matéria está estudando</h2><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${subjectVisual(line)}</div>`).join('')}</div></div>`;
+  if(w.topics) html+=`<div class="next"><h2>${ICO.livro} O que cada matéria está estudando</h2><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${subjectVisual(line)}</div>`).join('')}</div></div>`;
   html+=`<section class="tl ${tlAberta?'aberta':''}" id="tl">
     <button class="tl-head" id="tlToggle" type="button" aria-expanded="${tlAberta}" aria-controls="tlBody">
       <span class="tl-head-tx">Linha do tempo</span>
@@ -2992,6 +3025,18 @@ function render(){
   if(typeof appBadge==='function') appBadge();
   if(typeof updateReaFab==='function') updateReaFab();
   document.querySelectorAll('.day,.imp').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
+  // segurar o cabecalho de um dia: compartilha so aquele dia
+  document.querySelectorAll('#app .day>summary').forEach(sm=>{
+    let t=null,x0=0,y0=0,agiu=false;
+    const dia=()=>{ const dt=sm.closest('.day').dataset.date, d=(DB.weeks[current].days||[]).find(x=>x.date===dt); return d&&d.k; };
+    const solta=()=>{ clearTimeout(t); t=null; };
+    sm.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse'&&e.button!==0) return; agiu=false; x0=e.clientX; y0=e.clientY; solta();
+      t=setTimeout(()=>{ t=null; agiu=true; vibrate(30); const k=dia(); if(k) openShare(k); },520); });
+    sm.addEventListener('pointermove',e=>{ if(t&&(Math.abs(e.clientX-x0)>10||Math.abs(e.clientY-y0)>10)) solta(); });
+    sm.addEventListener('pointerup',solta); sm.addEventListener('pointercancel',solta);
+    sm.addEventListener('click',e=>{ if(agiu){ e.preventDefault(); e.stopPropagation(); agiu=false; } },true);
+    sm.addEventListener('contextmenu',e=>{ e.preventDefault(); solta(); const k=dia(); if(k) openShare(k); });
+  });
   bindTasks(); bindTimeline();
 }
 // Preenche a largura apenas quando todas as matérias cabem em uma linha.
@@ -3073,6 +3118,13 @@ const FRASES=[
   [100,100,['Arrasou, tudo feito!','Semana vencida!']]
 ];
 let fraseAtual={faixa:-1,txt:''};
+let PCT_ANT=0;                 // de onde a barrinha comeca a encher
+function enchePro(pct){
+  const i=document.querySelector('.prog .bar i'); if(!i) return;
+  void i.offsetWidth;          // obriga o navegador a enxergar o valor antigo...
+  i.style.width=pct+'%';       // ...para entao crescer ate o novo
+  PCT_ANT=pct;
+}
 function fraseProg(pct){ const i=FRASES.findIndex(([a,b])=>pct>=a&&pct<=b); if(i<0) return '';
   if(fraseAtual.faixa!==i){ const l=FRASES[i][2]; fraseAtual={faixa:i,txt:l[Math.floor(Math.random()*l.length)]}; } return fraseAtual.txt; }
 // decide onde a frase cabe: dentro da parte cheia, na parte vazia, ou embaixo da barra
@@ -4130,6 +4182,33 @@ function avisaMudancas(list){
   if(list.length===1){ notifyEvt('📋 Novidade nas tarefas',list[0],'tarefa-1'); if(!document.hidden) toast(list[0]); return; }
   notifyEvt('📋 '+list.length+' novidades nas tarefas',list.slice(0,4).join(' · ')+(list.length>4?' e mais '+(list.length-4):''),'tarefa-n');
   if(!document.hidden) toast('📋 '+list.length+' novidades nas tarefas');
+}
+// ===== aviso de mensagem nova enquanto a pessoa esta em outra tela do app =====
+let avisoT=null;
+function fechaAviso(){ clearTimeout(avisoT); const a=document.getElementById('avisoMsg'); if(!a) return;
+  a.classList.add('saindo'); setTimeout(()=>a.remove(),260); }
+function avisoMsg(m,quantas){
+  if(!m||!USER||m.by===USER.id) return;
+  fechaAviso();
+  const u=USERS.find(x=>x.id===m.by)||{nome:uname(m.by),emoji:'👤'};
+  const extra=(quantas>1)?`<span class="av-mais">+${quantas-1} nova${quantas-1>1?'s':''}</span>`:'';
+  const el=document.createElement('div');
+  el.className='aviso-msg'; el.id='avisoMsg'; el.style.setProperty('--uc',corDe(u));
+  el.innerHTML=`<div class="av-topo"><span class="av-foto">${avatarHtml(u)}</span>
+      <span class="av-nome">${esc(u.nome)}</span>${extra}<span class="av-hora">${fmtT(m.t)}</span></div>
+    <p class="av-txt">${esc(msgPreview(m).slice(0,120))}</p>
+    <div class="av-bt"><button type="button" class="av-ig" id="avIgnorar">Ignorar</button>
+      <button type="button" class="av-re" id="avResponder">Responder</button></div>`;
+  document.body.appendChild(el);
+  const abre=()=>{ fechaAviso(); if(!chatAbertoAgora()){ hide(); setTimeout(()=>{ openChat(); const i=document.getElementById('chatTxt'); if(i) i.focus(); },160); } };
+  el.querySelector('#avResponder').addEventListener('click',e=>{ e.stopPropagation(); vibrate(12); abre(); });
+  el.querySelector('#avIgnorar').addEventListener('click',e=>{ e.stopPropagation(); vibrate(8); fechaAviso(); });
+  el.addEventListener('click',e=>{ if(!e.target.closest('button')) abre(); });
+  // arrastar para cima tambem dispensa
+  let y0=null;
+  el.addEventListener('pointerdown',e=>{ y0=e.clientY; });
+  el.addEventListener('pointerup',e=>{ if(y0!==null&&e.clientY-y0<-40) fechaAviso(); y0=null; });
+  avisoT=setTimeout(fechaAviso,9000);
 }
 async function notifyMsg(m){ if(!('Notification' in window)||Notification.permission!=='granted') return;
   try{ const reg=await navigator.serviceWorker?.getRegistration(); const opt={body:msgPreview(m),icon:'icon-192.png',badge:'icon-192.png',tag:'chat-'+m.k,vibrate:[60,40,60]};
