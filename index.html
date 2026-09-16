@@ -18,9 +18,9 @@
     --selected-bg:#DCD3FF; --selected-ink:#3B2A8F;
     --paper:#FFFDF7; --ink:#26243A; --soft:#6B6880; --line:#E8E4D8;
     --dom:#9B8CBA; --seg:#B57BE8; --ter:#8E5BE0; --qua:#A44FC7; --qui:#6B46C1; --sex:#4C3499; --fab:#26243A; --gold:#BE7A15;
-    --ok:#2EB88A; --acc:#2F8FE0;
+    --ok:#7C4DC4; --acc:#8E5BE0;
     --lilas:#8E5BE0; --lilas-bg:#F6F1FD; --lilas-bg2:#EFE7FB; --lilas-line:#E0D3F2; --lilas-ink:#3F2764; --lilas-soft:#7A6B9B;
-    --bring:#F3F4F7; --home:#E8EFFF; --alert:#FFE1DD; --doing:#FFE9B3; --amber:#E9C46A; --imp:#E4443F;
+    --bring:#F3F4F7; --home:#E8EFFF; --alert:#F5E7F3; --doing:#FFE9B3; --amber:#E9C46A; --imp:#8E2A63;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
   body{user-select:none;-webkit-user-select:none}
@@ -141,8 +141,10 @@
   @keyframes ring{from{transform:scale(1);opacity:.8}to{transform:scale(1.9);opacity:0}}
   @keyframes pulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.7);opacity:0}}
   .t{flex:1;position:relative;min-width:0}
-  .star{flex:0 0 auto;align-self:center;border:0;background:transparent;padding:2px 2px;margin:0;font-size:21px;line-height:1;color:#B9B4C8;opacity:.4;filter:grayscale(1);transition:transform .18s ease,opacity .18s ease,filter .18s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer}
-  .star.on{opacity:1;filter:none;text-shadow:0 2px 7px rgba(233,162,39,.5)}
+  .star{flex:0 0 auto;align-self:center;border:0;background:transparent;padding:2px 2px;margin:0;font-size:21px;line-height:1;color:var(--lilas-line);opacity:.85;filter:none;transition:transform .18s ease,opacity .18s ease,filter .18s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer}
+  .star.on{opacity:1;color:var(--gold)}
+  .star.on .ico{fill:color-mix(in srgb,var(--gold) 22%,transparent)}
+  .star .ico{width:1.1em;height:1.1em;vertical-align:-.18em}
   .star:active{transform:scale(.86)}
   .star:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:10px}
   .star.pop{animation:starpop .45s ease}
@@ -150,20 +152,20 @@
   @media(prefers-reduced-motion:reduce){.star.pop{animation:none}}
   .task.off .star{opacity:.25}
   .task.done .t{opacity:1}
-  .st.ok{background:#DDF3E8;color:#1E7A55}
-  .st{display:inline-block;font-size:12px;font-weight:900;background:var(--amber);color:#4a3800;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
+  .st.ok{background:#E4DAF8;color:#4C3499}
+  .st{display:inline-block;font-size:12px;font-weight:900;background:#F2E1F8;color:#8B2FA8;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
   .st.mv{background:#DCD3FF;color:#3B2A8F}
   .tg{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:4px}
   .tg .st,.tg .dchip{margin:0;vertical-align:0}
   .st.sj{background:#F2F0FA;color:var(--ink)}
-  .st.no{background:#FFD9D6;color:#B3261E}
-  .st.todo{background:#FFD9D6;color:#B3261E}
-  .tag.no{background:#FFD9D6;color:#B3261E}
+  .st.no{background:#F3E3F0;color:#8E2A63}
+  .st.todo{background:#EFE4FB;color:#6B46C1}
+  .tag.no{background:#F3E3F0;color:#8E2A63}
   .box.past{opacity:1}
   .task.late .tx{color:var(--soft)}
   .task.off{opacity:.55}
   .task.off .tx{text-decoration:line-through;color:var(--soft)}
-  .task.off .note{border-left-color:#B3261E}
+  .task.off .note{border-left-color:#8E2A63}
   .st.canc{background:#EDEAF5;color:#6B6880}
   .st.pics{background:#E9DDFF;color:#5B3FC4}
   .trea{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
@@ -189,7 +191,7 @@
   @media(min-width:700px){.quiet.tinfo{font-size:17px}}
   .bang{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:13px;font-weight:900;color:#fff;line-height:1;vertical-align:2px;flex:none}
   .bang.now{background:var(--ink);margin-left:8px;animation:pop .5s, bangpulse 1.8s ease-in-out .5s infinite}
-  .bang.late{background:#B3261E}
+  .bang.late{background:#8E2A63}
   @keyframes bangpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
   .rem h2{font-size:22px}
   .rem .sec{margin:0 0 14px}
@@ -220,7 +222,12 @@
   .sheet h2 .x{margin-left:auto;border:0;background:#F2F0FA;border-radius:50%;width:34px;height:34px;font-size:18px;font-weight:900}
   .opt{display:flex;align-items:center;gap:12px;width:100%;border:0;background:#F7F5FC;border-radius:16px;padding:14px;font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;text-align:left}
   .opt .ic{font-size:24px;width:32px;text-align:center}
-  .opt.danger{color:#B3261E}
+  .ico{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:none}
+  .sheet h2 .ico{width:.95em;height:.95em}
+  .opt .ic .ico{width:26px;height:26px;vertical-align:-.2em}
+  body .chatsheet .chatin button .ico{width:24px;height:24px;vertical-align:-.15em}
+  @media screen and (min-width:600px) and (min-height:600px){ body .chatsheet .chatin button .ico{width:27px;height:27px} }
+  .opt.danger{color:#8E2A63}
   .opt.d{color:#fff;background:var(--c)}
   .opt.imp-on{background:#FFF3D1;color:#8A6300}
   textarea{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;min-height:100px;resize:vertical}
@@ -265,7 +272,7 @@
   .fam .p .av{width:64px;height:64px;border-radius:50%;background:#EDE5FA;display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid var(--lilas-line);overflow:hidden}
   .fam .p .av img{width:100%;height:100%;object-fit:cover}
   .fam .p .dot{position:absolute;right:0;bottom:0;width:17px;height:17px;border-radius:50%;background:#C3B5DC;border:2px solid var(--lilas-bg);z-index:1}
-  .fam .p.on .dot{background:#2EB88A;box-shadow:0 0 0 3px rgba(46,184,138,.25)}
+  .fam .p.on .dot{background:#7C4DC4;box-shadow:0 0 0 3px rgba(46,184,138,.25)}
   .fam .p.on{color:var(--lilas-ink)}
   .fam .p.me .av{border-color:var(--lilas);box-shadow:0 0 0 3px rgba(142,91,224,.16)}
   .fam .p:not(.on) .av{filter:grayscale(.6);opacity:.75}
@@ -288,7 +295,7 @@
   .realist .rea-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .realist .rea-subject{display:inline-flex;align-items:center;max-width:100%;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#F3EEFF;color:#5B3FC4;font-size:13px;font-weight:800;line-height:1.3}
   .realist .rea-date{font-size:15px;font-weight:700;color:var(--soft);line-height:1.4}
-  .badge{position:absolute;top:-4px;right:-4px;z-index:5;background:#E4443F;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
+  .badge{position:absolute;top:-4px;right:-4px;z-index:5;background:#8E2A63;color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
   .badge.on{display:flex}
   .fab #chatBadge{background:#218C55;min-width:28px;height:28px;font-size:14px;padding:0 7px;top:-5px;right:-5px}
   .sheet.chatsheet{display:flex;flex-direction:column;height:min(92dvh,780px);max-height:none}
@@ -323,7 +330,7 @@
   .chatwho b{font-weight:900}
   .chatwho .chat-lastseen{font:inherit}
   .chatwho i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);display:inline-block}
-  .chatwho i.on{background:#7CF5C0;box-shadow:0 0 0 3px rgba(124,245,192,.3)}
+  .chatwho i.on{background:#C9A2FF;box-shadow:0 0 0 3px rgba(124,245,192,.3)}
   .chat{flex:1;min-height:0;display:flex;flex-direction:column}
   .chat h2{flex:none}
   .msgs{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 12px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;background:#F7F5FC}
@@ -342,7 +349,7 @@
   .msg.cont .b .hd b{display:none}
   .msgs.bg-lilas{background:#F7F5FC}
   .msgs.bg-claro{background:#fff}
-  .msgs.bg-verde{background:#E6F6EE}
+  .msgs.bg-verde{background:#EFE7FB}
   .msgs.bg-azul{background:#E6F0FB}
   .msgs.bg-rosa{background:#FCE9F3}
   .msgs.bg-amarelo{background:#FFF6D9}
@@ -378,7 +385,7 @@
   .sw2.cores button{border-radius:50%;border-width:2px}
   .sw2.cores button.on{border:3px solid var(--lilas-ink);box-shadow:0 0 0 3px rgba(63,39,100,.14)}
   .sw2.cores button.on::after{right:auto;bottom:auto;left:50%;top:50%;transform:translate(-50%,-50%);font-size:14px}
-  .sw2.cores .custom{position:relative;aspect-ratio:1;border-radius:50%;border:2px solid var(--line);background:conic-gradient(#B57BE8,#2F8FE0,#2EB88A,#F0C419,#E0479E,#B57BE8);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+  .sw2.cores .custom{position:relative;aspect-ratio:1;border-radius:50%;border:2px solid var(--line);background:conic-gradient(#B57BE8,#8E5BE0,#7C4DC4,#F0C419,#E0479E,#B57BE8);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
   .sw2.cores .custom span{font-size:15px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
   .sw2.cores .custom input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
   .sw2.cores .custom.on{border:3px solid var(--lilas-ink);box-shadow:0 0 0 3px rgba(63,39,100,.14)}
@@ -449,7 +456,7 @@
   .minipop{min-width:0;padding:6px}
   .minipop .mini{display:flex;align-items:center;gap:9px;width:100%;border:0;background:transparent;border-radius:12px;padding:10px 14px;font:inherit;font-size:15px;font-weight:800;color:var(--ink);white-space:nowrap}
   .minipop .mini svg{width:19px;height:19px;flex:none}
-  .minipop .mini.danger{color:#B3261E}
+  .minipop .mini.danger{color:#8E2A63}
   .minipop .mini:active{background:#F4EFFB}
   .nudge-msg.meu{cursor:pointer}
   .nudge-msg.meu:active{transform:scale(.97)}
@@ -491,7 +498,7 @@
   .pmenu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;padding:12px 16px;font-size:16px;font-weight:800;color:#fff;text-align:left}
   .pmenu button+button{border-top:1px solid rgba(255,255,255,.14)}
   .pmenu button:active{background:rgba(255,255,255,.16)}
-  .pmenu button.danger{color:#FF9B93}
+  .pmenu button.danger{color:#D9A2C8}
   .pmenu.me button{justify-content:flex-end;text-align:right}
   .msg{transition:transform .22s ease;position:relative}
   .msg.sdrag{transition:none}
@@ -625,7 +632,7 @@
      Fica ABAIXO da pilula do dia (que e sticky, z-index 2), entao ela continua solida. */
   .chat-history{--msgs-bg:#F7F5FC}
   .chat-history:has(.msgs.bg-claro){--msgs-bg:#fff}
-  .chat-history:has(.msgs.bg-verde){--msgs-bg:#E6F6EE}
+  .chat-history:has(.msgs.bg-verde){--msgs-bg:#EFE7FB}
   .chat-history:has(.msgs.bg-azul){--msgs-bg:#E6F0FB}
   .chat-history:has(.msgs.bg-rosa){--msgs-bg:#FCE9F3}
   .chat-history:has(.msgs.bg-amarelo){--msgs-bg:#FFF6D9}
@@ -726,7 +733,7 @@
   body .fabs .fab.chatfab{background:var(--fab);color:#fff;border:0;box-shadow:0 8px 20px rgba(38,36,58,.28)}
   .notice-date{flex:none;align-self:center;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px;color:var(--ink);font-size:18px}
   .notice-date:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-  .task .st.todo{background:#FFD9D6;color:#B3261E}
+  .task .st.todo{background:#EFE4FB;color:#6B46C1}
 
   /* Carinhos no cabeçalho: apenas o coração, com área de toque confortável. */
   .top-title{position:relative;min-height:48px;display:flex;align-items:center}
@@ -850,7 +857,7 @@
   .rpill button.act{color:#fff;width:40px;height:40px;line-height:0;display:flex;align-items:center;justify-content:center;border-radius:12px;transition:background .15s,transform .12s}
   .rpill button.act svg{width:21px;height:21px;display:block}
   .rpill button.act:active{background:rgba(255,255,255,.18);transform:scale(.9)}
-  .rpill button.act.danger{color:#FF9B93}
+  .rpill button.act.danger{color:#D9A2C8}
   .rpill button.act.danger:active{background:rgba(255,155,147,.2)}
   .rpill>button.more{flex:none;margin-left:2px}
   /* chamar atencao (zumbido) */
@@ -885,16 +892,16 @@
   .typing .dots i:nth-child(2){animation-delay:.18s} .typing .dots i:nth-child(3){animation-delay:.36s}
   @keyframes tdot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
   /* gravacao de audio */
-  .recbar{display:none;align-items:center;gap:8px;flex:none;padding:8px 12px;background:#FDECEC;border-top:1px solid #F5C9C6;color:#8E2A2A;font-size:13px;font-weight:800}
+  .recbar{display:none;align-items:center;gap:8px;flex:none;padding:8px 12px;background:#FDECEC;border-top:1px solid #F5C9C6;color:#6E2050;font-size:13px;font-weight:800}
   .recbar.on{display:flex}
-  .recbar .rdot{width:10px;height:10px;border-radius:50%;background:#D93A34;flex:none;animation:recpulse 1s ease-in-out infinite}
+  .recbar .rdot{width:10px;height:10px;border-radius:50%;background:#9B2C6B;flex:none;animation:recpulse 1s ease-in-out infinite}
   .recbar .rlbl{flex:none}
   .recbar .rnum{margin-left:auto;font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1;min-width:26px;text-align:right}
   .recbar .rseg{font-size:12px;opacity:.7;margin-right:4px}
   .recbar button{border:0;border-radius:50%;width:36px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center;font:inherit;font-size:15px;font-weight:900;flex:none;line-height:1}
-  .recbar .rcancel{background:#fff;color:#8E2A2A;border:1px solid #F0BDB9}
-  .recbar .rok{background:#D93A34;color:#fff}
-  .recbar .rpause{background:#fff;color:#8E2A2A;border:1px solid #F0BDB9}
+  .recbar .rcancel{background:#fff;color:#6E2050;border:1px solid #E0BBD6}
+  .recbar .rok{background:#9B2C6B;color:#fff}
+  .recbar .rpause{background:#fff;color:#6E2050;border:1px solid #E0BBD6}
   .recbar .rplay{display:none;background:var(--lilas);color:#fff}
   .recbar.pronto{background:#F6F1FD;border-top-color:var(--lilas-line);color:var(--lilas-ink)}
   .recbar.pronto .rdot{background:var(--lilas);animation:none}
@@ -910,12 +917,12 @@
   .recbar.pausado .rok{background:var(--lilas)}
   .recbar.pausado.fim .rnum{animation:none;color:var(--lilas-ink)}
   .recbar.fim{background:#FBDAD8}
-  .recbar.fim .rnum{color:#B3261E;animation:recnum .5s ease-in-out infinite}
+  .recbar.fim .rnum{color:#8E2A63;animation:recnum .5s ease-in-out infinite}
   .recbar.hold .rlbl{font-weight:800}
   @keyframes recpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
   @keyframes recnum{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
   @media(prefers-reduced-motion:reduce){.typing .dots i,.recbar .rdot,.recbar.fim .rnum{animation:none}}
-  body .chatin #chatSend.rec{background:#D93A34!important;color:#fff!important;animation:recpulse 1.4s ease-in-out infinite}
+  body .chatin #chatSend.rec{background:#9B2C6B!important;color:#fff!important;animation:recpulse 1.4s ease-in-out infinite}
   body .chatin #chatSend.pronto{animation:recpulse 1.6s ease-in-out infinite}
   body .chatin #chatSend.mic{touch-action:none;-webkit-user-select:none;user-select:none}
   /* balao de audio */
@@ -946,7 +953,7 @@
   .audpanel .apitem button{width:36px;height:36px;border-radius:50%;border:1px solid var(--lilas-line);background:#F6F1FD;color:var(--lilas-ink);font-size:14px;font-weight:900;flex:none}
   .audpanel .apitem button.go{background:linear-gradient(135deg,var(--c1,#B48BF5),var(--c2,#8E5BE0));color:#fff;border:0}
   .audpanel .apitem button:active{transform:scale(.9)}
-  .audpanel .aprec{border:0;border-radius:999px;padding:11px;font:inherit;font-size:15px;font-weight:900;color:#fff;background:#D93A34;flex:none}
+  .audpanel .aprec{border:0;border-radius:999px;padding:11px;font:inherit;font-size:15px;font-weight:900;color:#fff;background:#9B2C6B;flex:none}
   /* reacao em audio na tarefa */
   .trea button.ra{cursor:pointer;font:inherit;padding-left:4px;gap:4px;margin:0;line-height:inherit;vertical-align:middle}
   .trea .ra b{font-size:11px;color:var(--soft);font-weight:800}
@@ -996,9 +1003,8 @@
   /* abertura: o sapinho por cima do app (fundo transparente), some sozinho */
   body.abrindo{overflow:hidden;touch-action:none;overscroll-behavior:none}
   /* enquanto a bailarina esta na tela: o fundo fica so um borrao, nada de conteudo aparecendo */
-  body.abrindo .wrap{filter:blur(16px) saturate(.85);opacity:.55;transform:scale(1.02);pointer-events:none;transition:none}   /* borra na hora; a transicao e so na saida */
+  body.abrindo .wrap{filter:blur(16px) saturate(.85);opacity:.55;transform:scale(1.02);pointer-events:none}
   body.abrindo .dock{visibility:hidden}
-  .wrap{transition:filter .5s ease,opacity .5s ease,transform .5s ease}
   /* abertura: cobre tudo com um fundo neutro ate os dados chegarem (nada aparece aos pedacos) */
   .carregando{position:fixed;inset:0;z-index:250;background:#F6F1FD;display:flex;align-items:center;justify-content:center;transition:opacity .4s ease}
   body.abrindo .carregando .cg{display:none}   /* com a bailarina na tela, o rodinha de carregar fica escondido */
@@ -1176,10 +1182,10 @@
     display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px rgba(63,39,100,.2);transition:transform .15s,opacity .18s}
   .dock-mid .di{font-size:28px;line-height:1;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
   /* coração desenhado, com o número de carinhos dentro dele */
-  .dock-mid .coracao{display:none;width:31px;height:28px;filter:drop-shadow(0 2px 3px rgba(214,47,92,.32))}
+  .dock-mid .coracao{display:none;width:31px;height:28px;filter:drop-shadow(0 2px 3px rgba(124,63,184,.32))}
   .dock-mid.aluna .coracao{display:block}
   .dock-mid.aluna .mao{display:none}
-  .dock-mid #reaBadge{display:none;font-family:inherit;font-size:14px;font-weight:900;fill:#fff;letter-spacing:-.4px;paint-order:stroke;stroke:rgba(150,20,55,.35);stroke-width:2.5px;stroke-linejoin:round}
+  .dock-mid #reaBadge{display:none;font-family:inherit;font-size:14px;font-weight:900;fill:#fff;letter-spacing:-.4px;paint-order:stroke;stroke:rgba(80,35,130,.35);stroke-width:2.5px;stroke-linejoin:round}
   .dock-mid #reaBadge.on{display:block}
   .dock-mid.aluna.tem .coracao{width:37px;height:34px}
   .dock-mid:active{transform:translateX(-50%) scale(.92)}
@@ -1193,7 +1199,7 @@
   .dock .chat-icon{display:flex;align-items:center;justify-content:center}
   .dock .bolha{width:25px;height:24px;display:block;color:#fff;overflow:visible}
   .dock .chatfab.pulse .bolha{animation:chat-beat 2.4s ease-in-out infinite;transform-origin:center}
-  .dock #chatBadge{display:none;font-family:inherit;font-size:14px;font-weight:900;fill:#E4443F;letter-spacing:-.4px}
+  .dock #chatBadge{display:none;font-family:inherit;font-size:14px;font-weight:900;fill:#8E2A63;letter-spacing:-.4px}
   .dock #chatBadge.on{display:block}
   .dock .chatfab.tem .bolha{width:30px;height:29px}
   @media screen and (min-width:600px) and (min-height:600px){
@@ -1319,7 +1325,7 @@
   <button class="dock-b" id="fab" aria-label="Menu"><span class="di" aria-hidden="true">☰</span><span class="dt">Menu</span></button>
   <span class="dock-gap" aria-hidden="true"></span>
   <button class="dock-b chatfab" id="chatFab" aria-label="Conversa"><span class="di chat-icon"><svg class="bolha" viewBox="0 0 48 46" aria-hidden="true"><path d="M10 2.5h28A7.5 7.5 0 0 1 45.5 10v18a7.5 7.5 0 0 1-7.5 7.5h-9L24 43.5 19 35.5h-9A7.5 7.5 0 0 1 2.5 28V10A7.5 7.5 0 0 1 10 2.5Z" fill="currentColor"/><text id="chatBadge" x="24" y="19" text-anchor="middle" dominant-baseline="central"></text></svg></span><span class="dt">Conversa</span></button>
-  <button class="dock-mid reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="dk-cap" id="dockCap" aria-hidden="true"></span><span class="dk-ico" id="dockIco" aria-hidden="true"></span><span class="di heart-icon"><svg class="coracao" viewBox="0 0 48 44" aria-hidden="true"><defs><linearGradient id="gcor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9BB3"/><stop offset=".55" stop-color="#F4557E"/><stop offset="1" stop-color="#D62F5C"/></linearGradient></defs><path d="M24 41.2C24 41.2 2.5 28.6 2.5 15.1 2.5 8.2 8 2.7 14.9 2.7c4.2 0 7.7 2.1 9.1 5 1.4-2.9 4.9-5 9.1-5 6.9 0 12.4 5.5 12.4 12.4C45.5 28.6 24 41.2 24 41.2Z" fill="url(#gcor)"/><text id="reaBadge" x="24" y="19.5" text-anchor="middle" dominant-baseline="central"></text></svg><span class="mao" aria-hidden="true">👋</span></span></button>
+  <button class="dock-mid reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="dk-cap" id="dockCap" aria-hidden="true"></span><span class="dk-ico" id="dockIco" aria-hidden="true"></span><span class="di heart-icon"><svg class="coracao" viewBox="0 0 48 44" aria-hidden="true"><defs><linearGradient id="gcor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9AEF5"/><stop offset=".55" stop-color="#A855D8"/><stop offset="1" stop-color="#7C3FB8"/></linearGradient></defs><path d="M24 41.2C24 41.2 2.5 28.6 2.5 15.1 2.5 8.2 8 2.7 14.9 2.7c4.2 0 7.7 2.1 9.1 5 1.4-2.9 4.9-5 9.1-5 6.9 0 12.4 5.5 12.4 12.4C45.5 28.6 24 41.2 24 41.2Z" fill="url(#gcor)"/><text id="reaBadge" x="24" y="19.5" text-anchor="middle" dominant-baseline="central"></text></svg><span class="mao" aria-hidden="true">👋</span></span></button>
 </nav>
 <input type="file" id="fotoFile" accept="image/*" style="display:none">
 <input type="file" id="bgFile" accept="image/*" style="display:none">
@@ -1363,8 +1369,8 @@ const SUBJ = {
 };
 // Bandeiras incorporadas: não dependem do suporte a emojis do aparelho.
 function subjectVisual(value){
-  const gb='<svg class="subject-flag" viewBox="0 0 60 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path fill="#012169" d="M0 0h60v40H0z"/><path stroke="#fff" stroke-width="8" d="m0 0 60 40M60 0 0 40"/><path stroke="#C8102E" stroke-width="3" d="m0 0 60 40M60 0 0 40"/><path stroke="#fff" stroke-width="13" d="M30 0v40M0 20h60"/><path stroke="#C8102E" stroke-width="8" d="M30 0v40M0 20h60"/></svg>';
-  const es='<svg class="subject-flag" viewBox="0 0 60 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path fill="#AA151B" d="M0 0h60v40H0z"/><path fill="#F1BF00" d="M0 10h60v20H0z"/><path fill="#AA151B" d="M16 17h8v8q-4 5-8 0z"/><path fill="#F8E5BC" d="M17 18h6v6h-6z"/><path fill="#AA151B" d="M19 18h2v6h-2z"/><path fill="#AA151B" d="M17 15h6v2h-6z"/></svg>';
+  const gb='<svg class="subject-flag" viewBox="0 0 60 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path fill="#012169" d="M0 0h60v40H0z"/><path stroke="#fff" stroke-width="8" d="m0 0 60 40M60 0 0 40"/><path stroke="#8E2A63" stroke-width="3" d="m0 0 60 40M60 0 0 40"/><path stroke="#fff" stroke-width="13" d="M30 0v40M0 20h60"/><path stroke="#8E2A63" stroke-width="8" d="M30 0v40M0 20h60"/></svg>';
+  const es='<svg class="subject-flag" viewBox="0 0 60 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path fill="#6E2050" d="M0 0h60v40H0z"/><path fill="#F1BF00" d="M0 10h60v20H0z"/><path fill="#6E2050" d="M16 17h8v8q-4 5-8 0z"/><path fill="#F8E5BC" d="M17 18h6v6h-6z"/><path fill="#6E2050" d="M19 18h2v6h-2z"/><path fill="#6E2050" d="M17 15h6v2h-6z"/></svg>';
   return String(value||'').replaceAll('🇬🇧',gb).replaceAll('🇪🇸',es);
 }
 const TIMETABLE = {
@@ -1634,7 +1640,7 @@ function cloudPush(now){
 function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b) return;
   if(!CLOUD_CFG) b.textContent='Versão '+APP_VERSION; else if(!CLOUD_ON) b.textContent='⚠️ Não consegui carregar a nuvem (Firebase). Confira a internet e abra de novo. Versão '+APP_VERSION; else if(cloudErr) b.textContent='⚠️ Sem permissão no banco ('+cloudErr+'). Publique as regras no Firebase.'; else b.textContent=(cloudReady?(cloudOnline?'☁️ Sincronizado':'📴 Sem internet. Vai sincronizar depois'):'⏳ Conectando…')+' · v'+APP_VERSION; }
 function openLogin(after,preId){
-  show(`<h2>👋 Quem é você? <button class="x" style="visibility:${USER?'visible':'hidden'}">✕</button></h2>
+  show(`<h2>${ICO.pessoa} Quem é você? <button class="x" style="visibility:${USER?'visible':'hidden'}">✕</button></h2>
     <div class="users">${USERS.map(u=>`<button class="uopt" data-u="${u.id}"><span class="av">${avatarHtml(u)}</span><span>${u.nome}</span><small>${u.papel==='aluna'?'faz as tarefas':'acompanha'}</small></button>`).join('')}</div>
     <div id="pinBox" style="display:none;margin-top:12px">
       <input id="pinTxt" type="password" inputmode="numeric" maxlength="8" placeholder="Código" style="width:100%;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:22px;letter-spacing:6px;text-align:center">
@@ -1666,7 +1672,7 @@ function plain(t){ return (t||'').replace(/<[^>]+>/g,''); }
 function hlHtml(html,q){ if(!q||q.length<2) return html||''; const re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
   return String(html||'').split(/(<[^>]+>)/).map(seg=>seg.startsWith('<')?seg:seg.replace(re,m=>'<mark>'+m+'</mark>')).join(''); }
 function openSearch(q0){
-  show(`<h2>🔎 Buscar tarefa <button class="x">✕</button></h2>
+  show(`<h2>${ICO.lupa} Buscar tarefa <button class="x">✕</button></h2>
     <div class="srch"><input id="srchTxt" type="search" aria-label="Pesquisar tarefas em todas as semanas" placeholder="Ex.: biomas, página 52, Inglês…" autocomplete="off"></div>
     <div class="res" id="srchRes"><p class="none">Escreve para procurar em todas as semanas.</p></div>`);
   const inp=document.getElementById('srchTxt'), res=document.getElementById('srchRes');
@@ -1676,7 +1682,7 @@ function openSearch(q0){
       allTasks(w).forEach(t=>{ const txt=plain(t.text); if(txt.toLowerCase().includes(ql)||(SUBJ[t.subj]||'').toLowerCase().includes(ql)||(t.note||'').toLowerCase().includes(ql))
         hits.push({w:id,t,txt}); }); });
     if(!hits.length){ res.innerHTML='<p class="none">Não achei nada com “'+esc(q)+'”.</p>'; return; }
-    res.innerHTML=hits.slice(0,60).map(h=>{ const d=DB.weeks[h.w].days.find(x=>x.k===h.t.day); const est=h.t.off?'🚫':(h.t.status==='done'?'✓':(h.t.status==='doing'?'⏳':'📝'));
+    res.innerHTML=hits.slice(0,60).map(h=>{ const d=DB.weeks[h.w].days.find(x=>x.k===h.t.day); const est=h.t.off?ICO.proibido:(h.t.status==='done'?ICO.feito:(h.t.status==='doing'?ICO.fazendo:ICO.lapis));
       return `<button class="hit" data-w="${h.w}" data-id="${h.t.id}"><b>${est} ${subjectVisual(SUBJ[h.t.subj]||'')} · ${DAYMETA[h.t.day][0]} ${d?fmt(d.date):''} · ${DB.weeks[h.w].label}</b>${hl(h.txt,q)}</button>`; }).join('');
     res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; fType='all';fSubj='all'; fQ=''; filtroTocado=true; { const bar=document.getElementById('searchBar'),bt=document.getElementById('filterSearch'),qi=document.getElementById('qTxt'),qa=document.getElementById('qAll'); if(bar){bar.classList.remove('on');bt.classList.remove('on');qi.value='';qa.classList.remove('on');} } const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
       const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
@@ -1735,7 +1741,7 @@ function resumoSemana(w){
 function openShare(){
   const w=DB.weeks[current];
   const sel=new Set();
-  show(`<h2>📤 Compartilhar <button class="x">✕</button></h2>
+  show(`<h2>${ICO.compart} Compartilhar <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">Escolhe o que quer mandar. Pode marcar mais de um dia.</p>
     <div class="shdays">
       ${w.days.map(d=>{ const ts=allTasks(w).filter(t=>t.day===d.k&&!t.off); const f=ts.filter(t=>t.status==='done').length;
@@ -1803,7 +1809,7 @@ function openCropper(file,opt){ // opt: {circle, out, aspects}
     let nw,nh,s0,sc,ox,oy,W,H,asp=opt.circle?1:(opt.aspects?opt.aspects[0][1]:1),fi=0;
     function build(){
       nw=img.naturalWidth; nh=img.naturalHeight;
-      show(`<h2>✂️ Enquadrar foto <button class="x">✕</button></h2><div class="crop">
+      show(`<h2>${ICO.tesoura} Enquadrar foto <button class="x">✕</button></h2><div class="crop">
         <div class="cropbox" id="cropbox"><img id="cropimg" alt=""><div class="cropmask ${opt.circle?'circle':''}" id="cropmask"></div></div>
         <div class="cropbar"><span>🔍</span><input type="range" id="cropzoom" min="0" max="100" value="0"><button class="opt" id="cropRot" style="width:auto;margin:0;padding:8px 12px">🔄</button></div>
         <p class="quiet" style="margin:0;font-size:13px;text-align:center">Arrasta para mover, pinça ou usa a barra para aproximar.</p>
@@ -2269,7 +2275,7 @@ function fmtDur(s){ s=Math.max(0,Math.round(s)); return Math.floor(s/60)+':'+Str
 function micOk(){ return !!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder); }
 function updSendBtn(){ const b=document.getElementById('chatSend'), i=document.getElementById('chatTxt'); if(!b||!i) return;
   const has=i.value.trim().length>0; b.classList.toggle('rec',!!REC); b.classList.toggle('pronto',!REC&&!!RECDONE); b.classList.toggle('mic',!REC&&!RECDONE&&!has);
-  b.textContent=REC?'⏹':((RECDONE||has)?'➤':'🎤');
+  b.innerHTML=REC?ICO.parar:((RECDONE||has)?ICO.enviar:ICO.micro);
   b.setAttribute('aria-label',REC?'Parar gravação':(RECDONE?'Enviar áudio':(has?'Enviar':'Gravar áudio'))); }
 function recBar(mode){ // false | 'rec' | 'pronto'
   const b=document.getElementById('recBar'); if(b){ b.classList.toggle('on',!!mode); b.classList.toggle('pronto',mode==='pronto'); b.classList.remove('fim','pausado'); }
@@ -2384,7 +2390,7 @@ function renderTyping(){
 function openAtt(k){
   const m=CHAT.find(x=>x.k===k); if(!m||!m.att||!famRef) return; toast('Carregando…');
   famRef.child('anexos/'+k).once('value').then(sn=>{ const a=sn.val(); if(!a){toast('Anexo não encontrado');return;}
-    if(m.att.kind==='img'){ chatDraftOpen(`<div class="viewer"><h2>📷 ${esc(uname(m.by))} <button class="x">✕</button></h2><img src="${a.data}" alt=""><a class="opt primary" style="justify-content:center;margin-top:12px;text-decoration:none" href="${a.data}" download="${esc(a.name||'foto.jpg')}">⬇️ Salvar foto</a></div>`); }
+    if(m.att.kind==='img'){ chatDraftOpen(`<div class="viewer"><h2>${ICO.imagem} ${esc(uname(m.by))} <button class="x">✕</button></h2><img src="${a.data}" alt=""><a class="opt primary" style="justify-content:center;margin-top:12px;text-decoration:none" href="${a.data}" download="${esc(a.name||'foto.jpg')}">⬇️ Salvar foto</a></div>`); }
     else { const l=document.createElement('a'); l.href=a.data; l.download=a.name||'arquivo'; document.body.appendChild(l); l.click(); l.remove(); toast('Abrindo '+(a.name||'arquivo')); }
   }).catch(()=>toast('Não consegui abrir'));
 }
@@ -2422,7 +2428,7 @@ const CORES_BALAO=['#B57BE8','#8E5BE0','#7C4DC4','#6B46C1','#4C3499','#A44FC7'];
 function corPreset(c){ return CORES_BALAO.some(x=>x.toLowerCase()===String(c||'').toLowerCase()); }
 function corDe(u){ return (u&&CHATPREF.cores&&CHATPREF.cores[u.id])||(u&&u.cor)||'#7A6B9B'; }
 function savePref(){ try{localStorage.setItem(KEY+'-chatpref',JSON.stringify(CHATPREF));}catch(e){} applyPref(); }
-const BGCOL={lilas:['#B48BF5','#8E5BE0'],claro:['#7FB2F0','#4A7FE0'],verde:['#5FD3A5','#2EB88A'],azul:['#6FB6F5','#2F8FE0'],rosa:['#F58FC8','#E0479E'],amarelo:['#FFD06B','#F0A93C'],noite:['#4A4770','#26243A'],bolinhas:['#C9A8FF','#8E5BE0'],estrelas:['#8FB8FF','#4A7FE0'],foto:['#8E5BE0','#5B3FC4']};
+const BGCOL={lilas:['#B48BF5','#8E5BE0'],claro:['#7FB2F0','#4A7FE0'],verde:['#5FD3A5','#7C4DC4'],azul:['#6FB6F5','#8E5BE0'],rosa:['#F58FC8','#E0479E'],amarelo:['#FFD06B','#F0A93C'],noite:['#4A4770','#26243A'],bolinhas:['#C9A8FF','#8E5BE0'],estrelas:['#8FB8FF','#4A7FE0'],foto:['#8E5BE0','#5B3FC4']};
 function applyPref(){
   const pairs=[[sheet.querySelector('.chat:not(#lookPrev)'),document.getElementById('msgs')],[document.getElementById('lookPrev'),document.getElementById('lookMsgs')]];
   const col=BGCOL[CHATPREF.bg]||BGCOL.lilas; const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);}
@@ -2430,10 +2436,10 @@ function applyPref(){
   const ci=sheet.querySelector('.chatin'); if(ci){ci.style.setProperty('--c1',col[0]);ci.style.setProperty('--c2',col[1]);}
   pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg; m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
 function openChatLook(){
-  const BGS=[['lilas','#F7F5FC'],['claro','#FFFFFF'],['verde','#E6F6EE'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
+  const BGS=[['lilas','#F7F5FC'],['claro','#FFFFFF'],['verde','#EFE7FB'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
   const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
   const OUTRO=USERS.find(u=>!USER||u.id!==USER.id)||USERS[0];
-  show(`<h2>🎨 Aparência da conversa <button class="x">✕</button></h2>
+  show(`<h2>${ICO.paleta} Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px;padding:0"><div class="msgs" id="lookMsgs" style="min-height:0;max-height:none;padding:10px 8px;overflow:hidden">
       <div class="msg" data-pu="${OUTRO.id}" style="--uc:${corDe(OUTRO)}"><span class="av">${avatarHtml(OUTRO)}</span><div><div class="b"><span class="hd"><b>${esc(OUTRO.nome)}</b><small>20:41</small></span>Oi! Assim fica o balão dele(a) 😊</div></div></div>
       <div class="msg me" data-pu="${USER.id}" style="--uc:${corDe(USER)}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><b>Eu</b><small>20:42 <span class="tick seen">✓</span></small></span>E assim fica o seu</div></div></div>
@@ -2561,7 +2567,7 @@ function openChat(){
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
     <div class="selbar nodrag" id="selbar"><span></span><button type="button" class="sc" id="selCopy">Copiar</button><button type="button" class="sx" id="selCancel" aria-label="Cancelar">✕</button></div>
     <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel" aria-label="Descartar" title="Descartar">🗑</button><button class="rpause" id="recPause" aria-label="Pausar gravação" title="Pausar">⏸</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado" title="Ouvir">▶</button></div>
-    <div class="chatin"><div class="chatcompose"><textarea id="chatTxt" rows="1" enterkeyhint="enter" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button class="emo" id="emoBtn" aria-label="Emojis">🐸</button></div><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
+    <div class="chatin"><div class="chatcompose"><textarea id="chatTxt" rows="1" enterkeyhint="enter" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button class="emo" id="emoBtn" aria-label="Emojis">${ICO.sorriso}</button></div><button id="chatSend" class="mic" aria-label="Gravar áudio">${ICO.micro}</button></div>
     </div>`);
   selMode=false; selKeys=new Set(); applyPref(); markRead(); scrollMsgs(); bindMsgs(); initChatJump(); editingKey=null; replyTo=null;
   document.getElementById('selCopy').addEventListener('click',copiaSel); document.getElementById('selCancel').addEventListener('click',()=>{ saiSel(); vibrate(8); });
@@ -2759,10 +2765,10 @@ function render(){
       </div></details>`;
   });
   html+='</div>';
-  if(w.topics&&!filtering) html+=`<div class="next"><h2>📌 O que cada matéria está estudando</h2><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${subjectVisual(line)}</div>`).join('')}</div></div>`;
+  if(w.topics&&!filtering) html+=`<div class="next"><h2>${ICO.livro} O que cada matéria está estudando</h2><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${subjectVisual(line)}</div>`).join('')}</div></div>`;
   html+=`<section class="tl ${tlAberta?'aberta':''}" id="tl">
     <button class="tl-head" id="tlToggle" type="button" aria-expanded="${tlAberta}" aria-controls="tlBody">
-      <span class="tl-head-ic" aria-hidden="true">🕘</span>
+      <span class="tl-head-ic" aria-hidden="true">${ICO.fazendo}</span>
       <span class="tl-head-tx">Linha do tempo</span>
       <span class="arrow" aria-hidden="true">▼</span>
     </button>
@@ -2829,14 +2835,14 @@ function taskHtml(t,inImp){
   const dchip = inImp ? `<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
   const subj = `<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span>`;
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
-  const status=((t.pics||0)?`<span class="st pics">📸 ${t.pics}</span>`:'')+(t.off?`<span class="st canc">🚫 Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'')+moved;
+  const status=((t.pics||0)?`<span class="st pics">${ICO.camera} ${t.pics}</span>`:'')+(t.off?`<span class="st canc">${ICO.proibido} Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'')+moved;
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''}" data-id="${t.id}">
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${SWLBL[NEXT_R[t.status]||'done'][0]}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${SWLBL[NEXT_L[t.status]||'doing'][0]}</div>`: ''}
     <div class="tin">
       <div class="t"><div class="tg">${dchip}${subj}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>r.a?`<button type="button" class="r ra" data-rfx="${r.a}" aria-label="Ouvir ${esc(r.an||'áudio')} de ${esc(r.n||'')}"><span class="pl" aria-hidden="true"></span><b>${esc(r.n||'')}</b></button>`:`<span class="r">${r.e} <b>${esc(r.n||'')}</b></span>`).join('')}</span>`:''}</div><div class="tx">${hlHtml(t.text,fQ)}</div>
         ${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">🚫 <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
-      <button class="star ${t.important?'on':''}" data-star="${t.id}" aria-pressed="${t.important?'true':'false'}" aria-label="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}" title="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}">⭐</button>
+      <button class="star ${t.important?'on':''}" data-star="${t.id}" aria-pressed="${t.important?'true':'false'}" aria-label="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}" title="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}">${ICO.estrela}</button>
     </div>
   </div>`;
 }
@@ -2908,7 +2914,7 @@ function sparks(x,y,color){for(let i=0;i<10;i++){const e=document.createElement(
   const a=Math.random()*Math.PI*2,r=40+Math.random()*50;e.style.setProperty('--dx',Math.cos(a)*r+'px');e.style.setProperty('--dy',Math.sin(a)*r+'px');
   document.body.appendChild(e);setTimeout(()=>e.remove(),800);}}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1800);}
-function colorOf(el){return getComputedStyle(el).getPropertyValue('--c').trim()||'#2EB88A';}
+function colorOf(el){return getComputedStyle(el).getPropertyValue('--c').trim()||'#7C4DC4';}
 
 function setStatus(id,status,el){
   const tin=el?.querySelector('.tin'); if(tin)tin.style.transform='';
@@ -2942,7 +2948,7 @@ function setStatus(id,status,el){
     if(status==='done') setTimeout(()=>askPhotoAfterDone(id),600);
     if(complete&&!wasComplete&&day){
       vibrate([60,40,60,40,120]);SFX.party();
-      const updated=document.querySelector(`.day[data-date="${day.date}"]`), c=updated?colorOf(updated):'#2EB88A';
+      const updated=document.querySelector(`.day[data-date="${day.date}"]`), c=updated?colorOf(updated):'#7C4DC4';
       for(let k=0;k<6;k++)setTimeout(()=>sparks(window.innerWidth*Math.random(),120+Math.random()*200,c),k*90);
     }
   });
@@ -2962,7 +2968,7 @@ function swipeAction(id,dir,el){
 function confirmaImp(id,btn){
   const t=findTask(id); if(!t||t.type!==H) return;
   const val=!t.important; vibrate(15);
-  show(`<h2>⭐ ${val?'Marcar como mais importante?':'Tirar das mais importantes?'} <button class="x">✕</button></h2>
+  show(`<h2>${ICO.estrela} ${val?'Marcar como mais importante?':'Tirar das mais importantes?'} <button class="x">✕</button></h2>
    <p class="quiet" style="margin:0 0 12px">${esc(plain(t.text))}</p>
    <p class="quiet" style="margin:0 0 12px;font-size:14px">${val?'Ela vai aparecer lá em cima, no quadro dourado das mais importantes.':'Ela sai do quadro dourado e fica só no dia dela.'}</p>
    <div class="row"><button class="opt" id="impNao">Agora não</button><button class="opt primary" id="impSim">${val?'⭐ Marcar':'Tirar'}</button></div>`);
@@ -3093,16 +3099,16 @@ veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 
 function openMenu(id){
   const t=findTask(id); if(!t) return; if(t.type===B){openMove(id);return;}
-  show(`<h2>📝 Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=3" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
+  show(`<h2>${ICO.lapis} Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=3" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
    <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
-   <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">⭐</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
-   ${isAluna()?`<button class="opt" data-a="note"><span class="ic">📝</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
-   ${t.note?'<button class="opt danger" data-a="delnote"><span class="ic">🗑️</span>Apagar observação</button>':''}`:''}
-   ${(CLOUD_CFG&&(isAluna()||(t.pics||0)))?`<button class="opt" data-a="pics"><span class="ic">📸</span>${(t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'}</button>`:''}
-   ${(isAluna()||isResponsavel())?'<button class="opt" data-a="move"><span class="ic">📆</span>Mudar de dia</button>':''}
-   ${CLOUD_CFG?'<button class="opt" data-a="chat"><span class="ic">📨</span>Mandar para a conversa</button>':''}
-   ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">💫</span>Reagir</button>`:''}
-   ${isAluna()?(t.off?'<button class="opt" data-a="undel"><span class="ic">↩️</span>Voltar a valer</button>':'<button class="opt danger" data-a="del"><span class="ic">🚫</span>Cancelar a tarefa</button>'):''}`);
+   <button class="opt ${t.important?'imp-on':''}" data-a="imp"><span class="ic">${ICO.estrela}</span>${t.important?'Tirar das mais importantes':'Marcar como mais importante'}</button>
+   ${isAluna()?`<button class="opt" data-a="note"><span class="ic">${ICO.lapis}</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
+   ${t.note?`<button class="opt danger" data-a="delnote"><span class="ic">${ICO.lixeira}</span>Apagar observação</button>`:''}`:''}
+   ${(CLOUD_CFG&&(isAluna()||(t.pics||0)))?`<button class="opt" data-a="pics"><span class="ic">${ICO.camera}</span>${(t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'}</button>`:''}
+   ${(isAluna()||isResponsavel())?`<button class="opt" data-a="move"><span class="ic">${ICO.aulas}</span>Mudar de dia</button>`:''}
+   ${CLOUD_CFG?`<button class="opt" data-a="chat"><span class="ic">${ICO.enviar}</span>Mandar para a conversa</button>`:''}
+   ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">${ICO.reagir}</span>Reagir</button>`:''}
+   ${isAluna()?(t.off?`<button class="opt" data-a="undel"><span class="ic">${ICO.voltar}</span>Voltar a valer</button>`:`<button class="opt danger" data-a="del"><span class="ic">${ICO.proibido}</span>Cancelar a tarefa</button>`):''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
     const a=b.dataset.a;
     if(['del','undel','note','delnote'].includes(a)&&!isAluna()) return;
@@ -3120,16 +3126,16 @@ function openMenu(id){
 const TREACTS=[['🎉','Parabéns!'],['😬','Ansioso'],['⭐','Caprichou'],['💛','Orgulho'],['💪','Força'],['🤗','Tamo junto'],['🙂','Tudo bem'],['😕','Fiquei triste'],['⏰','Não esquece']];
 function openReagir(id){
   if(!isResponsavel()) return; const t=findTask(id); if(!t) return;
-  show(`<h2>💫 Reagir <button class="x">✕</button></h2>
+  show(`<h2>${ICO.reagir} Reagir <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
-    <button class="opt" id="rgCar"><span class="ic">💛</span>Deixar um carinho</button>
-    <button class="opt" id="rgAud"><span class="ic">🔊</span>Mandar um áudio engraçado</button>`);
+    <button class="opt" id="rgCar"><span class="ic">${ICO.coracao}</span>Deixar um carinho</button>
+    <button class="opt" id="rgAud"><span class="ic">${ICO.som}</span>Mandar um áudio engraçado</button>`);
   document.getElementById('rgCar').addEventListener('click',()=>openTaskReact(id));
   document.getElementById('rgAud').addEventListener('click',()=>openTaskAudio(id));
 }
 function openTaskAudio(id){
   if(!isResponsavel()) return; const t=findTask(id); if(!t) return; const mine=(t.reacts&&USER)?t.reacts[USER.id]:null;
-  show(`<h2>🔊 Um áudio para a Maria <button class="x">✕</button></h2>
+  show(`<h2>${ICO.som} Um áudio para a Maria <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div class="alist">${FX_REA.map(x=>`<div class="apitem ${mine&&mine.a===x.fx?'on':''}"><span class="apn">${x.ico} ${x.nome}</span><button data-fxp="${x.fx}" aria-label="Ouvir">▶</button><button data-fxs="${x.fx}" data-nome="${x.nome}" class="go" aria-label="Mandar">✓</button></div>`).join('')}</div>
     ${mine&&mine.a?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu áudio</button>':''}`);
@@ -3140,7 +3146,7 @@ function openTaskAudio(id){
 function openTaskReact(id){
   if(!isResponsavel()) return;
   const t=findTask(id); if(!t) return; const mine=(t.reacts&&USER)?t.reacts[USER.id]:null;
-  show(`<h2>💛 Um carinho para a Maria <button class="x">✕</button></h2>
+  show(`<h2>${ICO.coracao} Um carinho para a Maria <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div class="rgrid">${TREACTS.map(([e,n])=>`<button data-e="${e}" class="${mine&&mine.e===e?'on':''}"><span>${e}</span>${n}</button>`).join('')}</div>
     ${mine?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu carinho</button>':''}`);
@@ -3207,7 +3213,7 @@ function updateReaFab(){ const n=reaNew(), cor=isAluna()&&n>0;   // coracao so c
 }
 function openReacts(){
   const list=allReacts(), aluna=isAluna();
-  show(`<h2>💛 ${aluna?'Carinhos que você recebeu':'Carinhos enviados'} <button class="x">✕</button></h2>
+  show(`<h2>${ICO.coracao} ${aluna?'Carinhos que você recebeu':'Carinhos enviados'} <button class="x">✕</button></h2>
     ${list.length?`<div class="realist">${list.map(r=>{ const d=DB.weeks[r.week].days.find(x=>x.k===r.task.day); const novo=(r.t||0)>reaSeen;
       return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}${novo?' · novo ✨':''}</span><span class="rea-activity">${esc(plain(r.task.text))}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</span></span></span></button>`; }).join('')}</div>`
       :`<p class="quiet" style="text-align:center;padding:16px 0">${aluna?'Ainda não tem carinhos. Faça as tarefas que logo chegam! 💛':'Ainda não foi mandado nenhum carinho. Segure numa tarefa e escolha Reagir 💛'}</p>`}`);
@@ -3221,7 +3227,7 @@ let picTaskId=null;
 function picsRef(id){ return famRef?famRef.child('fotos/'+id):null; }
 function openPics(id){
   const t=findTask(id); if(!t||t.type!==H) return; picTaskId=id;
-  show(`<h2>📸 Fotos da tarefa <button class="x">✕</button></h2>
+  show(`<h2>${ICO.camera} Fotos da tarefa <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div id="galBox"><p class="quiet" style="text-align:center;padding:10px 0">Carregando…</p></div>
     ${isAluna()?'<button class="opt primary" id="picAdd" style="justify-content:center">📷 Tirar foto agora</button>':''}`);
@@ -3231,7 +3237,7 @@ function openPics(id){
     box.innerHTML=ks.length?`<div class="gal">${ks.map(k=>`<div class="cell"><img src="${v[k].data}" data-big="${k}" alt="">${isAluna()?`<button class="del" data-del="${k}" aria-label="Apagar">✕</button>`:''}</div>`).join('')}</div>`
       :'<p class="quiet" style="text-align:center;padding:10px 0">Ainda não há fotos desta tarefa. 📷</p>';
     box.querySelectorAll('[data-big]').forEach(im=>im.addEventListener('click',()=>{ const k=im.dataset.big;
-      show(`<h2>📸 Foto <button class="x">✕</button></h2><div class="viewer"><img src="${v[k].data}" alt=""></div><div class="row"><button class="opt" id="picBack">Voltar</button><a class="opt primary" style="justify-content:center;text-decoration:none" href="${v[k].data}" download="tarefa.jpg">⬇️ Salvar</a></div>`);
+      show(`<h2>${ICO.camera} Foto <button class="x">✕</button></h2><div class="viewer"><img src="${v[k].data}" alt=""></div><div class="row"><button class="opt" id="picBack">Voltar</button><a class="opt primary" style="justify-content:center;text-decoration:none" href="${v[k].data}" download="tarefa.jpg">⬇️ Salvar</a></div>`);
       document.getElementById('picBack').addEventListener('click',()=>openPics(id)); sheet.querySelector('.x').addEventListener('click',()=>openPics(id),{once:true}); }));
     box.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ if(!isAluna()) return; picsRef(id).child(b.dataset.del).remove().then(()=>{ countPics(id); openPics(id); toast('Foto apagada'); }); }));
   });
@@ -3246,7 +3252,7 @@ document.getElementById('taskFoto').addEventListener('change',ev=>{ const f=ev.t
     }; im.src=full; }); });
 function askPhotoAfterDone(id){
   const t=findTask(id); if(!t||!CLOUD_CFG||!isAluna()) return;
-  show(`<h2>🎉 Boa! <button class="x">✕</button></h2>
+  show(`<h2>${ICO.festa} Boa! <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 12px">Quer tirar uma foto do que você fez em <b>${esc(plain(t.text))}</b>?</p>
     <div class="row"><button class="opt" id="npNo">Agora não</button><button class="opt primary" id="npYes">📷 Tirar foto</button></div>`);
   document.getElementById('npNo').addEventListener('click',hide);
@@ -3254,10 +3260,10 @@ function askPhotoAfterDone(id){
 }
 function openCancel(id){ if(!isAluna()) return;
   const t=findTask(id);
-  show(`<h2>🚫 Cancelar a tarefa <button class="x">✕</button></h2>
+  show(`<h2>${ICO.proibido} Cancelar a tarefa <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc((t.text||'').replace(/<[^>]+>/g,''))}</p>
     <textarea id="cancelTxt" maxlength="200" placeholder="Exemplo: a professora cancelou. Ou: já entreguei na aula"></textarea>
-    <div class="row"><button class="opt" id="cancelNo">Voltar</button><button class="opt" id="cancelOk" style="background:#B3261E;color:#fff">Cancelar tarefa</button></div>`);
+    <div class="row"><button class="opt" id="cancelNo">Voltar</button><button class="opt" id="cancelOk" style="background:#8E2A63;color:#fff">Cancelar tarefa</button></div>`);
   document.getElementById('cancelTxt').focus();
   document.getElementById('cancelNo').addEventListener('click',()=>openMenu(id));
   document.getElementById('cancelOk').addEventListener('click',()=>{
@@ -3295,8 +3301,8 @@ async function writeMove(id,day){
 function openMove(id){
   if(!isAluna()&&!isResponsavel()) return;
   const t=findTask(id), w=Object.values(DB.weeks).find(w=>allTasks(w).some(t=>t.id===id)); if(!t||!w) return;
-  show(`<h2>📆 Mudar para qual dia? <button class="x">✕</button></h2>
-   ${w.days.map(d=>`<button class="opt ${d.k===t.day?'d':''}" style="--c:${dayCss(d.k)}" data-k="${d.k}"><span class="ic">${d.k===t.day?'📍':'📆'}</span>${DAYMETA[d.k][0]} ${fmt(d.date)}${d.k===t.day?' <small>(está aqui)</small>':''}${d.k===t.origin&&d.k!==t.day?' <small>(dia de antes)</small>':''}</button>`).join('')}`);
+  show(`<h2>${ICO.aulas} Mudar para qual dia? <button class="x">✕</button></h2>
+   ${w.days.map(d=>`<button class="opt ${d.k===t.day?'d':''}" style="--c:${dayCss(d.k)}" data-k="${d.k}"><span class="ic">${d.k===t.day?ICO.pin:ICO.aulas}</span>${DAYMETA[d.k][0]} ${fmt(d.date)}${d.k===t.day?' <small>(está aqui)</small>':''}${d.k===t.origin&&d.k!==t.day?' <small>(dia de antes)</small>':''}</button>`).join('')}`);
   const buttons=[...sheet.querySelectorAll('[data-k]')];
   buttons.forEach(b=>b.addEventListener('click',async()=>{
     buttons.forEach(x=>x.disabled=true);
@@ -3309,21 +3315,21 @@ function openMove(id){
 function openNoteMenu(id){
   const t=findTask(id); if(!t||!t.note) return;
   vibrate(10);
-  show(`<h2>📝 Observação <button class="x">✕</button></h2>
+  show(`<h2>${ICO.lapis} Observação <button class="x">✕</button></h2>
    <p class="quiet" style="margin:0 0 12px">${t.noteBy?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</p>
-   ${isAluna()?`<button class="opt" data-n="edit"><span class="ic">✏️</span>Mudar a observação</button>
-   <button class="opt danger" data-n="del"><span class="ic">🗑️</span>Apagar observação</button>`
+   ${isAluna()?`<button class="opt" data-n="edit"><span class="ic">${ICO.lapis}</span>Mudar a observação</button>
+   <button class="opt danger" data-n="del"><span class="ic">${ICO.lixeira}</span>Apagar observação</button>`
    :`<p class="quiet" style="margin:0">Só a Maria muda as tarefas 😉</p>`}`);
   const dl=sheet.querySelector('[data-n="del"]');
   sheet.querySelector('[data-n="edit"]')?.addEventListener('click',()=>{ hide(); setTimeout(()=>openNote(id),220); });
   if(dl) dl.addEventListener('click',()=>{
-    if(dl.dataset.ok!=='1'){ dl.dataset.ok='1'; dl.innerHTML='<span class="ic">🗑️</span>Tem certeza? Toca de novo para apagar'; vibrate(20); return; }
+    if(dl.dataset.ok!=='1'){ dl.dataset.ok='1'; dl.innerHTML=`<span class="ic">${ICO.lixeira}</span>Tem certeza? Toca de novo para apagar`; vibrate(20); return; }
     t.note=''; t.noteBy=''; t.u=Date.now(); save(); hide(); render(); vibrate(20); toast('Observação apagada');
   });
 }
 function openNote(id){ if(!isAluna()) return;
   const t=findTask(id);
-  show(`<h2>💬 Observação <button class="x">✕</button></h2>
+  show(`<h2>${ICO.msg} Observação <button class="x">✕</button></h2>
    <textarea id="noteTxt" placeholder="Escreve aqui. Exemplo: a professora deixou entregar na quinta">${esc(t.note||'')}</textarea>
    <div class="row"><button class="opt" id="noteCancel">Cancelar</button><button class="opt primary" id="noteSave">Salvar</button></div>`);
   document.getElementById('noteTxt').focus();
@@ -3346,24 +3352,59 @@ function podaEventos(){                       // evita crescer sem fim
   famRef.child('eventos').once('value').then(sn=>{ const v=sn.val()||{}; const ks=Object.keys(v).sort();
     if(ks.length>600){ const fora={}; ks.slice(0,ks.length-400).forEach(k=>fora['eventos/'+k]=null); famRef.update(fora); } }).catch(()=>{});
 }
+// ===== simbolos em traco (nada de emoji colorido nos menus e na linha do tempo) =====
+const SV=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const ICO={
+  menu:     SV('<path d="M4 7h16M4 12h16M4 17h16"/>'),
+  resumo:   SV('<circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="3.2"/><path d="M12 3.8v5M20.2 12h-5"/>'),
+  aulas:    SV('<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/>'),
+  compart:  SV('<path d="M12 15V4"/><path d="m8 8 4-4 4 4"/><path d="M5 13v5.5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V13"/>'),
+  semanas:  SV('<rect x="3.5" y="4.5" width="7" height="7" rx="2"/><rect x="13.5" y="4.5" width="7" height="7" rx="2"/><rect x="3.5" y="14.5" width="7" height="5" rx="2"/><rect x="13.5" y="14.5" width="7" height="5" rx="2"/>'),
+  coracao:  SV('<path d="M12 20s-7.5-4.6-7.5-10A4.5 4.5 0 0 1 12 7.4 4.5 4.5 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z"/>'),
+  sino:     SV('<path d="M17.5 10a5.5 5.5 0 0 0-11 0c0 4.2-1.7 5.6-2.1 6a.5.5 0 0 0 .35.86h14.5a.5.5 0 0 0 .35-.86c-.4-.4-2.1-1.8-2.1-6Z"/><path d="M10.2 19.8a2.1 2.1 0 0 0 3.6 0"/>'),
+  estrela:  SV('<path d="m12 4 2.5 5.1 5.6.8-4 3.9 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4-3.9 5.6-.8Z"/>'),
+  lapis:    SV('<path d="M4 20h4l10-10a2.6 2.6 0 0 0-3.7-3.7L4.3 16.3Z"/><path d="m13.6 7.6 2.8 2.8"/>'),
+  lixeira:  SV('<path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6.5 7 7 19a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l.5-12"/><path d="M9.5 7V5.4A1.4 1.4 0 0 1 11 4h2a1.4 1.4 0 0 1 1.5 1.4V7"/>'),
+  camera:   SV('<path d="M4 8.5h3l1.6-2.3h6.8L17 8.5h3a1 1 0 0 1 1 1V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9.5a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.6" r="3.4"/>'),
+  msg:      SV('<path d="M20.5 12.2c0 3.9-3.8 7-8.5 7-1 0-2-.15-2.9-.42L4 20.5l1.3-3.5A6.7 6.7 0 0 1 3.5 12.2c0-3.9 3.8-7 8.5-7s8.5 3.1 8.5 7Z"/>'),
+  enviar:   SV('<path d="M20.5 3.8 3.6 10.2a.6.6 0 0 0 .05 1.13l6.6 2.3 2.3 6.6a.6.6 0 0 0 1.13.05Z"/><path d="m10.3 13.7 4.6-4.6"/>'),
+  reagir:   SV('<path d="m12 3.6 1.5 4.2 4.2 1.5-4.2 1.5L12 15l-1.5-4.2L6.3 9.3l4.2-1.5Z"/><path d="M18.4 15.2 19 17l1.8.6-1.8.6-.6 1.8-.6-1.8-1.8-.6 1.8-.6Z"/>'),
+  proibido: SV('<circle cx="12" cy="12" r="8.2"/><path d="m6.2 6.2 11.6 11.6"/>'),
+  voltar:   SV('<path d="M9 14 4.5 9.5 9 5"/><path d="M4.5 9.5h9A6 6 0 0 1 19.5 15.5V19"/>'),
+  som:      SV('<path d="M4.5 9.5h3l4.5-3.8v12.6L7.5 14.5h-3a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1Z"/><path d="M16 9.2a4 4 0 0 1 0 5.6M18.6 6.6a7.6 7.6 0 0 1 0 10.8"/>'),
+  micro:    SV('<rect x="9" y="3.2" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0"/><path d="M12 18v3"/>'),
+  lupa:     SV('<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>'),
+  paleta:   SV('<path d="M12 3.5a8.5 8.5 0 1 0 0 17c.95 0 1.7-.76 1.7-1.7 0-.46-.2-.85-.47-1.14a1.7 1.7 0 0 1 1.23-2.86h2A4.05 4.05 0 0 0 20.5 10.7c0-4.06-3.9-7.2-8.5-7.2Z"/><circle cx="8.2" cy="11" r="1"/><circle cx="11.5" cy="7.8" r="1"/><circle cx="15.4" cy="9.5" r="1"/>'),
+  clipe:    SV('<path d="M20 11.5 12.4 19a5 5 0 0 1-7-7l7.6-7.5a3.3 3.3 0 0 1 4.7 4.7l-7.6 7.5a1.7 1.7 0 0 1-2.4-2.4l7-6.9"/>'),
+  feito:    SV('<circle cx="12" cy="12" r="8.2"/><path d="m8.2 12.3 2.6 2.6 5-5.4"/>'),
+  fazendo:  SV('<circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/>'),
+  pin:      SV('<path d="M12 21s6-5.7 6-10a6 6 0 0 0-12 0c0 4.3 6 10 6 10Z"/><circle cx="12" cy="11" r="2.4"/>'),
+  pessoa:   SV('<circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>'),
+  livro:    SV('<path d="M4 5.5A2 2 0 0 1 6 3.5h13V18H6a2 2 0 0 0-2 2Z"/><path d="M19 18v2.5H6"/>'),
+  tesoura:  SV('<circle cx="6.5" cy="6.5" r="2.6"/><circle cx="6.5" cy="17.5" r="2.6"/><path d="M8.8 8.2 20 18M20 6 8.8 15.8"/>'),
+  festa:    SV('<path d="m12 3.2 1.7 4.6 4.6 1.7-4.6 1.7L12 15.8l-1.7-4.6-4.6-1.7 4.6-1.7Z"/><path d="M6 17.5 6.6 19l1.5.6-1.5.6L6 21.7l-.6-1.5L3.9 19.6l1.5-.6Z"/><path d="M18 15.5l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5Z"/>'),
+  sorriso:  SV('<circle cx="12" cy="12" r="8.4"/><path d="M8.4 14.2a4.4 4.4 0 0 0 7.2 0"/><path d="M9.3 9.6h.01M14.7 9.6h.01" stroke-width="2.6"/>'),
+  parar:    SV('<rect x="6.5" y="6.5" width="11" height="11" rx="2.5"/>'),
+  imagem:   SV('<rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="8.6" cy="9.6" r="1.8"/><path d="m4 17 4.6-4.4a2 2 0 0 1 2.7 0L20 20"/>')
+};
 const TL_TIPOS={
-  msg:      {ic:'💬',cor:'var(--acc)',   txt:()=>'mandou uma mensagem'},
-  foto_msg: {ic:'📷',cor:'var(--qua)',   txt:()=>'mandou uma foto na conversa'},
-  arquivo:  {ic:'📎',cor:'var(--dom)',   txt:()=>'mandou um arquivo'},
-  audio_msg:{ic:'🎤',cor:'var(--ter)',   txt:()=>'mandou um áudio'},
-  nudge:    {ic:'👋',cor:'var(--gold)',  txt:()=>'chamou a atenção'},
-  carinho:  {ic:'💛',cor:'var(--gold)',  txt:e=>'deixou um carinho '+(e.emoji||'')},
-  audio_rea:{ic:'🔊',cor:'var(--lilas)', txt:e=>'reagiu com áudio'+(e.nome?' · '+e.nome:'')},
-  done:     {ic:'✅',cor:'#1E7A55',      txt:()=>'marcou como feito'},
-  doing:    {ic:'⏳',cor:'#B07B12',      txt:()=>'começou a fazer'},
-  todo:     {ic:'↩️',cor:'#B3261E',      txt:()=>'reabriu a tarefa'},
-  imp_on:   {ic:'⭐',cor:'var(--gold)',  txt:()=>'marcou como importante'},
-  imp_off:  {ic:'☆', cor:'var(--dom)',   txt:()=>'tirou das importantes'},
-  cancel:   {ic:'🚫',cor:'var(--imp)',   txt:()=>'cancelou a tarefa'},
-  undel:    {ic:'♻️',cor:'var(--ok)',    txt:()=>'voltou a valer'},
-  move:     {ic:'📆',cor:'var(--qui)',   txt:e=>'mudou para '+(e.dia||'outro dia')},
-  nota:     {ic:'📝',cor:'var(--seg)',   txt:e=>e.vazia?'apagou a observação':'escreveu uma observação'},
-  foto:     {ic:'📸',cor:'var(--qua)',   txt:()=>'tirou uma foto da tarefa'}
+  msg:      {ic:ICO.msg,     cor:'var(--ter)',   txt:()=>'mandou uma mensagem'},
+  foto_msg: {ic:ICO.imagem,  cor:'var(--qua)',   txt:()=>'mandou uma foto na conversa'},
+  arquivo:  {ic:ICO.clipe,   cor:'var(--dom)',   txt:()=>'mandou um arquivo'},
+  audio_msg:{ic:ICO.micro,   cor:'var(--seg)',   txt:()=>'mandou um áudio'},
+  nudge:    {ic:ICO.sino,    cor:'var(--gold)',  txt:()=>'chamou a atenção'},
+  carinho:  {ic:ICO.coracao, cor:'var(--seg)',   txt:e=>'deixou um carinho '+(e.emoji||'')},
+  audio_rea:{ic:ICO.som,     cor:'var(--lilas)', txt:e=>'reagiu com áudio'+(e.nome?' · '+e.nome:'')},
+  done:     {ic:ICO.feito,   cor:'var(--sex)',   txt:()=>'marcou como feito'},
+  doing:    {ic:ICO.fazendo, cor:'var(--qua)',   txt:()=>'começou a fazer'},
+  todo:     {ic:ICO.voltar,  cor:'var(--dom)',   txt:()=>'reabriu a tarefa'},
+  imp_on:   {ic:ICO.estrela, cor:'var(--gold)',  txt:()=>'marcou como importante'},
+  imp_off:  {ic:ICO.estrela, cor:'var(--dom)',   txt:()=>'tirou das importantes'},
+  cancel:   {ic:ICO.proibido,cor:'var(--imp)',   txt:()=>'cancelou a tarefa'},
+  undel:    {ic:ICO.voltar,  cor:'var(--qui)',   txt:()=>'voltou a valer'},
+  move:     {ic:ICO.aulas,   cor:'var(--qui)',   txt:e=>'mudou para '+(e.dia||'outro dia')},
+  nota:     {ic:ICO.lapis,   cor:'var(--seg)',   txt:e=>e.vazia?'apagou a observação':'escreveu uma observação'},
+  foto:     {ic:ICO.camera,  cor:'var(--qua)',   txt:()=>'tirou uma foto da tarefa'}
 };
 function tlUsuario(id){ return USERS.find(u=>u.id===id)||{id,nome:uname(id)||'Alguém',emoji:'👤',cor:'#7A6B9B'}; }
 function tlEventos(){
@@ -3487,13 +3528,13 @@ function bindTimeline(){
 
 function openMain(){
   const n=unread();
-  show(`<h2>☰ Menu <button class="x">✕</button></h2>
-   <button class="opt" data-m="summary"><span class="ic">📊</span>Resumo</button>
-   <button class="opt" data-m="tt"><span class="ic">📅</span>Aulas da semana</button>
-   <button class="opt" data-m="share"><span class="ic">📤</span>Compartilhar tarefas</button>
-   <button class="opt" data-m="wk"><span class="ic">🗂️</span>Ver semana</button>
-   <button class="opt" data-m="rea"><span class="ic">💛</span>${isAluna()?'Carinhos recebidos':'Carinhos enviados'}</button>
-   ${CLOUD_CFG?'<button class="opt" data-m="nudge"><span class="ic">👋</span>Chamar atenção</button>':''}
+  show(`<h2>${ICO.menu} Menu <button class="x">✕</button></h2>
+   <button class="opt" data-m="summary"><span class="ic">${ICO.resumo}</span>Resumo</button>
+   <button class="opt" data-m="tt"><span class="ic">${ICO.aulas}</span>Aulas da semana</button>
+   <button class="opt" data-m="share"><span class="ic">${ICO.compart}</span>Compartilhar tarefas</button>
+   <button class="opt" data-m="wk"><span class="ic">${ICO.semanas}</span>Ver semana</button>
+   <button class="opt" data-m="rea"><span class="ic">${ICO.coracao}</span>${isAluna()?'Carinhos recebidos':'Carinhos enviados'}</button>
+   ${CLOUD_CFG?`<button class="opt" data-m="nudge"><span class="ic">${ICO.sino}</span>Chamar atenção</button>`:''}
 `);
   sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='summary')openSummary(); if(m==='rea')openReacts(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='nudge'){ hide(); chamarAtencao(); } if(m==='user')openLogin(); if(m==='chat')openChat();}));
 }
@@ -3551,7 +3592,7 @@ function summaryDataModo(modo,w){
 function openSummary(modoInicial){
   const w=DB.weeks[current];if(!w)return;
   let modo=modoInicial||'status';
-  show(`<h2>📊 Resumo <button class="x" aria-label="Fechar resumo">✕</button></h2>
+  show(`<h2>${ICO.resumo} Resumo <button class="x" aria-label="Fechar resumo">✕</button></h2>
     <p class="summary-sub" id="sumSub"></p>
     <div class="summary-nav">
       <button class="snav" id="sumPrev" aria-label="Visão anterior">‹</button>
@@ -3647,7 +3688,7 @@ function openTimetable(){
   let g=`<div class="h"></div>`+ks.map(k=>`<div class="dh ${mark(k)}" style="background:${dayCss(k)}">${DAYMETA[k][0].slice(0,3)}${k===tomK?'<small>amanhã</small>':k===todayK?'<small>hoje</small>':''}</div>`).join('');
   TIMETABLE.hours.forEach((h,i)=>{g+=`<div class="h">${h}</div>`+ks.map(k=>{const sk=TIMETABLE.days[k][i];
     return `<div class="c ${mark(k)}" data-sk="${sk}" style="--dc:${col(k)}"><span>${SHORT[sk]}</span></div>`;}).join('');});
-  show(`<h2>📅 Aulas do ${TIMETABLE.turma} <button class="x">✕</button></h2><div class="tt" id="tt">${g}</div>`);
+  show(`<h2>${ICO.aulas} Aulas do ${TIMETABLE.turma} <button class="x">✕</button></h2><div class="tt" id="tt">${g}</div>`);
   let picked=null;
   const tt=document.getElementById('tt');
   tt.querySelectorAll('.c').forEach(c=>c.addEventListener('click',()=>{
@@ -3658,7 +3699,7 @@ function openTimetable(){
 }
 function openWeeks(){
   const ids=weekIds().reverse();
-  show(`<h2>🗂️ Semanas <button class="x">✕</button></h2>
+  show(`<h2>${ICO.semanas} Semanas <button class="x">✕</button></h2>
    ${ids.map(id=>{const w=DB.weeks[id];const all=allTasks(w);const done=all.filter(t=>t.status==='done').length;const pct=all.length?Math.round(done/all.length*100):0;
      return `<button class="wk ${id===current?'cur':''}" data-id="${id}"><span>${weekIdFor(TODAY)===id?'📍 ':''}${w.label}<br><small class="quiet">${w.roteiro||''}</small></span><span class="pr">${done}/${all.length}<span class="bar"><i style="width:${pct}%"></i></span></span></button>`;}).join('')}
 `);
