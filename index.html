@@ -31,7 +31,7 @@
   button{font-family:inherit;cursor:pointer}
   .prog{margin:-10px 0 14px}
   .top .prog{margin:0 0 4px}
-  .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:13px;color:var(--soft);margin-bottom:4px;line-height:1.3}
+  .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:15px;color:var(--soft);margin-bottom:4px;line-height:1.3}
   .prog .row b{color:var(--ink);font-size:15px;font-weight:600}
   .prog .bar{height:30px;border-radius:999px;background:#DFD4F0;overflow:hidden;position:relative;border:1px solid #CDBDE8;box-shadow:inset 0 2px 4px rgba(63,39,100,.14)}
   .prog .bar i{display:block;height:100%;border-radius:999px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite;transition:width .6s cubic-bezier(.4,0,.2,1)}
@@ -530,7 +530,7 @@
     body{font-size:18px}
     .wrap{max-width:840px;padding:28px 28px 106px}
     h1{font-size:34px;margin-bottom:10px}
-    .prog .row{font-size:16px} .prog .row b{font-size:19px} .prog .bar{height:32px} .prog .pct{font-size:26px}
+    .prog .row{font-size:19px} .prog .row b{font-size:19px} .prog .bar{height:32px} .prog .pct{font-size:26px}
     .top{margin:-28px -28px 26px;padding:20px 28px 8px}
     .filters{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
     .chip{font-size:15px;padding:8px 16px}
@@ -987,12 +987,12 @@
     .top-title h1{font-size:28px}
     .fam .p{font-size:17px}
     .fam .p small{font-size:14px}
-    .prog .row{font-size:14px}
+    .prog .row{font-size:16px}
     .prog .row b{font-size:16px}
     .prog .sapo-prog{width:26px;height:26px}
     @media (min-width:700px){
       .top-title h1{font-size:36px}
-      .prog .row{font-size:17px}
+      .prog .row{font-size:20px}
       .prog .row b{font-size:20px}
     }
     .prog .bar{height:var(--tablet-progress-height,58px)}
@@ -1108,8 +1108,8 @@
   .dock-b{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;gap:9px;pointer-events:auto;
     border:0;color:#fff;font:inherit;font-size:18px;font-weight:900;border-radius:0;transition:filter .15s;
     box-shadow:0 -2px 10px rgba(63,39,100,.14)}
-  #fab{background:linear-gradient(90deg,#A472EE,#7C4DC4);border-radius:0;padding-right:54px}
-  #chatFab{background:linear-gradient(90deg,#7C4DC4,#4C3499);border-radius:0;padding-left:54px}
+  #fab{background:linear-gradient(90deg,#A472EE,#7C4DC4);border-radius:0;padding-right:0}
+  #chatFab{background:linear-gradient(90deg,#7C4DC4,#4C3499);border-radius:0;padding-left:0}
   .dock-b:active{filter:brightness(.92)}
   .dock-b:focus-visible{outline:2px solid #fff;outline-offset:-4px}
   .dock-b .di{font-size:23px;line-height:1}
@@ -1117,17 +1117,17 @@
   .dock-gap{display:none}
   .dock .chatfab{display:none}
   .dock .chatfab.on{display:flex}
-  .dock-mid{pointer-events:auto;position:absolute;left:50%;top:0;bottom:env(safe-area-inset-bottom);margin:auto 0;transform:translateX(-50%);width:52px;height:52px;border-radius:50%;
+  .dock-mid{pointer-events:auto;position:absolute;left:50%;top:auto;bottom:calc(env(safe-area-inset-bottom) + 5px);margin:0;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;
     border:4px solid var(--paper);background:linear-gradient(140deg,#fff,#F3ECFC);color:var(--lilas-ink);
     display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px rgba(63,39,100,.2);transition:transform .15s}
-  .dock-mid .di{font-size:24px;line-height:1;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+  .dock-mid .di{font-size:28px;line-height:1;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
   /* coração desenhado, com o número de carinhos dentro dele */
-  .dock-mid .coracao{display:none;width:27px;height:25px;filter:drop-shadow(0 2px 3px rgba(214,47,92,.32))}
+  .dock-mid .coracao{display:none;width:31px;height:28px;filter:drop-shadow(0 2px 3px rgba(214,47,92,.32))}
   .dock-mid.aluna .coracao{display:block}
   .dock-mid.aluna .mao{display:none}
   .dock-mid #reaBadge{display:none;font-family:inherit;font-size:14px;font-weight:900;fill:#fff;letter-spacing:-.4px;paint-order:stroke;stroke:rgba(150,20,55,.35);stroke-width:2.5px;stroke-linejoin:round}
   .dock-mid #reaBadge.on{display:block}
-  .dock-mid.aluna.tem .coracao{width:32px;height:29px}
+  .dock-mid.aluna.tem .coracao{width:37px;height:34px}
   .dock-mid:active{transform:translateX(-50%) scale(.92)}
   .dock-mid:focus-visible{outline:2px solid var(--lilas);outline-offset:3px}
   .dock-mid.on{background:linear-gradient(140deg,#fff,#FDEEF3)}
@@ -1137,19 +1137,20 @@
   @media(prefers-reduced-motion:reduce){.dock-mid.pulse .coracao{animation:none}}
   /* o aviso da conversa fica dentro do proprio balao */
   .dock .chat-icon{display:flex;align-items:center;justify-content:center}
-  .dock .bolha{width:34px;height:26px;display:block;color:#fff;overflow:visible}
+  .dock .bolha{width:27px;height:21px;display:block;color:#fff;overflow:visible}
   .dock .chatfab.pulse .bolha{animation:chat-beat 2.4s ease-in-out infinite;transform-origin:center}
-  .dock #chatBadge{display:none;font-family:inherit;font-size:16px;font-weight:900;fill:var(--lilas-ink);letter-spacing:-.4px}
+  .dock #chatBadge{display:none;font-family:inherit;font-size:13px;font-weight:900;fill:var(--lilas-ink);letter-spacing:-.4px}
   .dock #chatBadge.on{display:block}
-  .dock .chatfab.tem .bolha{width:40px;height:31px}
+  .dock .chatfab.tem .bolha{width:32px;height:25px}
   @media screen and (min-width:600px) and (min-height:600px){
     .dock{height:calc(70px + env(safe-area-inset-bottom))}
     .dock .bolha{width:40px;height:31px} .dock .chatfab.tem .bolha{width:47px;height:36px}
     .dock #chatBadge{font-size:18px}
+    .dock #chatBadge{font-size:18px}
     .dock-b{font-size:21px;gap:11px} .dock-b .di{font-size:27px}
     #fab{padding-right:66px} #chatFab{padding-left:66px}
-    .dock-mid{width:62px;height:62px;border-width:4px} .dock-mid .di{font-size:28px}
-    .dock-mid .coracao{width:33px;height:30px} .dock-mid.aluna.tem .coracao{width:38px;height:35px}
+    .dock-mid{width:74px;height:74px;border-width:5px;bottom:calc(env(safe-area-inset-bottom) + 6px)} .dock-mid .di{font-size:32px}
+    .dock-mid .coracao{width:37px;height:34px} .dock-mid.aluna.tem .coracao{width:43px;height:39px}
     .dock-mid #reaBadge{font-size:16px}
   }
   @media(max-width:359px){ .dock-b .dt{display:none} .dock-gap{width:74px} }
