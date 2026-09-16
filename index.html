@@ -235,7 +235,7 @@
   .tt .h{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--soft)}
   .tt .dh{border-radius:12px;color:#fff;font-weight:900;font-size:14px;height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
   .tt .dh small{font-size:10px;font-weight:800;opacity:.9;margin-top:2px}
-  .tt .c{border-radius:12px;background:#F5F3FB;border:2px solid transparent;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px;overflow:hidden;cursor:pointer;transition:opacity .2s,transform .2s,background .2s}
+  .tt .c{border-radius:12px;background:#F5F3FB;border:2px solid transparent;min-height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 3px;overflow:hidden;cursor:pointer;transition:opacity .2s,transform .2s,background .2s}
   .tt .c:active{transform:scale(.94)}
   .tt .c b{font-size:21px;line-height:1}
   .tt .c span{font-size:10.5px;font-weight:800;color:var(--ink);line-height:1.05;text-align:center;overflow-wrap:anywhere;max-width:100%}
@@ -552,7 +552,7 @@
     .opt{font-size:19px;padding:16px}
     .tt{grid-template-columns:52px repeat(5,minmax(0,1fr));gap:8px}
     .tt .h{font-size:14px} .tt .dh{height:52px;font-size:17px} .tt .dh small{font-size:12px}
-    .tt .c{min-height:80px} .tt .c b{font-size:29px} .tt .c span{font-size:14px}
+    .tt .c{min-height:62px} .tt .c span{font-size:15px}
     .ttnote{font-size:15px}
     .wk{font-size:18px;padding:14px 16px}
     .rem .it,.rem .sec h3{font-size:17px}
@@ -1108,8 +1108,8 @@
   .dock-b{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;gap:9px;pointer-events:auto;
     border:0;color:#fff;font:inherit;font-size:18px;font-weight:900;border-radius:0;transition:filter .15s;
     box-shadow:0 -2px 10px rgba(63,39,100,.14)}
-  #fab{background:linear-gradient(90deg,#A472EE,#7C4DC4);border-radius:0;padding-right:0}
-  #chatFab{background:linear-gradient(90deg,#7C4DC4,#4C3499);border-radius:0;padding-left:0}
+  #fab{background:linear-gradient(90deg,#A472EE,#7C4DC4);border-radius:0;padding:0 38px 0 14px}
+  #chatFab{background:linear-gradient(90deg,#7C4DC4,#4C3499);border-radius:0;padding:0 0 0 52px}
   .dock-b:active{filter:brightness(.92)}
   .dock-b:focus-visible{outline:2px solid #fff;outline-offset:-4px}
   .dock-b .di{font-size:23px;line-height:1}
@@ -1137,18 +1137,18 @@
   @media(prefers-reduced-motion:reduce){.dock-mid.pulse .coracao{animation:none}}
   /* o aviso da conversa fica dentro do proprio balao */
   .dock .chat-icon{display:flex;align-items:center;justify-content:center}
-  .dock .bolha{width:27px;height:21px;display:block;color:#fff;overflow:visible}
+  .dock .bolha{width:25px;height:24px;display:block;color:#fff;overflow:visible}
   .dock .chatfab.pulse .bolha{animation:chat-beat 2.4s ease-in-out infinite;transform-origin:center}
   .dock #chatBadge{display:none;font-family:inherit;font-size:13px;font-weight:900;fill:var(--lilas-ink);letter-spacing:-.4px}
   .dock #chatBadge.on{display:block}
-  .dock .chatfab.tem .bolha{width:32px;height:25px}
+  .dock .chatfab.tem .bolha{width:30px;height:29px}
   @media screen and (min-width:600px) and (min-height:600px){
     .dock{height:calc(70px + env(safe-area-inset-bottom))}
-    .dock .bolha{width:40px;height:31px} .dock .chatfab.tem .bolha{width:47px;height:36px}
+    .dock .bolha{width:34px;height:33px} .dock .chatfab.tem .bolha{width:40px;height:38px}
     .dock #chatBadge{font-size:18px}
     .dock #chatBadge{font-size:18px}
     .dock-b{font-size:21px;gap:11px} .dock-b .di{font-size:27px}
-    #fab{padding-right:66px} #chatFab{padding-left:66px}
+    #fab{padding:0 66px 0 24px} #chatFab{padding:0 24px 0 66px}
     .dock-mid{width:74px;height:74px;border-width:5px;bottom:calc(env(safe-area-inset-bottom) + 6px)} .dock-mid .di{font-size:32px}
     .dock-mid .coracao{width:37px;height:34px} .dock-mid.aluna.tem .coracao{width:43px;height:39px}
     .dock-mid #reaBadge{font-size:16px}
@@ -1241,7 +1241,7 @@
 <nav class="dock" id="fabs" aria-label="Ações">
   <button class="dock-b" id="fab" aria-label="Menu"><span class="di" aria-hidden="true">☰</span><span class="dt">Menu</span></button>
   <span class="dock-gap" aria-hidden="true"></span>
-  <button class="dock-b chatfab" id="chatFab" aria-label="Conversa"><span class="di chat-icon"><svg class="bolha" viewBox="0 0 44 34" aria-hidden="true"><path d="M6 1.5h32a4.5 4.5 0 0 1 4.5 4.5v15a4.5 4.5 0 0 1-4.5 4.5H19l-8 6.5 1.4-6.5H6A4.5 4.5 0 0 1 1.5 21V6A4.5 4.5 0 0 1 6 1.5Z" fill="currentColor"/><text id="chatBadge" x="22" y="14" text-anchor="middle" dominant-baseline="central"></text></svg></span><span class="dt">Conversa</span></button>
+  <button class="dock-b chatfab" id="chatFab" aria-label="Conversa"><span class="di chat-icon"><svg class="bolha" viewBox="0 0 48 46" aria-hidden="true"><path d="M10 2.5h28A7.5 7.5 0 0 1 45.5 10v18a7.5 7.5 0 0 1-7.5 7.5h-9L24 43.5 19 35.5h-9A7.5 7.5 0 0 1 2.5 28V10A7.5 7.5 0 0 1 10 2.5Z" fill="currentColor"/><text id="chatBadge" x="24" y="19" text-anchor="middle" dominant-baseline="central"></text></svg></span><span class="dt">Conversa</span></button>
   <button class="dock-mid reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="di heart-icon"><svg class="coracao" viewBox="0 0 48 44" aria-hidden="true"><defs><linearGradient id="gcor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9BB3"/><stop offset=".55" stop-color="#F4557E"/><stop offset="1" stop-color="#D62F5C"/></linearGradient></defs><path d="M24 41.2C24 41.2 2.5 28.6 2.5 15.1 2.5 8.2 8 2.7 14.9 2.7c4.2 0 7.7 2.1 9.1 5 1.4-2.9 4.9-5 9.1-5 6.9 0 12.4 5.5 12.4 12.4C45.5 28.6 24 41.2 24 41.2Z" fill="url(#gcor)"/><text id="reaBadge" x="24" y="19.5" text-anchor="middle" dominant-baseline="central"></text></svg><span class="mao" aria-hidden="true">👋</span></span></button>
 </nav>
 <input type="file" id="fotoFile" accept="image/*" style="display:none">
@@ -1280,9 +1280,9 @@ const USERS = [
    O progresso (feito / fazendo / observações / dia movido / mais importante)
    fica salvo no aparelho e nunca é sobrescrito. */
 const SUBJ = {
-  cie:'🔬 Ciências', por:'📖 Português', mat:'➕ Matemática', rel:'🙏 Ens. Religioso', edf:'⚽ Ed. Física',
-  ing:'🇬🇧 Inglês', pdv:'🌱 Projeto de Vida', geo:'🌎 Geografia', his:'🏛️ História', esp:'🇪🇸 Espanhol',
-  art:'🎨 Arte', fil:'🤔 Filosofia'
+  cie:'Ciências', por:'Português', mat:'Matemática', rel:'Ens. Religioso', edf:'Ed. Física',
+  ing:'Inglês', pdv:'Projeto de Vida', geo:'Geografia', his:'História', esp:'Espanhol',
+  art:'Arte', fil:'Filosofia'
 };
 // Bandeiras incorporadas: não dependem do suporte a emojis do aparelho.
 function subjectVisual(value){
@@ -2568,7 +2568,7 @@ function render(){
   const imp=allTasks(w).filter(t=>impVale(t)&&pass(t)).sort((a,b)=>order.indexOf(a.day)-order.indexOf(b.day));
   const impPend=imp.length;
   const impGuardadas=allTasks(w).filter(t=>t.type===H&&t.important&&!impVale(t)).length;
-  if(!(filtering&&!imp.length)) html+=`<details class="imp" data-date="imp" ${openState['imp']?'open':''}><summary><span class="n">Importantes ⭐</span><span class="cnt">${impPend?impPend+' Pendente'+(impPend>1?'s':''):'✓ Tudo em dia'}</span><span class="arrow">▼</span></summary>
+  if(!(filtering&&!imp.length)) html+=`<details class="imp" data-date="imp" ${openState['imp']?'open':''}><summary><span class="n">Importantes</span><span class="cnt">${impPend?impPend+' Pendente'+(impPend>1?'s':''):'✓ Tudo em dia'}</span><span class="arrow">▼</span></summary>
     <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join(''):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':(impGuardadas?'Nada de importante para agora. Aqui só ficam as que ainda dá para fazer.':(isAluna()?'Toca na estrelinha de uma tarefa para ela aparecer aqui.':'As tarefas marcadas com a estrelinha aparecem aqui.'))}</p>`}</div></details>`;
   const inWeek=w.days.some(d=>d.date===TODAY);
   html+='<div class="days">';
@@ -3465,8 +3465,8 @@ function openTimetable(){
   const idx=k=>keys.indexOf(k);
   const mark=k=>k===tomK?'tom':(idx(k)<=idx(todayK)?'past':'');
   let g=`<div class="h"></div>`+ks.map(k=>`<div class="dh ${mark(k)}" style="background:${dayCss(k)}">${DAYMETA[k][0].slice(0,3)}${k===tomK?'<small>amanhã</small>':k===todayK?'<small>hoje</small>':''}</div>`).join('');
-  TIMETABLE.hours.forEach((h,i)=>{g+=`<div class="h">${h}</div>`+ks.map(k=>{const sk=TIMETABLE.days[k][i];const em=subjectVisual(SUBJ[sk].split(' ')[0]);
-    return `<div class="c ${mark(k)}" data-sk="${sk}" style="--dc:${col(k)}"><b>${em}</b><span>${SHORT[sk]}</span></div>`;}).join('');});
+  TIMETABLE.hours.forEach((h,i)=>{g+=`<div class="h">${h}</div>`+ks.map(k=>{const sk=TIMETABLE.days[k][i];
+    return `<div class="c ${mark(k)}" data-sk="${sk}" style="--dc:${col(k)}"><span>${SHORT[sk]}</span></div>`;}).join('');});
   show(`<h2>📅 Aulas do ${TIMETABLE.turma} <button class="x">✕</button></h2><div class="tt" id="tt">${g}</div>`);
   let picked=null;
   const tt=document.getElementById('tt');
