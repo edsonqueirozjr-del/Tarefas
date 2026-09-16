@@ -1087,34 +1087,36 @@
   .tl-dia{position:sticky;top:0;z-index:2;margin:10px 0 8px;padding:4px 0;background:#fff;font-size:12px;font-weight:900;color:var(--lilas-soft);text-transform:capitalize;letter-spacing:.3px}
   .tl-dia::after{content:"";display:block;height:1px;background:var(--lilas-line);margin-top:6px}
   /* cada linha: trilho, bolinha com icone, avatar, texto e hora */
-  .tl-item{position:relative;display:grid;grid-template-columns:30px 30px minmax(0,1fr) auto;align-items:center;gap:9px;padding:7px 0 7px 2px}
-  .tl-item::before{content:"";position:absolute;left:16px;top:0;bottom:0;width:2px;background:var(--lilas-line);z-index:0}
-  .tl-item:first-of-type::before{top:50%}
-  .tl-item:last-of-type::before{bottom:50%}
-  .tl-dot{position:relative;z-index:1;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--c) 14%,#fff);border:2px solid color-mix(in srgb,var(--c) 45%,#fff);display:flex;align-items:center;justify-content:center;flex:none}
-  .tl-ic{font-size:14px;line-height:1}
-  .tl-av{width:30px;height:30px;border-radius:50%;background:#EDE5FA;border:2px solid var(--uc,var(--lilas-line));display:flex;align-items:center;justify-content:center;font-size:15px;overflow:hidden;flex:none}
+  .tl-item{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr);align-items:start;gap:11px;padding:9px 0 9px 2px}
+  .tl-item::before{content:"";position:absolute;left:20px;top:0;bottom:0;width:2px;background:var(--lilas-line);z-index:0}
+  .tl-item:first-of-type::before{top:22px}
+  .tl-item:last-of-type::before{bottom:calc(100% - 22px)}
+  .tl-fig{position:relative;z-index:1;width:38px;height:38px;flex:none}
+  .tl-av{width:38px;height:38px;border-radius:50%;background:#EDE5FA;border:2px solid var(--uc,var(--lilas-line));display:flex;align-items:center;justify-content:center;font-size:19px;overflow:hidden;box-shadow:0 0 0 3px #fff}
   .tl-av img{width:100%;height:100%;object-fit:cover}
-  .tl-txt{min-width:0;display:flex;flex-direction:column;line-height:1.3}
-  .tl-l1{font-size:14px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tl-selo{position:absolute;right:-5px;bottom:-4px;width:21px;height:21px;border-radius:50%;background:color-mix(in srgb,var(--c) 16%,#fff);border:2px solid #fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 40%,#fff);display:flex;align-items:center;justify-content:center;font-size:11px;line-height:1}
+  .tl-txt{min-width:0;display:flex;flex-direction:column;gap:2px;padding-top:1px}
+  .tl-l1{font-size:14px;font-weight:700;color:var(--ink);line-height:1.35;overflow-wrap:anywhere}
   .tl-l1 b{font-weight:900;color:var(--uc,var(--lilas-ink))}
-  .tl-txt small{font-size:12px;font-weight:600;color:var(--soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
-  .tl-item time{flex:none;white-space:nowrap;font-size:11px;font-weight:800;color:var(--soft);font-variant-numeric:tabular-nums}
-  .tl-l1 i{font-style:normal;font-weight:800;color:var(--soft);font-size:12px}
-  .tl-x{position:absolute;right:-5px;bottom:-4px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--c);color:#fff;font-size:10px;font-weight:900;line-height:17px;text-align:center;border:2px solid #fff}
-  .tl-item.multi .tl-dot{background:color-mix(in srgb,var(--c) 20%,#fff)}
+  .tl-txt small{font-size:12.5px;font-weight:600;color:var(--soft);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .tl-meta{display:flex;align-items:center;gap:7px;margin-top:1px}
+  .tl-item time{white-space:nowrap;font-size:11px;font-weight:800;color:var(--lilas-soft);font-variant-numeric:tabular-nums;letter-spacing:.2px}
+  .tl-x{flex:none;background:color-mix(in srgb,var(--c) 16%,#fff);color:color-mix(in srgb,var(--c) 75%,#26243A);border-radius:999px;padding:1px 7px;font-size:10.5px;font-weight:900;line-height:1.5}
   .tl-mais{display:block;width:100%;margin:10px 0 2px;border:2px dashed var(--lilas-line);background:#FBF9FE;color:var(--lilas-ink);border-radius:14px;padding:10px;font:inherit;font-size:14px;font-weight:800}
   .tl-mais:active{background:#F2EBFC}
   .tl-vazio{margin:8px 2px;font-size:14px;color:var(--soft);line-height:1.5}
   @media screen and (min-width:600px) and (min-height:600px){
     .tl-head-tx{font-size:20px} .tl-head-ic{font-size:23px} .tl-n{font-size:14px}
-    .tl-item{grid-template-columns:36px 36px minmax(0,1fr) auto;gap:12px}
-    .tl-item::before{left:19px}
-    .tl-dot{width:36px;height:36px} .tl-ic{font-size:17px}
-    .tl-av{width:36px;height:36px;font-size:18px}
-    .tl-l1{font-size:16px} .tl-l1 i{font-size:13px} .tl-txt small{font-size:14px}
-    .tl-item time{font-size:13px}
-    .tl-dia{font-size:14px} .tl-x{min-width:19px;height:19px;line-height:19px;font-size:11px}
+    .tl-item{grid-template-columns:44px minmax(0,1fr);gap:13px;padding:10px 0}
+    .tl-item::before{left:23px}
+    .tl-item:first-of-type::before{top:25px}
+    .tl-item:last-of-type::before{bottom:calc(100% - 25px)}
+    .tl-fig{width:44px;height:44px}
+    .tl-av{width:44px;height:44px;font-size:22px}
+    .tl-selo{width:24px;height:24px;font-size:13px}
+    .tl-l1{font-size:16px} .tl-txt small{font-size:14px}
+    .tl-item time{font-size:12.5px} .tl-x{font-size:12px;padding:1px 8px}
+    .tl-dia{font-size:14px}
     .tl-mais{font-size:15px}
   }
   @media print{.tl{display:none}}
@@ -3065,11 +3067,14 @@ function tlHtml(){
     const tp=TL_TIPOS[g.tipo]||TL_TIPOS.msg, u=tlUsuario(g.by);
     const det=(g.det||'').trim();
     const varias=g.n>1, faixa=varias&&tlHora(g.tIni)!==tlHora(g.tFim);
+    const hora=faixa?`${tlHora(g.tIni)} – ${tlHora(g.tFim)}`:tlHora(g.tFim);
     html+=`<div class="tl-item ${varias?'multi':''}" style="--c:${tp.cor};--uc:${corDe(u)}">
-      <span class="tl-dot"><span class="tl-ic">${tp.ic}</span>${varias?`<span class="tl-x">${g.n}</span>`:''}</span>
-      <span class="tl-av">${avatarHtml(u)}</span>
-      <span class="tl-txt"><span class="tl-l1"><b>${esc(USER&&u.id===USER.id?'Você':u.nome)}</b> ${esc(tp.txt({emoji:g.emoji,nome:g.nome,dia:g.dias,vazia:g.vazia}))}${varias?` <i>${g.n} vezes</i>`:''}</span>${det&&!varias?`<small>${esc(det.length>90?det.slice(0,90)+'…':det)}</small>`:(varias&&det?`<small>último: ${esc(det.length>70?det.slice(0,70)+'…':det)}</small>`:'')}</span>
-      <time>${faixa?`${tlHora(g.tIni)}–${tlHora(g.tFim)}`:tlHora(g.tFim)}</time></div>`;
+      <span class="tl-fig"><span class="tl-av">${avatarHtml(u)}</span><span class="tl-selo" aria-hidden="true">${tp.ic}</span></span>
+      <span class="tl-txt">
+        <span class="tl-l1"><b>${esc(USER&&u.id===USER.id?'Você':u.nome)}</b> ${esc(tp.txt({emoji:g.emoji,nome:g.nome,dia:g.dias,vazia:g.vazia}))}</span>
+        ${det?`<small>${esc(det.length>120?det.slice(0,120)+'…':det)}</small>`:''}
+        <span class="tl-meta"><time>${hora}</time>${varias?`<span class="tl-x">${g.n}×</span>`:''}</span>
+      </span></div>`;
   });
   if(gs.length>mostrar.length) html+=`<button class="tl-mais" id="tlMais">Ver mais (${gs.length-mostrar.length})</button>`;
   return html;
