@@ -374,7 +374,7 @@
   .rem .ok{text-align:center;font-size:18px;font-weight:900;padding:16px 0 6px}
   .rem .rw .task{--tbg:var(--t05);border-top:0;margin-bottom:6px;background:var(--t05)}
   .rem .rw .task.doing{--tbg:var(--doing);background:var(--doing)}
-  .next{background:#fff;border:3px dashed var(--lilas-line);border-radius:22px;padding:14px 16px}
+  .next{background:#fff;border:3px dashed var(--lilas-line);border-radius:22px;padding:14px 16px;margin:12px 0 0}
   .next h2{margin:0 0 6px;font-size:19px;font-weight:900}
   /* flutuante */
   .fabs{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -705,10 +705,12 @@
   .msgs.sel .msg .ck{display:flex;position:absolute;top:50%;transform:translateY(-50%);right:2px;left:auto}
   .msgs.sel .msg.me .ck{right:auto;left:2px}
   .msgs.sel .msg .bacts{visibility:hidden}
+  .msgs.sel .msg{border-radius:16px;transition:background-color .15s ease}
+  .msgs.sel .msg.sel-on{background:color-mix(in srgb,var(--lilas) 15%,transparent)}
   .msgs.sel .msg{cursor:pointer}
   .msg.sel-on .ck{background:var(--lilas);border-color:var(--lilas)}
   .msg.sel-on .ck::after{content:"✓"}
-  .msg.sel-on .b{box-shadow:0 0 0 3px color-mix(in srgb,var(--lilas) 45%,transparent)}
+  .msg.sel-on .b{box-shadow:0 0 0 2px color-mix(in srgb,var(--lilas) 50%,transparent)}
   .selbar{display:none;align-items:center;gap:8px;background:var(--t18);border-left:4px solid var(--lilas);padding:8px 10px 8px 12px;font-size:13px;color:var(--ink);flex:none}
   .selbar.on{display:flex}
   .selbar span{flex:1;min-width:0;font-weight:800}
@@ -884,6 +886,7 @@
   }
   .looksheet>.grip{width:32px;height:4px;margin:2px auto 12px;background:var(--t42)}
   .looksheet>h2{font-size:18px;line-height:1.3;gap:10px;margin-bottom:16px;letter-spacing:-.3px}
+  .viewer.fotao img{width:100%;max-height:62vh;object-fit:contain;border-radius:18px;background:var(--t10)}
   .looksheet>h2 .x{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
   .looksheet #lookPrev{min-height:0;flex:none;border:1px solid var(--t31);border-radius:16px;overflow:hidden}
   .looksheet #lookMsgs{gap:8px}
@@ -1778,6 +1781,7 @@ function mostraCarregando(){
 }
 function marcaPronto(k){ if(k) PRONTO[k]=true; if(Object.values(PRONTO).every(Boolean)) tiraCarregando(); }
 function tiraCarregando(){ clearTimeout(carregTimer); window.__dadosProntos=true; document.body.classList.remove('carregando');
+  if(!document.body.classList.contains('abrindo')) setTimeout(enchePraValer,140);
   const c=document.getElementById('carregando'); if(!c||c.classList.contains('off')) return; c.classList.add('off'); setTimeout(()=>c.remove(),500); }
 function cloudStart(){
   if(!CLOUD_ON||!USER){ tiraCarregando(); return; }
@@ -2212,7 +2216,7 @@ function msgHtml(m,i,arr){
   const hm=hhmm(m.t);
   const mesmoMin=prev&&prev.by===m.by&&hhmm(prev.t)===hm&&!(prev.att&&prev.att.kind==='nudge');
   const miolo=(mesmoMin?'':hm)+(m.edited?'<i class="ed">(editada)</i>':'')+tick;
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><b>${me?'Eu':esc(u.nome)}</b>${miolo?`<small>${miolo}</small>`:''}</span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}${espaco}${selo}</div>${reactsHtml(m)}</div>${me?`<span class="bacts"><button type="button" class="rbtn ebtn" data-emo="${m.k}" aria-label="Opções da mensagem" title="Opções">${ICO_EMO}</button></span>`:`<span class="bacts"><button type="button" class="rbtn" data-reply="${m.k}" aria-label="Responder" title="Responder">${ICO_RESP}</button></span>`}<span class="ck" aria-hidden="true"></span></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av" data-foto="${u.id}" role="button" tabindex="0" aria-label="Ver a foto de ${esc(u.nome)}" title="Ver a foto de ${esc(u.nome)}">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><b>${me?'Eu':esc(u.nome)}</b>${miolo?`<small>${miolo}</small>`:''}</span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}${espaco}${selo}</div>${reactsHtml(m)}</div>${me?`<span class="bacts"><button type="button" class="rbtn ebtn" data-emo="${m.k}" aria-label="Opções da mensagem" title="Opções">${ICO_EMO}</button></span>`:`<span class="bacts"><button type="button" class="rbtn" data-reply="${m.k}" aria-label="Responder" title="Responder">${ICO_RESP}</button></span>`}<span class="ck" aria-hidden="true"></span></div>`;
 }
 const ICO_CK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 12.8 4.8 4.7L19.5 6.6"/></svg>`;
 const ICO_RESP=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v4"/></svg>`;
@@ -2225,8 +2229,11 @@ function atualizaSel(){ const box=document.getElementById('msgs'); if(!box) retu
   box.querySelectorAll('.msg').forEach(x=>x.classList.toggle('sel-on',selKeys.has(x.dataset.k)));
   const sb=document.getElementById('selbar'); if(sb){ sb.classList.add('on'); const n=selKeys.size;
     sb.querySelector('span').textContent=n?(n+(n>1?' mensagens marcadas':' mensagem marcada')):'Toque nos balões para marcar'; sb.querySelector('.sc').disabled=!n;
-    const minhas=CHAT.filter(m=>selKeys.has(m.k)&&USER&&m.by===USER.id).length, bd=sb.querySelector('.sd');
-    if(bd){ bd.hidden=!minhas; bd.dataset.ok=''; bd.textContent=minhas>1?'Apagar ('+minhas+')':'Apagar'; } } }
+    const minhas=CHAT.filter(m=>selKeys.has(m.k)&&USER&&m.by===USER.id).length;
+    const dosOutros=CHAT.filter(m=>selKeys.has(m.k)&&USER&&m.by!==USER.id).length;
+    const bd=sb.querySelector('.sd');
+    if(bd){ bd.hidden=!minhas||!!dosOutros;      // marcou balao de outra pessoa? o Apagar some
+      bd.dataset.ok=''; bd.textContent=minhas>1?'Apagar ('+minhas+')':'Apagar'; } } }
 // apaga (para todos) as mensagens marcadas que sao minhas; pede um segundo toque para confirmar
 async function apagaSel(){
   const bd=document.getElementById('selDel'); if(!bd||!famRef||!USER) return;
@@ -2365,6 +2372,8 @@ function bindMsgs(){
     el.addEventListener('contextmenu',e=>{ e.preventDefault(); solta(); openNudgeMenu(chaves,el); });
   });
   box.querySelectorAll('[data-lido]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); verLeitores(b.dataset.lido,b); }));
+  box.querySelectorAll('[data-foto]').forEach(a=>{ const ver=e=>{ e.stopPropagation(); e.preventDefault(); if(selMode) return; vibrate(10); verFoto(a.dataset.foto); };
+    a.addEventListener('click',ver); a.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ') ver(e); }); });
   box.querySelectorAll('[data-reply]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); if(selMode) return; vibrate(12); startReply(b.dataset.reply); }));
   box.querySelectorAll('[data-emo]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); if(selMode) return; vibrate(12); openMsgMenu(b.dataset.emo); }));
   if(selMode){ box.classList.add('sel'); atualizaSel(); }
@@ -2402,7 +2411,7 @@ function bindMsgs(){
       if(e.target.closest('.rbtn')) return;
       if(pulaClique){ pulaClique=false; return; }                       // o toque que veio logo depois de segurar nao conta
       if(selMode){ const k=el.dataset.k; if(selKeys.has(k)) selKeys.delete(k); else selKeys.add(k); vibrate(8); atualizaSel(); return; }
-      if(e.target.closest('button,a,.aud,.pic,.file,.q,.qt,.react,.lido')) return;   // toque nos botoes do balao faz o que eles fazem
+      if(e.target.closest('button,a,.aud,.pic,.file,.q,.qt,.react,.lido,.av')) return;   // toque nos botoes do balao faz o que eles fazem
       if(mmode==='h') return;                                            // acabou de arrastar para responder
       vibrate(10); openMsgMenu(el.dataset.k);
     });
@@ -2715,6 +2724,16 @@ function applyPref(){
   if(sheet.classList.contains('chatsheet')) sheet.style.setProperty('--c2',col[1]); sheet.style.setProperty('--c2',col[1]);
   const ci=sheet.querySelector('.chatin'); if(ci){ci.style.setProperty('--c1',col[0]);ci.style.setProperty('--c2',col[1]);}
   pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg+((m.id==='msgs'&&selMode)?' sel':''); m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
+// foto da pessoa em tamanho grande, com opcao de salvar
+function verFoto(id){
+  const u=USERS.find(x=>x.id===id)||{id,nome:uname(id)||'Alguém',emoji:'👤'};
+  const f=PERFIS[id]&&PERFIS[id].foto;
+  show(`<h2>${ICO.pessoa} ${esc(u.nome)} <button class="x">✕</button></h2>
+    ${f?`<div class="viewer fotao"><img src="${f}" alt="Foto de ${esc(u.nome)}"></div>
+      <a class="opt primary" style="justify-content:center;margin-top:12px;text-decoration:none" href="${f}" download="foto-${esc(u.nome)}.jpg">${ICO.compart} Salvar no celular</a>`
+     :`<p style="text-align:center;font-size:72px;margin:20px 0 6px">${u.emoji}</p>
+       <p class="quiet" style="text-align:center;margin:0 0 6px">${esc(u.nome)} ainda não colocou uma foto.</p>`}`);
+}
 function openChatLook(){
   const BGS=[['lilas','#F7F5FC'],['claro','#FFFFFF'],['verde','#EFE7FB'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
   const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
@@ -3160,6 +3179,16 @@ function pctNaTela(){
   const i=document.querySelector('.prog .bar i'); if(!i) return 0;
   const l=i.getBoundingClientRect().width, t=i.parentNode.getBoundingClientRect().width;
   return t?Math.max(0,Math.min(100,l/t*100)):0;
+}
+let barraJaEncheu=false;
+function enchePraValer(){            // chamada quando a tela finalmente aparece
+  if(barraJaEncheu) return;
+  const i=document.querySelector('.prog .bar i'); if(!i) return;
+  barraJaEncheu=true;
+  const alvo=i.style.width||'0%';
+  i.style.transition='none'; i.style.width='0%'; void i.offsetWidth;   // zera sem animar...
+  i.style.transition=''; void i.offsetWidth; i.style.width=alvo;       // ...e agora enche na frente da pessoa
+  PCT_ANT=parseFloat(alvo)||0;
 }
 function enchePro(pct){
   const i=document.querySelector('.prog .bar i'); if(!i) return;
@@ -4296,7 +4325,7 @@ render();
   ['touchstart','touchmove','touchend','wheel','pointerdown','gesturestart','dragstart','selectstart'].forEach(ev=>document.addEventListener(ev,bloqueia,{passive:false}));
   const teclas=e=>{ if(document.body.classList.contains('abrindo')&&['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(e.key)) e.preventDefault(); };
   document.addEventListener('keydown',teclas);
-  const tira=()=>{ clearInterval(espera); document.body.classList.remove('abrindo'); document.removeEventListener('keydown',teclas);
+  const tira=()=>{ clearInterval(espera); document.body.classList.remove('abrindo'); document.removeEventListener('keydown',teclas); setTimeout(enchePraValer,160);
     if(sp.isConnected){ sp.classList.add('off'); setTimeout(()=>sp.remove(),700); } };
   window.__tiraSplash=tira;
   setTimeout(()=>{ if(!document.getElementById('splash')) tira(); },1200);   // imagem falhou: nao deixa a tela borrada
