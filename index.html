@@ -490,6 +490,25 @@
   .msg .rpico{position:absolute;top:50%;left:8px;transform:translateY(-50%) scale(.7);width:34px;height:34px;border-radius:50%;background:#DCE9FA;color:var(--acc);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none;z-index:0}
   .msg.armed .rpico{opacity:1;transform:translateY(-50%) scale(1)}
   .msg.focus .b{box-shadow:0 0 0 3px var(--acc)}
+  /* botao de responder ao lado do balao (so nas mensagens dos outros) */
+  .msg .bacts{flex:none;align-self:center;display:flex;gap:4px}
+  .msg .rbtn{flex:none;align-self:center;width:30px;height:30px;border-radius:50%;border:0;padding:0;background:rgba(124,77,196,.12);color:var(--lilas-ink);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,transform .15s}
+  .msg .rbtn svg{width:17px;height:17px}
+  .msg .rbtn:active{background:rgba(124,77,196,.28);transform:scale(.92)}
+  /* modo de marcar mensagens para copiar */
+  .msg .ck{display:none;flex:none;align-self:center;width:24px;height:24px;border-radius:50%;border:2px solid var(--lilas-soft);background:#fff;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;transition:background .15s,border-color .15s}
+  .msgs.sel .msg .ck{display:flex}
+  .msgs.sel .msg .bacts{display:none}
+  .msgs.sel .msg{cursor:pointer}
+  .msg.sel-on .ck{background:var(--lilas);border-color:var(--lilas)}
+  .msg.sel-on .ck::after{content:"✓"}
+  .msg.sel-on .b{box-shadow:0 0 0 3px color-mix(in srgb,var(--lilas) 45%,transparent)}
+  .selbar{display:none;align-items:center;gap:8px;background:#EFE9FB;border-left:4px solid var(--lilas);padding:8px 10px 8px 12px;font-size:13px;color:var(--ink);flex:none}
+  .selbar.on{display:flex}
+  .selbar span{flex:1;min-width:0;font-weight:800}
+  .selbar button{border:0;border-radius:999px;padding:7px 14px;font:inherit;font-weight:800;font-size:13px;background:var(--lilas);color:#fff;cursor:pointer}
+  .selbar button:disabled{opacity:.45}
+  .selbar button.sx{background:transparent;color:var(--lilas-ink);padding:4px 8px;font-size:17px}
   .msgs.dim .msg:not(.focus){opacity:.35}
   .editbar{display:none;align-items:center;gap:8px;background:#E8F1FC;border-left:4px solid var(--acc);padding:8px 12px;font-size:13px;color:var(--soft);flex:none}
   .editbar.on{display:flex}
@@ -646,6 +665,9 @@
   }
   @media(max-width:380px){
     .chatsheet .chathead{padding:23px 12px 14px}
+    .msg .rbtn{width:34px;height:34px} .msg .rbtn svg{width:19px;height:19px}
+    .msg .ck{width:27px;height:27px;font-size:16px}
+    .selbar{font-size:15px} .selbar button{font-size:15px}
     .chatsheet .chat h2{font-size:17px;gap:5px}
     .chatsheet .chatin{padding-left:10px;padding-right:10px;gap:6px}
     body .chatsheet .chatin button{width:40px;height:44px}
@@ -1864,8 +1886,22 @@ function msgHtml(m,i,arr){
   const selo=me?`<button type="button" class="lido ${seenAll?'todos':(seenAny?'seen':'')}" data-lido="${m.k}" aria-label="${seenAny?('Visto por '+leram.map(x=>x.nome).join(' e ')):'Ainda não foi visto'}" title="${seenAny?('Visto por '+leram.map(x=>x.nome).join(' e ')):'Ainda não foi visto'}">${seenAny?'✓':''}</button>`:'';
   const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>📝 Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hm=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><b>${me?'Eu':esc(u.nome)}</b><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}${selo}</div>${reactsHtml(m)}</div></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><b>${me?'Eu':esc(u.nome)}</b><small>${hm}${m.edited?'<i class="ed">(editada)</i>':''}${tick}</small></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}${selo}</div>${reactsHtml(m)}</div>${me?'':`<span class="bacts"><button type="button" class="rbtn" data-reply="${m.k}" aria-label="Responder" title="Responder">${ICO_RESP}</button><button type="button" class="rbtn ebtn" data-emo="${m.k}" aria-label="Reagir com emoji" title="Reagir">${ICO_EMO}</button></span>`}<span class="ck" aria-hidden="true"></span></div>`;
 }
+const ICO_RESP=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v4"/></svg>`;
+const ICO_EMO=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.2 14.2a4.6 4.6 0 0 0 7.6 0"/><path d="M9 9.5h.01M15 9.5h.01" stroke-width="2.8"/></svg>`;
+// ===== marcar varias mensagens para copiar =====
+let selMode=false, selKeys=new Set();
+function entraSel(k){ selMode=true; selKeys=new Set(k?[k]:[]); const box=document.getElementById('msgs'); if(!box) return; box.classList.add('sel'); atualizaSel(); }
+function saiSel(){ selMode=false; selKeys=new Set(); const box=document.getElementById('msgs'); if(box){ box.classList.remove('sel'); box.querySelectorAll('.msg.sel-on').forEach(x=>x.classList.remove('sel-on')); } const sb=document.getElementById('selbar'); if(sb) sb.classList.remove('on'); }
+function atualizaSel(){ const box=document.getElementById('msgs'); if(!box) return;
+  box.querySelectorAll('.msg').forEach(x=>x.classList.toggle('sel-on',selKeys.has(x.dataset.k)));
+  const sb=document.getElementById('selbar'); if(sb){ sb.classList.add('on'); const n=selKeys.size;
+    sb.querySelector('span').textContent=n?(n+(n>1?' mensagens marcadas':' mensagem marcada')):'Toque nos balões para marcar'; sb.querySelector('.sc').disabled=!n; } }
+function textoSel(){ const lista=CHAT.filter(m=>selKeys.has(m.k)).sort((a,b)=>(a.t||0)-(b.t||0)); if(!lista.length) return '';
+  if(lista.length===1) return textoDaMensagem(lista[0]);
+  return lista.map(m=>{ const d=new Date(m.t||0); const hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); return uname(m.by)+' ('+hm+'): '+textoDaMensagem(m); }).join('\n'); }
+function copiaSel(){ const n=selKeys.size, txt=textoSel(); if(!txt) return; copiarTexto(txt,n===1?'Mensagem copiada':n+' mensagens copiadas'); saiSel(); }
 // entende "15/09", "15/9/26", "15/09/2026", "hoje" e "ontem"; devolve a data ISO ou null
 function dataDaBusca(q){ const chatToday=iso(new Date()); q=(q||'').trim().toLowerCase(); if(q==='hoje') return chatToday; if(q==='ontem') return addDays(chatToday,-1);
   const m=q.match(/^(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?$/); if(!m) return null;
@@ -1972,6 +2008,9 @@ function bindMsgs(){
     el.addEventListener('contextmenu',e=>{ e.preventDefault(); solta(); openNudgeMenu(chaves,el); });
   });
   box.querySelectorAll('[data-lido]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); verLeitores(b.dataset.lido,b); }));
+  box.querySelectorAll('[data-reply]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); if(selMode) return; vibrate(12); startReply(b.dataset.reply); }));
+  box.querySelectorAll('[data-emo]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); if(selMode) return; vibrate(12); openMsgMenu(b.dataset.emo); }));
+  if(selMode){ box.classList.add('sel'); atualizaSel(); }
   box.querySelectorAll('[data-fala]').forEach(a=>{ const go=e=>{e.stopPropagation(); falar(a.dataset.fala,a);};
     a.addEventListener('click',go); a.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ') go(e); }); });
   box.querySelectorAll('[data-aud]').forEach(a=>{ const go=e=>{e.stopPropagation(); playAudio(a.dataset.aud,a);};
@@ -1980,11 +2019,11 @@ function bindMsgs(){
   box.querySelectorAll('.q:not(.qt)').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=box.querySelector(`.msg[data-k="${q.dataset.go}"]`); if(t){t.scrollIntoView({behavior:'smooth',block:'center'}); t.classList.add('flash'); setTimeout(()=>t.classList.remove('flash'),1300);} }));
   box.querySelectorAll('.msg').forEach(el=>{
     let timer=null,sx=0,sy=0,mdx=0,mmode=null,ico=null,armado=false;
-    const start=(x,y)=>{sx=x;sy=y;mdx=0;mmode=null;armado=false;el.classList.add('pressing');timer=setTimeout(()=>{el.classList.remove('pressing');vibrate(30);openMsgMenu(el.dataset.k);},450);};
+    const start=(x,y)=>{ if(selMode) return; sx=x;sy=y;mdx=0;mmode=null;armado=false;el.classList.add('pressing');timer=setTimeout(()=>{el.classList.remove('pressing');vibrate(30);openMsgMenu(el.dataset.k);},450);};
     const cancel=()=>{clearTimeout(timer);el.classList.remove('pressing');};
     const limpa=()=>{ el.classList.remove('sdrag','armed'); el.style.transform=''; if(ico){ico.remove();ico=null;} mdx=0; mmode=null; armado=false; };
     const move=(x,y)=>{
-      const dx=x-sx, dy=y-sy;
+      const dx=x-sx, dy=y-sy; if(selMode) return false;
       if(mmode===null){
         if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.4){ mmode='h'; cancel(); el.classList.add('sdrag');
           if(!ico){ ico=document.createElement('span'); ico.className='rpico'; ico.textContent='↩'; el.appendChild(ico); } }
@@ -2000,10 +2039,11 @@ function bindMsgs(){
       return true;
     };
     const solta=()=>{ cancel(); if(mmode==='h'&&Math.abs(mdx)>=56){ vibrate(20); SFX.pop(); const k=el.dataset.k; limpa(); startReply(k); return; } limpa(); };
-    el.addEventListener('touchstart',e=>start(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+    el.addEventListener('click',e=>{ if(!selMode) return; if(e.target.closest('.rbtn')) return; const k=el.dataset.k; if(selKeys.has(k)) selKeys.delete(k); else selKeys.add(k); vibrate(8); atualizaSel(); });
+    el.addEventListener('touchstart',e=>{ if(e.target.closest('.rbtn')) return; start(e.touches[0].clientX,e.touches[0].clientY); },{passive:true});
     el.addEventListener('touchmove',e=>{ const t=e.touches[0]; if(move(t.clientX,t.clientY)) e.preventDefault(); },{passive:false});
     el.addEventListener('touchend',solta); el.addEventListener('touchcancel',solta);
-    el.addEventListener('mousedown',e=>{ if(e.button!==0) return; start(e.clientX,e.clientY);
+    el.addEventListener('mousedown',e=>{ if(e.button!==0||e.target.closest('.rbtn')) return; start(e.clientX,e.clientY);
       const mv=ev=>move(ev.clientX,ev.clientY);
       const up=()=>{ document.removeEventListener('mousemove',mv); document.removeEventListener('mouseup',up); solta(); };
       document.addEventListener('mousemove',mv); document.addEventListener('mouseup',up); });
@@ -2390,7 +2430,7 @@ function openMsgMenu(k){
   wrap.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);closePop();}));
   wrap.querySelector('[data-more]').addEventListener('click',()=>{ emos.innerHTML=EMOJIS.map(e=>`<button data-r="${e}">${e}</button>`).join('');
     emos.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);closePop();})); place(); });
-  menu.querySelector('[data-a=copy]').addEventListener('click',()=>{ closePop(); copiarTexto(textoDaMensagem(m),'Mensagem copiada'); });
+  menu.querySelector('[data-a=copy]').addEventListener('click',()=>{ closePop(); entraSel(k); });
   menu.querySelector('[data-a=reply]').addEventListener('click',()=>{ closePop(); startReply(k); });
   if(me){
     menu.querySelector('[data-a=edit]').addEventListener('click',()=>{ closePop(); editingKey=k; replyTo=null; const inp=document.getElementById('chatTxt'); inp.value=m.text||'';
@@ -2439,10 +2479,12 @@ function openChat(){
     </div>
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
+    <div class="selbar nodrag" id="selbar"><span></span><button type="button" class="sc" id="selCopy">Copiar</button><button type="button" class="sx" id="selCancel" aria-label="Cancelar">✕</button></div>
     <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel" aria-label="Descartar" title="Descartar">🗑</button><button class="rpause" id="recPause" aria-label="Pausar gravação" title="Pausar">⏸</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado" title="Ouvir">▶</button></div>
     <div class="chatin"><div class="chatcompose"><textarea id="chatTxt" rows="1" enterkeyhint="enter" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button class="emo" id="emoBtn" aria-label="Emojis">🐸</button></div><button id="chatSend" class="mic" aria-label="Gravar áudio">🎤</button></div>
     </div>`);
-  applyPref(); markRead(); scrollMsgs(); bindMsgs(); initChatJump(); editingKey=null; replyTo=null;
+  selMode=false; selKeys=new Set(); applyPref(); markRead(); scrollMsgs(); bindMsgs(); initChatJump(); editingKey=null; replyTo=null;
+  document.getElementById('selCopy').addEventListener('click',copiaSel); document.getElementById('selCancel').addEventListener('click',()=>{ saiSel(); vibrate(8); });
   document.getElementById('chatLook').addEventListener('click',openChatLook);
   document.getElementById('chatNudge').addEventListener('click',chamarAtencao);
   const bar=document.getElementById('cfBar'), cft=document.getElementById('cfTxt'), cnt=document.getElementById('cfCnt');
