@@ -1090,7 +1090,7 @@
   .msg.flash .b{animation:flashb 1.2s}
   @keyframes flashb{0%,60%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:none}}
   .fam .p small{font-size:11px;font-weight:700;color:var(--lilas-soft);line-height:1}
-  .fam .p.me .nome{cursor:pointer;border-bottom:1.5px dotted color-mix(in srgb,var(--lilas-soft) 55%,transparent);padding-bottom:1px}
+  .fam .p.me .nome{cursor:pointer}
   .nome-dica{color:var(--soft);font-size:14px;margin:0 0 10px}
   .nome-campo{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin:0 0 14px;background:var(--t05)}
   .nome-campo input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:20px;font-weight:800;color:var(--ink);outline:none}
@@ -1919,7 +1919,7 @@
   .tema-abas button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(var(--r01),.16)}
   .tema-dica{margin:0 0 12px;font-size:14px}
   .tema-aa{flex:none;width:34px;height:34px;border-radius:12px;background:var(--t05);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:var(--lilas)}
-  .tema-op .tema-nome small{display:block;font-size:13px;font-weight:600;color:var(--soft);margin-top:1px}
+  .tema-op .tema-nome small{display:block;font-size:13px;font-weight:600;color:var(--soft);margin-top:1px;font-family:inherit}
   .temas{display:flex;flex-direction:column;gap:8px}
   .tema-op{display:flex;align-items:center;gap:12px;width:100%;border:2px solid var(--lilas-line);background:#fff;border-radius:16px;padding:12px 14px;font:inherit;font-size:17px;font-weight:800;color:var(--ink);cursor:pointer}
   .tema-op.on{border-color:var(--lilas);background:var(--lilas-bg)}
@@ -4773,19 +4773,17 @@ function openSummary(modoInicial){
 function openTema(abaInicial){
   let aba=abaInicial==='fonte'?'fonte':'cores';
   const amostra=(t,c)=>{ const antes=TEMA; TEMA=t.k; const v=corT(c); TEMA=antes; return v; };
-  const DICA={cores:'Muda a cor de tudo: dias, botões, conversa e resumo.',fonte:'Muda a letra do app inteiro, conversa junto.'};
   const cores=()=>`<div class="temas">${TEMAS.map(t=>`<button class="tema-op ${TEMA===t.k?'on':''}" data-tema="${t.k}" data-t="${t.k}">
       <span class="tema-bola" style="background:linear-gradient(140deg,${amostra(t,'#B48BF5')},${amostra(t,'#8E5BE0')})"></span>
       <span class="tema-nome">${t.nome}</span>
       <span class="tema-ok" aria-hidden="true">${TEMA===t.k?ICO.feito:''}</span></button>`).join('')}</div>`;
-  const fontes=()=>`<div class="temas">${FONTES.map(([k,n,d])=>`<button class="tema-op f-${k} ${FONTE===k?'on':''}" data-fonte="${k}">
-      <span class="tema-aa" aria-hidden="true">Aa</span>
-      <span class="tema-nome">${n}<small>${d}</small></span>
+  const fontes=()=>`<div class="temas">${FONTES.map(([k,n])=>`<button class="tema-op ${FONTE===k?'on':''}" data-fonte="${k}">
+      <span class="tema-aa f-${k}" aria-hidden="true">Aa</span>
+      <span class="tema-nome f-${k}">${n}<small>Hoje tem 4 tarefas: Matemática, página 52</small></span>
       <span class="tema-ok" aria-hidden="true">${FONTE===k?ICO.feito:''}</span></button>`).join('')}</div>`;
   const corpo=()=>aba==='cores'?cores():fontes();
   show(`<h2>${ICO.paleta} Tema do app <button class="x">✕</button></h2>
     <div class="tema-abas" role="tablist"><button type="button" role="tab" data-aba="cores" class="${aba==='cores'?'on':''}">Cores</button><button type="button" role="tab" data-aba="fonte" class="${aba==='fonte'?'on':''}">Fonte</button></div>
-    <p class="quiet tema-dica" id="temaDica">${DICA[aba]}</p>
     <div id="temaCorpo">${corpo()}</div>`);
   const liga=()=>{
     sheet.querySelectorAll('[data-tema]').forEach(b=>b.addEventListener('click',()=>{
@@ -4805,7 +4803,6 @@ function openTema(abaInicial){
   sheet.querySelectorAll('[data-aba]').forEach(b=>b.addEventListener('click',()=>{
     if(b.dataset.aba===aba) return; aba=b.dataset.aba; vibrate(10);
     sheet.querySelectorAll('[data-aba]').forEach(x=>x.classList.toggle('on',x.dataset.aba===aba));
-    document.getElementById('temaDica').textContent=DICA[aba];
     document.getElementById('temaCorpo').innerHTML=corpo(); liga();
   }));
   liga();
