@@ -623,9 +623,10 @@
   .day.today summary{color:#fff}                 /* so o dia de hoje fica com letra branca */
   .day summary::-webkit-details-marker{display:none}
   .dl{display:flex;align-items:baseline;gap:8px;flex:none}
-  .dl .n{font-size:23px;font-weight:900;line-height:1}
-  .dl .d{opacity:.9;font-size:15px}
-  .dl .feira,.dl .sep{display:none}          /* celular: como sempre foi */
+  .dl .n{font-size:21px;font-weight:900;line-height:1}
+  .dl .d{opacity:1;font-size:21px;font-weight:500;line-height:1}
+  .dl .feira{display:none}                   /* "-feira" so no tablet */
+  .dl .sep{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;align-self:center;flex:none;margin:0 1px}
   .tags{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
   .day:not(.today) .tag{color:var(--lilas-ink)}   /* no dia clarinho, a etiqueta precisa de letra escura */
   .tag{background:#fff;color:var(--c);border-radius:999px;padding:4px 10px;font-size:14px;font-weight:900;white-space:nowrap;line-height:1.2;letter-spacing:0;font-family:inherit;display:inline-block}
@@ -804,6 +805,8 @@
   .uopt small{font-weight:700;color:var(--soft);font-size:12px}
   .uopt:active{transform:scale(.95);border-color:var(--ink)}
   .who{text-align:center;margin:-2px 0 10px}
+  .chat:not(.vistos) #chatWho{display:none!important}   /* visto por ultimo: so quando o botao esta ligado */
+  .chathead .gear.on{background:var(--t57);color:#fff}
   .who span{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800}
   .who small{color:var(--soft);font-weight:700}
   /* família / presença */
@@ -904,7 +907,7 @@
   .f-poppins{font-family:Poppins,Nunito,sans-serif}
   .f-comic{font-family:"Comic Neue","Comic Sans MS",cursive}
   .f-patrick{font-family:"Patrick Hand",cursive;font-size:1.12em}
-  .chat.s-p .msg .b{font-size:14px} .chat.s-g .msg .b{font-size:18px} .chat.s-p .msg .b .hd b{font-size:14px} .chat.s-g .msg .b .hd b{font-size:18px}
+  .chat.s-mp .msg .b{font-size:12px} .chat.s-mp .msg .b .hd b{font-size:12px} .chat.s-p .msg .b{font-size:14px} .chat.s-g .msg .b{font-size:18px} .chat.s-p .msg .b .hd b{font-size:14px} .chat.s-g .msg .b .hd b{font-size:18px}
   .chat h2 .gear{margin-left:auto;margin-right:8px;border:0;background:var(--t10);border-radius:50%;width:34px;height:34px;font-size:18px}
   .chat h2 .x{margin-left:0}
   .sw2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:6px 0 14px;width:100%}
@@ -1222,7 +1225,7 @@
   .chat-history:has(.msgs.bg-foto){--msgs-bg:rgba(var(--r07),.92)}
 
   .chatsheet .msg .b{padding:10px 14px 8px;line-height:1.45;box-shadow:0 2px 8px rgba(var(--r01),.06)}
-  .chatsheet .daysep{font-weight:700;font-size:13px;padding:6px 12px;position:sticky;top:4px;z-index:3;box-shadow:0 1px 4px rgba(38,36,58,.12);background:var(--t42)}   /* fundo solido: nada aparece atras quando fica congelado */
+  .chatsheet .daysep{font-weight:700;font-size:12px;padding:6px 12px;position:sticky;top:4px;z-index:3;box-shadow:0 1px 4px rgba(38,36,58,.12);background:var(--t42)}   /* fundo solido: nada aparece atras quando fica congelado */
   .chatsheet .msgs.bg-noite .daysep{background:#3B3852;color:#fff}
   .chatsheet .msgs .dia:last-child>:last-child{margin-bottom:4px}
   .chatsheet .msgs .dia:last-child>.nudge-msg.evt:has(.reacts):last-child{margin-bottom:24px}
@@ -1301,6 +1304,9 @@
   /* Informação de apoio discreta; ações não reutilizam as cores dos dias. */
   body .aulas{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
   body .aulas span{flex:1 1 auto;text-align:center}
+  body .aulas.medindo span{flex:none!important}
+  body .aulas.grade{display:grid;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
+  body .aulas.grade span{min-width:0}
   body .aulas span{background:#E9E8EF;color:var(--ink);border:1px solid #D9D7E1;border-radius:9px;padding:3px 7px;font-size:13px;font-weight:600;line-height:1.35}
   .tg .trea{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0;vertical-align:2px}
   .tg .trea:has(>.ra:first-child){vertical-align:-.5px}
@@ -1722,7 +1728,7 @@
     body .chatsheet .chatwho{font-size:16px}
     body .chatsheet .chatwho b,body .chatsheet .chatwho .chat-lastseen{font-size:16px}
     body .chatsheet .chatwho span{padding:6px 11px}
-    body .chatsheet .daysep{font-size:14px}
+    body .chatsheet .daysep{font-size:13px}
     body .chatsheet .daybar button{font-size:14px}
     body .chatsheet .nudge-msg{font-size:14px}
     body .chatsheet .nudge-msg .hand{font-size:17px}
@@ -3192,7 +3198,7 @@ document.addEventListener('paste',e=>{
 // Arrastar uma imagem para dentro da conversa (no computador)
 document.addEventListener('dragover',e=>{ if(chatAbertoAgora()&&e.dataTransfer&&[...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
 document.addEventListener('drop',e=>{ if(!chatAbertoAgora()||!famRef||!USER) return; const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(!f) return; e.preventDefault(); sendAttachment(f); });
-let CHATPREF={bg:'lilas',font:'nunito',size:'m',foto:'',cores:{}}; try{Object.assign(CHATPREF,JSON.parse(localStorage.getItem(KEY+'-chatpref')||'{}'));}catch(e){}
+let CHATPREF={bg:'lilas',font:'nunito',size:'m',foto:'',cores:{},vistos:false}; try{Object.assign(CHATPREF,JSON.parse(localStorage.getItem(KEY+'-chatpref')||'{}'));}catch(e){}
 const CORES_BALAO_BASE=['#B57BE8','#8E5BE0','#7C4DC4','#6B46C1','#4C3499','#A44FC7'];
 const CORES_BALAO=CORES_BALAO_BASE;
 function corPreset(c){ return CORES_BALAO.some(x=>x.toLowerCase()===String(c||'').toLowerCase()); }
@@ -3204,7 +3210,7 @@ function applyPref(){
   const col=(BGCOL[CHATPREF.bg]||BGCOL.lilas).map(corT);   // no visual padrao, a conversa segue o tema do app const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);}
   if(sheet.classList.contains('chatsheet')) sheet.style.setProperty('--c2',col[1]); sheet.style.setProperty('--c2',col[1]);
   const ci=sheet.querySelector('.chatin'); if(ci){ci.style.setProperty('--c1',col[0]);ci.style.setProperty('--c2',col[1]);}
-  pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size; m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg+((m.id==='msgs'&&selMode)?' sel':''); m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
+  pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size+(CHATPREF.vistos?' vistos':''); m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg+((m.id==='msgs'&&selMode)?' sel':''); m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
 // foto da pessoa em tamanho grande, com opcao de salvar
 function verFoto(id){
   const u=USERS.find(x=>x.id===id)||{id,nome:uname(id)||'Alguém',emoji:'👤'};
@@ -3234,7 +3240,7 @@ function openChatLook(){
     <p class="looklbl">Fonte</p>
     <div class="sw2 fonts">${FONTS.map(([k,n])=>`<button data-f="${k}" class="fnt f-${k} ${CHATPREF.font===k?'on':''}">${n}</button>`).join('')}</div>
     <p class="looklbl">Tamanho da letra</p>
-    <div class="sw2 sizes">${[['p','Pequena'],['m','Média'],['g','Grande']].map(([k,n])=>`<button data-s="${k}" class="fnt ${CHATPREF.size===k?'on':''}">${n}</button>`).join('')}</div>
+    <div class="sw2 sizes">${[['mp','Muito pequena'],['p','Pequena'],['m','Média'],['g','Grande']].map(([k,n])=>`<button data-s="${k}" class="fnt ${CHATPREF.size===k?'on':''}">${n}</button>`).join('')}</div>
     <button class="opt primary" id="lookOk" style="justify-content:center;margin-top:12px">Pronto</button>`);
   applyPref();
   const mark=(sel,attr,val)=>sheet.querySelectorAll(sel).forEach(b=>b.classList.toggle('on',b.dataset[attr]===val));
@@ -3358,7 +3364,7 @@ function initChatJump(){
 }
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
-  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar" title="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="gear" id="attBtn" aria-label="Anexar" title="Anexar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5 12.4 19a5 5 0 0 1-7-7l7.6-7.5a3.3 3.3 0 0 1 4.7 4.7l-7.6 7.5a1.7 1.7 0 0 1-2.4-2.4l7-6.9"/></svg></button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/><path d="M22 8c0-2.3-.8-4.3-2-6"/></svg></button><button class="gear" id="chatLook" aria-label="Aparência" title="Aparência"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2a1.8 1.8 0 0 1 1.3-3h2.1A4.3 4.3 0 0 0 21 10.7C21 6.4 16.9 3 12 3Z"/><circle cx="8" cy="11" r="1.1"/><circle cx="11.5" cy="7.6" r="1.1"/><circle cx="15.6" cy="9.4" r="1.1"/></svg></button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><span class="cflupa" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="cfTxt" placeholder="Procurar mensagem" autocomplete="off"><label class="cfdate" title="Escolher a data" aria-label="Escolher a data"><span aria-hidden="true">📅</span><input type="date" id="cfDate"></label><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
+  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar" title="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="gear" id="attBtn" aria-label="Anexar" title="Anexar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5 12.4 19a5 5 0 0 1-7-7l7.6-7.5a3.3 3.3 0 0 1 4.7 4.7l-7.6 7.5a1.7 1.7 0 0 1-2.4-2.4l7-6.9"/></svg></button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/><path d="M22 8c0-2.3-.8-4.3-2-6"/></svg></button><button class="gear" id="chatLook" aria-label="Aparência" title="Aparência"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2a1.8 1.8 0 0 1 1.3-3h2.1A4.3 4.3 0 0 0 21 10.7C21 6.4 16.9 3 12 3Z"/><circle cx="8" cy="11" r="1.1"/><circle cx="11.5" cy="7.6" r="1.1"/><circle cx="15.6" cy="9.4" r="1.1"/></svg></button><button class="gear ${CHATPREF.vistos?'on':''}" id="chatWhoBtn" aria-label="Visto por último" title="Visto por último">${ICO.pessoa}</button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="chatwho" id="chatWho">${chatWhoHtml()}</div><div class="cfbar" id="cfBar"><span class="cflupa" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="cfTxt" placeholder="Procurar mensagem" autocomplete="off"><label class="cfdate" title="Escolher a data" aria-label="Escolher a data"><span aria-hidden="true">📅</span><input type="date" id="cfDate"></label><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div></div>
     <div class="chat-history"><div class="daybar nodrag" id="dayBar" role="tablist" aria-label="Partes da conversa"></div><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
     <div class="picker nodrag" id="picker">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     <div class="audpanel nodrag" id="audPanel">
@@ -3373,6 +3379,7 @@ function openChat(){
   fechaAviso(); selMode=false; selKeys=new Set(); applyPref(); markRead(); scrollMsgs(); bindMsgs(); initChatJump(); editingKey=null; replyTo=null;
   document.getElementById('selCopy').addEventListener('click',copiaSel); document.getElementById('selDel').addEventListener('click',apagaSel); document.getElementById('selCancel').addEventListener('click',()=>{ saiSel(); vibrate(8); });
   document.getElementById('chatLook').addEventListener('click',openChatLook);
+  document.getElementById('chatWhoBtn').addEventListener('click',()=>{ CHATPREF.vistos=!CHATPREF.vistos; savePref(); applyPref(); document.getElementById('chatWhoBtn').classList.toggle('on',CHATPREF.vistos); vibrate(10); });
   document.getElementById('chatNudge').addEventListener('click',chamarAtencao);
   const bar=document.getElementById('cfBar'), cft=document.getElementById('cfTxt'), cnt=document.getElementById('cfCnt');
   if(chatQ){ bar.classList.add('on'); cft.value=chatQ; }
@@ -4889,7 +4896,7 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden) hourlyRe
   const ajusta=()=>{ const pr=document.getElementById('prog'), top=document.querySelector('.top'); if(!pr||!top) return;
     if(mq.matches){ if(pr.parentNode===top) top.after(pr); } else { if(pr.parentNode!==top) top.appendChild(pr); } posicionaFrase(); };
   (mq.addEventListener?mq.addEventListener('change',ajusta):mq.addListener(ajusta)); ajusta(); })();
-window.addEventListener('resize',()=>{ ajustaProgressoTablet(); posicionaFrase(); });
+window.addEventListener('resize',()=>{ ajustaProgressoTablet(); posicionaFrase(); esticaAulas(); });
 document.fonts?.ready.then(()=>{ ajustaProgressoTablet(); posicionaFrase(); });
 render();
 // Ao mudar entre celular e tablet, aplica o formato dos filtros sem mudar a selecao.
@@ -4897,6 +4904,30 @@ render();
   if(tabletFiltersMedia.addEventListener) tabletFiltersMedia.addEventListener('change',ajusta);
   else tabletFiltersMedia.addListener(ajusta);
 })();
+// Materias abaixo do dia: numa linha so quando cabem; quando nao cabem, dividem em linhas equilibradas (5 -> 3 + 2), cada linha na largura toda.
+function esticaAulas(){
+  document.querySelectorAll('#app .aulas').forEach(el=>{
+    el.classList.remove('grade'); el.style.removeProperty('--cols'); el.classList.add('medindo');
+    const chips=[...el.querySelectorAll('span')]; chips.forEach(c=>c.style.gridColumn='');
+    const W=el.clientWidth; if(!W||chips.length<2){ el.classList.remove('medindo'); return; }
+    const gap=parseFloat(getComputedStyle(el).columnGap)||5;
+    const ws=chips.map(c=>c.getBoundingClientRect().width);
+    el.classList.remove('medindo');
+    const n=chips.length;
+    if(ws.reduce((a,b)=>a+b,0)+gap*(n-1)<=W) return;                 // cabe numa linha: fica como esta (esticando)
+    let escolha=null;
+    for(let r=2;r<=n&&!escolha;r++){
+      const base=Math.floor(n/r), extra=n%r, cont=[]; for(let i=0;i<r;i++) cont.push(base+(i<extra?1:0));
+      let i=0, ok=true;
+      for(const c of cont){ const largura=(W-gap*(c-1))/c; for(let k=0;k<c;k++){ if(ws[i+k]>largura+0.5) ok=false; } i+=c; if(!ok) break; }
+      if(ok) escolha=cont;
+    }
+    if(!escolha) return;                                             // nem dividindo cabe: deixa quebrar normal
+    const mdc=(a,b)=>b?mdc(b,a%b):a; const L=escolha.reduce((acc,c)=>acc*c/mdc(acc,c),1);
+    let i=0; escolha.forEach(c=>{ for(let k=0;k<c;k++){ chips[i++].style.gridColumn='span '+(L/c); } });
+    el.style.setProperty('--cols',L); el.classList.add('grade');
+  });
+}
 // A tela nao pula quando a lista e redesenhada (estrela, status, nuvem): o que estava no topo da tela continua no mesmo lugar.
 { const _render=render;
   render=function(){
@@ -4909,6 +4940,7 @@ render();
       if(anc) topo=anc.getBoundingClientRect().top;
     }
     const r=_render.apply(this,arguments);
+    esticaAulas();
     if(anc){
       const sel=anc.classList.contains('imp')?'.imp[data-date="imp"]':`.day[data-date="${anc.dataset.date}"]`;
       const novo=document.querySelector(sel);
