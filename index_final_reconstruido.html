@@ -754,7 +754,8 @@
   .rem .rw .task{--tbg:var(--t05);border-top:0;margin-bottom:6px;background:var(--t05)}
   .rem .rw .task.doing{--tbg:var(--doing);background:var(--doing)}
   .next{background:#fff;border:3px dashed var(--lilas-line);border-radius:22px;padding:14px 16px;margin:12px 0 0}
-  .next h2{margin:0 0 6px;font-size:19px;font-weight:900}
+  .next h2{margin:0 0 6px;font-size:18px;font-weight:900}
+  .next .topic-list{font-size:15px}
   /* flutuante */
   .fabs{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;display:flex;flex-direction:column;align-items:center;gap:12px}
   .fab{position:static;overflow:visible;isolation:isolate;width:62px;height:62px;border-radius:50%;border:0;background:var(--fab);color:#fff;font-size:28px;box-shadow:0 8px 20px rgba(38,36,58,.28);display:flex;align-items:center;justify-content:center;transition:transform .2s}
@@ -818,6 +819,8 @@
   .who{text-align:center;margin:-2px 0 10px}
   @media screen and (max-width:599px), screen and (max-height:599px){
     body .chat.vistos .chathead{padding-bottom:7px}                  /* do visto ate o fim do roxo: mesmo espaco que do branco ate as pilulas */
+    body .chat:not(.vistos) .chathead{padding-bottom:0}               /* sem o visto por ultimo: sem sobra embaixo */
+    body .chat:not(.vistos) .chathead>h2{margin-bottom:8px}
     body .chatsheet .daysep{font-size:10px}                           /* "Hoje/Ontem" congelado: -2px */
     body .chatsheet .daybar button{font-size:11.5px}                   /* pilulas dos dias: -1px (era 12,5) */
     body .chatsheet .chat-jump{right:calc(14px + env(safe-area-inset-right))}   /* seta de descer alinhada com o microfone */
@@ -897,17 +900,22 @@
   .msgs{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 12px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;background:var(--t05)}
   .msg{display:flex;gap:8px;align-items:flex-end;max-width:85%}
   .msg.me{align-self:flex-end;flex-direction:row-reverse}
-  .msg .av{width:52px;height:52px;border-radius:50%;background:var(--t10);display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex:none;border:3px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18)}
+  .msg .av{width:40px;height:40px;border-radius:50%;background:var(--t10);display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex:none;border:3px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18)}
   .msg .av img{width:100%;height:100%;object-fit:cover}
   .msg{--uc:var(--acc)}
-  .msg:not(.me) .b{background:color-mix(in srgb,var(--uc) 14%,#fff);border-bottom-left-radius:6px}
+  .msg:not(.me) .b{background:color-mix(in srgb,var(--uc) 14%,#fff)}
+  .msg .b{position:relative;border-radius:11px}
+  /* Ponta inferior curva apenas no último balão de cada sequência. */
+  .msg.fim .b::after{content:"";position:absolute;bottom:0;width:12px;height:17px;background:inherit;pointer-events:none;
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%}
+  .msg.fim:not(.me) .b::after{left:-8px;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M8 0H12V17H0Q8 14 8 0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M8 0H12V17H0Q8 14 8 0Z'/%3E%3C/svg%3E")}
+  .msg.fim.me .b::after{right:-8px;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M0 0H4Q4 14 12 17H0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M0 0H4Q4 14 12 17H0Z'/%3E%3C/svg%3E")}
   .msg:not(.me) .b .hd b{color:var(--uc)}
-  .msg.me .b{background:var(--uc);border-bottom-right-radius:6px}
-  .msg.cont:not(.me) .b{border-top-left-radius:8px}
-  .msg.cont.me .b{border-top-right-radius:8px}
-  .msg.cont{margin-top:-4px}
-  .msg.cont .av{visibility:hidden;height:0}
-  .msg.cont .b .hd b{display:none}
+  .msg.me .b{background:var(--uc)}
+  .msg.cont{margin-top:0}
+  .msg:not(.fim) .av{visibility:hidden;height:0;min-height:0;border-width:0;box-shadow:none}   /* a foto aparece no último balão da sequência */
+  .msg .av{align-self:flex-end}
+  .msg.cont .b .hd b,.msg.mesmo .b .hd b{display:none}                                                       /* o nome aparece so no primeiro balao da sequencia */
   .msgs.bg-lilas{background:var(--t05)}
   .msgs.bg-claro{background:#fff}
   .msgs.bg-verde{background:var(--t20)}
@@ -928,11 +936,11 @@
   .f-patrick{font-family:"Patrick Hand",cursive;font-size:1.12em}
   .chat.s-mp .msg .b{font-size:12px} .chat.s-mp .msg .b .hd b{font-size:12px} .chat.s-p .msg .b{font-size:14px} .chat.s-g .msg .b{font-size:18px} .chat.s-p .msg .b .hd b{font-size:14px} .chat.s-g .msg .b .hd b{font-size:18px}
   /* o tamanho da letra tambem muda a fotinha e o balao (a letra fica como cada opcao define) */
-  .chat.s-mp .msg .av{width:38px;height:38px;font-size:17px;border-width:2px}
-  .chat.s-p .msg .av{width:45px;height:45px;font-size:20px}
-  .chat.s-g .msg .av{width:56px;height:56px;font-size:26px}
-  .chat.s-mp .msg .b{padding:5px 9px 4px;border-radius:15px;min-width:52px}
-  .chat.s-p .msg .b{padding:7px 11px 5px;border-radius:17px;min-width:58px}
+  .chat.s-mp .msg .av{width:34px;height:34px;font-size:14px;border-width:2px}
+  .chat.s-p .msg .av{width:35px;height:35px;font-size:16px;border-width:2px}
+  .chat.s-g .msg .av{width:44px;height:44px;font-size:21px}
+  .chat.s-mp .msg .b{padding:5px 9px 4px;border-radius:11px;min-width:52px}
+  .chat.s-p .msg .b{padding:7px 11px 5px;border-radius:11px;min-width:58px}
   .chatsheet .chat.s-mp .msg .b{padding:6px 10px 5px}
   .chatsheet .chat.s-p .msg .b{padding:8px 12px 6px}
   .chat h2 .gear{margin-left:auto;margin-right:8px;border:0;background:var(--t10);border-radius:50%;width:34px;height:34px;font-size:18px}
@@ -942,7 +950,7 @@
   .sw2 button.on{border:3px solid var(--ink);box-shadow:0 0 0 3px rgba(38,36,58,.12)}
   .sw2 button.on::after{content:"✓";position:absolute;right:4px;bottom:2px;font-size:13px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
   .sw2.fonts{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .sw2.sizes{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .sw2.sizes{grid-template-columns:repeat(2,minmax(0,1fr))}
   .sw2 .fnt{width:100%;min-width:0;aspect-ratio:auto;height:44px;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px;font-weight:800;color:var(--ink);background:var(--t05)}
   .sw2 .fnt.on::after{display:none}
   .looklbl{margin:0 0 6px;font-weight:900;font-size:16px}
@@ -992,13 +1000,14 @@
   .res .none{color:var(--soft);text-align:center;padding:16px 0}
   .chat h2 .gear.find{margin-left:auto;margin-right:6px}
   .chat h2 .gear+.gear{margin-left:0}
-  .msg .b{background:#fff;border-radius:20px;padding:8px 13px 6px;font-size:16px;line-height:1.35;box-shadow:0 2px 6px rgba(38,36,58,.10);min-width:64px}
+  .msg .b{background:#fff;border-radius:11px;padding:8px 13px 6px;font-size:16px;line-height:1.35;box-shadow:0 2px 6px rgba(38,36,58,.10);min-width:64px}
   .msg.me .b{color:#fff}
   .msg .b small{display:block;font-size:10px;opacity:.7;margin-top:2px;text-align:right}
+  .msg .b .msg-meta{min-height:11px;line-height:11px;margin-top:3px}
   .msg .b .hd{display:flex;align-items:baseline;gap:6px;margin-bottom:2px;min-width:0}
   .msg .b .hd b{display:inline;font-size:16px;color:var(--soft);margin:0;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .msg .b .hd small{display:inline;margin:0;text-align:left;white-space:nowrap;flex:none}
-  .msg.me .b .hd b{color:rgba(255,255,255,.9)}
+  .msg.me .b .hd b{color:rgba(255,255,255,.62);font-weight:800}   /* o nome fica mais apagado que o texto, como do outro lado */
   .chatin{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--c2,#4A7FE0) 12%,#fff);border-top:0}
   .daybar{flex:none;display:flex;justify-content:flex-start;flex-wrap:nowrap;gap:6px;padding:8px 10px 6px;background:var(--msgs-bg,var(--t05));position:relative;z-index:4;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;scroll-snap-type:x proximity;touch-action:pan-x}
   .daybar::-webkit-scrollbar{display:none}
@@ -1017,10 +1026,11 @@
   .daygrp>summary .arw{font-size:10px;opacity:.7;transition:transform .2s}
   .daygrp[open]>summary .arw{transform:rotate(180deg)}
   .daygrp .inner{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
-  .chatsheet .msgs .dia>.msg{margin-bottom:10px}
+  .chatsheet .msgs .dia>.msg{margin:10px 0 0}          /* pessoa diferente: respiro maior */
+  .chatsheet .msgs .dia>.msg.mesmo{margin-top:2px}     /* mesma pessoa em seguida: bem juntinho */
   .daysep{text-align:center;font-size:13px;font-weight:900;color:var(--ink);background:rgba(38,36,58,.08);border-radius:999px;padding:4px 14px;margin:0 auto 10px;width:fit-content;text-transform:capitalize}   /* mesma folga de um balao para o outro */
   .msgs.bg-noite .daysep{background:rgba(255,255,255,.16);color:#fff}
-  .msg .b .q{display:block;border-left:3px solid var(--acc);background:rgba(0,0,0,.06);border-radius:8px;padding:4px 8px;margin-bottom:6px;font-size:13px;line-height:1.25;color:var(--ink);cursor:pointer}
+  .msg .b .q{display:block;border-left:3px solid var(--acc);background:rgba(0,0,0,.06);border-radius:7px;padding:8px 9px;margin:0 -5px 7px;font-size:13px;line-height:1.25;color:var(--ink);cursor:pointer}
   .msg.me .b .q{background:rgba(255,255,255,.22);border-left-color:#fff;color:#fff}
   .msg .b .q b{display:block;font-size:11px;margin:0;color:inherit;opacity:.85}
   .msg .b .qt,.msg.me .b .qt{border-left-color:var(--gold);background:var(--t06);color:#352C49;padding:8px 10px;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
@@ -1028,9 +1038,10 @@
   .msg .b small .tick{margin-left:6px;font-weight:900;letter-spacing:-2px}
   .msg .b small .tick.seen{color:#8fe3ff}
   .msg.me .b{position:relative;padding-bottom:6px}
+  .msg.fim:not(.me) .b{border-bottom-left-radius:3px}
+  .msg.fim.me .b{border-bottom-right-radius:3px}
   /* dois avisos de chamar a atencao seguidos ficam com a mesma folga que dois baloes */
-  .nudge-msg:has(+ .nudge-msg){margin-bottom:10px}
-  .nudge-msg + .nudge-msg{margin-top:0}
+  .nudge-msg + .nudge-msg{margin-top:10px}   /* um aviso para o outro: mesmo respiro dos baloes de pessoas diferentes */
   .msg .b .lido{position:absolute;right:10px;bottom:6px;width:auto;min-width:14px;height:11px;padding:0;border:0;background:transparent;color:rgba(255,255,255,.42);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s,color .15s}
   .msg .b .lido svg{width:14px;height:11px;display:block}
   .msg .b .lido svg+svg{margin-left:-5px}
@@ -1114,7 +1125,7 @@
   /* linhas marcadas em sequencia: o realce de uma emenda no da outra, sem vao */
   .chatsheet .msgs.sel .msg.sel-on:has(+ .msg.sel-on){margin-bottom:0;padding-bottom:10px}
   .chatsheet .msgs.sel .msg.sel-on+.msg.sel-on{margin-top:0;padding-top:0}
-  .chatsheet .msgs.sel .msg.sel-on+.msg.sel-on.cont{margin-top:-4px}
+  .chatsheet .msgs.sel .msg.sel-on+.msg.sel-on.cont{margin-top:0}
   .chatsheet .msgs.sel .msg.sel-on:has(+ .msg.sel-on) .ck{top:calc(50% - 2px)}
   .chatsheet .msgs.sel .msg.sel-on+.msg.sel-on .ck{top:calc(50% - 3px)}
   .chatsheet .msgs.sel .msg.sel-on+.msg.sel-on:has(+ .msg.sel-on) .ck{top:calc(50% - 5px)}
@@ -1177,9 +1188,8 @@
     .chip{font-size:15px;padding:8px 16px}
     .filters{overflow:visible}
     .filters .chip{flex:1;text-align:center}
-    .dl .n{font-size:26px} .dl .d{font-size:26px;font-weight:500;line-height:1;opacity:1} .tag,.imp summary .cnt{font-size:16px;padding:5px 12px}
+    .dl .n{font-size:26px} .dl .d{font-size:23px;font-weight:500;line-height:1;opacity:1} .dl .sep{display:none} .tag,.imp summary .cnt{font-size:16px;padding:5px 12px}
     .dl .feira{display:inline}
-    .dl .sep{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;align-self:center;flex:none;margin:0 2px}
     .imp summary .n{font-size:27px}
     .aulas span{font-size:14px;padding:5px 12px}
     .body{padding:14px 16px 16px}
@@ -1201,7 +1211,8 @@
     .ttnote{font-size:15px}
     .wk{font-size:18px;padding:14px 16px}
     .rem .it,.rem .sec h3{font-size:17px}
-    .next{padding:18px 22px} .next h2{font-size:21px} .quiet{font-size:16px}
+    .next{padding:18px 22px} .next h2{font-size:20px} .quiet{font-size:16px}
+    .next .topic-list{font-size:15px}
   }
   @media (min-width:1000px){
     .wrap{max-width:1180px}
@@ -1252,7 +1263,9 @@
   .chat-history:has(.msgs.bg-foto){--msgs-bg:rgba(var(--r07),.92)}
 
   .chatsheet .msg .b{padding:10px 14px 8px;line-height:1.45;box-shadow:0 2px 8px rgba(var(--r01),.06)}
-  .chatsheet .daysep{font-weight:700;font-size:12px;padding:6px 12px;position:sticky;top:4px;z-index:3;box-shadow:0 1px 4px rgba(38,36,58,.12);background:var(--t42)}   /* fundo solido: nada aparece atras quando fica congelado */
+  .chatsheet .daysep{font-weight:700;font-size:12px;padding:6px 12px;position:sticky;top:4px;z-index:3;box-shadow:0 1px 4px rgba(38,36,58,.12);background:var(--t42)}
+  .chatsheet .daysep{margin-bottom:0}                    /* do "Hoje" para o que vem depois: o mesmo respiro dos avisos */
+  .chatsheet .msgs .dia+.dia>.daysep{margin-top:10px}     /* e o mesmo respiro para o que vem antes */   /* fundo solido: nada aparece atras quando fica congelado */
   .chatsheet .msgs.bg-noite .daysep{background:#3B3852;color:#fff}
   .chatsheet .msgs .dia:last-child>:last-child{margin-bottom:4px}
   .chatsheet .msgs .dia:last-child>.nudge-msg.evt:has(.reacts):last-child{margin-bottom:24px}
@@ -1479,8 +1492,14 @@
   @keyframes msnshake{0%,100%{transform:translate(0,0)}10%{transform:translate(-9px,4px)}20%{transform:translate(8px,-6px)}30%{transform:translate(-7px,-4px)}40%{transform:translate(9px,5px)}50%{transform:translate(-8px,6px)}60%{transform:translate(7px,-5px)}70%{transform:translate(-6px,3px)}80%{transform:translate(5px,-3px)}90%{transform:translate(-3px,2px)}}
   body.shake .wrap,body.shake .dock,body.shake .sheet>*,body.shake .toast{animation:msnshake .8s cubic-bezier(.36,.07,.19,.97)}
   @media(prefers-reduced-motion:reduce){body.shake .wrap,body.shake .dock,body.shake .sheet>*,body.shake .toast{animation:none}}
-  .nudge-msg{align-self:center;display:inline-flex;align-items:baseline;justify-content:center;gap:6px;max-width:96%;margin:4px auto 18px;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--uc,var(--t53)) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,var(--t53)) 35%,#fff);color:var(--ink);font-size:13px;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap}
+  .nudge-msg{align-self:center;display:inline-flex;align-items:baseline;justify-content:center;gap:6px;max-width:96%;margin:10px auto 0;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--uc,var(--t53)) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,var(--t53)) 35%,#fff);color:var(--ink);font-size:13px;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap}
+  /* Avisos da conversa: 1 px menores que o texto dos balões. */
+  body .chat .msgs .nudge-msg{font-size:15px}
+  body .chat.s-mp .msgs .nudge-msg{font-size:11px}
+  body .chat.s-p .msgs .nudge-msg{font-size:13px}
+  body .chat.s-g .msgs .nudge-msg{font-size:17px}
   .nudge-msg .nt{white-space:nowrap}
+  .nudge-msg:not(.evt) .nt{white-space:normal;min-width:0;overflow-wrap:anywhere}
   .nudge-msg.grouped{white-space:normal}
   .nudge-msg.grouped .nt{white-space:normal;min-width:0;overflow-wrap:anywhere}
   .nudge-msg .hand{flex:none;font-size:16px;align-self:center;color:var(--uc,var(--t53));line-height:0}
@@ -1493,7 +1512,7 @@
   .nudge-msg.evt{position:relative}
   .nudge-msg.evt .reacts{position:absolute;right:10px;left:auto;bottom:-19px;margin:0;padding:0;flex-basis:auto;justify-content:flex-end;z-index:1}
   .nudge-msg.evt .reacts .react{font-size:15px;padding:0 8px}
-  .nudge-msg.evt:has(.reacts){margin-bottom:34px}
+  .nudge-msg.evt:has(.reacts){margin-bottom:22px}
   .nudge-msg.evt .linha{display:flex;gap:6px;align-items:baseline;min-width:0;max-width:100%}
   .nudge-msg.evt .linha .hand{align-self:center}
   .nudge-msg.evt .linha .nt{min-width:0}
@@ -1675,7 +1694,10 @@
     .fam .p small{font-size:14px}
     .prog .row{font-size:16px}
     .prog .row b{font-size:16px}
-    .prog .sapo-prog{width:26px;height:26px;transform-origin:100% 100%}   /* tablet: cresce para a esquerda e fica encostado no extremo direito */
+    .prog .sapo-prog{width:26px;height:26px;transform-origin:100% 100%;position:absolute;right:0;bottom:-1px;margin:0}
+    .prog .row{position:relative;justify-content:center}     /* tablet: sem o rotulo da semana, contador no meio e sapo na direita */
+    .prog .row .wk-label{display:none}
+    .prog .row>span:last-child{flex:1;text-align:center;padding-right:30px}
     @media (min-width:700px){
       .top-title h1{font-size:36px}
       .prog .row{font-size:20px}
@@ -1712,6 +1734,9 @@
     .filter-row>#fType.grade .chip,#fSubj.grade .chip{flex:none;width:auto;min-width:0;text-align:center;padding-left:4px;padding-right:4px}
     .filter-row>#fType.mobile-collapsed,#fSubj.mobile-collapsed{display:none}
     #fSubj{flex-wrap:wrap;gap:6px}
+    .filter-row{row-gap:12px}                                  /* dos botoes ate o fim: 12px em cada degrau */
+    body .filter-row>#fType:not(.mobile-collapsed){margin:0}
+    body #fSubj{margin:12px -16px 8px;padding-bottom:0}
     #fSubj .chip,.filter-row>#fType .chip{flex:1 1 auto!important;min-width:max-content!important;text-align:center}   /* os chips esticam e preenchem cada linha (na fileira de rolagem do celular tambem) */
     #fSubj.medindo .chip,.filter-row>#fType.medindo .chip{flex:none!important;min-width:0!important}   /* durante a medicao, tamanho natural */
   }
@@ -2702,20 +2727,24 @@ function msgHtml(m,i,arr){
     const meusK=(group?group.keys.filter(k=>{const x=CHAT.find(y=>y.k===k); return x&&USER&&x.by===USER.id;}):(me?[m.k]:[]));
     return `<div class="nudge-msg${group?' grouped':''}${meusK.length?' meu':''}" data-k="${m.k}"${meusK.length?` data-nk="${meusK.join(',')}"`:''} style="--uc:${group&&names.length>1?'var(--lilas)':corDe(u)}"><span class="hand" aria-hidden="true">${ICO.sino}</span><span class="nt">${text}</span><small>${hm0}</small></div>`; }
   const prev=arr[i-1]; const cont=prev&&prev.by===m.by&&(m.t||0)-(prev.t||0)<5*60*1000&&!m.reply&&!(prev.att&&(prev.att.kind==='nudge'||prev.att.kind==='evento'));
+  const mesmo=!!(prev&&prev.by===m.by&&!(prev.att&&(prev.att.kind==='nudge'||prev.att.kind==='evento')));   // mesma pessoa em seguida: baloes bem juntos
+  const prox=arr[i+1];
+  const fim=!(prox&&prox.by===m.by&&!(prox.att&&(prox.att.kind==='nudge'||prox.att.kind==='evento')));      // último da sequência: recebe a ponta inferior
   const onlyEmo=!m.att&&/^(\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u200d|\ufe0f|\s){1,6}$/u.test(m.text||'');
   const att=m.att?(m.att.kind==='img'?`<img class="pic" src="${m.att.thumb}" data-open="${m.k}" alt="foto">`:m.att.kind==='fala'?`<span class="aud fala" data-fala="${esc(m.att.texto||'')}" role="button" tabindex="0" aria-label="Ouvir"><span class="pl" aria-hidden="true"></span><span class="ft">🗣️ ${esc(m.att.texto||'')}</span></span>`:m.att.kind==='audio'?`<span class="aud" data-aud="${m.k}" role="button" tabindex="0" aria-label="Tocar áudio"><span class="pl" aria-hidden="true"></span><span class="wv" aria-hidden="true">${'<i></i>'.repeat(14)}</span><small>${fmtDur(m.att.dur||0)}</small></span>`:`<span class="file" data-open="${m.k}">📄 <span>${esc(m.att.name||'arquivo')}<small>${fmtSize(m.att.size||0)}</small></span></span>`):'';
   const others=USERS.filter(x=>x.id!==m.by); const seenAll=others.every(x=>(READS[x.id]||0)>=(m.t||0)); const seenAny=others.some(x=>(READS[x.id]||0)>=(m.t||0));
   // sem marca enquanto ninguém viu; um ✓ quando alguém viu
   const leram=others.filter(x=>(READS[x.id]||0)>=(m.t||0));
   const tick=''; // o visto agora fica no rodape do balao
-  const selo=me?`<button type="button" class="lido n${leram.length} ${seenAll?'todos':(seenAny?'seen':'')}" data-lido="${m.k}" aria-label="${seenAny?('Visto por '+leram.map(x=>x.nome).join(' e ')):'Ainda não foi visto'}" title="${seenAny?('Visto por '+leram.map(x=>x.nome).join(' e ')):'Ainda não foi visto'}">${ICO_CK.repeat(leram.length)}</button>`:'';
-  const espaco=me?`<span class="lido-esp n${leram.length}" aria-hidden="true"></span>`:'';
-  const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const hhmm=x=>String(new Date(x||0).getHours()).padStart(2,'0')+':'+String(new Date(x||0).getMinutes()).padStart(2,'0');
   const hm=hhmm(m.t);
-  const mesmoMin=prev&&prev.by===m.by&&hhmm(prev.t)===hm&&!(prev.att&&(prev.att.kind==='nudge'||prev.att.kind==='evento'));
-  const miolo=(mesmoMin?'':hm)+(m.edited?'<i class="ed">(editada)</i>':'')+tick;
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av" data-foto="${u.id}" role="button" tabindex="0" aria-label="Ver a foto de ${esc(u.nome)}" title="Ver a foto de ${esc(u.nome)}">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><b>${me?'Eu':esc(u.nome)}</b>${miolo?`<small>${miolo}</small>`:''}</span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}${espaco}${selo}</div>${reactsHtml(m)}</div>${me?'':`<span class="bacts"><button type="button" class="rbtn" data-reply="${m.k}" aria-label="Responder" title="Responder">${ICO_RESP}</button></span>`}<span class="ck" aria-hidden="true"></span></div>`;
+  // Horário no último balão do mesmo autor e minuto; visto somente com horário.
+  const mostraHora=fim||Math.floor((prox.t||0)/60000)!==Math.floor((m.t||0)/60000);
+  const selo=me&&mostraHora?`<button type="button" class="lido n${leram.length} ${seenAll?'todos':(seenAny?'seen':'')}" data-lido="${m.k}" aria-label="${seenAny?('Visto por '+leram.map(x=>x.nome).join(' e ')):'Ainda não foi visto'}" title="${seenAny?('Visto por '+leram.map(x=>x.nome).join(' e ')):'Ainda não foi visto'}">${ICO_CK.repeat(leram.length)}</button>`:'';
+  const espaco=me&&mostraHora?`<span class="lido-esp n${leram.length}" aria-hidden="true"></span>`:'';
+  const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
+  const miolo=(mostraHora?hm:'')+(m.edited?'<i class="ed">(editada)</i>':'')+tick;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''} ${mesmo?'mesmo':''} ${fim?'fim':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av" data-foto="${u.id}" role="button" tabindex="0" aria-label="Ver a foto de ${esc(u.nome)}" title="Ver a foto de ${esc(u.nome)}">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}${miolo?`<small class="msg-meta">${miolo}${espaco}</small>`:''}${selo}</div>${reactsHtml(m)}</div>${me?'':`<span class="bacts"><button type="button" class="rbtn" data-reply="${m.k}" aria-label="Responder" title="Responder">${ICO_RESP}</button></span>`}<span class="ck" aria-hidden="true"></span></div>`;
 }
 const ICO_CK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 12.8 4.8 4.7L19.5 6.6"/></svg>`;
 const ICO_RESP=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v4"/></svg>`;
@@ -3255,8 +3284,8 @@ function openChatLook(){
   const OUTRO=USERS.find(u=>!USER||u.id!==USER.id)||USERS[0];
   show(`<h2>${ICO.paleta} Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px;padding:0"><div class="msgs" id="lookMsgs" style="min-height:0;max-height:none;padding:10px 8px;overflow:hidden">
-      <div class="msg" data-pu="${OUTRO.id}" style="--uc:${corDe(OUTRO)}"><span class="av">${avatarHtml(OUTRO)}</span><div><div class="b"><span class="hd"><b>${esc(OUTRO.nome)}</b><small>20:41</small></span>Oi! Assim fica o balão dele(a) 😊</div></div></div>
-      <div class="msg me" data-pu="${USER.id}" style="--uc:${corDe(USER)}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><b>Eu</b><small>20:42 <span class="tick seen">✓</span></small></span>E assim fica o seu</div></div></div>
+      <div class="msg fim" data-pu="${OUTRO.id}" style="--uc:${corDe(OUTRO)}"><span class="av">${avatarHtml(OUTRO)}</span><div><div class="b"><span class="hd"><b>${esc(OUTRO.nome)}</b></span>Oi! Assim fica o balão dele(a) 😊<small class="msg-meta">20:41</small></div></div></div>
+      <div class="msg me fim" data-pu="${USER.id}" style="--uc:${corDe(USER)}"><span class="av">${avatarHtml(USER)}</span><div><div class="b"><span class="hd"><b>Eu</b></span>E assim fica o seu<small class="msg-meta">20:42 <span class="tick seen">✓</span></small></div></div></div>
     </div></div>
     <p class="looklbl">Cor dos balões</p>
     ${USERS.map(u=>`<div class="corp"><span class="nm"><span class="av">${avatarHtml(u)}</span><b>${esc(u.nome)}${USER&&u.id===USER.id?' (você)':''}</b></span>
@@ -4288,7 +4317,7 @@ function openNote(id){ if(!isAluna()) return;
    fotos, carinhos, mudancas de situacao, importantes, cancelamentos, dia e observacoes.
    Duas fontes: a conversa (que ja guarda tudo) e um registro proprio em "eventos". */
 let EVENTOS=[], tlAberta=false, tlMax=40;
-try{ tlAberta=localStorage.getItem(KEY+'-tl')==='1'; }catch(e){}
+// A linha do tempo inicia recolhida a cada carregamento.
 
 function logEvt(tipo,extra){
   if(!famRef||!USER) return;
@@ -4483,7 +4512,6 @@ function renderTimeline(){
 function bindTimeline(){
   const bt=document.getElementById('tlToggle'); if(!bt) return;
   bt.addEventListener('click',()=>{ tlAberta=!tlAberta; tlMax=40;
-    try{localStorage.setItem(KEY+'-tl',tlAberta?'1':'0');}catch(e){}
     vibrate(15); renderTimeline();
     if(tlAberta) setTimeout(()=>document.getElementById('tl')?.scrollIntoView({behavior:'smooth',block:'start'}),60); });
   renderTimeline();
