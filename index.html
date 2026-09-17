@@ -552,8 +552,9 @@
     body .task .star{font-size:18px} body .task .star.fazendo,body .task .star.pendente{margin-right:-9px}
     body .box h3 .bang{width:14px!important;height:14px!important;font-size:9px!important}
     body .task .st,body .task .dchip{font-size:11px} body .day summary .tag{font-size:11px}
+    body .imp summary .n{font-size:18px} body .imp summary .cnt{font-size:11px;padding:4px 10px}   /* Importantes igual aos dias */
     body .tl-head-tx{font-size:18px} body h1{font-size:24px} body .fam .p>span{font-size:calc(1em - 1px)} body .fam .p small{font-size:10px}
-    body .day summary{padding:6px 14px} body .tl-head{padding:7px 15px}
+    body .day summary,body .imp summary{padding:6px 14px} body .tl-head{padding:7px 15px}
     body .day summary .arrow,body .imp summary .arrow,body .tl-head .arrow{width:22px;height:22px}
     body .day summary .arrow .ico,body .imp summary .arrow .ico,body .tl-head .arrow .ico{width:16px;height:16px}
     body .dock-mid .mao .ico{width:25px;height:25px} body .dock-mid .dk-ico{font-size:23px}
@@ -682,6 +683,7 @@
   .star.on .ico{fill:#F2CE1B;stroke-width:1.9;filter:drop-shadow(0 -1px 0 #FFF3B0) drop-shadow(0 2px 3px rgba(120,98,8,.5))}
   /* tarefa feita: certinho no mesmo estilo da estrelinha, com relevo */
   .star.feito,.star.fazendo,.star.pendente{opacity:1;color:var(--t57);cursor:default}
+  .star.feito,.star.fazendo{cursor:pointer}
   .star.fazendo,.star.pendente{margin-right:-4px}
   .star.feito .ico,.star.fazendo .ico,.star.pendente .ico{fill:var(--t50);stroke-width:1.9;filter:drop-shadow(0 -1px 0 var(--t24)) drop-shadow(0 2px 3px rgba(var(--r01),.38))}
   /* certinho verde e pendente vermelho (mesmo estilo 3D); a ampulheta segue no lilas */
@@ -852,15 +854,24 @@
   .fab.reafab.pulse{animation:reap 1.6s ease-in-out infinite}
   @keyframes reap{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
   .realist{display:flex;flex-direction:column;gap:8px;max-height:62vh;overflow:auto}
-  .realist .it2{display:flex;gap:12px;align-items:center;border:2px solid var(--line);border-radius:16px;padding:10px 12px;background:#fff;text-align:left;width:100%;color:var(--ink)}
+  .realist .it2{position:relative;display:flex;gap:12px;align-items:center;border:2px solid var(--line);border-radius:16px;padding:10px 12px;background:#fff;text-align:left;width:100%;color:var(--ink)}
   .realist .it2.novo{border-color:#E7CF17;background:#FDFAE4}
+  .realist .rea-novo{position:absolute;top:8px;right:10px;padding:2px 8px;border-radius:999px;background:#E7CF17;
+    color:#4A3B00;font-size:12px;font-weight:900;line-height:1.5;letter-spacing:.02em}
   .realist .em{font-size:28px;line-height:1;flex:0 0 36px;align-self:stretch;display:flex;align-items:center;justify-content:center}
   .realist .tx2{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
-  .realist .rea-sender{display:block;font-size:15px;font-weight:800;color:var(--soft);margin:0}
+  .realist .rea-sender{display:block;font-size:15px;padding-right:52px;font-weight:800;color:var(--soft);margin:0}
   .realist .rea-activity{display:block;font-size:15px;font-weight:700}
   .realist .rea-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .realist .rea-subject{display:inline-flex;align-items:center;max-width:100%;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--t09);color:var(--t59);font-size:13px;font-weight:800;line-height:1.3}
+  .realist .rea-subject{display:inline-flex;align-items:center;max-width:100%;padding:1px 8px;border:0;border-radius:999px;background:var(--t10);color:var(--ink);font-size:15px;font-weight:900!important;font-weight:800;line-height:1.3}
   .realist .rea-date{font-size:15px;font-weight:700;color:var(--soft);line-height:1.4}
+  @media screen and (max-width:599px), screen and (max-height:599px){   /* celular: tudo 2px menor */
+    .realist .em{font-size:26px}
+    .realist .tx2{font-size:13px;gap:5px}
+    .realist .rea-sender,.realist .rea-activity,.realist .rea-date{font-size:13px}
+    .realist .rea-subject{font-size:11px;padding:1px 8px}
+    .realist .rea-novo{font-size:11px}
+  }
   .badge{position:absolute;top:-4px;right:-4px;z-index:5;background:var(--t65);color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:12px;font-weight:900;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}
   .badge.on{display:flex}
   .fab #chatBadge{background:#218C55;min-width:28px;height:28px;font-size:14px;padding:0 7px;top:-5px;right:-5px}
@@ -1089,6 +1100,7 @@
   .msg.pressing .b{filter:brightness(.92)}
   .reacts{display:flex;flex-wrap:wrap;gap:3px;margin-top:-4px;padding:0 6px;position:relative;z-index:1}
   .msg.me .reacts{justify-content:flex-end}
+  .react span{font-weight:600;font-size:.82em}
   .react{border:1.5px solid #fff;background:var(--t10);border-radius:999px;padding:0 8px;font-size:15px;font-weight:800;color:var(--ink);line-height:1.6;box-shadow:0 1px 3px rgba(0,0,0,.14)}
   .react.mine{background:var(--t69);border-color:var(--acc)}
   .emo+.reacts{margin-top:-4px}
@@ -1408,10 +1420,10 @@
   .summary-slice-pct.claro{paint-order:stroke;stroke:rgba(38,36,58,.28);stroke-width:2.5px;stroke-linejoin:round}
   .summary-slice-pct.escuro{paint-order:stroke;stroke:rgba(255,255,255,.55);stroke-width:2.5px;stroke-linejoin:round}
   .summary-center{position:absolute;inset:28%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
-  .summary-center strong{font-size:46px;line-height:1.05;letter-spacing:-2px;color:var(--ink)}
-  .summary-center span{font-size:15px;color:var(--soft);line-height:1.4;margin-top:5px}
-  .summary-legend{display:flex;flex-direction:column;gap:2px;min-width:0}
-  .summary-state{display:grid;grid-template-columns:16px minmax(0,1fr) 108px;gap:8px;align-items:center;width:100%;border:1px solid transparent;background:transparent;border-radius:12px;padding:7px 6px;color:var(--ink);text-align:left;font-size:17px;font-weight:800}
+  .summary-center strong{font-size:44px;line-height:1.05;letter-spacing:-2px;color:var(--ink)}
+  .summary-center span{display:none}                       /* sem a descricao no meio do grafico */
+  .summary-legend{display:flex;flex-direction:column;gap:0;min-width:0}
+  .summary-state{display:grid;grid-template-columns:16px minmax(0,1fr) 108px;gap:8px;align-items:center;width:100%;border:1px solid transparent;background:transparent;border-radius:12px;padding:4px 6px;color:var(--ink);text-align:left;font-size:17px;font-weight:800}
   .summary-state i{width:16px;height:16px;border-radius:50%;background:var(--state)}
   .summary-state small{display:inline;color:var(--soft);font-size:20px;font-weight:600;margin:0}
   .summary-values{display:inline-flex;align-items:baseline;justify-content:flex-start;white-space:nowrap;font-variant-numeric:tabular-nums;padding-left:10px}
@@ -1438,9 +1450,8 @@
   @media(max-width:599px){
     .summary-hero{padding:16px 12px;gap:16px}
     .summary-ring{width:min(100%,220px)}
-    .summary-center strong{font-size:40px}
-    .summary-center span{font-size:14px}
-    .summary-state{font-size:14px;grid-template-columns:13px minmax(0,1fr) 96px;padding:6px 6px}
+    .summary-center strong{font-size:38px}
+    .summary-state{font-size:14px;grid-template-columns:13px minmax(0,1fr) 96px;padding:3px 6px}
     .summary-state i{width:13px;height:13px}
     .summary-state small{font-size:16px}
     .summary-state strong{font-size:16px}
@@ -1903,25 +1914,30 @@
   .tema-ok .ico{width:22px;height:22px}
   @media screen and (min-width:600px) and (min-height:600px){ .tema-op{font-size:19px;padding:14px 16px} .tema-bola{width:40px;height:40px} }
   /* aviso de mensagem nova, com Responder e Ignorar */
-  .aviso-msg{position:fixed;z-index:420;left:50%;top:calc(10px + env(safe-area-inset-top));width:min(94vw,420px);
+  .aviso-msg{position:fixed;z-index:420;left:50%;top:calc(10px + env(safe-area-inset-top));width:min(94vw,430px);
     transform:translate(-50%,0);opacity:1;animation:avisoEntra .3s cubic-bezier(.2,.9,.3,1) both;
-    background:#fff;border:2px solid var(--uc,var(--lilas));border-radius:20px;padding:11px 13px 10px;
-    box-shadow:0 14px 34px rgba(var(--r01),.28);cursor:pointer}
+    display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:10px;
+    background:#fff;border:0;border-left:4px solid var(--uc,var(--lilas));border-radius:16px;padding:10px 10px 10px 12px;
+    box-shadow:0 10px 28px rgba(var(--r01),.22);cursor:pointer}
   .aviso-msg.saindo{animation:avisoSai .24s ease-in forwards}
   @keyframes avisoEntra{from{transform:translate(-50%,-150%);opacity:0}to{transform:translate(-50%,0);opacity:1}}
   @keyframes avisoSai{to{transform:translate(-50%,-150%);opacity:0}}
-  .aviso-msg .av-topo{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-  .aviso-msg .av-foto{width:30px;height:30px;border-radius:50%;overflow:hidden;flex:none;background:var(--t10);display:flex;align-items:center;justify-content:center;font-size:16px}
+  .aviso-msg .av-corpo{min-width:0;display:flex;flex-direction:column;gap:1px}
+  .aviso-msg .av-topo{display:flex;align-items:baseline;gap:7px;min-width:0}
+  .aviso-msg .av-foto{width:36px;height:36px;border-radius:50%;overflow:hidden;flex:none;background:var(--t10);display:flex;align-items:center;justify-content:center;font-size:16px}
   .aviso-msg .av-foto img{width:100%;height:100%;object-fit:cover}
-  .aviso-msg .av-nome{font-size:15px;font-weight:900;color:var(--uc,var(--lilas-ink));min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .aviso-msg .av-mais{font-size:11px;font-weight:900;background:var(--uc,var(--lilas));color:#fff;border-radius:999px;padding:2px 8px;flex:none}
-  .aviso-msg .av-hora{margin-left:auto;font-size:12px;font-weight:800;color:var(--soft);flex:none}
-  .aviso-msg .av-txt{margin:0 0 9px;font-size:15px;font-weight:700;color:var(--ink);line-height:1.35;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .aviso-msg .av-bt{display:flex;gap:8px}
-  .aviso-msg .av-bt button{flex:1;border:0;border-radius:13px;padding:9px 10px;font:inherit;font-size:14px;font-weight:900;cursor:pointer}
-  .aviso-msg .av-ig{background:var(--t10);color:var(--lilas-ink)}
-  .aviso-msg .av-re{background:linear-gradient(135deg,var(--t48),var(--uc,var(--lilas)));color:#fff}
+  .aviso-msg .av-nome{font-size:14px;font-weight:900;color:var(--uc,var(--lilas-ink));min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .aviso-msg .av-mais{font-size:10px;font-weight:900;background:var(--uc,var(--lilas));color:#fff;border-radius:999px;padding:1px 7px;flex:none}
+  .aviso-msg .av-hora{margin-left:auto;font-size:11px;font-weight:700;color:var(--soft);flex:none}
+  .aviso-msg .av-txt{margin:0;font-size:14px;font-weight:600;color:var(--ink);line-height:1.3;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .aviso-msg button{border:0;font:inherit;cursor:pointer;flex:none}
+  .aviso-msg .av-re{background:var(--uc,var(--lilas));color:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:900}
+  .aviso-msg .av-re:active{transform:scale(.96)}
+  .aviso-msg .av-ig{width:28px;height:28px;border-radius:50%;background:transparent;color:var(--soft);
+    display:grid;place-items:center;line-height:0}
+  .aviso-msg .av-ig .ico{width:17px;height:17px}
+  .aviso-msg .av-ig:hover{background:var(--t10)}
   .aviso-msg .av-bt button:active{transform:scale(.96)}
   @media screen and (min-width:600px) and (min-height:600px){
     .aviso-msg{width:min(70vw,460px);padding:13px 15px 12px}
@@ -1986,6 +2002,11 @@
   .feito-festa .anel.dois{animation-delay:.22s}
   .feito-festa i{position:absolute;left:0;top:0;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;
     background:linear-gradient(140deg,#fff,#8BD8A5);animation:estrelaFaisca 1s ease-out forwards;animation-delay:var(--t)}
+  .feito-festa.fazendo .astro{color:var(--t57);filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--t57) 55%,transparent))}
+  .feito-festa.fazendo .astro .ico{fill:var(--t50)}
+  .feito-festa.fazendo .halo{background:radial-gradient(circle,color-mix(in srgb,var(--t50) 70%,transparent),color-mix(in srgb,var(--t50) 20%,transparent) 45%,transparent 70%)}
+  .feito-festa.fazendo .anel{border-color:color-mix(in srgb,var(--t57) 85%,transparent)}
+  .feito-festa.fazendo i{background:linear-gradient(140deg,#fff,var(--t50))}
   @media(prefers-reduced-motion:reduce){.feito-festa{display:none}}
   .tl-item{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr) 12px;align-items:start;gap:11px;padding:9px 6px 9px 4px;width:100%;border:0;background:transparent;border-radius:14px;font:inherit;text-align:left;color:inherit;transition:background .15s}
   .tl-item:not(.sem-link){cursor:pointer}
@@ -2676,7 +2697,10 @@ function fmtT(t){ const chatToday=iso(new Date()); const d=new Date(t||0); const
 const REACTS=['🐸','👍','❤️','😂','😮','😢','🎉','🔥','🙏'];
 const EMOJIS=['🐸','😀','😂','🥰','😎','🤔','😅','😴','🤩','😭','🙄','😉','🥳','👍','👏','🙏','💪','👀','🤝','❤️','💛','💙','💜','🔥','✨','⭐','🎉','🎈','🍕','🍦','🐶','🐱','🐾','📚','✏️','🎒','🏫','⏰','✅','❌','💬'];
 function reactsHtml(m){ const r=m.reacts||{}; const ks=Object.keys(r).filter(e=>r[e]&&Object.keys(r[e]).length); if(!ks.length) return '';
-  return `<div class="reacts">${ks.map(e=>`<button class="react ${USER&&r[e][USER.id]?'mine':''}" data-r="${e}" data-k="${m.k}">${e} ${Object.keys(r[e]).length}</button>`).join('')}</div>`; }
+  return `<div class="reacts">${ks.map(e=>{ const us=Object.keys(r[e]);
+    const nomes=us.length>2 ? (us.slice(0,1).map(u=>USER&&u===USER.id?'Você':uname(u)).join('')+' +'+(us.length-1))
+                            : us.map(u=>USER&&u===USER.id?'Você':uname(u)).join(', ');
+    return `<button class="react ${USER&&r[e][USER.id]?'mine':''}" data-r="${e}" data-k="${m.k}">${e} <span>${esc(nomes)}</span></button>`; }).join('')}</div>`; }
 function dayLabel(d){ const chatToday=iso(new Date()); if(d===chatToday) return 'Hoje'; if(d===addDays(chatToday,-1)) return 'Ontem';
   const dt=new Date(d+'T12:00:00'); const dias=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
   const diff=Math.round((new Date(chatToday+'T12:00:00')-dt)/86400000);
@@ -2877,7 +2901,8 @@ function renderDayBar(){
   bar.querySelectorAll('[data-day]').forEach(b=>b.addEventListener('click',()=>{ vibrate(10);
     const sp=box.querySelector(`.daysep[data-day="${b.dataset.day}"]`); if(!sp) return;
     const grupo=sp.closest('.dia')||sp.parentElement; const ult=grupo.lastElementChild||sp;   // vai para o fim daquele dia, nas ultimas mensagens
-    const fim=ult.offsetTop-box.offsetTop+ult.offsetHeight+10-box.clientHeight;
+    const rBox=box.getBoundingClientRect(), rUlt=ult.getBoundingClientRect();
+    const fim=box.scrollTop+(rUlt.bottom-rBox.top)+10-box.clientHeight;
     box.scrollTo({top:Math.max(0,Math.min(fim,box.scrollHeight-box.clientHeight)),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
   }));
   marcaDiaNaBarra(); setTimeout(marcaDiaNaBarra,300);   // a conversa ainda pode rolar ate o fim depois de desenhar
@@ -2889,8 +2914,8 @@ function contaDoDia(box,sp){ const grupo=sp.closest('.dia')||sp.parentElement;
 function marcaDiaNaBarra(){
   const bar=document.getElementById('dayBar'), box=document.getElementById('msgs'); if(!bar||!box) return;
   const seps=[...box.querySelectorAll('.daysep[data-day]')]; if(!seps.length) return;
-  const lim=box.scrollTop+box.clientHeight-24; let atual=seps[0];   // vale o dia das mensagens que estao embaixo, onde a conversa esta
-  seps.forEach(sp=>{ if(sp.offsetTop-box.offsetTop<=lim) atual=sp; });
+  const rBox=box.getBoundingClientRect(), lim=box.clientHeight-24; let atual=seps[0];   // vale o dia das mensagens que estao embaixo, onde a conversa esta
+  seps.forEach(sp=>{ if(sp.getBoundingClientRect().top-rBox.top<=lim) atual=sp; });
   bar.querySelectorAll('[data-day]').forEach(b=>{
     const on=b.dataset.day===atual.dataset.day;
     if(b.classList.contains('on')===on) return;          // nada mudou: nem toca no botao
@@ -3763,9 +3788,9 @@ ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(N
     <div class="tin">
       <div class="t"><div class="tg">${dchip}${subj}${t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:''}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>r.a?`<button type="button" class="r ra" data-rfx="${r.a}" aria-label="Ouvir ${esc(r.an||'áudio')} de ${esc(r.n||'')}"><span class="pl" aria-hidden="true"></span><b>${esc(r.n||'')}</b> reagiu</button>`:`<span class="r">${r.e} <b>${esc(r.n||'')}</b> reagiu</span>`).join('')}</span>`:''}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
         ${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
-      ${t.status==='doing'?`<span class="star fazendo" aria-hidden="true" title="Fazendo">${ICO.ampulheta}</span>`:''}${(t.status==='todo'&&!t.off)?`<span class="star pendente" aria-hidden="true" title="Falta fazer">${ICO.pendente}</span>`:''}
+      ${t.status==='doing'?`<button type="button" class="star fazendo" data-fx="fazendo" aria-label="Fazendo" title="Fazendo">${ICO.ampulheta}</button>`:''}${(t.status==='todo'&&!t.off)?`<span class="star pendente" aria-hidden="true" title="Falta fazer">${ICO.pendente}</span>`:''}
       ${t.status==='done'
-        ? `<span class="star feito" aria-hidden="true" title="Feito">${ICO.feito}</span>`
+        ? `<button type="button" class="star feito" data-fx="feito" aria-label="Feito" title="Feito">${ICO.feito}</button>`
         : t.off ? `<span class="star cancelada" aria-hidden="true" title="Cancelada">${ICO.cancelada}</span>`
         : `<button class="star ${t.important?'on':''}" data-star="${t.id}" aria-pressed="${t.important?'true':'false'}" aria-label="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}" title="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}">${ICO.estrela}</button>`}
     </div>
@@ -3903,7 +3928,7 @@ function setStatus(id,status,el,semDesfazer){
     if(taskEl?.isConnected){festaFeito(taskEl);const r=taskEl.querySelector('.tin').getBoundingClientRect();sparks(r.left+24,r.top+r.height/2,colorOf(taskEl.closest('.day')||taskEl.closest('.imp')||taskEl));}
     else festaFeito(null);
   }
-  if(status==='doing'&&!semDesfazer){vibrate(25);SFX.doing();}
+  if(status==='doing'&&!semDesfazer){vibrate(25);SFX.doing(); festaFeito(taskEl?.isConnected?taskEl:null,'fazendo');}
   t.status=status; t.u=Date.now(); save(); logEvt(status,{id,det:plain(t.text||'')});
   if(semDesfazer) vibrate(15);
   const dayLive=allTasks(w).filter(x=>x.day===t.day&&!x.off);
@@ -3945,16 +3970,19 @@ function festaEstrela(btn){
   setTimeout(fim,1600);
 }
 // festa quando uma tarefa fica feita: sai de onde esta o certinho/estrela da tarefa
-function festaFeito(el){
+function festaFeito(el,tipo,icone){
+  tipo=tipo==='fazendo'?'fazendo':'feito';
   // sai do lugar do simbolo (coluna da direita da tarefa); usa a caixa da tarefa, que nao se move no arrasto
   const caixa=el?(el.closest('.task')||el):null;
   let r=caixa?caixa.getBoundingClientRect():null;                       // caixa externa: nao desliza no arrasto
   if(!r||!r.width||!r.height) r=null;                                    // cartao ja fora da tela: usa o centro
   const coluna=matchMedia('(min-width:600px) and (min-height:600px)').matches?34:28;   // coluna do simbolo, a direita
-  const x=r?r.right-coluna:innerWidth/2, y=r?r.top+r.height/2:innerHeight/2;
-  const palco=document.createElement('div'); palco.className='feito-festa'; palco.setAttribute('aria-hidden','true');
+  let x=r?r.right-coluna:innerWidth/2, y=r?r.top+r.height/2:innerHeight/2;
+  const ri=icone?icone.getBoundingClientRect():null;                     // toque no simbolo: sai de cima dele
+  if(ri&&ri.width){ x=ri.left+ri.width/2; y=ri.top+ri.height/2; }
+  const palco=document.createElement('div'); palco.className='feito-festa '+tipo; palco.setAttribute('aria-hidden','true');
   palco.style.left=x+'px'; palco.style.top=y+'px';
-  palco.innerHTML='<span class="halo"></span><span class="anel"></span><span class="anel dois"></span><span class="astro">'+ICO.feito+'</span>'
+  palco.innerHTML='<span class="halo"></span><span class="anel"></span><span class="anel dois"></span><span class="astro">'+(tipo==='fazendo'?ICO.ampulheta:ICO.feito)+'</span>'
     +Array.from({length:18},(_,i)=>`<i style="--a:${i*20}deg;--d:${62+(i%3)*18}px;--t:${i*18}ms"></i>`).join('');
   document.body.appendChild(palco);
   setTimeout(()=>palco.remove(),1800);
@@ -3986,7 +4014,7 @@ function bindTasks(root=document.getElementById('app')){
     const id=el.dataset.id, tin=el.querySelector('.tin');
     if(findTask(id)?.type===B){el.querySelector('[data-move-notice]')?.addEventListener('click',()=>openMove(id));return;}
     // estrela: sempre visível, toca a qualquer momento para marcar ou tirar
-    const sb=el.querySelector('button.star');   // so a estrelinha; o certinho de feito nao faz nada
+    const sb=el.querySelector('button.star[data-star]');   // so a estrelinha
     if(sb){
       const stop=e=>e.stopPropagation();
       sb.addEventListener('touchstart',stop,{passive:true});
@@ -3995,6 +4023,18 @@ function bindTasks(root=document.getElementById('app')){
       sb.addEventListener('mousedown',stop);
       sb.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); confirmaImp(id,sb); });
     }
+    // certinho de feito e ampulheta de fazendo: tocar faz um efeito em cima do simbolo (nao muda nada)
+    el.querySelectorAll('button.star[data-fx]').forEach(fx=>{
+      const stop=e=>e.stopPropagation();
+      fx.addEventListener('touchstart',stop,{passive:true});
+      fx.addEventListener('touchmove',stop,{passive:true});
+      fx.addEventListener('touchend',stop,{passive:true});
+      fx.addEventListener('mousedown',stop);
+      fx.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault();
+        fx.classList.remove('pop'); void fx.offsetWidth; fx.classList.add('pop');
+        vibrate(fx.dataset.fx==='feito'?[20,40,30]:20); if(fx.dataset.fx==='feito') SFX.done(); else SFX.doing();
+        festaFeito(el,fx.dataset.fx,fx); });
+    });
     // observação: toque (ou botão direito) abre mudar e apagar; segurar continua abrindo o menu da tarefa
     el.querySelectorAll('.note.nt').forEach(nt=>{
       nt.addEventListener('click',e=>{ e.stopPropagation(); if(el.classList.contains('drag')||el._swiped) return; openNoteMenu(id); });
@@ -4196,7 +4236,7 @@ function openReacts(){
   const list=allReacts(), aluna=isAluna();
   show(`<h2>${ICO.coracao} ${aluna?'Carinhos que você recebeu':'Carinhos enviados'} <button class="x">✕</button></h2>
     ${list.length?`<div class="realist">${list.map(r=>{ const d=DB.weeks[r.week].days.find(x=>x.k===r.task.day); const novo=(r.t||0)>reaSeen;
-      return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}${novo?' · novo ✨':''}</span><span class="rea-activity">${esc(plain(r.task.text))}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</span></span></span></button>`; }).join('')}</div>`
+      return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}</span>${novo?'<span class="rea-novo">Novo</span>':''}<span class="rea-activity">${esc(plain(r.task.text))}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</span></span></span></button>`; }).join('')}</div>`
       :`<p class="quiet" style="text-align:center;padding:16px 0">${aluna?'Ainda não tem carinhos. Faça as tarefas que logo chegam! 💛':'Ainda não foi mandado nenhum carinho. Segure numa tarefa e escolha Reagir 💛'}</p>`}`);
   sheet.querySelectorAll('.it2').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
     const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
@@ -4928,11 +4968,11 @@ function avisoMsg(m,quantas){
   const extra=(quantas>1)?`<span class="av-mais">+${quantas-1} nova${quantas-1>1?'s':''}</span>`:'';
   const el=document.createElement('div');
   el.className='aviso-msg'; el.id='avisoMsg'; el.style.setProperty('--uc',corDe(u));
-  el.innerHTML=`<div class="av-topo"><span class="av-foto">${avatarHtml(u)}</span>
-      <span class="av-nome">${esc(u.nome)}</span>${extra}<span class="av-hora">${fmtT(m.t)}</span></div>
-    <p class="av-txt">${esc(msgPreview(m).slice(0,120))}</p>
-    <div class="av-bt"><button type="button" class="av-ig" id="avIgnorar">Ignorar</button>
-      <button type="button" class="av-re" id="avResponder">Responder</button></div>`;
+  el.innerHTML=`<span class="av-foto">${avatarHtml(u)}</span>
+    <span class="av-corpo"><span class="av-topo"><b class="av-nome">${esc(u.nome)}</b>${extra}<span class="av-hora">${fmtT(m.t)}</span></span>
+      <span class="av-txt">${esc(msgPreview(m).slice(0,90))}</span></span>
+    <button type="button" class="av-re" id="avResponder">Responder</button>
+    <button type="button" class="av-ig" id="avIgnorar" aria-label="Ignorar"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>`;
   document.body.appendChild(el);
   const abre=()=>{ fechaAviso(); if(!chatAbertoAgora()){ hide(); setTimeout(()=>{ openChat(); const i=document.getElementById('chatTxt'); if(i) i.focus(); },160); } };
   el.querySelector('#avResponder').addEventListener('click',e=>{ e.stopPropagation(); vibrate(12); abre(); });
