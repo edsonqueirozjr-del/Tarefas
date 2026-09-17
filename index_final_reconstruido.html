@@ -547,17 +547,28 @@
   .prog .row{display:flex;align-items:baseline;justify-content:space-between;font-size:15px;color:var(--soft);margin-bottom:4px;line-height:1.3}
   .prog .row b{color:var(--ink);font-size:15px;font-weight:600}
   .prog .bar{height:30px;border-radius:12px;background:var(--t41);overflow:hidden;position:relative;border:1px solid var(--t45);box-shadow:inset 0 2px 4px rgba(var(--r01),.14)}
-  @media screen and (max-width:599px), screen and (max-height:599px){ .prog .bar{height:40px;border-radius:14px} }   /* celular: mesma altura do botao do filtro */
+  @media screen and (max-width:599px), screen and (max-height:599px){ .prog .bar{height:34px;border-radius:12px} .prog .row{justify-content:flex-start} .prog .row .wk-label{display:none} .prog .sapo-prog{display:none!important}
+    body .dl .n{font-size:18px} body .dl .d{font-size:12px} body .day summary .tag{font-size:10px} body .task .tx{font-size:13px} body .day .aulas span{font-size:11px} body .box h3{font-size:13px}
+    body .task .star{font-size:18px} body .task .star.fazendo,body .task .star.pendente{margin-right:-9px}
+    body .box h3 .bang{width:14px!important;height:14px!important;font-size:9px!important}
+    body .task .st,body .task .dchip{font-size:11px} body .day summary .tag{font-size:11px}
+    body .tl-head-tx{font-size:18px} body h1{font-size:24px} body .fam .p>span{font-size:calc(1em - 1px)} body .fam .p small{font-size:10px}
+    body .day summary{padding:6px 14px} body .tl-head{padding:7px 15px}
+    body .day summary .arrow,body .imp summary .arrow,body .tl-head .arrow{width:22px;height:22px}
+    body .day summary .arrow .ico,body .imp summary .arrow .ico,body .tl-head .arrow .ico{width:16px;height:16px}
+    body .dock-mid .mao .ico{width:25px;height:25px} body .dock-mid .dk-ico{font-size:23px}
+    body .dock-b{font-size:15px} body .dock-b .di{font-size:20px} body .dock-mid{width:61px;height:61px} body .dock .chatfab .bolha,body .dock .chatfab .bolha svg{width:26px!important;height:26px!important}
+    body .tl-dia{font-size:12px} body .tl-txt{font-size:13px} body .tl-l1{font-size:13px} body .tl-txt small{font-size:12.5px} body .tl-item time{font-size:11px} body .tl-x{font-size:10.5px} body .tl-vazio{font-size:14px} body .tl-n{font-size:12px} }   /* celular: colapsos mais baixos, simbolo do dock menor, linha do tempo -1px */   /* celular: simbolos menores, "!" do tamanho deles, etiquetas de status -1px, etiquetas do dia +1px */   /* celular: tudo menor; as etiquetas de status/materia ficam como estao */   /* celular: barra na altura do filtro, sem o rotulo da semana, contador a esquerda */
   .prog .bar i{display:block;height:100%;border-radius:12px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));background-size:220% 100%;animation:progflow 7s ease-in-out infinite}   /* a largura e animada pelo JS (animaBarra) */
   @keyframes progflow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
   @media(prefers-reduced-motion:reduce){.prog .bar i{animation:none}.prog .bar i::after{display:none}}
   .prog .pct{font-weight:900;font-size:22px;color:var(--ink)}
-  .prog .frase{position:absolute;top:0;height:100%;display:flex;align-items:center;font-size:13px;font-weight:500;white-space:nowrap;pointer-events:none;visibility:hidden;letter-spacing:.1px}
+  .prog .frase{position:absolute;top:0;height:100%;display:flex;align-items:center;font-size:14px;font-weight:500;white-space:nowrap;pointer-events:none;visibility:hidden;letter-spacing:.1px}
   .prog .frase.dentro{left:10px;color:#fff;text-shadow:0 1px 2px rgba(var(--r01),.35)}
   .prog .frase.fora{right:58px;color:var(--lilas-ink)}
   .prog .pctin{position:absolute;right:10px;top:0;height:100%;display:flex;align-items:center;font-size:14px;font-weight:900;color:var(--lilas-ink);font-variant-numeric:tabular-nums;pointer-events:none}
   .prog .pctin.claro{color:#fff;text-shadow:0 1px 2px rgba(var(--r01),.35)}
-  .prog .frase-baixo{font-size:13px;font-weight:500;color:var(--lilas-soft);text-align:right;margin-top:3px;min-height:0;line-height:1.2}
+  .prog .frase-baixo{font-size:14px;font-weight:500;color:var(--lilas-soft);text-align:right;margin-top:3px;min-height:0;line-height:1.2}
   .prog .frase-baixo:empty{display:none}
   .prog .sapo-prog{width:24px;height:24px;object-fit:contain;vertical-align:bottom;margin-left:12px;transform:scale(2);transform-origin:50% 100%;object-position:50% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));cursor:pointer;pointer-events:auto;position:relative;z-index:1}
   .prog .sapo-prog.pulando{z-index:25}
@@ -624,9 +635,8 @@
   .day summary::-webkit-details-marker{display:none}
   .dl{display:flex;align-items:baseline;gap:8px;flex:none}
   .dl .n{font-size:21px;font-weight:900;line-height:1}
-  .dl .d{opacity:1;font-size:21px;font-weight:500;line-height:1}
-  .dl .feira{display:none}                   /* "-feira" so no tablet */
-  .dl .sep{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;align-self:center;flex:none;margin:0 1px}
+  .dl .d{opacity:1;font-size:16px;font-weight:500;line-height:1}
+  .dl .feira,.dl .sep{display:none}          /* celular: sem "-feira" e sem bolinha */
   .tags{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
   .day:not(.today) .tag{color:var(--lilas-ink)}   /* no dia clarinho, a etiqueta precisa de letra escura */
   .tag{background:#fff;color:var(--c);border-radius:999px;padding:4px 10px;font-size:14px;font-weight:900;white-space:nowrap;line-height:1.2;letter-spacing:0;font-family:inherit;display:inline-block}
@@ -661,7 +671,8 @@
   @keyframes hintl{0%,62%{opacity:0}72%,94%{opacity:1}100%{opacity:0}}
   .task.pressing .tin{background:color-mix(in srgb,var(--tbg,#fff) 94%,#000)}
   .bring .task{--tbg:var(--bring)} .home .task{--tbg:var(--home)} .imp .task{--tbg:#fff}
-  .box .task+.task::before{content:"";position:absolute;left:10px;right:10px;top:0;height:1.5px;background:#fff;z-index:2;pointer-events:none}   /* linha reta branca entre as atividades */
+  .box .task+.task::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:#fff;z-index:2;pointer-events:none}
+  #app .day .box .task .tin{padding-left:0;padding-right:0}   /* etiqueta, descricao e simbolos alinhados com o titulo da caixa */   /* linha reta branca entre as atividades */
   @keyframes bounce{0%{transform:scale(.7)}50%{transform:scale(1.25)}75%{transform:scale(.95)}100%{transform:scale(1)}}
   @keyframes ring{from{transform:scale(1);opacity:.8}to{transform:scale(1.9);opacity:0}}
   @keyframes pulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.7);opacity:0}}
@@ -805,6 +816,14 @@
   .uopt small{font-weight:700;color:var(--soft);font-size:12px}
   .uopt:active{transform:scale(.95);border-color:var(--ink)}
   .who{text-align:center;margin:-2px 0 10px}
+  @media screen and (max-width:599px), screen and (max-height:599px){
+    body .chat.vistos .chathead{padding-bottom:7px}                  /* do visto ate o fim do roxo: mesmo espaco que do branco ate as pilulas */
+    body .chatsheet .daysep{font-size:10px}                           /* "Hoje/Ontem" congelado: -2px */
+    body .chatsheet .daybar button{font-size:11.5px}                   /* pilulas dos dias: -1px (era 12,5) */
+    body .chatsheet .chat-jump{right:calc(14px + env(safe-area-inset-right))}   /* seta de descer alinhada com o microfone */
+    body .chatsheet .chatin .chatcompose textarea#chatTxt{font-size:15px;min-height:42px;padding-top:10px;padding-bottom:10px}   /* campo de escrever: letra -1px; com a moldura, mesma altura do microfone (44px) */
+    body .chatsheet .chatin .chatcompose>button,body .chatsheet .chatin .chatcompose>.emo-btn{height:42px;width:42px;min-height:0}   /* botao de emoji dentro do campo acompanha a altura */
+  }
   .chat:not(.vistos) #chatWho{display:none!important}   /* visto por ultimo: so quando o botao esta ligado */
   .chathead .gear.on{background:var(--t57);color:#fff}
   .who span{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800}
@@ -908,6 +927,14 @@
   .f-comic{font-family:"Comic Neue","Comic Sans MS",cursive}
   .f-patrick{font-family:"Patrick Hand",cursive;font-size:1.12em}
   .chat.s-mp .msg .b{font-size:12px} .chat.s-mp .msg .b .hd b{font-size:12px} .chat.s-p .msg .b{font-size:14px} .chat.s-g .msg .b{font-size:18px} .chat.s-p .msg .b .hd b{font-size:14px} .chat.s-g .msg .b .hd b{font-size:18px}
+  /* o tamanho da letra tambem muda a fotinha e o balao (a letra fica como cada opcao define) */
+  .chat.s-mp .msg .av{width:38px;height:38px;font-size:17px;border-width:2px}
+  .chat.s-p .msg .av{width:45px;height:45px;font-size:20px}
+  .chat.s-g .msg .av{width:56px;height:56px;font-size:26px}
+  .chat.s-mp .msg .b{padding:5px 9px 4px;border-radius:15px;min-width:52px}
+  .chat.s-p .msg .b{padding:7px 11px 5px;border-radius:17px;min-width:58px}
+  .chatsheet .chat.s-mp .msg .b{padding:6px 10px 5px}
+  .chatsheet .chat.s-p .msg .b{padding:8px 12px 6px}
   .chat h2 .gear{margin-left:auto;margin-right:8px;border:0;background:var(--t10);border-radius:50%;width:34px;height:34px;font-size:18px}
   .chat h2 .x{margin-left:0}
   .sw2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:6px 0 14px;width:100%}
@@ -1648,7 +1675,7 @@
     .fam .p small{font-size:14px}
     .prog .row{font-size:16px}
     .prog .row b{font-size:16px}
-    .prog .sapo-prog{width:26px;height:26px}
+    .prog .sapo-prog{width:26px;height:26px;transform-origin:100% 100%}   /* tablet: cresce para a esquerda e fica encostado no extremo direito */
     @media (min-width:700px){
       .top-title h1{font-size:36px}
       .prog .row{font-size:20px}
@@ -1668,10 +1695,10 @@
   }
   @media screen{
     .filter-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 40px;gap:6px;align-items:stretch}
-    .filter-row .mobile-filter-toggle{display:flex;align-items:center;justify-content:center;min-width:0;min-height:40px;padding:6px 8px;font-size:14px;white-space:nowrap;margin:0}
+    .filter-row .mobile-filter-toggle{display:flex;align-items:center;justify-content:center;min-width:0;min-height:34px;padding:4px 8px;font-size:14px;white-space:nowrap;margin:0}
     #mobileStatusToggle{grid-column:1;grid-row:1}
     #mobileSubjectToggle{grid-column:2;grid-row:1}
-    .filter-row>.filter-search{grid-column:3;grid-row:1;align-self:stretch;height:40px}
+    .filter-row>.filter-search{grid-column:3;grid-row:1;align-self:stretch;height:34px}
     .filter-row>#fType{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;overflow:visible;gap:6px;margin:0;padding:2px 0 0}
     .filter-row>#fType .chip{flex:0 0 auto}
     .filter-row>#fType.grade:not(.mobile-collapsed),#fSubj.grade:not(.mobile-collapsed){display:grid;gap:6px;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
@@ -1768,6 +1795,7 @@
   /* ===================== LINHA DO TEMPO ===================== */
   .tl{margin:12px 0 0;border:2px solid var(--lilas-line);border-radius:22px;background:#fff;overflow:hidden;transition:border-color .2s}
   .tl.aberta{border-color:var(--lilas)}
+  @media screen and (max-width:599px), screen and (max-height:599px){ .tl,.tl.aberta{border-color:var(--t44)} }   /* celular: borda da linha do tempo em lilas claro */
   .tl-head{display:flex;align-items:center;gap:10px;width:100%;border:0;background:linear-gradient(135deg,var(--t04),var(--t15));padding:13px 15px;font:inherit;color:var(--lilas-ink);text-align:left}
   .tl.aberta .tl-head{background:linear-gradient(135deg,var(--t21),var(--t35))}
   .tl-head:active{filter:brightness(.97)}
@@ -2195,7 +2223,7 @@ let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(
 const openState={};
 const tabletFiltersMedia=matchMedia('(min-width:600px) and (min-height:600px)');
 let fType='all', fSubj='all', fQ='', subjOpen=false, subjAnim=null, filtroTocado=false;
-let mobileStatusOpen=true;   // o filtro de situacao ja comeca aberto
+let mobileStatusOpen=false;  // celular e tablet: o filtro de situacao comeca fechado e o botao branco ("Todas" ja vem marcado)
 const fSet=()=>fType==='all'?[]:fType.split('+');
 const fHas=k=>fType!=='all'&&fSet().includes(k);
 // alguma tarefa de casa da semana ainda pendente (falta fazer ou fazendo), dentro do prazo e nao cancelada
@@ -3515,7 +3543,7 @@ function renderFilters(){
   const statusToggle=document.getElementById('mobileStatusToggle'), subjectToggle=document.getElementById('mobileSubjectToggle');
   statusToggle.setAttribute('aria-expanded',String(mobileStatusOpen));
   subjectToggle.setAttribute('aria-expanded',String(subjOpen));
-  statusToggle.classList.toggle('on',mobileStatusOpen);
+  statusToggle.classList.toggle('on',mobileStatusOpen||fType!=='all');   // igual ao Ver materias: branco quando nada esta marcado
   subjectToggle.classList.toggle('on',subjOpen||fSubj!=='all');
   statusToggle.onclick=()=>{ mobileStatusOpen=!mobileStatusOpen; vibrate(15); SFX.pop(); renderFilters(); };
   subjectToggle.onclick=()=>{ subjOpen=!subjOpen; vibrate(15); SFX.pop(); renderFilters(); };
@@ -3556,7 +3584,7 @@ function render(){
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
     const deOndeEstava=pctNaTela();   // continua de onde a barrinha esta (0 quando o app abre)
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span class="wk-label"><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -3675,6 +3703,7 @@ function fitSubjectRows(){
     const gap=parseFloat(getComputedStyle(row).columnGap)||0;
     const needed=items.reduce((sum,item)=>sum+item.getBoundingClientRect().width,0)+gap*(items.length-1);
     row.classList.toggle('fill-row',needed<=width+.1);
+    if(typeof esticaAula==='function') esticaAula(row);
   };
   rows.forEach(fit);
   if(typeof ResizeObserver!=='undefined'){
@@ -4905,8 +4934,8 @@ render();
   else tabletFiltersMedia.addListener(ajusta);
 })();
 // Materias abaixo do dia: numa linha so quando cabem; quando nao cabem, dividem em linhas equilibradas (5 -> 3 + 2), cada linha na largura toda.
-function esticaAulas(){
-  document.querySelectorAll('#app .aulas').forEach(el=>{
+function esticaAulas(){ document.querySelectorAll('#app .aulas').forEach(esticaAula); }
+function esticaAula(el){
     el.classList.remove('grade'); el.style.removeProperty('--cols'); el.classList.add('medindo');
     const chips=[...el.querySelectorAll('span')]; chips.forEach(c=>c.style.gridColumn='');
     const W=el.clientWidth; if(!W||chips.length<2){ el.classList.remove('medindo'); return; }
@@ -4915,6 +4944,8 @@ function esticaAulas(){
     el.classList.remove('medindo');
     const n=chips.length;
     if(ws.reduce((a,b)=>a+b,0)+gap*(n-1)<=W) return;                 // cabe numa linha: fica como esta (esticando)
+    el.classList.remove('fill-row');                                  // nao cabe: sai do modo "linha unica"
+
     let escolha=null;
     for(let r=2;r<=n&&!escolha;r++){
       const base=Math.floor(n/r), extra=n%r, cont=[]; for(let i=0;i<r;i++) cont.push(base+(i<extra?1:0));
@@ -4926,7 +4957,6 @@ function esticaAulas(){
     const mdc=(a,b)=>b?mdc(b,a%b):a; const L=escolha.reduce((acc,c)=>acc*c/mdc(acc,c),1);
     let i=0; escolha.forEach(c=>{ for(let k=0;k<c;k++){ chips[i++].style.gridColumn='span '+(L/c); } });
     el.style.setProperty('--cols',L); el.classList.add('grade');
-  });
 }
 // A tela nao pula quando a lista e redesenhada (estrela, status, nuvem): o que estava no topo da tela continua no mesmo lugar.
 { const _render=render;
