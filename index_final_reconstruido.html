@@ -538,7 +538,8 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
   body{user-select:none;-webkit-user-select:none}
   input,textarea{user-select:text;-webkit-user-select:text}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:Nunito,"Segoe UI",system-ui,sans-serif;font-weight:600;font-size:17px;line-height:1.4}
+  html{font-family:Nunito,"Segoe UI",system-ui,sans-serif}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:inherit;font-weight:600;font-size:17px;line-height:1.4}
   .wrap{max-width:560px;margin:0 auto;padding:20px 16px 90px}
   h1{font-size:26px;font-weight:900;margin:0 0 6px;line-height:1.1;text-align:center}
   button{font-family:inherit;cursor:pointer}
@@ -555,6 +556,7 @@
     body .imp summary .n{font-size:18px} body .imp summary .cnt{font-size:11px;padding:4px 10px}   /* Importantes igual aos dias */
     body .tl-head-tx{font-size:18px} body h1{font-size:24px} body .fam .p>span{font-size:calc(1em - 1px)} body .fam .p small{font-size:10px}
     body .day summary,body .imp summary{padding:6px 14px} body .tl-head{padding:7px 15px}
+    body .task.wizt .tg{display:inline;margin:0 4px 0 0;vertical-align:1px} body .task.wizt .tg .st,body .task.wizt .tg .dchip{margin:0 4px 0 0;vertical-align:1px} body .task.wizt .tx{display:inline}   /* Curso de Ingles: descricao na linha das etiquetas */
     body .day summary .arrow,body .imp summary .arrow,body .tl-head .arrow{width:22px;height:22px}
     body .day summary .arrow .ico,body .imp summary .arrow .ico,body .tl-head .arrow .ico{width:16px;height:16px}
     body .dock-mid .mao .ico{width:25px;height:25px} body .dock-mid .dk-ico{font-size:23px}
@@ -670,7 +672,6 @@
   @keyframes hintswipe{0%,8%{transform:translateX(0)}30%,40%{transform:translateX(96px)}55%,62%{transform:translateX(0)}78%,86%{transform:translateX(-96px)}100%{transform:translateX(0)}}
   @keyframes hintr{0%,8%{opacity:0}18%,48%{opacity:1}58%,100%{opacity:0}}
   @keyframes hintl{0%,62%{opacity:0}72%,94%{opacity:1}100%{opacity:0}}
-  .task.pressing .tin{background:color-mix(in srgb,var(--tbg,#fff) 94%,#000)}
   .bring .task{--tbg:var(--bring)} .home .task{--tbg:var(--home)} .imp .task{--tbg:#fff}
   .box .task+.task::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:#fff;z-index:2;pointer-events:none}
   #app .day .box .task .tin{padding-left:0;padding-right:0}   /* etiqueta, descricao e simbolos alinhados com o titulo da caixa */   /* linha reta branca entre as atividades */
@@ -683,7 +684,7 @@
   .star.on .ico{fill:#F2CE1B;stroke-width:1.9;filter:drop-shadow(0 -1px 0 #FFF3B0) drop-shadow(0 2px 3px rgba(120,98,8,.5))}
   /* tarefa feita: certinho no mesmo estilo da estrelinha, com relevo */
   .star.feito,.star.fazendo,.star.pendente{opacity:1;color:var(--t57);cursor:default}
-  .star.feito,.star.fazendo{cursor:pointer}
+  .star.feito,.star.fazendo,.star.pendente{cursor:pointer}
   .star.fazendo,.star.pendente{margin-right:-4px}
   .star.feito .ico,.star.fazendo .ico,.star.pendente .ico{fill:var(--t50);stroke-width:1.9;filter:drop-shadow(0 -1px 0 var(--t24)) drop-shadow(0 2px 3px rgba(var(--r01),.38))}
   /* certinho verde e pendente vermelho (mesmo estilo 3D); a ampulheta segue no lilas */
@@ -695,8 +696,8 @@
   .task.off .star.cancelada{opacity:1}
   .star.cancelada .ico{fill:#F4A6A6;stroke-width:1.9;filter:drop-shadow(0 -1px 0 #FBE3E3) drop-shadow(0 2px 3px rgba(185,58,58,.38))}
   .star .ico{width:1.1em;height:1.1em;vertical-align:-.18em;stroke-width:1.8}
-  button.star:not(.on){color:var(--t45);opacity:1}
-  button.star:not(.on) .ico{stroke-width:2.3}
+  button.star[data-star]:not(.on){color:var(--t45);opacity:1}   /* so a estrela vazia; certinho e ampulheta mantem a cor */
+  button.star[data-star]:not(.on) .ico{stroke-width:2.3}
   .star:active{transform:scale(.86)}
   .star:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:10px}
   .star.pop{animation:starpop .45s ease}
@@ -945,6 +946,7 @@
   .f-poppins{font-family:Poppins,Nunito,sans-serif}
   .f-comic{font-family:"Comic Neue","Comic Sans MS",cursive}
   .f-patrick{font-family:"Patrick Hand",cursive;font-size:1.12em}
+  html.f-patrick{font-size:100%} html.f-patrick body{font-size:18px}   /* a manuscrita e miudinha: um pouco maior no app todo */
   .chat.s-mp .msg .b{font-size:12px} .chat.s-mp .msg .b .hd b{font-size:12px} .chat.s-p .msg .b{font-size:14px} .chat.s-g .msg .b{font-size:18px} .chat.s-p .msg .b .hd b{font-size:14px} .chat.s-g .msg .b .hd b{font-size:18px}
   /* o tamanho da letra tambem muda a fotinha e o balao (a letra fica como cada opcao define) */
   .chat.s-mp .msg .av{width:34px;height:34px;font-size:14px;border-width:2px}
@@ -1088,6 +1090,11 @@
   .msg.flash .b{animation:flashb 1.2s}
   @keyframes flashb{0%,60%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:none}}
   .fam .p small{font-size:11px;font-weight:700;color:var(--lilas-soft);line-height:1}
+  .fam .p.me .nome{cursor:pointer;border-bottom:1.5px dotted color-mix(in srgb,var(--lilas-soft) 55%,transparent);padding-bottom:1px}
+  .nome-dica{color:var(--soft);font-size:14px;margin:0 0 10px}
+  .nome-campo{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin:0 0 14px;background:var(--t05)}
+  .nome-campo input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:20px;font-weight:800;color:var(--ink);outline:none}
+  .nome-campo span{flex:none;font-size:12px;font-weight:700;color:var(--soft)}
   .msg .b.emo{font-size:30px !important;line-height:1.15;padding:6px 12px 4px}
   .msg.me .b small{color:rgba(255,255,255,.85);opacity:1}
   .chatin>button{flex:none}
@@ -1187,13 +1194,15 @@
   .cropasp{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
   .cropasp button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:13px;color:var(--ink)}
   .cropasp button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-weight:600;font-size:15px;z-index:70;opacity:0;transition:opacity .25s;pointer-events:none}
+  /* avisos: faixa na largura do app, texto a esquerda (mesmo modelo do aviso com Desfazer) */
+  .toast{position:fixed;left:16px;right:16px;bottom:100px;margin:0 auto;max-width:528px;box-sizing:border-box;background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;font-weight:600;font-size:14px;line-height:1.3;text-align:left;box-shadow:0 6px 18px rgba(var(--r01),.28);z-index:70;opacity:0;transition:opacity .25s;pointer-events:none}
   .toast.on{opacity:1}
-  .toast.acao{pointer-events:auto;display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:12px 14px 10px;width:min(92vw,420px);max-width:calc(100% - 28px);border-radius:20px;text-align:center;white-space:normal;line-height:1.35}
-  .toast.acao span{display:block}
-  .toast.acao .undo{align-self:center;min-width:140px}
-  .toast.acao .undo{flex:none;background:#fff;color:var(--ink);border:0;border-radius:999px;padding:7px 14px;font:inherit;font-weight:900;cursor:pointer}
-  .toast.acao .undo:active{transform:scale(.96)}
+  /* aviso com Desfazer: uma linha so, texto a esquerda e o botao sempre a direita */
+  .toast.acao{pointer-events:auto;display:flex;flex-direction:row;align-items:center;gap:12px;padding:8px 6px 8px 16px;white-space:normal}
+  .toast.acao span{flex:1;min-width:0}
+  .toast.acao .undo{flex:none;margin-left:auto;background:transparent;color:var(--t50);border:0;border-radius:10px;padding:6px 10px;font:inherit;font-size:14px;font-weight:800;letter-spacing:.2px;cursor:pointer}
+  .toast.acao .undo:hover{background:rgba(255,255,255,.08)}
+  .toast.acao .undo:active{transform:scale(.96);background:rgba(255,255,255,.14)}
   /* ===== Tablet (Galaxy Tab S9 FE) ===== */
   @media (min-width:700px){
     body{font-size:18px}
@@ -1905,6 +1914,12 @@
   @media(max-width:359px){ .dock-b .dt{display:none} }
   /* passar o dedo na barra: o icone dentro do circulo vai trocando (Resumo, Aulas, Compartilhar...) */
   /* dica que aparece ao segurar um botao */
+  .tema-abas{display:flex;gap:4px;background:var(--t05);border-radius:999px;padding:4px;margin:0 0 10px}
+  .tema-abas button{flex:1;border:0;background:transparent;border-radius:999px;padding:8px 10px;font:inherit;font-size:15px;font-weight:800;color:var(--soft);cursor:pointer;transition:background .15s,color .15s}
+  .tema-abas button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(var(--r01),.16)}
+  .tema-dica{margin:0 0 12px;font-size:14px}
+  .tema-aa{flex:none;width:34px;height:34px;border-radius:12px;background:var(--t05);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:var(--lilas)}
+  .tema-op .tema-nome small{display:block;font-size:13px;font-weight:600;color:var(--soft);margin-top:1px}
   .temas{display:flex;flex-direction:column;gap:8px}
   .tema-op{display:flex;align-items:center;gap:12px;width:100%;border:2px solid var(--lilas-line);background:#fff;border-radius:16px;padding:12px 14px;font:inherit;font-size:17px;font-weight:800;color:var(--ink);cursor:pointer}
   .tema-op.on{border-color:var(--lilas);background:var(--lilas-bg)}
@@ -2007,6 +2022,11 @@
   .feito-festa.fazendo .halo{background:radial-gradient(circle,color-mix(in srgb,var(--t50) 70%,transparent),color-mix(in srgb,var(--t50) 20%,transparent) 45%,transparent 70%)}
   .feito-festa.fazendo .anel{border-color:color-mix(in srgb,var(--t57) 85%,transparent)}
   .feito-festa.fazendo i{background:linear-gradient(140deg,#fff,var(--t50))}
+  .feito-festa.pendente .astro{color:#B8600E;filter:drop-shadow(0 6px 14px rgba(184,96,14,.5))}
+  .feito-festa.pendente .astro .ico{fill:#F8C68C}
+  .feito-festa.pendente .halo{background:radial-gradient(circle,rgba(248,198,140,.75),rgba(248,198,140,.2) 45%,transparent 70%)}
+  .feito-festa.pendente .anel{border-color:rgba(184,96,14,.85)}
+  .feito-festa.pendente i{background:linear-gradient(140deg,#fff,#F8C68C)}
   @media(prefers-reduced-motion:reduce){.feito-festa{display:none}}
   .tl-item{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr) 12px;align-items:start;gap:11px;padding:9px 6px 9px 4px;width:100%;border:0;background:transparent;border-radius:14px;font:inherit;text-align:left;color:inherit;transition:background .15s}
   .tl-item:not(.sem-link){cursor:pointer}
@@ -2118,6 +2138,11 @@ const USERS = [
   { id:'edson',  nome:'Edson',  emoji:'👨', pin:'2026', papel:'responsavel', cor:'#6B46C1' },
   { id:'thaysa', nome:'Thaysa', emoji:'👩', pin:'2025', papel:'responsavel', cor:'#4C3499' }
 ];
+USERS.forEach(u=>u.nomeBase=u.nome);
+// cada um pode mudar o proprio nome (ate 10 caracteres); fica em perfis/<id>/apelido e vale em todo lugar
+function grafemas(t){ t=String(t||''); try{ return [...new Intl.Segmenter('pt',{granularity:'grapheme'}).segment(t)].map(x=>x.segment); }catch(e){ return Array.from(t); } }
+function limpaNome(t){ return grafemas(String(t||'').replace(/[<>&"\\]/g,'').replace(/\s+/g,' ').trim()).slice(0,10).join('').trim(); }
+function aplicaApelidos(){ USERS.forEach(u=>{ const a=limpaNome(PERFIS[u.id]&&PERFIS[u.id].apelido); u.nome=a||u.nomeBase; }); }
 
 /* ================= DADOS =================
    Para incluir um roteiro novo: acrescente um objeto em SEED_WEEKS.
@@ -2241,7 +2266,7 @@ const SEED_WEEKS = [
 /* ================= ARMAZENAMENTO ================= */
 const KEY='minha-semana-7D-v1';
 let cloudRef=null, famRef=null, cloudReady=false, lastPushed='', pushTimer=null, cloudOnline=false, cloudErr='';
-let ONLINE={}, PERFIS={}, CHAT=[], READS={}, seenTimer=null, TYPING={}, typingTimer=null, typingOn=false; try{PERFIS=JSON.parse(localStorage.getItem(KEY+'-perfis')||'{}');}catch(e){}
+let ONLINE={}, PERFIS={}, CHAT=[], READS={}, seenTimer=null, TYPING={}, typingTimer=null, typingOn=false; try{PERFIS=JSON.parse(localStorage.getItem(KEY+'-perfis')||'{}');}catch(e){} aplicaApelidos();
 let mem=null;
 function load(){ try{const s=localStorage.getItem(KEY); if(s) return JSON.parse(s);}catch(e){} return mem||{weeks:{}}; }
 function save(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} cloudPush(); }
@@ -2331,10 +2356,10 @@ function cloudStart(){
   setTimeout(podaEventos,8000);
   famRef.child('reads').on('value',sn=>{ READS=sn.val()||{}; refreshChat(); });
   famRef.child('perfis/'+USER.id+'/lastSeen').onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
-  famRef.child('perfis/'+USER.id).update({nome:USER.nome,lastSeen:firebase.database.ServerValue.TIMESTAMP});
+  famRef.child('perfis/'+USER.id).update({nome:USER.nomeBase||USER.nome,lastSeen:firebase.database.ServerValue.TIMESTAMP});
   clearInterval(seenTimer); seenTimer=setInterval(()=>{ if(famRef&&USER&&!document.hidden) famRef.child('perfis/'+USER.id).update({lastSeen:firebase.database.ServerValue.TIMESTAMP}); },60*1000);
   document.addEventListener('visibilitychange',()=>{ if(famRef&&USER) famRef.child('perfis/'+USER.id).update({lastSeen:firebase.database.ServerValue.TIMESTAMP}); });
-  famRef.child('perfis').on('value',sn=>{ PERFIS=sn.val()||{}; marcaPronto('perfis'); try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){} renderFam(); refreshChat(); });
+  famRef.child('perfis').on('value',sn=>{ PERFIS=sn.val()||{}; marcaPronto('perfis'); try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){} aplicaApelidos(); renderFam(); refreshChat(); render(); });
   famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; marcaPronto('chat'); const prevLen=CHAT.length;
     const antes={}; CHAT.forEach(m=>antes[m.k]=m);
     CHAT=Object.keys(v).sort().map(k=>({k,...v[k]}));
@@ -2363,7 +2388,7 @@ function cloudStart(){
     const changed=mergeRemote(remote); cloudReady=true;
     if(!primeira) avisaMudancas(MERGE_EVT);
     if(isAluna()){ let after=0; Object.values(DB.weeks).forEach(w=>allTasks(w).forEach(t=>{after+=t.reacts?Object.keys(t.reacts).length:0;}));
-      if(after>before&&!primeira){ vibrate([40,40,80]); SFX.party(); toast('💛 Você recebeu um carinho! Toca no 💛'); notifyEvt('💛 Um carinho para você','Alguém reagiu a uma tarefa sua','carinho'); } updateReaFab(); }
+      if(after>before&&!primeira){ vibrate([40,40,80]); SFX.party(); toast('Você recebeu um carinho! Toca no coração da barra'); notifyEvt('💛 Um carinho para você','Alguém reagiu a uma tarefa sua','carinho'); } updateReaFab(); }
     if(changed){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} render(); refreshReminder(); }
     cloudPush(); // envia o que só existe aqui (ex.: semana nova)
   },err=>{ cloudErr=err&&err.code||'erro'; tiraCarregando(); updateSyncBadge(); toast('Sem permissão no banco. Confira as regras do Firebase.'); });
@@ -2448,6 +2473,14 @@ try{localStorage.removeItem(KEY+'-theme');}catch(e){}
 const TEMAS=[{k:'lilas',nome:'Lilás',h0:null},{k:'vermelho',nome:'Vermelho',h0:350,h1:372,fs:1.0},{k:'laranja',nome:'Laranja',h0:22,h1:40,fs:1.0},{k:'amarelo',nome:'Amarelo',h0:40,h1:56,fs:0.95},{k:'rosa',nome:'Rosa bebê',h0:330,h1:350,fs:0.72},{k:'verde',nome:'Verde bebê',h0:120,h1:152,fs:0.6}];
 const AJUSTE={}; TEMAS.forEach(t=>{ if(t.h0!==null) AJUSTE[t.k]=t; });
 let TEMA='lilas'; try{ const t=localStorage.getItem(KEY+'-tema'); if(t&&TEMAS.some(x=>x.k===t)) TEMA=t; }catch(e){}
+// letra do app inteiro (conversa junto)
+const FONTES=[['nunito','Nunito','Arredondada e clara'],['quicksand','Quicksand','Leve e moderna'],['poppins','Poppins','Reta e firme'],['comic','Comic','Descontraída'],['patrick','Manuscrita','Feita à mão']];
+let FONTE='nunito'; try{ const f=localStorage.getItem(KEY+'-fonte'); if(f&&FONTES.some(x=>x[0]===f)) FONTE=f; }catch(e){}
+function aplicaFonte(f){
+  if(f){ FONTE=f; try{ localStorage.setItem(KEY+'-fonte',f); }catch(e){} }
+  const h=document.documentElement; [...h.classList].filter(c=>c.startsWith('f-')).forEach(c=>h.classList.remove(c)); h.classList.add('f-'+FONTE);
+}
+aplicaFonte();
 // converte uma cor lilas para a cor equivalente no tema escolhido (mesma receita usada no CSS)
 const _cacheT={};
 function corT(h){
@@ -2596,8 +2629,33 @@ function renderFam(){
     // última vez: o maior entre o registro de presença, a última leitura do chat e a última mensagem enviada
     let ls=Math.max(PERFIS[u.id]&&PERFIS[u.id].lastSeen||0, READS[u.id]||0, ...CHAT.filter(m=>m.by===u.id).map(m=>m.t||0));
     const sub=u.id===USER.id?'':(on?'online':(ls?fmtSeen(ls):''));
-    return `<button class="p ${on?'on':''} ${u.id===USER.id?'me':''}" data-u="${u.id}"><span class="avw"><span class="av">${avatarHtml(u)}</span><i class="dot"></i></span><span>${u.nome}</span><small>${u.id===USER.id?('(você)'+(sub?' · '+sub:'')):sub}</small></button>`;}).join('');
-  el.querySelectorAll('.p').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.u===USER.id) openFoto(); else openLogin(null,b.dataset.u); }));
+    return `<button class="p ${on?'on':''} ${u.id===USER.id?'me':''}" data-u="${u.id}"><span class="avw"><span class="av">${avatarHtml(u)}</span><i class="dot"></i></span><span class="nome">${esc(u.nome)}</span><small>${u.id===USER.id?('(você)'+(sub?' · '+sub:'')):sub}</small></button>`;}).join('');
+  el.querySelectorAll('.p').forEach(b=>b.addEventListener('click',e=>{ if(b.dataset.u!==USER.id){ openLogin(null,b.dataset.u); return; }
+    if(e.target.closest('.nome')) openNome(); else openFoto(); }));
+}
+// editar o proprio nome: ate 10 caracteres (emoji conta como 1)
+function openNome(){
+  if(!USER) return;
+  const base=USER.nomeBase||USER.nome;
+  show(`<h2>Meu nome <button class="x">✕</button></h2>
+    <p class="nome-dica">Até 10 caracteres. Pode usar emoji.</p>
+    <div class="nome-campo"><input id="nomeTxt" type="text" maxlength="40" autocomplete="off" autocapitalize="words" enterkeyhint="done" aria-label="Meu nome" value="${esc(USER.nome)}"><span id="nomeCnt" aria-live="polite"></span></div>
+    <div class="row"><button class="opt" id="nomePadrao">Voltar para ${esc(base)}</button><button class="opt primary" id="nomeSave">Salvar</button></div>`);
+  const inp=document.getElementById('nomeTxt'), cnt=document.getElementById('nomeCnt');
+  const conta=()=>{ const g=grafemas(inp.value); if(g.length>10){ inp.value=g.slice(0,10).join(''); } cnt.textContent=grafemas(inp.value).length+'/10'; };
+  inp.addEventListener('input',conta); conta();
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('nomeSave').click(); } });
+  setTimeout(()=>{ inp.focus(); inp.select(); },80);
+  document.getElementById('nomePadrao').addEventListener('click',()=>salvaNome(null));
+  document.getElementById('nomeSave').addEventListener('click',()=>{ const v=limpaNome(inp.value); if(!v){ toast('Escreve um nome'); inp.focus(); return; } salvaNome(v===base?null:v); });
+}
+function salvaNome(apelido){
+  const id=USER.id; PERFIS[id]=Object.assign({},PERFIS[id]||{});
+  if(apelido) PERFIS[id].apelido=apelido; else delete PERFIS[id].apelido;
+  try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){}
+  if(famRef){ try{ famRef.child('perfis/'+id).update({apelido:apelido||null}); }catch(e){} }
+  aplicaApelidos(); renderFam(); refreshChat(); render(); hide(); vibrate(20);
+  toast(apelido?'Agora você é '+apelido:'Nome de volta ao padrão');
 }
 function openFoto(){
   show(`<h2>${USER.emoji} ${USER.nome} <button class="x">✕</button></h2>
@@ -2605,8 +2663,10 @@ function openFoto(){
       <span class="av" style="width:120px;height:120px;border-radius:50%;overflow:hidden;background:${corT('#F2F0FA')};display:flex;align-items:center;justify-content:center;font-size:56px;border:3px solid var(--line)">${avatarHtml(USER)}</span>
       <button class="opt primary" id="fotoPick" style="justify-content:center;max-width:320px">Escolher foto ou tirar uma</button>
       ${PERFIS[USER.id]&&PERFIS[USER.id].foto?'<button class="opt danger" id="fotoDel" style="justify-content:center;max-width:320px">Tirar a foto</button>':''}
+      <button class="opt" id="fotoNome" style="justify-content:center;max-width:320px">Mudar meu nome</button>
       <button class="opt" id="fotoSwap" style="justify-content:center;max-width:320px">👤 Trocar de usuário</button>
     </div>`);
+  document.getElementById('fotoNome').addEventListener('click',openNome);
   document.getElementById('fotoSwap').addEventListener('click',()=>openLogin());
   document.getElementById('fotoPick').addEventListener('click',()=>document.getElementById('fotoFile').click());
   const del=document.getElementById('fotoDel'); if(del) del.addEventListener('click',()=>{ if(famRef) famRef.child('perfis/'+USER.id+'/foto').remove(); hide(); toast('Foto removida'); });
@@ -3297,7 +3357,7 @@ function applyPref(){
   const col=(BGCOL[CHATPREF.bg]||BGCOL.lilas).map(corT);   // no visual padrao, a conversa segue o tema do app const sh=sheet.querySelector('.chathead'); if(sh){sh.style.setProperty('--c1',col[0]);sh.style.setProperty('--c2',col[1]);}
   if(sheet.classList.contains('chatsheet')) sheet.style.setProperty('--c2',col[1]); sheet.style.setProperty('--c2',col[1]);
   const ci=sheet.querySelector('.chatin'); if(ci){ci.style.setProperty('--c1',col[0]);ci.style.setProperty('--c2',col[1]);}
-  pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+'f-'+CHATPREF.font+' s-'+CHATPREF.size+(CHATPREF.vistos?' vistos':''); m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg+((m.id==='msgs'&&selMode)?' sel':''); m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
+  pairs.forEach(([c,m])=>{ if(!c||!m) return; c.className=(c.id==='lookPrev'?'chat ':'chat ')+' s-'+CHATPREF.size+(CHATPREF.vistos?' vistos':''); m.className=(m.id==='msgs'?'msgs nodrag ':'msgs ')+'bg-'+CHATPREF.bg+((m.id==='msgs'&&selMode)?' sel':''); m.style.backgroundImage=CHATPREF.bg==='foto'&&CHATPREF.foto?`url(${CHATPREF.foto})`:''; }); }
 // foto da pessoa em tamanho grande, com opcao de salvar
 function verFoto(id){
   const u=USERS.find(x=>x.id===id)||{id,nome:uname(id)||'Alguém',emoji:'👤'};
@@ -3310,7 +3370,6 @@ function verFoto(id){
 }
 function openChatLook(){
   const BGS=[['lilas','#F7F5FC'],['claro','#FFFFFF'],['verde','#EFE7FB'],['azul','#E6F0FB'],['rosa','#FCE9F3'],['amarelo','#FFF6D9'],['noite','#26243A'],['bolinhas','radial-gradient(#DCD3FF 2px,#F7F5FC 2.2px)'],['estrelas','radial-gradient(#FFD166 2px,#EEF3FF 2.2px)']];
-  const FONTS=[['nunito','Nunito'],['quicksand','Quicksand'],['poppins','Poppins'],['comic','Comic'],['patrick','Manuscrita']];
   const OUTRO=USERS.find(u=>!USER||u.id!==USER.id)||USERS[0];
   show(`<h2>${ICO.paleta} Aparência da conversa <button class="x">✕</button></h2>
     <div class="chat" id="lookPrev" style="height:auto;margin-bottom:12px;padding:0"><div class="msgs" id="lookMsgs" style="min-height:0;max-height:none;padding:10px 8px;overflow:hidden">
@@ -3324,15 +3383,12 @@ function openChatLook(){
     <p class="looklbl">Plano de fundo</p>
     <div class="sw2">${BGS.map(([k,c])=>`<button data-bg="${k}" class="${CHATPREF.bg===k?'on':''}" style="background:${c};${c.startsWith('radial')?'background-size:14px 14px;':''}" title="${k}"></button>`).join('')}
       <button data-bg="foto" class="${CHATPREF.bg==='foto'?'on':''}" style="font-size:22px;${CHATPREF.foto?`background-image:url(${CHATPREF.foto})`:''}" title="Foto">${CHATPREF.foto?'<span style="position:absolute;left:3px;top:2px;font-size:13px">📷</span>':'📷'}</button></div>
-    <p class="looklbl">Fonte</p>
-    <div class="sw2 fonts">${FONTS.map(([k,n])=>`<button data-f="${k}" class="fnt f-${k} ${CHATPREF.font===k?'on':''}">${n}</button>`).join('')}</div>
     <p class="looklbl">Tamanho da letra</p>
     <div class="sw2 sizes">${[['mp','Muito pequena'],['p','Pequena'],['m','Média'],['g','Grande']].map(([k,n])=>`<button data-s="${k}" class="fnt ${CHATPREF.size===k?'on':''}">${n}</button>`).join('')}</div>
     <button class="opt primary" id="lookOk" style="justify-content:center;margin-top:12px">Pronto</button>`);
   applyPref();
   const mark=(sel,attr,val)=>sheet.querySelectorAll(sel).forEach(b=>b.classList.toggle('on',b.dataset[attr]===val));
   sheet.querySelectorAll('[data-bg]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.bg==='foto'&&(!CHATPREF.foto||CHATPREF.bg==='foto')){ document.getElementById('bgFile').click(); return; } CHATPREF.bg=b.dataset.bg; savePref(); mark('[data-bg]','bg',CHATPREF.bg); }));
-  sheet.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{ CHATPREF.font=b.dataset.f; savePref(); mark('[data-f]','f',CHATPREF.font); }));
   sheet.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>{ CHATPREF.size=b.dataset.s; savePref(); mark('[data-s]','s',CHATPREF.size); }));
   const pintaPrev=()=>sheet.querySelectorAll('#lookPrev .msg[data-pu]').forEach(m=>{ const u=USERS.find(x=>x.id===m.dataset.pu); if(u) m.style.setProperty('--uc',corDe(u)); });
   sheet.querySelectorAll('[data-uc]').forEach(b=>b.addEventListener('click',()=>{
@@ -3782,13 +3838,13 @@ function taskHtml(t,inImp){
   const subj = `<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span>`;
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
   const status=((t.pics||0)?`<span class="st pics">${ICO.camera} ${t.pics}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'')+moved;
-  return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''}" data-id="${t.id}">
+  return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''} ${t.wiz?'wizt':''}" data-id="${t.id}">
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(NEXT_R[t.status]||'done')}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${swLbl(NEXT_L[t.status]||'doing')}</div>`: ''}
     <div class="tin">
       <div class="t"><div class="tg">${dchip}${subj}${t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:''}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>r.a?`<button type="button" class="r ra" data-rfx="${r.a}" aria-label="Ouvir ${esc(r.an||'áudio')} de ${esc(r.n||'')}"><span class="pl" aria-hidden="true"></span><b>${esc(r.n||'')}</b> reagiu</button>`:`<span class="r">${r.e} <b>${esc(r.n||'')}</b> reagiu</span>`).join('')}</span>`:''}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
         ${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
-      ${t.status==='doing'?`<button type="button" class="star fazendo" data-fx="fazendo" aria-label="Fazendo" title="Fazendo">${ICO.ampulheta}</button>`:''}${(t.status==='todo'&&!t.off)?`<span class="star pendente" aria-hidden="true" title="Falta fazer">${ICO.pendente}</span>`:''}
+      ${t.status==='doing'?`<button type="button" class="star fazendo" data-fx="fazendo" aria-label="Fazendo" title="Fazendo">${ICO.ampulheta}</button>`:''}${(t.status==='todo'&&!t.off)?`<button type="button" class="star pendente" data-fx="pendente" aria-label="Falta fazer" title="Falta fazer">${ICO.pendente}</button>`:''}
       ${t.status==='done'
         ? `<button type="button" class="star feito" data-fx="feito" aria-label="Feito" title="Feito">${ICO.feito}</button>`
         : t.off ? `<span class="star cancelada" aria-hidden="true" title="Cancelada">${ICO.cancelada}</span>`
@@ -3899,13 +3955,13 @@ function sparks(x,y,color){for(let i=0;i<10;i++){const e=document.createElement(
   const a=Math.random()*Math.PI*2,r=40+Math.random()*50;e.style.setProperty('--dx',Math.cos(a)*r+'px');e.style.setProperty('--dy',Math.sin(a)*r+'px');
   document.body.appendChild(e);setTimeout(()=>e.remove(),800);}}
 function toastSumiu(t){ const f=t._aoSumir; t._aoSumir=null; if(f) setTimeout(f,0); }
-function toast(m){const t=document.getElementById('toast');toastSumiu(t);t.textContent=m;t.classList.remove('acao');t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1800);}
+function toast(m){const t=document.getElementById('toast');toastSumiu(t);t.textContent=semEmoji(String(m==null?'':m));t.classList.remove('acao');t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1800);}
 // aviso que fica mais tempo e traz um botao (ex.: Desfazer)
 function toastAcao(m,rotulo,acao,ms,aoSumir){
   const t=document.getElementById('toast'); clearTimeout(t._h); toastSumiu(t);
   t._aoSumir=aoSumir||null;
   t.textContent='';
-  const txt=document.createElement('span'); txt.textContent=m; t.appendChild(txt);
+  const txt=document.createElement('span'); txt.textContent=semEmoji(String(m==null?'':m)); t.appendChild(txt);
   const b=document.createElement('button'); b.type='button'; b.className='undo'; b.textContent=rotulo;
   b.addEventListener('click',()=>{ clearTimeout(t._h); t._aoSumir=null; t.classList.remove('on','acao'); t.textContent=''; acao(); });
   t.appendChild(b); t.classList.add('on','acao');
@@ -3971,7 +4027,7 @@ function festaEstrela(btn){
 }
 // festa quando uma tarefa fica feita: sai de onde esta o certinho/estrela da tarefa
 function festaFeito(el,tipo,icone){
-  tipo=tipo==='fazendo'?'fazendo':'feito';
+  tipo=(tipo==='fazendo'||tipo==='pendente')?tipo:'feito';
   // sai do lugar do simbolo (coluna da direita da tarefa); usa a caixa da tarefa, que nao se move no arrasto
   const caixa=el?(el.closest('.task')||el):null;
   let r=caixa?caixa.getBoundingClientRect():null;                       // caixa externa: nao desliza no arrasto
@@ -3982,7 +4038,7 @@ function festaFeito(el,tipo,icone){
   if(ri&&ri.width){ x=ri.left+ri.width/2; y=ri.top+ri.height/2; }
   const palco=document.createElement('div'); palco.className='feito-festa '+tipo; palco.setAttribute('aria-hidden','true');
   palco.style.left=x+'px'; palco.style.top=y+'px';
-  palco.innerHTML='<span class="halo"></span><span class="anel"></span><span class="anel dois"></span><span class="astro">'+(tipo==='fazendo'?ICO.ampulheta:ICO.feito)+'</span>'
+  palco.innerHTML='<span class="halo"></span><span class="anel"></span><span class="anel dois"></span><span class="astro">'+(tipo==='fazendo'?ICO.ampulheta:tipo==='pendente'?ICO.pendente:ICO.feito)+'</span>'
     +Array.from({length:18},(_,i)=>`<i style="--a:${i*20}deg;--d:${62+(i%3)*18}px;--t:${i*18}ms"></i>`).join('');
   document.body.appendChild(palco);
   setTimeout(()=>palco.remove(),1800);
@@ -4032,7 +4088,7 @@ function bindTasks(root=document.getElementById('app')){
       fx.addEventListener('mousedown',stop);
       fx.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault();
         fx.classList.remove('pop'); void fx.offsetWidth; fx.classList.add('pop');
-        vibrate(fx.dataset.fx==='feito'?[20,40,30]:20); if(fx.dataset.fx==='feito') SFX.done(); else SFX.doing();
+        vibrate(fx.dataset.fx==='feito'?[20,40,30]:20); if(fx.dataset.fx==='feito') SFX.done(); else if(fx.dataset.fx==='fazendo') SFX.doing(); else SFX.pop();
         festaFeito(el,fx.dataset.fx,fx); });
     });
     // observação: toque (ou botão direito) abre mudar e apagar; segurar continua abrindo o menu da tarefa
@@ -4118,7 +4174,7 @@ veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 function openMenu(id){
   const t=findTask(id); if(!t) return; if(t.type===B){openMove(id);return;}
   show(`<h2>${ICO.lapis} Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=3" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
-   <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]}<br>${t.text}</p>
+   <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]} · ${t.text}</p>
    ${isAluna()?`<button class="opt" data-a="note"><span class="ic">${ICO.lapis}</span>${t.note?'Mudar a observação':'Escrever uma observação'}</button>
    ${t.note?`<button class="opt danger" data-a="delnote"><span class="ic">${ICO.lixeira}</span>Apagar observação</button>`:''}`:''}
    ${(CLOUD_CFG&&(isAluna()||(t.pics||0)))?`<button class="opt" data-a="pics"><span class="ic">${ICO.camera}</span>${(t.pics||0)?'Ver fotos ('+t.pics+')':'Tirar foto do que fez'}</button>`:''}
@@ -4714,21 +4770,43 @@ function openSummary(modoInicial){
     body.addEventListener('pointercancel',()=>{ativo=false;}); }
   desenha();
 }
-function openTema(){
+function openTema(abaInicial){
+  let aba=abaInicial==='fonte'?'fonte':'cores';
   const amostra=(t,c)=>{ const antes=TEMA; TEMA=t.k; const v=corT(c); TEMA=antes; return v; };
-  const desenha=()=>`<div class="temas">${TEMAS.map(t=>`<button class="tema-op ${TEMA===t.k?'on':''}" data-tema="${t.k}" data-t="${t.k}">
+  const DICA={cores:'Muda a cor de tudo: dias, botões, conversa e resumo.',fonte:'Muda a letra do app inteiro, conversa junto.'};
+  const cores=()=>`<div class="temas">${TEMAS.map(t=>`<button class="tema-op ${TEMA===t.k?'on':''}" data-tema="${t.k}" data-t="${t.k}">
       <span class="tema-bola" style="background:linear-gradient(140deg,${amostra(t,'#B48BF5')},${amostra(t,'#8E5BE0')})"></span>
       <span class="tema-nome">${t.nome}</span>
       <span class="tema-ok" aria-hidden="true">${TEMA===t.k?ICO.feito:''}</span></button>`).join('')}</div>`;
+  const fontes=()=>`<div class="temas">${FONTES.map(([k,n,d])=>`<button class="tema-op f-${k} ${FONTE===k?'on':''}" data-fonte="${k}">
+      <span class="tema-aa" aria-hidden="true">Aa</span>
+      <span class="tema-nome">${n}<small>${d}</small></span>
+      <span class="tema-ok" aria-hidden="true">${FONTE===k?ICO.feito:''}</span></button>`).join('')}</div>`;
+  const corpo=()=>aba==='cores'?cores():fontes();
   show(`<h2>${ICO.paleta} Tema do app <button class="x">✕</button></h2>
-    <p class="quiet" style="margin:0 0 12px;font-size:14px">Muda a cor de tudo: dias, botões, conversa e resumo.</p>
-    ${desenha()}`);
-  const liga=()=>sheet.querySelectorAll('[data-tema]').forEach(b=>b.addEventListener('click',()=>{
-    if(TEMA===b.dataset.tema) return;
-    aplicaTema(b.dataset.tema); vibrate(15); SFX.pop();
-    render(); if(chatAbertoAgora()) refreshChat();
-    const c=sheet.querySelector('.temas'); if(c){ c.outerHTML=desenha(); liga(); }
-    toast('Tema ' + (TEMAS.find(x=>x.k===TEMA)||{}).nome);
+    <div class="tema-abas" role="tablist"><button type="button" role="tab" data-aba="cores" class="${aba==='cores'?'on':''}">Cores</button><button type="button" role="tab" data-aba="fonte" class="${aba==='fonte'?'on':''}">Fonte</button></div>
+    <p class="quiet tema-dica" id="temaDica">${DICA[aba]}</p>
+    <div id="temaCorpo">${corpo()}</div>`);
+  const liga=()=>{
+    sheet.querySelectorAll('[data-tema]').forEach(b=>b.addEventListener('click',()=>{
+      if(TEMA===b.dataset.tema) return;
+      aplicaTema(b.dataset.tema); vibrate(15); SFX.pop();
+      render(); if(chatAbertoAgora()) refreshChat();
+      document.getElementById('temaCorpo').innerHTML=corpo(); liga();
+      toast('Tema ' + (TEMAS.find(x=>x.k===TEMA)||{}).nome);
+    }));
+    sheet.querySelectorAll('[data-fonte]').forEach(b=>b.addEventListener('click',()=>{
+      if(FONTE===b.dataset.fonte) return;
+      aplicaFonte(b.dataset.fonte); vibrate(15); SFX.pop();
+      document.getElementById('temaCorpo').innerHTML=corpo(); liga();
+      toast('Letra ' + (FONTES.find(x=>x[0]===FONTE)||[])[1]);
+    }));
+  };
+  sheet.querySelectorAll('[data-aba]').forEach(b=>b.addEventListener('click',()=>{
+    if(b.dataset.aba===aba) return; aba=b.dataset.aba; vibrate(10);
+    sheet.querySelectorAll('[data-aba]').forEach(x=>x.classList.toggle('on',x.dataset.aba===aba));
+    document.getElementById('temaDica').textContent=DICA[aba];
+    document.getElementById('temaCorpo').innerHTML=corpo(); liga();
   }));
   liga();
 }
