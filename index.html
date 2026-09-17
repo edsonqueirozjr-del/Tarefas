@@ -1299,7 +1299,8 @@
   @media(max-width:360px){body .sheet.looksheet{padding-left:16px;padding-right:16px}.looksheet>h2{font-size:17px}.looksheet .sw2{gap:6px}}
 
   /* Informação de apoio discreta; ações não reutilizam as cores dos dias. */
-  body .aulas{gap:5px;margin-bottom:10px}
+  body .aulas{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+  body .aulas span{flex:1 1 auto;text-align:center}
   body .aulas span{background:#E9E8EF;color:var(--ink);border:1px solid #D9D7E1;border-radius:9px;padding:3px 7px;font-size:13px;font-weight:600;line-height:1.35}
   .tg .trea{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0;vertical-align:2px}
   .tg .trea:has(>.ra:first-child){vertical-align:-.5px}
@@ -1678,6 +1679,8 @@
     .filter-row>#fType.grade .chip,#fSubj.grade .chip{flex:none;width:auto;min-width:0;text-align:center;padding-left:4px;padding-right:4px}
     .filter-row>#fType.mobile-collapsed,#fSubj.mobile-collapsed{display:none}
     #fSubj{flex-wrap:wrap;gap:6px}
+    #fSubj .chip,.filter-row>#fType .chip{flex:1 1 auto!important;min-width:max-content!important;text-align:center}   /* os chips esticam e preenchem cada linha (na fileira de rolagem do celular tambem) */
+    #fSubj.medindo .chip,.filter-row>#fType.medindo .chip{flex:none!important;min-width:0!important}   /* durante a medicao, tamanho natural */
   }
   @media screen and (min-width:600px) and (min-height:600px){
     .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) var(--tablet-filter-height,58px)}
@@ -3520,8 +3523,9 @@ function renderFilters(){
 // opcoes do filtro: todas com a mesma largura, ocupando a largura inteira; quebra em mais linhas quando nao cabem
 function esticaChips(){
   ['fType','fSubj'].forEach(id=>{ const el=document.getElementById(id); if(!el) return;
-    el.classList.remove('grade'); if(!el.offsetWidth) return;
-    const chips=[...el.querySelectorAll('.chip')]; if(chips.length<2) return;
+    el.classList.remove('grade'); el.classList.add('medindo');            // mede cada opcao no tamanho natural (sem esticar)
+    if(!el.offsetWidth){ el.classList.remove('medindo'); return; }
+    const chips=[...el.querySelectorAll('.chip')]; if(chips.length<2){ el.classList.remove('medindo'); return; }
     const gap=parseFloat(getComputedStyle(el).columnGap)||6, larg=el.clientWidth;
     const pad=c=>parseFloat(getComputedStyle(c).paddingLeft)+parseFloat(getComputedStyle(c).paddingRight);
     const maior=Math.max(...chips.map(c=>c.getBoundingClientRect().width-pad(c)))+8;   // a opcao mais larga precisa caber (na grade a folga interna e 4px de cada lado)
@@ -3530,7 +3534,12 @@ function esticaChips(){
     let cols=Math.min(cabem,chips.length), melhor=null;
     for(let c=Math.min(cabem,chips.length);c>=Math.max(2,Math.ceil(chips.length/4));c--){ const linhas=Math.ceil(chips.length/c), sobra=linhas*c-chips.length;
       if(melhor===null||sobra<melhor||(sobra===melhor&&linhas<Math.ceil(chips.length/cols))){ melhor=sobra; cols=c; } if(sobra===0) break; }
-    el.style.setProperty('--cols',cols); el.classList.add('grade'); });
+    el.classList.remove('medindo');
+    // a ultima linha tambem ocupa a largura inteira: as opcoes dela se alargam para preencher
+    const n=chips.length, linhas=Math.ceil(n/cols), r=n-(linhas-1)*cols;
+    const mdc=(a,b)=>b?mdc(b,a%b):a; const L=cols*r/mdc(cols,r);
+    chips.forEach((c,i)=>{ c.style.gridColumn='span '+(i>=n-r?L/r:L/cols); });
+    el.style.setProperty('--cols',L); el.classList.add('grade'); });
 }
 window.addEventListener('resize',()=>{ clearTimeout(window.__ec); window.__ec=setTimeout(esticaChips,120); });
 function render(){
@@ -4888,6 +4897,26 @@ render();
   if(tabletFiltersMedia.addEventListener) tabletFiltersMedia.addEventListener('change',ajusta);
   else tabletFiltersMedia.addListener(ajusta);
 })();
+// A tela nao pula quando a lista e redesenhada (estrela, status, nuvem): o que estava no topo da tela continua no mesmo lugar.
+{ const _render=render;
+  render=function(){
+    let anc=null, topo=0;
+    if(hojeJaPosicionado&&!document.body.classList.contains('carregando')&&!document.body.classList.contains('locked')){
+      const cab=document.querySelector('.top'); const cb=cab?cab.getBoundingClientRect().bottom:0;
+      const y=Math.max(6,Math.min(cb+6,innerHeight-1));
+      const els=document.elementsFromPoint(Math.min(innerWidth/2,300),y);
+      for(const e of els){ const a=e.closest?e.closest('.day[data-date],.imp[data-date]'):null; if(a){ anc=a; break; } }
+      if(anc) topo=anc.getBoundingClientRect().top;
+    }
+    const r=_render.apply(this,arguments);
+    if(anc){
+      const sel=anc.classList.contains('imp')?'.imp[data-date="imp"]':`.day[data-date="${anc.dataset.date}"]`;
+      const novo=document.querySelector(sel);
+      if(novo){ const d=novo.getBoundingClientRect().top-topo; if(Math.abs(d)>1) window.scrollBy({top:d,left:0,behavior:'instant'}); }
+    }
+    return r;
+  };
+}
 // Botão "voltar" do Android: fecha o que estiver aberto em vez de sair do app; na tela inicial, dois toques e pergunta
 (()=>{ let ultimoVoltar=0, saindo=false;
   const arma=()=>{ try{ history.pushState({guarda:1},''); }catch(e){} };
