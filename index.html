@@ -576,7 +576,7 @@
   .prog .sapo-prog{width:24px;height:24px;object-fit:contain;vertical-align:bottom;margin-left:12px;transform:scale(2);transform-origin:50% 100%;object-position:50% 100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));cursor:pointer;pointer-events:auto;position:relative;z-index:1}
   .prog .sapo-prog.pulando{z-index:25}
   .prog .sapo-prog:active{transform:scale(1.8)}
-  .prog .row>span:last-child{display:inline-flex;align-items:flex-end;gap:2px}
+  .prog .row>span:last-child{display:inline-flex;align-items:flex-end;justify-content:center;gap:2px}   /* contador centralizado de verdade (e flex, text-align nao vale) */
   .prog .done .bar i{background:linear-gradient(90deg,var(--ter),var(--qua),var(--gold));background-size:220% 100%}
   .nav{display:none}
   .nav b{color:var(--ink)}
@@ -707,7 +707,7 @@
   .task.done .t{opacity:1}
   .st.ok{background:#DFF5E6;color:#2F7D4F}                 /* Feito: verdinho */
   .st{display:inline-block;font-size:12px;font-weight:900;background:var(--t29);color:var(--t61);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
-  .st.mv{background:#fff;color:var(--ink);border:1px solid #E5E1EE}   /* Mudou de dia: branco e preto, como a etiqueta de reacao */
+  .st.mv{background:var(--t10);color:var(--ink)}   /* Mudou de dia: igual a etiqueta da materia */
   .tg{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:4px}
   .tg .st,.tg .dchip{margin:0;vertical-align:0}
   .st.sj{background:var(--t10);color:var(--ink)}
@@ -720,8 +720,8 @@
   .task.off .tx{text-decoration:line-through;color:var(--soft)}
   .task.off .note{border-left-color:var(--t65)}
   .st.canc{background:#FBE3E3;color:#B93A3A}               /* Cancelada: vermelho claro */
-  .st.pics{background:var(--t27);color:var(--t59)}
-  .st.wiz{background:var(--t70);color:var(--t59)}
+  .st.pics{background:var(--t10);color:var(--ink)}   /* foto e Para segunda: igual a etiqueta da materia */
+  .st.wiz{background:var(--t10);color:var(--ink)}
   .trea{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
   .trea .r{display:inline-flex;align-items:center;gap:4px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:2px 9px;font-size:13px;font-weight:800;box-shadow:0 1px 3px rgba(38,36,58,.10)}
   .trea .r b{font-size:11px;color:var(--soft);font-weight:800}
@@ -730,6 +730,7 @@
   .rgrid button{border:2px solid var(--line);background:#fff;border-radius:16px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:800;color:var(--ink)}
   .rgrid button span{font-size:30px;line-height:1}
   .rgrid button.on{border-color:var(--ink);background:var(--t05)}
+  .st.pics{border:0;font:inherit;font-weight:900;cursor:pointer;line-height:inherit}   /* etiqueta da foto e o unico jeito de abrir as fotos (sem previa na tarefa) */
   .tpics{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
   .tpics img{width:56px;height:56px;object-fit:cover;border-radius:12px;border:2px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18)}
   .tpics .more2{width:56px;height:56px;border-radius:12px;background:rgba(38,36,58,.12);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--ink)}
@@ -836,7 +837,8 @@
   .who small{color:var(--soft);font-weight:700}
   /* família / presença */
   .fam{display:flex;justify-content:center;gap:22px;margin:2px 0 16px}
-  .fam .p{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:16px;font-weight:800;color:var(--lilas-soft);border:0;background:none;padding:0}
+  .fam .p{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:16px;font-weight:800;color:var(--lilas-soft);border:0;background:none;padding:0;flex:1 1 0;min-width:0;max-width:150px;text-align:center}   /* tres colunas iguais: fotos igualmente espacadas, a do meio no centro, nome centralizado embaixo */
+  .fam .p>span,.fam .p small{max-width:100%;white-space:normal}
   .fam .p .avw{position:relative}
   .fam .p .av{width:64px;height:64px;border-radius:50%;background:var(--t24);display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid var(--lilas-line);overflow:hidden}
   .fam .p .av img{width:100%;height:100%;object-fit:cover}
@@ -1182,6 +1184,11 @@
   .msg.me .b .file{background:rgba(255,255,255,.22)}
   .msg .b .file small{display:inline;opacity:.75;margin-left:4px}
   .viewer img{width:100%;border-radius:16px;display:block}
+  /* foto em tela cheia */
+  .fotona{position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(28,22,52,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);opacity:0;transition:opacity .18s;cursor:pointer}
+  .fotona.on{opacity:1}
+  .fotona img{max-width:min(96vw,900px);max-height:90vh;width:auto;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.45);transform:scale(.94);transition:transform .2s}
+  .fotona.on img{transform:none}
   /* editor de foto (cortar/enquadrar) */
   .crop{display:flex;flex-direction:column;align-items:center;gap:10px}
   .cropbox{position:relative;width:100%;max-width:340px;background:#111;border-radius:16px;overflow:hidden;touch-action:none;user-select:none}
@@ -1722,7 +1729,7 @@
     .prog .sapo-prog{width:26px;height:26px;transform-origin:100% 100%;position:absolute;right:0;bottom:-1px;margin:0}
     .prog .row{position:relative;justify-content:center}     /* tablet: sem o rotulo da semana, contador no meio e sapo na direita */
     .prog .row .wk-label{display:none}
-    .prog .row>span:last-child{flex:1;text-align:center;padding-right:30px}
+    .prog .row>span:last-child{flex:1;justify-content:center}
     @media (min-width:700px){
       .top-title h1{font-size:36px}
       .prog .row{font-size:20px}
@@ -1766,9 +1773,10 @@
     #fSubj.medindo .chip,.filter-row>#fType.medindo .chip{flex:none!important;min-width:0!important}   /* durante a medicao, tamanho natural */
   }
   @media screen and (min-width:600px) and (min-height:600px){
-    .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) var(--tablet-filter-height,58px)}
-    .filter-row .mobile-filter-toggle{height:var(--tablet-filter-height,58px);min-height:var(--tablet-filter-height,58px);font-size:15px;padding:8px 16px}
-    .filter-row>.filter-search{width:var(--tablet-filter-height,58px);height:var(--tablet-filter-height,58px)}
+    .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 43px}   /* tablet: Ver status / Ver materias e lupa na altura dos chips de baixo (43px) */
+    body #fSubj{margin-left:0;margin-right:0}   /* tablet: filtro de materias alinhado com o de status (sem sangrar para os lados) */
+    .filter-row .mobile-filter-toggle{height:auto;min-height:0;font-size:15px;padding:8px 16px}
+    .filter-row>.filter-search{width:43px;height:43px}
     .filter-search svg{width:32px;height:32px}
   }
   /* Conversa no celular: toda a area util, inclusive quando o teclado reduz a tela. */
@@ -3699,7 +3707,7 @@ function render(){
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
     const deOndeEstava=pctNaTela();   // continua de onde a barrinha esta (0 quando o app abre)
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span class="wk-label"><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas${pct===100?' 🎉':''}<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span class="wk-label"><b>${w.label}</b></span><span><b>${dn}</b> de ${hs.length} feitas<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -3837,13 +3845,14 @@ function taskHtml(t,inImp){
   const dchip = inImp ? `<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
   const subj = `<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span>`;
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
-  const status=((t.pics||0)?`<span class="st pics">${ICO.camera} ${t.pics}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">❌ Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'')+moved;
+  // ordem das etiquetas: materia, foto, mudou de dia, para segunda... e a de status (Feito, Falta fazer...) sempre por ultimo
+  const status=((t.pics||0)?`<button type="button" class="st pics" data-pics="${t.id}" aria-label="Ver ${t.pics} foto${t.pics>1?'s':''}">${ICO.camera} ${t.pics}</button>`:'')+moved+(t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'');
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''} ${t.wiz?'wizt':''}" data-id="${t.id}">
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(NEXT_R[t.status]||'done')}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${swLbl(NEXT_L[t.status]||'doing')}</div>`: ''}
     <div class="tin">
-      <div class="t"><div class="tg">${dchip}${subj}${t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:''}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>r.a?`<button type="button" class="r ra" data-rfx="${r.a}" aria-label="Ouvir ${esc(r.an||'áudio')} de ${esc(r.n||'')}"><span class="pl" aria-hidden="true"></span><b>${esc(r.n||'')}</b> reagiu</button>`:`<span class="r">${r.e} <b>${esc(r.n||'')}</b> reagiu</span>`).join('')}</span>`:''}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
-        ${(t.pics||0)&&t.thumbs?`<div class="tpics" data-pics="${t.id}">${t.thumbs.slice(0,4).map(u=>`<img src="${u}" alt="">`).join('')}${t.pics>4?`<span class="more2">+${t.pics-4}</span>`:''}</div>`:''}${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
+      <div class="t"><div class="tg">${dchip}${subj}${status}${(t.reacts&&Object.keys(t.reacts).length)?`<span class="trea">${Object.values(t.reacts).map(r=>r.a?`<button type="button" class="r ra" data-rfx="${r.a}" aria-label="Ouvir ${esc(r.an||'áudio')} de ${esc(r.n||'')}"><span class="pl" aria-hidden="true"></span><b>${esc(r.n||'')}</b> reagiu</button>`:`<span class="r">${r.e} <b>${esc(r.n||'')}</b> reagiu</span>`).join('')}</span>`:''}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
+${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
       ${t.status==='doing'?`<button type="button" class="star fazendo" data-fx="fazendo" aria-label="Fazendo" title="Fazendo">${ICO.ampulheta}</button>`:''}${(t.status==='todo'&&!t.off)?`<button type="button" class="star pendente" data-fx="pendente" aria-label="Falta fazer" title="Falta fazer">${ICO.pendente}</button>`:''}
       ${t.status==='done'
         ? `<button type="button" class="star feito" data-fx="feito" aria-label="Feito" title="Feito">${ICO.feito}</button>`
@@ -4314,10 +4323,19 @@ function openPics(id){
     box.innerHTML=ks.length?`<div class="gal">${ks.map(k=>`<div class="cell"><img src="${v[k].data}" data-big="${k}" alt="">${isAluna()?`<button class="del" data-del="${k}" aria-label="Apagar">✕</button>`:''}</div>`).join('')}</div>`
       :'<p class="quiet" style="text-align:center;padding:10px 0">Ainda não há fotos desta tarefa. 📷</p>';
     box.querySelectorAll('[data-big]').forEach(im=>im.addEventListener('click',()=>{ const k=im.dataset.big;
-      show(`<h2>${ICO.camera} Foto <button class="x">✕</button></h2><div class="viewer"><img src="${v[k].data}" alt=""></div><div class="row"><button class="opt" id="picBack">Voltar</button><a class="opt primary" style="justify-content:center;text-decoration:none" href="${v[k].data}" download="tarefa.jpg">⬇️ Salvar</a></div>`);
-      document.getElementById('picBack').addEventListener('click',()=>openPics(id)); sheet.querySelector('.x').addEventListener('click',()=>openPics(id),{once:true}); }));
+      fotoGrande(v[k].data); }));
     box.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ if(!isAluna()) return; picsRef(id).child(b.dataset.del).remove().then(()=>{ countPics(id); openPics(id); toast('Foto apagada'); }); }));
   });
+}
+// foto em tela cheia: so a foto no meio, o resto desfocado atras; toca em qualquer lugar para fechar
+function fotoGrande(src){
+  document.querySelector('.fotona')?.remove();
+  const box=document.createElement('div'); box.className='fotona'; box.setAttribute('role','dialog'); box.setAttribute('aria-label','Foto');
+  box.innerHTML=`<img src="${src}" alt="">`;
+  const fecha=()=>{ box.classList.remove('on'); setTimeout(()=>box.remove(),180); document.removeEventListener('keydown',tecla); };
+  const tecla=e=>{ if(e.key==='Escape') fecha(); };
+  box.addEventListener('click',fecha); document.addEventListener('keydown',tecla);
+  document.body.appendChild(box); requestAnimationFrame(()=>box.classList.add('on'));
 }
 function countPics(id){ if(!isAluna()) return; if(!picsRef(id)) return; picsRef(id).once('value').then(sn=>{ const v=sn.val()||{}; const ks=Object.keys(v).sort();
   const t=findTask(id); if(!isAluna()||!t) return; t.pics=ks.length; t.thumbs=ks.slice(-4).map(k=>v[k].thumb||v[k].data); t.u=Date.now(); save(); render(); }); }
