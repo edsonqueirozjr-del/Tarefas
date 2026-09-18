@@ -795,7 +795,7 @@
   .tt .dh{border-radius:12px;color:#fff;font-weight:900;font-size:14px;height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
   .tt .dh small{font-size:10px;font-weight:800;opacity:.9;margin-top:2px}
   .tt .c{border-radius:12px;background:var(--t08);border:2px solid transparent;min-height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 3px;overflow:hidden;cursor:pointer;transition:opacity .2s,transform .2s,background .2s}
-  .tt .c.wiz{background:var(--t27)}
+
   .tt .c.vaga{background:transparent;pointer-events:none;min-height:0}
   .tt .c:active{transform:scale(.94)}
   .tt .c b{font-size:21px;line-height:1}
@@ -2115,6 +2115,55 @@
   }
   @media(prefers-reduced-motion:reduce){.msg.me.send-enter .b{animation:none!important}}
   body .chatsheet .chat .chathead:has(.cfbar.on){padding-bottom:10px}
+
+  .dock-mobile-action,.dock-menu-symbol,.mobile-menu-chat{display:none}
+  @media screen and (max-width:599px){
+    body .dock{grid-template-columns:1fr 1fr 76px 1fr 1fr;height:calc(68px + env(safe-area-inset-bottom));padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right));border-radius:22px 22px 0 0;box-shadow:0 -4px 18px rgba(var(--r01),.12)}
+    body .dock>#fab,body .dock>#chatFab{display:none!important}
+    body .dock>.dock-gap{grid-column:3;grid-row:1}
+    body .dock .dock-mobile-action{display:flex;grid-row:1;flex-direction:column;gap:5px;padding:8px 1px 5px;background:transparent;color:#fff;font-size:10px;font-weight:800;line-height:1.15;min-width:0;border:0;border-radius:14px;pointer-events:auto;align-items:center;justify-content:center;font-family:inherit}
+    #mobileDockTimeline{grid-column:1}#mobileDockSearch{grid-column:2}#mobileDockClasses{grid-column:4}#mobileDockChat{grid-column:5}
+    .dock-mobile-action .mobile-dock-icon{display:flex;align-items:center;justify-content:center;height:25px}
+    .dock-mobile-action svg.ico{width:25px;height:25px;stroke-width:1.9}
+    .dock-mobile-action .mobile-dock-label{white-space:nowrap}
+    body .dock .dock-mobile-action:active{background:rgba(255,255,255,.16);transform:scale(.95)}
+    .dock-mobile-action:focus-visible{outline:2px solid white;outline-offset:-3px}
+    body .dock .dock-mid{width:66px;height:66px;bottom:calc(env(safe-area-inset-bottom) + 18px);border:5px solid var(--paper);background:linear-gradient(140deg,#fff,var(--t12));box-shadow:0 4px 14px rgba(var(--r01),.22)}
+    body .dock .dock-mid .mao,body .dock .dock-mid .dk-ico,body .dock .dock-mid .dk-cap{display:none!important}
+    body .dock .dock-mid.alt .di{visibility:visible}
+    body .dock .dock-mid:not(.aluna) .dock-menu-symbol{display:flex;align-items:center;justify-content:center;color:var(--lilas-ink)}
+    .dock-menu-symbol svg{width:29px;height:29px}
+    body .dock .dock-mid.aluna .dock-menu-symbol{display:none}
+    body .dock .dock-mid.aluna .coracao{display:block}
+    .mobile-menu-chat{display:flex}
+  }
+
+  @media screen and (max-width:599px){
+    #app #tl,#filterSearch{display:none!important}
+    body .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+    #mobileDockTimeline .mobile-dock-label{white-space:normal;max-width:65px;text-align:center}
+    .dock-mobile-action .mobile-dock-label{min-height:23px;display:flex;align-items:center;justify-content:center}
+  }
+  .tema-apply{position:sticky;bottom:0;z-index:2;padding:12px 0 4px;background:#fff;box-shadow:0 -8px 18px #fff}
+  .tema-apply[hidden]{display:none}
+  .tema-apply .opt{justify-content:center;margin:0;min-height:48px}
+
+  @media screen and (max-width:599px){
+    .veil:has(.activity-search-sheet){z-index:90}
+    body .sheet.activity-search-sheet{position:fixed;left:0;right:0;top:var(--search-top,0px);bottom:auto;width:100%;height:var(--search-height,100dvh);max-height:none;border-radius:0;padding:12px 16px max(12px,env(safe-area-inset-bottom));display:flex;flex-direction:column;overflow:hidden;animation:none}
+    .activity-search-sheet>.grip{display:none}
+    .activity-search-sheet>h2{flex:none;margin:0 0 12px;font-size:21px;min-height:42px}
+    .activity-search-sheet>.srch{flex:none;margin:0 0 12px}
+    .activity-search-sheet #srchTxt{width:100%;min-height:48px;font-size:16px;border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--paper);color:var(--ink)}
+    .activity-search-sheet #srchTxt:focus{outline:2px solid var(--lilas);outline-offset:-2px}
+    .activity-search-sheet>.res{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-bottom:12px;align-content:start}
+    .activity-search-sheet .res .hit{flex:none;width:100%;overflow-wrap:anywhere}
+  }
+  @media screen and (max-width:599px){.sheet .mobile-menu-chat,.sheet .menu-dock-duplicate{display:none}}
+  @media screen and (max-width:599px){
+    body .top{padding-top:6px}
+    body .top .top-title{min-height:34px;margin-bottom:8px}
+  }
 </style>
 </head>
 <body class="carregando">
@@ -2143,12 +2192,18 @@
 </div>
 
 <nav class="dock" id="fabs" aria-label="Ações">
+  <button type="button" class="dock-mobile-action" id="mobileDockTimeline" aria-label="Linha do tempo"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Linha do tempo</span></button>
+  <button type="button" class="dock-mobile-action" id="mobileDockSearch" aria-label="Procurar atividade"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Procurar</span></button>
+  <button type="button" class="dock-mobile-action" id="mobileDockClasses" aria-label="Aulas da semana"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Aulas</span></button>
+  <button type="button" class="dock-mobile-action" id="mobileDockChat" aria-label="Conversa"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Conversa</span></button>
+
   <button class="dock-b" id="fab" aria-label="Menu"><span class="di" aria-hidden="true">☰</span><span class="dt">Menu</span></button>
   <span class="dock-gap" aria-hidden="true"></span>
   <button class="dock-b chatfab" id="chatFab" aria-label="Conversa"><span class="di chat-icon"><svg class="bolha" viewBox="0 0 48 46" aria-hidden="true"><path d="M10 2.5h28A7.5 7.5 0 0 1 45.5 10v18a7.5 7.5 0 0 1-7.5 7.5h-9L24 43.5 19 35.5h-9A7.5 7.5 0 0 1 2.5 28V10A7.5 7.5 0 0 1 10 2.5Z" fill="currentColor"/><text id="chatBadge" x="24" y="19" text-anchor="middle" dominant-baseline="central"></text></svg></span><span class="dt">Conversa</span></button>
-  <button class="dock-mid reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="dk-cap" id="dockCap" aria-hidden="true"></span><span class="dk-ico" id="dockIco" aria-hidden="true"></span><span class="di heart-icon"><svg class="coracao" viewBox="0 0 48 44" aria-hidden="true"><defs><linearGradient id="gcor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".55" stop-color="#F2CE1B"/><stop offset="1" stop-color="#C9A20E"/></linearGradient></defs><path d="M24 41.2C24 41.2 2.5 28.6 2.5 15.1 2.5 8.2 8 2.7 14.9 2.7c4.2 0 7.7 2.1 9.1 5 1.4-2.9 4.9-5 9.1-5 6.9 0 12.4 5.5 12.4 12.4C45.5 28.6 24 41.2 24 41.2Z" fill="url(#gcor)"/><text id="reaBadge" x="24" y="19.5" text-anchor="middle" dominant-baseline="central"></text></svg><span class="mao" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/><path d="M22 8c0-2.3-.8-4.3-2-6"/></svg></span></span></button>
+  <button class="dock-mid reafab" id="reaFab" aria-label="Carinhos recebidos"><span class="dk-cap" id="dockCap" aria-hidden="true"></span><span class="dk-ico" id="dockIco" aria-hidden="true"></span><span class="di heart-icon"><span class="dock-menu-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><svg class="coracao" viewBox="0 0 48 44" aria-hidden="true"><defs><linearGradient id="gcor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".55" stop-color="#F2CE1B"/><stop offset="1" stop-color="#C9A20E"/></linearGradient></defs><path d="M24 41.2C24 41.2 2.5 28.6 2.5 15.1 2.5 8.2 8 2.7 14.9 2.7c4.2 0 7.7 2.1 9.1 5 1.4-2.9 4.9-5 9.1-5 6.9 0 12.4 5.5 12.4 12.4C45.5 28.6 24 41.2 24 41.2Z" fill="url(#gcor)"/><text id="reaBadge" x="24" y="19.5" text-anchor="middle" dominant-baseline="central"></text></svg><span class="mao" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/><path d="M22 8c0-2.3-.8-4.3-2-6"/></svg></span></span></button>
 </nav>
 <input type="file" id="fotoFile" accept="image/*" style="display:none">
+<input type="file" id="fotoCameraFile" accept="image/*" capture="user" style="display:none">
 <input type="file" id="bgFile" accept="image/*" style="display:none">
 <input type="file" id="attFile" style="display:none">
 <input type="file" id="taskFoto" accept="image/*" capture="environment" style="display:none">
@@ -2555,10 +2610,21 @@ function semEmoji(t){ return String(t||'').replace(/[\p{Extended_Pictographic}\u
 // Realca todas as ocorrencias sem quebrar as tags que o texto da tarefa ja carrega (negrito etc.).
 function hlHtml(html,q){ if(!q||q.length<2) return html||''; const re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
   return String(html||'').split(/(<[^>]+>)/).map(seg=>seg.startsWith('<')?seg:seg.replace(re,m=>'<mark>'+m+'</mark>')).join(''); }
+function fitSearchViewport(){
+  const vv=window.visualViewport;
+  const update=()=>{
+    if(!sheet.classList.contains('activity-search-sheet')) return;
+    sheet.style.setProperty('--search-height',(vv?vv.height:window.innerHeight)+'px');
+    sheet.style.setProperty('--search-top',(vv?vv.offsetTop:0)+'px');
+  };
+  update(); vv?.addEventListener('resize',update); vv?.addEventListener('scroll',update); window.addEventListener('resize',update);
+  fitSearchViewport.cleanup=()=>{ vv?.removeEventListener('resize',update); vv?.removeEventListener('scroll',update); window.removeEventListener('resize',update); fitSearchViewport.cleanup=null; };
+}
 function openSearch(q0){
   show(`<h2>${ICO.lupa} Buscar tarefa <button class="x">✕</button></h2>
     <div class="srch"><input id="srchTxt" type="search" aria-label="Pesquisar tarefas em todas as semanas" placeholder="Ex.: biomas, página 52, Inglês…" autocomplete="off"></div>
     <div class="res" id="srchRes"><p class="none">Escreve para procurar em todas as semanas.</p></div>`);
+  fitSearchViewport();
   const inp=document.getElementById('srchTxt'), res=document.getElementById('srchRes');
   const run=()=>{ const q=inp.value.trim(); if(q.length<2){ res.innerHTML='<p class="none">Escreve pelo menos 2 letras.</p>'; return; }
     const ql=q.toLowerCase(); const hits=[];
@@ -2701,15 +2767,15 @@ function openFoto(){
   show(`<h2>${USER.emoji} ${USER.nome} <button class="x">✕</button></h2>
     <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
       <span class="av" style="width:120px;height:120px;border-radius:50%;overflow:hidden;background:${corT('#F2F0FA')};display:flex;align-items:center;justify-content:center;font-size:56px;border:3px solid var(--line)">${avatarHtml(USER)}</span>
-      <button class="opt primary" id="fotoPick" style="justify-content:center;max-width:320px">Escolher foto ou tirar uma</button>
-      ${PERFIS[USER.id]&&PERFIS[USER.id].foto?'<button class="opt danger" id="fotoDel" style="justify-content:center;max-width:320px">Tirar a foto</button>':''}
+      <button class="opt primary" id="fotoPick" style="justify-content:center;max-width:320px">Escolher foto da galeria</button>
+      <button class="opt" id="fotoCamera" style="justify-content:center;max-width:320px">Tirar foto com a câmera</button>
       <button class="opt" id="fotoNome" style="justify-content:center;max-width:320px">Mudar meu nome</button>
-      <button class="opt" id="fotoSwap" style="justify-content:center;max-width:320px">👤 Trocar de usuário</button>
+      <button class="opt" id="fotoSwap" style="justify-content:center;max-width:320px">Trocar de usuário</button>
     </div>`);
   document.getElementById('fotoNome').addEventListener('click',openNome);
   document.getElementById('fotoSwap').addEventListener('click',()=>openLogin());
   document.getElementById('fotoPick').addEventListener('click',()=>document.getElementById('fotoFile').click());
-  const del=document.getElementById('fotoDel'); if(del) del.addEventListener('click',()=>{ if(famRef) famRef.child('perfis/'+USER.id+'/foto').remove(); hide(); toast('Foto removida'); });
+  document.getElementById('fotoCamera').addEventListener('click',()=>document.getElementById('fotoCameraFile').click());
 }
 function openCropper(file,opt){ // opt: {circle, out, aspects}
   return new Promise((resolve)=>{
@@ -2753,12 +2819,12 @@ function openCropper(file,opt){ // opt: {circle, out, aspects}
     }
   });
 }
-document.getElementById('fotoFile').addEventListener('change',ev=>{
+['fotoFile','fotoCameraFile'].forEach(id=>document.getElementById(id).addEventListener('change',ev=>{
   const f=ev.target.files[0]; ev.target.value=''; if(!f) return;
   openCropper(f,{circle:true,out:200,q:.85}).then(data=>{ if(!data) return;
     if(famRef) famRef.child('perfis/'+USER.id).update({foto:data,nome:USER.nome}); else { PERFIS[USER.id]={foto:data}; renderFam(); }
     vibrate(20); toast('Foto atualizada 📷'); });
-});
+}));
 let lastRead=0; try{lastRead=+localStorage.getItem(KEY+'-read')||0;}catch(e){}
 function unread(){ return USER?CHAT.filter(m=>m.by!==USER.id&&(m.t||0)>lastRead).length:0; }
 function appBadge(){ // número no ícone do app (tela inicial), como o WhatsApp
@@ -4238,10 +4304,10 @@ function bindTasks(root=document.getElementById('app')){
 /* ================= SHEETS ================= */
 const veil=document.getElementById('veil'), sheet=document.getElementById('sheet');
 let scrollY0=0;
-function show(html){initChatJump.cleanup?.();sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.classList.toggle('resumosheet',/id="sumBody"/.test(html));sheet.classList.toggle('sharesheet',/id="shBox"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
+function show(html){fitSearchViewport.cleanup?.();initChatJump.cleanup?.();sheet.classList.toggle('activity-search-sheet',/id="srchTxt"/.test(html));sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.classList.toggle('resumosheet',/id="sumBody"/.test(html));sheet.classList.toggle('sharesheet',/id="shBox"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap');
   if(!veil.classList.contains('on')){scrollY0=window.scrollY;document.body.classList.add('locked');document.body.style.top=(-scrollY0)+'px';}
   veil.classList.add('on');sheet.scrollTop=0;sheet.querySelector('.x')?.addEventListener('click',hide);}
-function hide(){initChatJump.cleanup?.();closePop();setTyping(false);if(REC)stopRec(true);if(RECDONE){RECDONE=null;}if(recPrev){try{recPrev.pause();}catch(e){}recPrev=null;}veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
+function hide(){fitSearchViewport.cleanup?.();initChatJump.cleanup?.();closePop();setTyping(false);if(REC)stopRec(true);if(RECDONE){RECDONE=null;}if(recPrev){try{recPrev.pause();}catch(e){}recPrev=null;}veil.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,scrollY0);sheet.style.transform='';}
 // arrastar para baixo fecha: so quando a pessoa realmente quer (nada de fechar no meio de uma rolagem)
 let ty=0,tx=0,dy=0,armed=false,dragging=false,t0=0,ultimaRolagem=0;
 sheet.addEventListener('scroll',()=>{ultimaRolagem=Date.now();},{passive:true,capture:true});   // pega tambem a rolagem da lista de mensagens
@@ -4366,12 +4432,12 @@ function allReacts(){ const out=[];
   return out.sort((a,b)=>(b.t||0)-(a.t||0));
 }
 function reaNew(){ return allReacts().filter(r=>(r.t||0)>reaSeen).length; }
-function updateReaFab(){ const n=reaNew(), cor=isAluna()&&n>0;   // coracao so com carinho novo; sem carinho, vira o "chamar atencao"
+function updateReaFab(){ const mobile=matchMedia('(max-width:599px)').matches; const n=reaNew(), cor=isAluna()&&n>0;   // coracao so com carinho novo; sem carinho, vira o "chamar atencao"
   const f=document.getElementById('reaFab'); if(f&&!f.classList.contains('alt')){
     f.classList.toggle('on',cor); f.classList.toggle('pulse',cor); f.classList.toggle('tem',cor);
     f.classList.toggle('aluna',cor);
-    f.setAttribute('aria-label',cor?('Carinhos recebidos: '+n+' novo'+(n>1?'s':'')):'Chamar atenção');
-    f.setAttribute('title',cor?'Carinhos recebidos':'Chamar atenção');
+    f.setAttribute('aria-label',mobile?(cor?'Abrir menu, '+n+' carinho'+(n>1?'s':'')+' novo'+(n>1?'s':''):'Abrir menu'):(cor?('Carinhos recebidos: '+n+' novo'+(n>1?'s':'')):'Chamar atenção'));
+    f.setAttribute('title',mobile?'Menu':(cor?'Carinhos recebidos':'Chamar atenção'));
     const b=document.getElementById('reaBadge');
     if(b){ b.textContent=cor?(n>99?'99+':String(n)):''; b.classList.toggle('on',cor); } }
   marcaTopo();
@@ -4693,7 +4759,28 @@ function tlAbreTarefa(id){
     el.scrollIntoView({behavior:'smooth',block:'center'});
     el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500); },240);
 }
+function bindTimelineItems(corpo,refresh){
+  const mais=corpo.querySelector('#tlMais');
+  if(mais) mais.addEventListener('click',()=>{ tlMax+=40; refresh(); });
+  corpo.querySelectorAll('[data-go-k]').forEach(b=>b.addEventListener('click',()=>{ vibrate(15); tlAbreMensagem(b.dataset.goK); }));
+  corpo.querySelectorAll('[data-go-id]').forEach(b=>b.addEventListener('click',()=>{ vibrate(15); if(corpo.id==='mobileTimelineBody') hide(); tlAbreTarefa(b.dataset.goId); }));
+}
+function renderMobileTimeline(){
+  const corpo=document.getElementById('mobileTimelineBody'); if(!corpo) return;
+  const top=sheet.scrollTop; corpo.innerHTML=tlHtml(); bindTimelineItems(corpo,renderMobileTimeline); sheet.scrollTop=top;
+}
+function openMobileTimeline(){
+  tlMax=40;
+  show(`<h2>${ICO.aulas} Linha do tempo <button class="x" aria-label="Fechar">✕</button></h2><div class="tl-body" id="mobileTimelineBody"></div>`);
+  renderMobileTimeline();
+}
+function openMobileSearch(){
+  const previous=document.getElementById('qTxt').value;
+  toggleSearchBar(false);
+  openSearch(previous);
+}
 function renderTimeline(){
+  renderMobileTimeline();
   const sec=document.getElementById('tl'); if(!sec) return;
   const corpo=document.getElementById('tlBody'), bt=document.getElementById('tlToggle');
   sec.classList.toggle('aberta',tlAberta);
@@ -4701,11 +4788,7 @@ function renderTimeline(){
   if(!corpo) return;
   corpo.hidden=!tlAberta;
   if(!tlAberta){ corpo.innerHTML=''; return; }
-  corpo.innerHTML=tlHtml();
-  const mais=document.getElementById('tlMais');
-  if(mais) mais.addEventListener('click',()=>{ tlMax+=40; renderTimeline(); });
-  corpo.querySelectorAll('[data-go-k]').forEach(b=>b.addEventListener('click',()=>{ vibrate(15); tlAbreMensagem(b.dataset.goK); }));
-  corpo.querySelectorAll('[data-go-id]').forEach(b=>b.addEventListener('click',()=>{ vibrate(15); tlAbreTarefa(b.dataset.goId); }));
+  corpo.innerHTML=tlHtml(); bindTimelineItems(corpo,renderTimeline);
 }
 function bindTimeline(){
   const bt=document.getElementById('tlToggle'); if(!bt) return;
@@ -4718,8 +4801,9 @@ function bindTimeline(){
 function openMain(){
   const n=unread();
   show(`<h2>${ICO.menu} Menu <button class="x">✕</button></h2>
+   ${famRef?`<button class="opt mobile-menu-chat" data-m="chat"><span class="ic">${ICO.msg}</span>Conversa${n?` (${n})`:""}</button>`:""}
    <button class="opt" data-m="summary"><span class="ic">${ICO.resumo}</span>Resumo</button>
-   <button class="opt" data-m="tt"><span class="ic">${ICO.aulas}</span>Aulas da semana</button>
+   <button class="opt menu-dock-duplicate" data-m="tt"><span class="ic">${ICO.aulas}</span>Aulas da semana</button>
    <button class="opt" data-m="share"><span class="ic">${ICO.compart}</span>Compartilhar tarefas</button>
    <button class="opt" data-m="wk"><span class="ic">${ICO.semanas}</span>Ver semana</button>
    <button class="opt" data-m="tema"><span class="ic">${ICO.paleta}</span>Tema do app</button>
@@ -4868,35 +4952,37 @@ function openSummary(modoInicial){
   desenha();
 }
 function openTema(abaInicial){
+  let selectedTheme=TEMA, selectedFont=FONTE;
   let aba=abaInicial==='fonte'?'fonte':'cores';
   const amostra=(t,c)=>{ const antes=TEMA; TEMA=t.k; const v=corT(c); TEMA=antes; return v; };
-  const cores=()=>`<div class="temas">${TEMAS.map(t=>`<button class="tema-op ${TEMA===t.k?'on':''}" data-tema="${t.k}" data-t="${t.k}">
+  const cores=()=>`<div class="temas">${TEMAS.map(t=>`<button class="tema-op ${selectedTheme===t.k?'on':''}" data-tema="${t.k}" data-t="${t.k}">
       <span class="tema-bola" style="background:linear-gradient(140deg,${amostra(t,'#B48BF5')},${amostra(t,'#8E5BE0')})"></span>
       <span class="tema-nome">${t.nome}</span>
-      <span class="tema-ok" aria-hidden="true">${TEMA===t.k?ICO.feito:''}</span></button>`).join('')}</div>`;
-  const fontes=()=>`<div class="temas">${FONTES.map(([k,n])=>`<button class="tema-op ${FONTE===k?'on':''}" data-fonte="${k}">
+      <span class="tema-ok" aria-hidden="true">${selectedTheme===t.k?ICO.feito:''}</span></button>`).join('')}</div>`;
+  const fontes=()=>`<div class="temas">${FONTES.map(([k,n])=>`<button class="tema-op ${selectedFont===k?'on':''}" data-fonte="${k}">
       <span class="tema-aa f-${k}" aria-hidden="true">Aa</span>
       <span class="tema-nome f-${k}">${n}<small>Hoje tem 4 tarefas: Matemática, página 52</small></span>
-      <span class="tema-ok" aria-hidden="true">${FONTE===k?ICO.feito:''}</span></button>`).join('')}</div>`;
+      <span class="tema-ok" aria-hidden="true">${selectedFont===k?ICO.feito:''}</span></button>`).join('')}</div>`;
   const corpo=()=>aba==='cores'?cores():fontes();
   show(`<h2>${ICO.paleta} Tema do app <button class="x">✕</button></h2>
     <div class="tema-abas" role="tablist"><button type="button" role="tab" data-aba="cores" class="${aba==='cores'?'on':''}">Cores</button><button type="button" role="tab" data-aba="fonte" class="${aba==='fonte'?'on':''}">Fonte</button></div>
-    <div id="temaCorpo">${corpo()}</div>`);
+    <div id="temaCorpo">${corpo()}</div><div class="tema-apply" id="temaApplyBar" hidden><button type="button" class="opt primary" id="temaApply">Aplicar</button></div>`);
+  const updateApply=()=>{ document.getElementById('temaApplyBar').hidden=selectedTheme===TEMA&&selectedFont===FONTE; };
   const liga=()=>{
     sheet.querySelectorAll('[data-tema]').forEach(b=>b.addEventListener('click',()=>{
-      if(TEMA===b.dataset.tema) return;
-      aplicaTema(b.dataset.tema); vibrate(15); SFX.pop();
-      render(); if(chatAbertoAgora()) refreshChat();
-      document.getElementById('temaCorpo').innerHTML=corpo(); liga();
-      toast('Tema ' + (TEMAS.find(x=>x.k===TEMA)||{}).nome);
+      selectedTheme=b.dataset.tema; vibrate(15);
+      document.getElementById('temaCorpo').innerHTML=corpo(); liga(); updateApply();
     }));
     sheet.querySelectorAll('[data-fonte]').forEach(b=>b.addEventListener('click',()=>{
-      if(FONTE===b.dataset.fonte) return;
-      aplicaFonte(b.dataset.fonte); vibrate(15); SFX.pop();
-      document.getElementById('temaCorpo').innerHTML=corpo(); liga();
-      toast('Letra ' + (FONTES.find(x=>x[0]===FONTE)||[])[1]);
+      selectedFont=b.dataset.fonte; vibrate(15);
+      document.getElementById('temaCorpo').innerHTML=corpo(); liga(); updateApply();
     }));
   };
+  document.getElementById('temaApply').addEventListener('click',()=>{
+    if(selectedTheme!==TEMA) aplicaTema(selectedTheme);
+    if(selectedFont!==FONTE) aplicaFonte(selectedFont);
+    render(); vibrate(15); SFX.pop(); hide(); toast('Aparência aplicada');
+  });
   sheet.querySelectorAll('[data-aba]').forEach(b=>b.addEventListener('click',()=>{
     if(b.dataset.aba===aba) return; aba=b.dataset.aba; vibrate(10);
     sheet.querySelectorAll('[data-aba]').forEach(x=>x.classList.toggle('on',x.dataset.aba===aba));
@@ -4912,7 +4998,8 @@ function openTimetable(){
   const SHORT={cie:'Ciências',por:'Português',mat:'Matemát.',rel:'Religião',edf:'Ed. Física',ing:'Inglês',pdv:'Proj. Vida',geo:'Geografia',his:'História',esp:'Espanhol',art:'Arte',fil:'Filosofia'};
   const col=k=>getComputedStyle(document.documentElement).getPropertyValue(DAYMETA[k][1]).trim();
   const idx=k=>keys.indexOf(k);
-  const mark=k=>k===tomK?'tom':(idx(k)<=idx(todayK)?'past':'');
+  const showWholeWeek=!ks.includes(tomK); // Amanhã sem aula: grade inteira nas cores normais.
+  const mark=k=>showWholeWeek?'':(k===tomK?'tom':(idx(k)<=idx(todayK)?'past':''));
   let g=`<div class="h"></div>`+ks.map(k=>`<div class="dh ${mark(k)}" style="background:${dayCss(k)}">${DAYMETA[k][0].slice(0,3)}${k===tomK?'<small>amanhã</small>':k===todayK?'<small>hoje</small>':''}</div>`).join('');
   TIMETABLE.hours.forEach((h,i)=>{g+=`<div class="h">${h}</div>`+ks.map(k=>{const sk=TIMETABLE.days[k][i];
     return `<div class="c ${mark(k)}" data-sk="${sk}" style="--dc:${col(k)}"><span>${SHORT[sk]}</span></div>`;}).join('');});
@@ -4984,7 +5071,7 @@ function refreshReminder(){
   sheet.querySelector('.x').addEventListener('click',hide); bindTasks(sheet);
   document.getElementById('remGo').addEventListener('click',()=>{hide();vibrate(20);});
 }
-document.getElementById('reaFab').addEventListener('click',function(){ if(dockAlt.roda()) return; if(this.classList.contains('aluna')) openReacts(); else chamarAtencao(); });
+document.getElementById('reaFab').addEventListener('click',function(){ if(matchMedia('(max-width:599px)').matches){ openMain(); return; } if(dockAlt.roda()) return; if(this.classList.contains('aluna')) openReacts(); else chamarAtencao(); });
 // ===== passar o dedo para o lado na barra de baixo: o icone do circulo vai trocando de funcao =====
 const dockAlt=(function(){
   const dock=document.getElementById('fabs'), mid=document.getElementById('reaFab'), ico=document.getElementById('dockIco'), cap=document.getElementById('dockCap');
@@ -5008,7 +5095,7 @@ const dockAlt=(function(){
     clearTimeout(timer); timer=setTimeout(()=>{ idx=0; mostra(0); },6000); }   // parado um tempo, volta ao normal
   function vai(dir){ const n=lista().length+1; idx=(idx+dir+n)%n; vibrate(10); mostra(dir); }
   function roda(){ if(suprime) return true; if(!idx) return false; const o=lista()[idx-1]; idx=0; mostra(0); vibrate(14); if(o) o.go(); return true; }
-  dock.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse'&&e.button!==0) return; p0={x:e.clientX,y:e.clientY,id:e.pointerId,el:e.target}; arrast=false; passo=0; });
+  dock.addEventListener('pointerdown',e=>{ if(matchMedia('(max-width:599px)').matches) return; if(e.pointerType==='mouse'&&e.button!==0) return; p0={x:e.clientX,y:e.clientY,id:e.pointerId,el:e.target}; arrast=false; passo=0; });
   dock.addEventListener('pointermove',e=>{ if(!p0) return; const dx=e.clientX-p0.x, dy=e.clientY-p0.y;
     if(!arrast){ if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.5){ arrast=true; try{ p0.el.setPointerCapture(p0.id); }catch(_){ } } else return; }
     const q=Math.trunc(dx/PASSO()); if(q!==passo){ const d=q>passo?1:-1; passo=q; vai(-d); }   // dedo para a esquerda = proxima opcao
@@ -5016,6 +5103,7 @@ const dockAlt=(function(){
   function fim(){ if(!p0) return; const foi=arrast; p0=null; if(!foi) return; suprime=true; setTimeout(()=>suprime=false,350); }
   dock.addEventListener('pointerup',fim); dock.addEventListener('pointercancel',fim);
   dock.addEventListener('click',e=>{ if(suprime&&!e.target.closest('.dock-mid')){ e.stopPropagation(); e.preventDefault(); } },true);
+  matchMedia('(max-width:599px)').addEventListener('change',()=>{ idx=0; p0=null; suprime=false; mostra(0); });
   return {roda,vai,get idx(){return idx;}};
 })();
 function toggleSearchBar(force){
@@ -5100,6 +5188,11 @@ document.getElementById('qAll').addEventListener('click',()=>openSearch(fQ));
   window.__telas={telaAgora,vaiPara};
 })();
 document.getElementById('fab').addEventListener('click',openMain);
+[['mobileDockTimeline',SV('<circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/>'),openMobileTimeline],['mobileDockSearch',SV('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/>'),openMobileSearch],['mobileDockClasses',ICO.aulas,openTimetable],['mobileDockChat',ICO.msg,openChat]].forEach(([id,icon,action])=>{
+  const button=document.getElementById(id); button.querySelector('.mobile-dock-icon').innerHTML=icon;
+  button.addEventListener('click',()=>action());
+});
+
 document.getElementById('chatFab').addEventListener('click',openChat);
 document.getElementById('chatFab').classList.toggle('on',!!CLOUD_CFG); marcaTopo();
 setInterval(()=>{ if(!document.hidden) renderFam(); },60*1000);
