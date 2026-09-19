@@ -529,7 +529,7 @@
   :root{
     --selected-bg:var(--t33); --selected-ink:var(--t64);
     --paper:#FFFDF7; --ink:#26243A; --soft:#6B6880; --line:#E8E4D8;
-    --dom:#9B8CBA; --seg:var(--t50); --ter:var(--t53); --qua:var(--t55); --qui:var(--t58); --sex:var(--t62); --fab:#26243A; --gold:#D6B60E;
+    --dom:#9B8CBA; --seg:var(--t50); --ter:var(--t53); --qua:var(--t55); --qui:var(--t56); --sex:var(--t52); --sab:#8C7FAE; --fab:#26243A; --gold:#D6B60E;
     --ok:var(--t56); --acc:var(--t53);
     --dia-claro:var(--t44); --dia-hoje:var(--t57);   /* dia normal clarinho; hoje forte */
     --lilas:var(--t53); --lilas-bg:var(--t07); --lilas-bg2:var(--t20); --lilas-line:var(--t40); --lilas-ink:var(--t67); --lilas-soft:#7A6B9B;
@@ -538,7 +538,8 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
   body{user-select:none;-webkit-user-select:none}
   input,textarea{user-select:text;-webkit-user-select:text}
-  html{font-family:Nunito,"Segoe UI",system-ui,sans-serif}
+  html{font-family:Nunito,"Segoe UI",system-ui,sans-serif;overscroll-behavior-y:contain}
+  body{overscroll-behavior-y:contain}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:inherit;font-weight:600;font-size:17px;line-height:1.4}
   .wrap{max-width:560px;margin:0 auto;padding:20px 16px 90px}
   h1{font-size:26px;font-weight:900;margin:0 0 6px;line-height:1.1;text-align:center}
@@ -628,6 +629,7 @@
   .imp .hint{color:var(--soft);font-size:14px;margin:4px 0 2px}
   .imp .task{background:#FDFAE4;border-radius:16px;margin-top:8px;border-top:0;--tbg:#FDFAE4}
   .dchip{display:inline-block;font-size:11px;font-weight:900;color:#fff;border-radius:999px;padding:1px 8px;margin-right:6px;vertical-align:2px}
+  .dchip.hoje{box-shadow:inset 0 0 0 999px rgba(0,0,0,.26)}   /* so o dia de hoje fica mais escuro */
   /* dias */
   .day{--c:var(--dia-claro);border:3px solid var(--c);border-radius:22px;margin-bottom:12px;overflow:hidden;background:#fff}
   .day.today{--c:var(--dia-hoje)}          /* so o dia de hoje fica mais forte */
@@ -661,7 +663,10 @@
   .task{position:relative;overflow:hidden;border-radius:14px;border-top:0;touch-action:pan-y;user-select:none;-webkit-user-select:none}
   .task:first-of-type{border-top:0}
   .sw{position:absolute;inset:0;display:flex;align-items:center;padding:0;font-weight:900;font-size:16px;color:#fff;opacity:0;transition:opacity .15s}
-  .sw span{width:118px;text-align:center;flex:none}   /* a faixa que aparece tem ate 130px: o texto fica no meio dela */
+  .sw span{width:118px;flex:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}   /* a faixa que aparece tem ate 130px: simbolo e texto no meio dela */
+  .sw .swi{flex:none;display:flex;align-items:center;color:inherit}
+  .sw .swi svg{width:19px;height:19px;display:block;stroke-width:2.2}
+  @media screen and (max-width:599px), screen and (max-height:599px){ .sw .swi svg{width:16px;height:16px} }
   @media screen and (max-width:599px), screen and (max-height:599px){ .sw{font-size:13px} }   /* celular: rotulo do arrastar 3px menor */
   .sw-r{justify-content:flex-start}
   .sw-l{justify-content:flex-end}
@@ -720,6 +725,15 @@
   .tg{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:4px}
   .tg .st,.tg .dchip{margin:0;vertical-align:0}
   .st.sj{background:var(--t10);color:var(--ink)}
+  /* Notas: a etiqueta da matéria acompanha a última nota liberada (2º trimestre). */
+  .st.sj.grade-red{background:#F9D5D5;color:#A32424}
+  .st.sj.grade-yellow{background:#FFF1B8;color:#806400}
+  .st.sj.grade-green{background:#DDF5E4;color:#2F7D4F}
+  .grade-note{display:inline-flex;align-items:center;justify-content:center;min-width:30px;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:900;line-height:1.35;margin-left:0}
+  .grade-note.grade-red{background:#F9D5D5;color:#A32424}
+  .grade-note.grade-yellow{background:#FFF1B8;color:#806400}
+  .grade-note.grade-green{background:#DDF5E4;color:#2F7D4F}
+  .grade-wait{display:inline-flex;align-items:center;justify-content:center;min-width:30px;padding:1px 7px;border-radius:999px;background:var(--t10);color:var(--soft);font-size:11px;font-weight:900}
   .st.no{background:#F9D5D5;color:#A32424}                 /* Esquecido: vermelho */
   .st.todo{background:#FDE9D3;color:#B8600E}               /* Falta fazer: laranjinha */
   .tag.no{background:var(--t32);color:var(--t65)}
@@ -791,7 +805,7 @@
   .veil{position:fixed;inset:0;background:rgba(38,36,58,.45);display:none;z-index:60;align-items:flex-end;justify-content:center}
   .veil.on{display:flex}
   body.locked{overflow:hidden;position:fixed;width:100%}
-  .sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:6px 16px calc(20px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;will-change:transform}
+  .sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:6px 16px calc(14px + env(safe-area-inset-bottom));max-height:94dvh;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;will-change:transform}
   .sheet.drag{animation:none;transition:none}
   .sheet.snap{transition:transform .25s ease-out}
   .sheet.sobe{animation:up .26s cubic-bezier(.2,.9,.3,1)}
@@ -806,6 +820,10 @@
   .grip{width:44px;height:5px;border-radius:3px;background:#DAD6E6;margin:6px auto 12px}
   @keyframes up{from{transform:translateY(40px);opacity:0}}
   .sheet h2{margin:0 0 12px;font-size:20px;font-weight:900;display:flex;align-items:center;gap:8px}
+  @media screen and (max-width:599px){
+    .sheet{max-height:94dvh;padding-top:5px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+    .sheet .grip{margin-bottom:10px}
+  }
   .sheet h2 .x{margin-left:auto;border:0;background:var(--t10);border-radius:50%;width:34px;height:34px;font-size:18px;font-weight:900}
   .opt{display:flex;align-items:center;gap:12px;width:100%;border:0;background:var(--t05);border-radius:16px;padding:14px;font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;text-align:left}
   .opt .ic{font-size:24px;width:32px;text-align:center}
@@ -830,19 +848,127 @@
   .tt .c.vaga{background:transparent;pointer-events:none;min-height:0}
   .tt .c:active{transform:scale(.94)}
   .tt .c b{font-size:21px;line-height:1}
-  .tt .c span{font-size:10.5px;font-weight:800;color:var(--ink);line-height:1.05;text-align:center;overflow-wrap:normal;word-break:keep-all;hyphens:none;max-width:100%}   /* nunca parte a palavra no meio */
+  .tt .c span{font-size:min(10.5px,2.35vw);font-weight:800;color:var(--ink);line-height:1.05;text-align:center;overflow-wrap:normal;word-break:keep-all;hyphens:none;max-width:100%}   /* nunca parte a palavra no meio */
   @media screen and (max-width:430px){   /* celular estreito: aperta a grade para a palavra inteira caber */
     .tt{grid-template-columns:32px repeat(5,minmax(0,1fr));gap:4px}
     .tt .c{padding:6px 2px}
-    .tt .c span{font-size:10px}
+    .tt .c span{font-size:min(10px,2.25vw)}
   }
   .tt .c.past,.tt .dh.past{opacity:.38}
+  .tt .dh.hoje{box-shadow:inset 0 0 0 999px rgba(0,0,0,.26)}   /* so o dia de hoje fica mais escuro */
   .tt .c.tom{background:color-mix(in srgb,var(--dc) 14%,#fff);border-color:var(--dc)}
   .tt .c.tom span{color:var(--dc)}
   .tt.pick .c{opacity:.28}
   .tt.pick .c.hit{opacity:1;background:var(--ink);border-color:var(--ink);transform:scale(1.04)}
   .tt.pick .c.hit span{color:#fff}
   .ttnote{color:var(--soft);font-size:13px;margin:14px 0 0;text-align:center}
+  .tt-tabs{display:flex;gap:4px;background:var(--t05);border-radius:999px;padding:4px;margin:0 0 12px}
+  .tt-tabs button{flex:1;border:0;background:transparent;border-radius:999px;padding:8px 10px;font:inherit;font-size:14px;font-weight:800;color:var(--soft);cursor:pointer;transition:background .15s,color .15s,transform .15s}
+  .tt-tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(var(--r01),.14)}
+  .tt-tabs button:active{transform:scale(.97)}
+  .grades{display:flex;flex-direction:column;gap:6px}
+  .grade-head,.grade-row{display:grid;grid-template-columns:minmax(110px,1fr) 50px 50px 68px 50px 54px;align-items:center;gap:4px}
+  .grade-head{padding:0 9px 2px;color:var(--soft);font-size:10px;font-weight:900;text-align:center}
+  .grade-head span:first-child{text-align:left}
+  .grade-row{background:#fff;border:2px solid var(--line);border-radius:16px;padding:6px 7px;min-height:60px}
+  .grade-subj{min-width:0;font-size:12px;font-weight:900;line-height:1.08;display:flex;align-items:center;gap:5px;overflow:hidden}
+  .grade-subj span{display:block;min-width:0}
+  .grade-subj .subject-flag{width:18px;height:12px;flex:none}
+  .grade-val{width:44px;min-height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;margin:auto}
+  .grade-trend{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden}
+  .grade-delta{font-size:13px;font-weight:900;white-space:nowrap;line-height:1.05;flex:none}
+  .grade-delta.up{color:#2F7D4F}.grade-delta.down{color:#A32424}.grade-delta.flat{color:var(--soft)}
+  .grade-val.grade-red{background:#F9D5D5;color:#A32424}
+  .grade-val.grade-yellow{background:#FFF1B8;color:#806400}
+  .grade-val.grade-green{background:#DDF5E4;color:#2F7D4F}
+  .grade-val.grade-empty{background:transparent;color:transparent}
+  .grade-val.grade-annual{box-shadow:inset 0 0 0 1px rgba(var(--r01),.04)}
+  .grade-loading{display:inline-flex;gap:3px;align-items:center;justify-content:center;min-width:42px}
+  .grade-loading i{width:4px;height:4px;border-radius:50%;background:currentColor;display:block;animation:gradeDot 1.1s infinite ease-in-out}
+  .grade-loading i:nth-child(2){animation-delay:.16s}.grade-loading i:nth-child(3){animation-delay:.32s}
+  @keyframes gradeDot{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-4px);opacity:1}}
+  .grade-legend{display:none}
+  .grade-legend span{display:inline-flex;align-items:center;gap:4px}
+  .grade-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .grade-legend .r i{background:#C85B5B}.grade-legend .y i{background:#D4AF22}.grade-legend .g i{background:#65A878}
+  .grade-info{display:none}
+  @media screen and (max-width:430px){
+    .grades{gap:6px}
+    .grade-head,.grade-row{grid-template-columns:minmax(96px,1fr) 46px 46px 62px 46px 50px;gap:3px}
+    .grade-row{padding:5px 6px;min-height:58px;border-radius:15px}
+    .grade-subj{font-size:12px;line-height:1.06}
+    .grade-val{width:42px;min-height:30px;font-size:12px;border-radius:10px}
+    .grade-delta{font-size:12px}
+    .grade-head{font-size:10px}
+  }
+  /* resumo no topo das Notas */
+  .grade-top{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:0 0 8px}
+  .gchip{background:var(--t05);border-radius:14px;padding:6px 4px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0}
+  .gchip small{font-size:9.5px;font-weight:900;color:var(--soft);white-space:nowrap}
+  .gchip b{font-size:15px;font-weight:900;color:var(--ink);white-space:nowrap}
+  .gchip b.grade-red{color:#A32424}.gchip b.grade-yellow{color:#806400}.gchip b.grade-green{color:#2F7D4F}
+  .gchip b.gdelta{font-size:13px}
+  .gchip b.gdelta.up{color:#2F7D4F}.gchip b.gdelta.down{color:#A32424}.gchip b.gdelta.flat{color:var(--soft)}
+  .gchip.sim{background:#FBF5C4;box-shadow:inset 0 0 0 2px #EADF8A}
+  .grade-acts{display:flex;gap:6px;margin:0 0 8px}
+  .gbtn{flex:1;border:0;border-radius:999px;background:linear-gradient(135deg,var(--t52),var(--t56));color:#fff;font:inherit;font-size:12.5px;font-weight:900;padding:8px 10px;cursor:pointer}
+  .gbtn.ghost{flex:0 0 auto;background:var(--t05);color:var(--soft);padding:8px 14px}
+  .gbtn:active{transform:scale(.97)}
+  .grade-in{border:2px dashed var(--lilas-line,#D8D2E8);background:#fff;color:var(--ink);font:inherit;font-size:13px;font-weight:900;text-align:center;padding:0;outline:none;-moz-appearance:textfield}
+  .grade-in::placeholder{color:var(--soft);opacity:.55;font-weight:800}
+  .grade-in:focus{border-style:solid;border-color:var(--t52);box-shadow:0 0 0 3px rgba(var(--r04),.14)}
+  .grade-in.cheio{background:var(--t05);border-style:solid;border-color:var(--t43,#C9BEE6);color:var(--ink)}
+  .grade-val.grade-sim{box-shadow:inset 0 0 0 2px rgba(var(--r01),.14)}
+  /* Notas no celular: a folha usa a tela inteira e as linhas se ajustam sozinhas para caber sem rolagem (no tablet fica como sempre) */
+  @media screen and (max-width:599px){
+    .sheet.notassheet{height:100dvh;max-height:100dvh;border-radius:0;display:flex;flex-direction:column;overflow:hidden;
+      padding:calc(4px + env(safe-area-inset-top)) 12px calc(8px + env(safe-area-inset-bottom))}
+    .sheet.notassheet>.grip{flex:none;margin:2px auto 8px}
+    .sheet.notassheet h2{flex:none;margin:0 0 8px;font-size:18px}
+    .sheet.notassheet h2 .x{width:32px;height:32px;font-size:17px}
+    .sheet.notassheet #notasBody{flex:1;min-height:0;display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain}
+    .sheet.notassheet .grade-top,.sheet.notassheet .grade-acts{flex:none}
+    .sheet.notassheet .grades{flex:1;min-height:0;gap:5px}
+    .sheet.notassheet .grade-head{flex:none;padding:0 8px 2px}
+    .sheet.notassheet .grade-row{flex:1 1 0;min-height:38px;padding:3px 6px;border-radius:14px}
+    .sheet.notassheet .grade-val{min-height:26px}
+    /* materia mais estreita: as notas ficam mais para a esquerda e cada titulo cai em cima da sua nota */
+    .sheet.notassheet .grade-head,.sheet.notassheet .grade-row{grid-template-columns:92px minmax(0,1fr) minmax(0,1fr) minmax(0,1.55fr) minmax(0,1fr) minmax(0,1fr);gap:4px}
+    .sheet.notassheet .grade-val{width:100%;max-width:44px}
+    .sheet.notassheet .grade-subj{font-size:11.5px}
+  }
+  @media screen and (max-width:599px) and (max-height:700px){   /* tela baixinha: aperta mais um pouco */
+    .sheet.notassheet .grade-top{gap:4px;margin-bottom:6px}
+    .sheet.notassheet .gchip{padding:4px 3px}
+    .sheet.notassheet .gchip b{font-size:13.5px}
+    .sheet.notassheet .grade-acts{margin-bottom:6px}
+    .sheet.notassheet .gbtn{font-size:11.5px;padding:6px 8px}
+    .sheet.notassheet .grades{gap:4px}
+    .sheet.notassheet .grade-row{min-height:32px;border-radius:12px}
+    .sheet.notassheet .grade-val{min-height:22px;font-size:11.5px}
+    .sheet.notassheet .grade-delta{font-size:11.5px}
+    .sheet.notassheet .grade-in{font-size:11.5px}
+  }
+  /* puxar a tela para baixo: a faixa da semana anterior abre dentro da propria tela, embaixo do topo */
+  .puxa{height:0;overflow:hidden;pointer-events:none}
+  .puxa .pz-in{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:76px;padding:0 12px 12px;box-sizing:border-box}
+  .puxa .pz-ic{display:flex;color:var(--lilas);transition:transform .22s ease,color .2s}
+  .puxa .pz-ic svg{width:26px;height:26px}
+  .puxa.pronto .pz-ic{transform:rotate(180deg);color:#2F7D4F}
+  .puxa.vazio .pz-ic{color:var(--soft)}
+  .puxa .pz-tx{font-size:13.5px;font-weight:900;color:var(--soft);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .puxa.pronto .pz-tx{color:#2F7D4F}
+  .puxa .pz-bar{width:min(220px,70%);height:7px;border-radius:999px;background:var(--t12,var(--t10));overflow:hidden}
+  .puxa .pz-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--t51),var(--t56))}
+  .puxa.pronto .pz-bar i{background:linear-gradient(90deg,#4FA877,#2F7D4F)}
+  @media(prefers-reduced-motion:reduce){.puxa .pz-ic{transition:none}}
+  /* ir para a semana seguinte, no fim da lista de dias */
+  .prox-semana{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:2px 0 18px;padding:13px 14px;
+    border:2px dashed var(--lilas-line);background:#fff;border-radius:18px;font:inherit;font-size:15px;font-weight:900;color:var(--lilas-ink);cursor:pointer}
+  .prox-semana:active{transform:scale(.98)}
+  .prox-semana svg{width:20px;height:20px;order:2;color:var(--lilas)}
+  .prox-semana span{order:1;text-align:center}
+  .prox-semana small{display:block;font-size:12px;font-weight:700;color:var(--soft)}
   .wk{display:flex;align-items:center;gap:10px;width:100%;border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:16px;font-weight:800;color:var(--ink);text-align:left}
   .wk.cur{border-color:var(--ok);background:#EEF9F4}
   .wk .pr{margin-left:auto;font-size:13px;color:var(--soft);text-align:right}
@@ -1070,6 +1196,16 @@
   .chat h2 .gear.find{margin-left:auto;margin-right:6px}
   .chat h2 .gear+.gear{margin-left:0}
   .msg .b{background:#fff;border-radius:11px;padding:8px 13px 6px;font-size:16px;line-height:1.35;box-shadow:0 2px 6px rgba(38,36,58,.10);min-width:64px}
+  /* foto sozinha: a propria foto e o balao, sem borda, com o nome e a hora por cima */
+  .msg .b.sofoto,.msg.me .b.sofoto{padding:0;background:transparent;min-width:0;overflow:hidden;border-radius:16px;line-height:0}
+  .msg .b.sofoto .pic{display:block;margin:0;border-radius:16px;width:100%;max-width:100%}
+  .msg .b.sofoto .hd{position:absolute;top:0;left:0;right:0;z-index:2;margin:0;padding:6px 10px 12px;line-height:1.2;
+    background:linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,0));border-radius:16px 16px 0 0;pointer-events:none}
+  .msg .b.sofoto .hd b,.msg.me .b.sofoto .hd b{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+  .msg .b.sofoto .msg-meta,.msg.me .b.sofoto .msg-meta{position:absolute;right:6px;bottom:5px;z-index:2;margin:0;padding:0;
+    background:transparent;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.75),0 0 8px rgba(0,0,0,.45);line-height:14px;min-height:14px}
+  .msg .b.sofoto .lido,.msg.me .b.sofoto .lido{right:7px;bottom:8px;z-index:3;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+  .msg .b.sofoto::before,.msg .b.sofoto::after{display:none!important}
   .msg.me .b{color:#fff}
   .msg .b small{display:block;font-size:10px;opacity:.7;margin-top:2px;text-align:right}
   .msg .b .msg-meta{min-height:11px;line-height:11px;margin-top:3px}
@@ -1266,7 +1402,7 @@
   .fotona .fg-seta:active{background:rgba(255,255,255,.32);transform:translateY(-50%) scale(.9)}
   .fotona .fg-conta{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);background:rgba(0,0,0,.42);color:#fff;font-size:13px;font-weight:800;padding:3px 10px;border-radius:999px;pointer-events:none;font-variant-numeric:tabular-nums}
   @media screen and (min-width:600px) and (min-height:600px){ .fotona .fg-seta{width:52px;height:52px} .fotona .fg-seta.esq{left:10px} .fotona .fg-seta.dir{right:10px} .fotona .fg-x{width:48px;height:48px;right:18px} }
-  .fotona .fg-img{max-width:min(96vw,900px);max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.5);transform:scale(.94);transition:transform .2s,opacity .16s}
+  .fotona .fg-img{max-width:min(100%,900px);max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.5);transform:scale(.94);transition:transform .2s,opacity .16s}
   .fotona.on .fg-img{transform:none}
   .fotona .fg-img{touch-action:manipulation}
   .fotona .fg-big{position:absolute;left:50%;top:50%;width:118px;height:118px;margin:-59px 0 0 -59px;pointer-events:none;color:#FF3B5C;filter:drop-shadow(0 8px 22px rgba(0,0,0,.45));animation:fgBig .9s cubic-bezier(.2,.8,.3,1) forwards}
@@ -1275,11 +1411,27 @@
   @keyframes fgBig{0%{transform:scale(.25);opacity:0}22%{transform:scale(1.12);opacity:1}38%{transform:scale(.96)}70%{transform:scale(1);opacity:1}100%{transform:scale(1.3);opacity:0}}
   .fotona .fg-img.troca{opacity:.35}
   .fotona .fg-foto{display:flex;flex-direction:column;align-items:flex-start;gap:7px;max-width:100%;min-width:0;min-height:0}
+  .fotona .fg-img-box{position:relative;display:inline-block;line-height:0;max-width:100%}
   .fotona .fg-quem{flex:none;max-width:100%;display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.9);font-size:14px;font-weight:600;padding:0 4px}
+  .fotona .fg-quem .fg-q-emo{font-size:16px;line-height:1}
   .fotona .fg-quem b{font-weight:900}
-  .fotona .fg-quem::before{content:"";width:12px;height:11px;flex:none;background:#FF3B5C;-webkit-mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 8.6a4.3 4.3 0 0 1 7.5 2.2C19.5 16.4 12 21 12 21Z"/></svg>') center/contain no-repeat;mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 8.6a4.3 4.3 0 0 1 7.5 2.2C19.5 16.4 12 21 12 21Z"/></svg>') center/contain no-repeat}
   .fotona .fg-quem[hidden]{display:none}
-  .fotona .fg-acoes{flex:none;width:min(96vw,560px);display:flex;align-items:center;gap:10px;padding:8px 2px calc(10px + env(safe-area-inset-bottom));cursor:default}
+  .fotona .fg-emos{position:absolute;left:10px;bottom:10px;z-index:2;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 20px);line-height:1}
+  .fotona .fg-emos[hidden]{display:none}
+  .fotona .fg-emo{display:flex;align-items:center;gap:4px;border:0;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.18);color:#fff;font-size:16px;line-height:1.1;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .15s,transform .15s}
+  .fotona .fg-emo.mine{background:rgba(255,255,255,.42)}
+  .fotona .fg-emo:active{transform:scale(.94)}
+  .fotona .fg-emo b{font-size:13px;font-weight:900}
+  .fotona .fg-emobt{flex:none;width:42px;height:42px;padding:0;display:flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;line-height:1;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .15s,transform .15s}
+  .fotona .fg-emobt svg{width:23px;height:23px}
+  .fotona .fg-emobt.on{background:rgba(255,255,255,.4)}
+  .fotona .fg-emobt:active{transform:scale(.92)}
+  .fotona .fg-emopick{position:absolute;right:0;bottom:calc(100% - 4px);z-index:3;display:flex;gap:0;padding:6px;border-radius:999px;background:rgba(28,22,48,.94);box-shadow:0 10px 26px rgba(0,0,0,.45);max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .fotona .fg-emopick::-webkit-scrollbar{display:none}
+  .fotona .fg-emopick[hidden]{display:none}
+  .fotona .fg-emopick button{flex:none;border:0;background:transparent;font-size:21px;line-height:1;padding:4px;border-radius:12px;cursor:pointer}
+  .fotona .fg-emopick button.mine{background:rgba(255,255,255,.26)}
+  .fotona .fg-acoes{flex:none;position:relative;width:min(100%,560px);display:flex;align-items:center;gap:10px;padding:8px 2px calc(10px + env(safe-area-inset-bottom));cursor:default}
   .fotona .fg-campo{flex:1;min-width:0;position:relative;display:flex}
   .fotona .fg-mandar{flex:none;width:32px;min-width:32px;height:44px;padding:0;border:0;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .16s ease,opacity .16s ease}
   .fotona .fg-enviar{display:none;position:absolute;right:12px;top:50%;transform:translateY(-50%);height:28px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:#fff;font:inherit;font-size:14px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -1335,12 +1487,12 @@
   .fotos-nav .foto-mini img{width:100%;height:100%;object-fit:cover;display:block}
   .fotos-nav .foto-mini.on{opacity:1;border-color:var(--lilas);transform:scale(1.06)}
   .fotos-nav .fotos-conta{margin-left:6px;font-size:13px;font-weight:800;color:var(--soft)}
-  .fotona .fg-legenda{flex:none;max-width:min(96vw,560px);color:#fff;font-size:15px;font-weight:600;line-height:1.35;text-align:center;padding:0 8px;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+  .fotona .fg-legenda{flex:none;max-width:min(100%,560px);color:#fff;font-size:15px;font-weight:600;line-height:1.35;text-align:center;padding:0 8px;text-shadow:0 1px 2px rgba(0,0,0,.4)}
   .fotona .fg-legenda[hidden]{display:none}
   .fotona .fg-autor{position:absolute;left:16px;right:112px;top:calc(10px + env(safe-area-inset-top));height:42px;display:flex;align-items:center;justify-content:flex-start;text-align:left;color:rgba(255,255,255,.85);font-size:13px;font-weight:800;letter-spacing:.2px;pointer-events:none}
   @media screen and (min-width:600px) and (min-height:600px){ .fotona .fg-autor{left:18px;right:130px;height:48px;font-size:14px} }
   .fotona .fg-autor[hidden]{display:none}
-  .fotona .fg-coments{flex:none;width:min(96vw,560px);max-height:22vh;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:5px;padding:0 8px;color:#fff;font-size:14px;line-height:1.35;cursor:default;-webkit-mask-image:linear-gradient(#000 85%,transparent);mask-image:linear-gradient(#000 85%,transparent)}
+  .fotona .fg-coments{flex:none;width:min(100%,560px);max-height:22vh;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:5px;padding:0 8px;color:#fff;font-size:14px;line-height:1.35;cursor:default;-webkit-mask-image:linear-gradient(#000 85%,transparent);mask-image:linear-gradient(#000 85%,transparent)}
   .fotona .fg-coments[hidden]{display:none}
   .fotona .fg-com-tit{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:rgba(255,255,255,.85);letter-spacing:.2px;margin-bottom:1px}
   .fotona .fg-com-tit::before{content:"";width:13px;height:13px;flex:none;background:#fff;-webkit-mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20.5l1.4-4.5A7.5 7.5 0 1 1 20 12.5Z"/></svg>') center/contain no-repeat;mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20.5l1.4-4.5A7.5 7.5 0 1 1 20 12.5Z"/></svg>') center/contain no-repeat}
@@ -1702,6 +1854,10 @@
   .nudge-msg.evt .reacts .react{font-size:15px;padding:0 8px}
   .nudge-msg.evt:has(.reacts){margin-bottom:22px}
   .nudge-msg.evt .linha{display:flex;gap:6px;align-items:baseline;min-width:0;max-width:100%}
+  /* hora na frente do nome, na mesma linha do aviso */
+  .nudge-msg.evt{padding:8px 12px}
+  .nudge-msg .evt-hora{font-size:11px;font-weight:700;opacity:.6;white-space:nowrap}
+  .nudge-msg.evt .linha{align-items:center}
   .nudge-msg.evt .linha .hand{align-self:center}
   .nudge-msg.evt .linha .evt-ver{align-self:center}
   .nudge-msg.evt .linha .nt{min-width:0}
@@ -2040,7 +2196,9 @@
   /* ===== barra de ações no rodapé (Menu · coração · Conversa) ===== */
   .dock{position:fixed;left:0;right:0;bottom:0;z-index:60;display:grid;grid-template-columns:1fr 72px 1fr;align-items:stretch;width:100%;
     height:calc(58px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);border-radius:0;
-    background:linear-gradient(90deg,var(--t51),var(--t56) 50%,var(--t62));box-shadow:0 -2px 10px rgba(var(--r01),.14);pointer-events:none}
+    background:linear-gradient(90deg,var(--t51),var(--t56) 50%,var(--t62));box-shadow:0 -2px 10px rgba(var(--r01),.14);pointer-events:auto}
+  /* faixa invisivel logo acima da barra: da mais espaco para o dedo puxar o Menu para cima */
+  .dock::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:30px;background:transparent}
   .dock-b{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;gap:9px;pointer-events:auto;
     border:0;color:#fff;font:inherit;font-size:18px;font-weight:900;border-radius:0;transition:filter .15s;
     box-shadow:none}
@@ -2114,7 +2272,7 @@
   /* aviso de mensagem nova, com Responder e Ignorar */
   .aviso-msg{position:fixed;z-index:420;left:50%;top:calc(10px + env(safe-area-inset-top));width:min(94vw,430px);
     transform:translate(-50%,0);opacity:1;animation:avisoEntra .3s cubic-bezier(.2,.9,.3,1) both;
-    display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:10px;
+    display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:8px 10px;
     background:#fff;border:0;border-left:4px solid var(--uc,var(--lilas));border-radius:16px;padding:10px 10px 10px 12px;
     box-shadow:0 10px 28px rgba(var(--r01),.22);cursor:pointer}
   .aviso-msg.saindo{animation:avisoSai .24s ease-in forwards}
@@ -2127,8 +2285,13 @@
   .aviso-msg .av-nome{font-size:14px;font-weight:900;color:var(--uc,var(--lilas-ink));min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .aviso-msg .av-mais{font-size:10px;font-weight:900;background:var(--uc,var(--lilas));color:#fff;border-radius:999px;padding:1px 7px;flex:none}
   .aviso-msg .av-hora{margin-left:auto;font-size:11px;font-weight:700;color:var(--soft);flex:none}
-  .aviso-msg .av-txt{margin:0;font-size:14px;font-weight:600;color:var(--ink);line-height:1.3;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .aviso-msg .av-txt{margin:0;font-size:14px;font-weight:600;color:var(--ink);line-height:1.35;
+    white-space:normal;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden}
+  /* o texto ocupa a largura toda e o botao desce para a linha de baixo */
+  .aviso-msg .av-foto{grid-column:1;grid-row:1}
+  .aviso-msg .av-corpo{grid-column:2;grid-row:1}
+  .aviso-msg .av-ig{grid-column:3;grid-row:1}
+  .aviso-msg .av-re{grid-column:2/4;grid-row:2;justify-self:end}
   .aviso-msg button{border:0;font:inherit;cursor:pointer;flex:none}
   .aviso-msg .av-re{background:var(--uc,var(--lilas));color:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:900}
   .aviso-msg .av-re:active{transform:scale(.96)}
@@ -2466,7 +2629,7 @@ const TIMETABLE = {
          qua:['geo','edf','cie','his','mat','esp'], qui:['art','his','cie','ing','fil','geo'],
          sex:['mat','his','geo','por','ing','por'] }
 };
-const DAYMETA = {dom:['Domingo','--dom'],seg:['Segunda','--seg'],ter:['Terça','--ter'],qua:['Quarta','--qua'],qui:['Quinta','--qui'],sex:['Sexta','--sex']};
+const DAYMETA = {dom:['Domingo','--dom'],seg:['Segunda','--seg'],ter:['Terça','--ter'],qua:['Quarta','--qua'],qui:['Quinta','--qui'],sex:['Sexta','--sex'],sab:['Sábado','--sab']};
 const B='bring', H='home';
 const T=(type,subj,text,important,skip)=>({type,subj,text,important:!!important,skip:!!skip});
 const X=(type,subj,text)=>T(type,subj,text,0,1); // item repetido, escondido
@@ -2581,6 +2744,16 @@ const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+Stri
 const TODAY=iso(new Date());
 const NOW_H=new Date().getHours()+new Date().getMinutes()/60;
 const MORNING=NOW_H<12.5;            // até 12h30 o foco é "levar hoje"; depois, "fazer em casa para amanhã"
+const DIAS_AULA=['seg','ter','qua','qui','sex'];
+// o sabado entrou na semana depois: toda semana ganha o dia, sem tarefa nenhuma
+function garanteSabado(w){
+  if(!w||!w.days||w.days.some(d=>d.k==='sab')) return false;
+  const dom=w.days.find(d=>d.k==='dom'); const base=dom?dom.date:w.id;
+  const dt=new Date(base+'T12:00:00'); dt.setDate(dt.getDate()+6);
+  w.days.push({k:'sab',date:iso(dt),tasks:[]});
+  return true;
+}
+{ let mudou=false; Object.values(DB.weeks).forEach(w=>{ if(garanteSabado(w)) mudou=true; }); if(mudou) save(); }
 function weekIdFor(dateIso){ const d=new Date(dateIso+'T12:00:00'); d.setDate(d.getDate()-d.getDay()); return iso(d); }
 const weekIds=()=>Object.keys(DB.weeks).sort();
 let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(i=>i<=weekIdFor(TODAY)).pop() || weekIds()[0]);
@@ -2648,6 +2821,7 @@ function cloudStart(){
   famRef.child('perfis/'+USER.id).update({nome:USER.nomeBase||USER.nome,lastSeen:firebase.database.ServerValue.TIMESTAMP});
   clearInterval(seenTimer); seenTimer=setInterval(()=>{ if(famRef&&USER&&!document.hidden) famRef.child('perfis/'+USER.id).update({lastSeen:firebase.database.ServerValue.TIMESTAMP}); },60*1000);
   document.addEventListener('visibilitychange',()=>{ if(famRef&&USER) famRef.child('perfis/'+USER.id).update({lastSeen:firebase.database.ServerValue.TIMESTAMP}); });
+  famRef.child('notas3').on('value',sn=>{ try{ aplicaSim3daNuvem(sn.val()); }catch(e){} });
   famRef.child('perfis').on('value',sn=>{ PERFIS=sn.val()||{}; marcaPronto('perfis'); try{localStorage.setItem(KEY+'-perfis',JSON.stringify(PERFIS));}catch(e){} aplicaApelidos(); renderFam(); refreshChat(); render(); });
   famRef.child('chat').limitToLast(150).on('value',sn=>{ const v=sn.val()||{}; marcaPronto('chat'); const prevLen=CHAT.length;
     const antes={}; CHAT.forEach(m=>antes[m.k]=m);
@@ -2690,7 +2864,7 @@ function mergeRemote(remote){
   let changed=false; MERGE_EVT=[];
   Object.keys(remote.weeks).forEach(id=>{
     const rw=remote.weeks[id], lw=DB.weeks[id];
-    if(!lw){ DB.weeks[id]=rw; changed=true; return; }
+    if(!lw){ DB.weeks[id]=rw; garanteSabado(rw); changed=true; return; }
     const local={}; lw.days.forEach(d=>d.tasks.forEach(t=>local[t.id]=t));
     (rw.days||[]).forEach(d=>(d.tasks||[]).forEach(rt=>{
       const lt=local[rt.id]; if(!lt) return;
@@ -3123,13 +3297,13 @@ function msgHtml(m,i,arr){
   const u=USERS.find(x=>x.id===m.by)||{emoji:'👤',nome:m.by,id:m.by,cor:'#7A6B9B'}; const me=USER&&m.by===USER.id;
   if(m.att&&m.att.kind==='evento'){ const tp=TL_TIPOS[m.att.tipo]||{ic:ICO.lapis,txt:()=>'mexeu na tarefa'};
     const d=new Date(m.t||0), hm0=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-    return `<div class="nudge-msg evt" data-k="${m.k}" role="button" tabindex="0" style="--uc:${corDe(u)}"><span class="linha"><span class="hand" aria-hidden="true">${tp.ic}</span><span class="nt"><b>${me?'Você':esc(u.nome)}</b> ${tp.txt(m.att)}${m.att.det?` · <i>${esc(corta(m.att.det,90))}</i>`:''}</span><small>${hm0}</small>${m.att.id?`<button type="button" class="evt-ver" data-ver="${m.att.id}" ${m.att.foto?`data-ver-foto="${m.att.foto}"`:''} aria-label="Ver">VER<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5.5 6.5 6.5L9 18.5"/></svg></button>`:''}</span>${reactsHtml(m)}</div>`; }
+    return `<div class="nudge-msg evt" data-k="${m.k}" role="button" tabindex="0" style="--uc:${corDe(u)}"><span class="linha"><span class="hand" aria-hidden="true">${tp.ic}</span><span class="nt"><small class="evt-hora">${hm0}</small> <b>${me?'Você':esc(u.nome)}</b> ${tp.txt(m.att)}${m.att.det?` · <i>${esc(corta(m.att.det,90))}</i>`:''}</span>${m.att.id?`<button type="button" class="evt-ver" data-ver="${m.att.id}" ${m.att.foto?`data-ver-foto="${m.att.foto}"`:''} aria-label="Ver">VER<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5.5 6.5 6.5L9 18.5"/></svg></button>`:''}</span>${reactsHtml(m)}</div>`; }
   if(m.att&&m.att.kind==='nudge'){ const hm0=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
     const group=m.nudgeGroup;
     const names=group?group.senders.map(id=>USER&&id===USER.id?'Você':esc((USERS.find(x=>x.id===id)||{nome:id}).nome)):[];
     const text=group?(names.length===1?`<b>${names[0]}</b> chamou a atenção <b>${group.count} vezes</b>`:`<b>${names.join(' e ')}</b> · <b>${group.count}</b> chamados de atenção`):`<b>${me?'Você':esc(u.nome)}</b> chamou a atenção`;
     const meusK=(group?group.keys.filter(k=>{const x=CHAT.find(y=>y.k===k); return x&&USER&&x.by===USER.id;}):(me?[m.k]:[]));
-    return `<div class="nudge-msg${group?' grouped':''}${meusK.length?' meu':''}" data-k="${m.k}"${meusK.length?` data-nk="${meusK.join(',')}"`:''} style="--uc:${group&&names.length>1?'var(--lilas)':corDe(u)}"><span class="hand" aria-hidden="true">${ICO.sino}</span><span class="nt">${text}</span><small>${hm0}</small></div>`; }
+    return `<div class="nudge-msg${group?' grouped':''}${meusK.length?' meu':''}" data-k="${m.k}"${meusK.length?` data-nk="${meusK.join(',')}"`:''} style="--uc:${group&&names.length>1?'var(--lilas)':corDe(u)}"><span class="hand" aria-hidden="true">${ICO.sino}</span><span class="nt"><small class="evt-hora">${hm0}</small> ${text}</span></div>`; }
   const prev=arr[i-1]; const cont=prev&&prev.by===m.by&&(m.t||0)-(prev.t||0)<5*60*1000&&!m.reply&&!(prev.att&&(prev.att.kind==='nudge'||prev.att.kind==='evento'));
   const mesmo=!!(prev&&prev.by===m.by&&!(prev.att&&(prev.att.kind==='nudge'||prev.att.kind==='evento')));   // mesma pessoa em seguida: baloes bem juntos
   const prox=arr[i+1];
@@ -3148,7 +3322,7 @@ function msgHtml(m,i,arr){
   const espaco=me&&mostraHora?`<span class="lido-esp n${leram.length}" aria-hidden="true"></span>`:'';
   const q=m.reply?(m.reply.task?`<span class="q qt" data-task="${m.reply.task.id}"><b>Tarefa · ${subjectVisual(SUBJ[m.reply.task.subj]||'')} · ${DAYMETA[m.reply.task.day]?DAYMETA[m.reply.task.day][0]:''}</b>${esc(m.reply.task.text||'')}</span>`:`<span class="q" data-go="${m.reply.k}"><b>${esc(uname(m.reply.by))}</b>${esc(m.reply.text||'')}</span>`):'';
   const miolo=(mostraHora?hm:'')+(m.edited?'<i class="ed">(editada)</i>':'')+tick;
-  return `<div class="msg ${me?'me':''} ${cont?'cont':''} ${mesmo?'mesmo':''} ${fim?'fim':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av" data-foto="${u.id}" role="button" tabindex="0" aria-label="Ver a foto de ${esc(u.nome)}" title="Ver a foto de ${esc(u.nome)}">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''}"><span class="hd"><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}${miolo?`<small class="msg-meta">${miolo}${espaco}</small>`:''}${selo}</div>${reactsHtml(m)}</div>${me?'':`<span class="bacts"><button type="button" class="rbtn" data-reply="${m.k}" aria-label="Responder" title="Responder">${ICO_RESP}</button></span>`}<span class="ck" aria-hidden="true"></span></div>`;
+  return `<div class="msg ${me?'me':''} ${cont?'cont':''} ${mesmo?'mesmo':''} ${fim?'fim':''}" data-k="${m.k}" style="--uc:${corDe(u)}"><span class="av" data-foto="${u.id}" role="button" tabindex="0" aria-label="Ver a foto de ${esc(u.nome)}" title="Ver a foto de ${esc(u.nome)}">${avatarHtml(u)}</span><div><div class="b ${onlyEmo?'emo':''} ${(m.att&&m.att.kind==='img'&&!(m.text||'').trim()&&!m.reply)?'sofoto':''}"><span class="hd"><b>${me?'Eu':esc(u.nome)}</b></span>${q}${att}${animaEmojis(chatQ.length>=2?hl(m.text||'',chatQ):esc(m.text||'')).replace(/\n/g,'<br>')}${miolo?`<small class="msg-meta">${miolo}${espaco}</small>`:''}${selo}</div>${reactsHtml(m)}</div>${me?'':`<span class="bacts"><button type="button" class="rbtn" data-reply="${m.k}" aria-label="Responder" title="Responder">${ICO_RESP}</button></span>`}<span class="ck" aria-hidden="true"></span></div>`;
 }
 const ICO_CK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 12.8 4.8 4.7L19.5 6.6"/></svg>`;
 const ICO_RESP=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v4"/></svg>`;
@@ -3653,7 +3827,7 @@ function openAtt(k){
   if(m.att.kind==='img'&&m.reply&&m.reply.task&&m.reply.task.id&&findTask(m.reply.task.id)&&picsRef(m.reply.task.id)){ verFotosTarefa(m.reply.task.id,0); return; }
   toast('Carregando…');
   famRef.child('anexos/'+k).once('value').then(sn=>{ const a=sn.val(); if(!a){toast('Anexo não encontrado');return;}
-    if(m.att.kind==='img'){ document.getElementById('toast').classList.remove('on'); fotoGrande([{data:a.data,thumb:m.att.thumb||a.data,desc:(m.text||'').trim()}],0); }
+    if(m.att.kind==='img'){ document.getElementById('toast').classList.remove('on'); fotoGrande([{data:a.data,thumb:m.att.thumb||a.data,desc:(m.text||'').trim(),by:m.by,t:m.t}],0,{chat:k}); }
     else { const l=document.createElement('a'); l.href=a.data; l.download=a.name||'arquivo'; document.body.appendChild(l); l.click(); l.remove(); toast('Abrindo '+(a.name||'arquivo')); }
   }).catch(()=>toast('Não consegui abrir'));
 }
@@ -3988,7 +4162,8 @@ function openChat(){
   window.visualViewport&&window.visualViewport.addEventListener('resize',scrollMsgs);
 }
 function chatAbertoAgora(){ return veil.classList.contains('on') && !!sheet.querySelector('#msgs'); }
-function refreshChat(){ renderTimeline(); const m=document.getElementById('msgs'); if(!m||!chatAbertoAgora()){ updateChatBadge(); return; } const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); bindMsgs(); applyPref(); animateSentMessages(m); if(selMode) atualizaSel(); if(atBottom) scrollMsgs(); markRead(); }
+function refreshChat(){ renderTimeline(); try{ document.querySelector('.fotona')?._refresh?.(); }catch(e){}   // foto aberta acompanha curtidas e comentarios novos
+  const m=document.getElementById('msgs'); if(!m||!chatAbertoAgora()){ updateChatBadge(); return; } const atBottom=m.scrollHeight-m.scrollTop-m.clientHeight<80; m.innerHTML=chatHtml(); bindMsgs(); applyPref(); animateSentMessages(m); if(selMode) atualizaSel(); if(atBottom) scrollMsgs(); markRead(); }
 function scrollMsgs(){ const m=document.getElementById('msgs'); if(m) setTimeout(()=>{m.scrollTop=m.scrollHeight;},50); }
 function markRead(){ const last=CHAT[CHAT.length-1]; if(last&&(last.t||0)>lastRead){ lastRead=last.t; try{localStorage.setItem(KEY+'-read',String(lastRead));}catch(e){} }
   if(famRef&&USER&&chatAbertoAgora()&&!document.hidden&&last&&(READS[USER.id]||0)<(last.t||0)) famRef.child('reads/'+USER.id).set(last.t||firebase.database.ServerValue.TIMESTAMP);
@@ -4029,8 +4204,18 @@ function pass(t){ if(!qMatch(t)) return false; if(t.type===B) return fType==='al
 const addDays=(dIso,n)=>{const d=new Date(dIso+'T12:00:00');d.setDate(d.getDate()+n);return iso(d);};
 function boxPassed(w,d,type){
   if(type===B) return d.date<TODAY || (d.date===TODAY && NOW_H>=12.5);       // depois da aula, "levar" já passou
-  const i=w.days.indexOf(d); const nx=w.days[i+1]?w.days[i+1].date:addDays(d.date,3); // "para amanhã" vence quando começa a aula do dia seguinte
+  const i=w.days.indexOf(d); let nx=null;                                  // "para amanhã" vence quando começa a aula do dia seguinte
+  for(let j=i+1;j<w.days.length;j++){ if(DIAS_AULA.includes(w.days[j].k)){ nx=w.days[j].date; break; } }
+  if(!nx){ const dd=new Date(d.date+'T12:00:00'); do{ dd.setDate(dd.getDate()+1); }while(dd.getDay()!==1); nx=iso(dd); }   // fim de semana: vence na segunda
   return nx<TODAY || (nx===TODAY && NOW_H>=7.3);
+}
+function diaHojeK(){ const w=DB.weeks[current]; const d=w&&w.days.find(x=>x.date===TODAY); return d?d.k:null; }
+// tarefa de casa de um dia que ja passou, ainda sem fazer: ela sai do dia antigo e aparece no dia de hoje
+function vemParaHoje(t){
+  const hk=diaHojeK(); if(!hk||!t||t.type!==H) return false;
+  if(t.off||t.status==='done'||t.day===hk) return false;
+  const w=DB.weeks[current]; const d=w&&w.days.find(x=>x.k===t.day);
+  return !!d && d.date<TODAY;      // o dia dela ja passou: vem para hoje, esquecida ou nao
 }
 function taskPassed(t){const w=DB.weeks[current];const d=w.days.find(x=>x.k===t.day);return d?boxPassed(w,d,t.type):false;}
 function findTask(id){for(const w of Object.values(DB.weeks)){const t=allTasks(w).find(t=>t.id===id);if(t)return t;}}
@@ -4125,14 +4310,18 @@ function render(){
   const tomorrowDate=(()=>{const d=new Date(TODAY+'T12:00:00');d.setDate(d.getDate()+1);return iso(d);})();
   w.days.forEach(d=>{
     const [name,cv]=DAYMETA[d.k];
-    const tasksAll=allTasks(w).filter(t=>t.day===d.k);
+    const isHoje=x=>x.date===TODAY;
+    const tasksAll=allTasks(w).filter(t=>isHoje(d)?(t.day===d.k||vemParaHoje(t)):(t.day===d.k&&!vemParaHoje(t)));
     const live=tasksAll.filter(t=>t.type===H&&!t.off); const complete=live.length>0&&live.every(t=>t.status==='done');
     const isToday=d.date===TODAY, isTomorrow=d.date===tomorrowDate, past=d.date<TODAY;
     const homePend=tasksAll.filter(t=>t.type===H&&t.status!=='done'&&!t.off).length;
+    const pendAtrasadas=tasksAll.filter(t=>t.type===H&&t.status!=='done'&&!t.off&&taskPassed(t)).length;
+    const pendNoPrazo=homePend-pendAtrasadas;
     const homePassed=boxPassed(w,d,H);
     const ordemSubj=Object.keys(SUBJ);
     const matDia=[...new Set(tasksAll.filter(t=>!t.off&&pass(t)).map(t=>t.subj))].sort((a,b)=>ordemSubj.indexOf(a)-ordemSubj.indexOf(b));
-    const cntTag=homePend?(homePassed?`<span class="tag no">${homePend} esquecida${homePend>1?'s':''}</span>`:`<span class="tag">${homePend} para fazer</span>`):'';
+    const cntTag=(pendNoPrazo>0?`<span class="tag">${pendNoPrazo} para fazer</span>`:'')
+      +(pendAtrasadas>0?`<span class="tag no">${pendAtrasadas} esquecida${pendAtrasadas>1?'s':''}</span>`:'');
     if(filtering && !tasksAll.some(pass)) return;   // com filtro ativo, dia sem resultado não aparece
     const open = openState[d.date]!==undefined ? openState[d.date] : (isToday || fQ.length>=2);
     const box=(type,title,emptyTxt,filtro)=>{
@@ -4159,6 +4348,13 @@ function render(){
       </div></details>`;
   });
   html+='</div>';
+  {                                   // olhando uma semana antiga: atalho para ir para a proxima
+    const ids=weekIds(), pos=ids.indexOf(current), prox=pos>=0&&pos<ids.length-1?ids[pos+1]:null;
+    if(prox){ const pw=DB.weeks[prox];
+      html+=`<button type="button" class="prox-semana" id="proxSemana" data-prox="${prox}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 5 7 7-7 7"/><path d="m13 5 7 7-7 7"/></svg>
+        <span>Ver a próxima semana${pw&&pw.label?`<small>${esc(pw.label)}</small>`:''}</span></button>`; }
+  }
   let htmlTopicos=''; if(w.topics) htmlTopicos=`<div class="next"><h2>Conteúdo</h2><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${linhaConteudo(line)}</div>`).join('')}</div></div>`;
   html+=`<section class="tl ${tlAberta?'aberta':''}" id="tl">
     <button class="tl-head" id="tlToggle" type="button" aria-expanded="${tlAberta}" aria-controls="tlBody">
@@ -4169,6 +4365,10 @@ function render(){
   </section>`;
   html+=htmlTopicos;            // "o que cada materia esta estudando" vem depois da linha do tempo
   document.getElementById('app').innerHTML=html;
+  const bProx=document.getElementById('proxSemana');
+  if(bProx) bProx.addEventListener('click',()=>{ const id=bProx.dataset.prox; if(!DB.weeks[id]) return;
+    const voltar=current; current=id; vibrate(12); SFX.pop(); render(); window.scrollTo({top:0});
+    const w=DB.weeks[id]; toastAcao('Semana de '+((w&&w.label)||id),'Voltar',()=>{ current=voltar; render(); window.scrollTo({top:0}); vibrate(10); },6000); });
   fitSubjectRows();
   ajustaProgressoTablet();
   if(typeof appBadge==='function') appBadge();
@@ -4235,12 +4435,14 @@ function fitSubjectRows(){
 function taskHtml(t,inImp){
   if(t.type===B){
     const moved=(t.day!==t.origin&&!t.wiz)?'<span class="st mv">Mudou de dia</span>':'';
-    const day=inImp?`<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>`:'';
+    const day=inImp?`<span class="dchip ${t.day===diaHojeK()?'hoje':''}" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>`:'';
     return `<div class="task notice" data-id="${t.id}"><div class="tin"><div class="t"><div class="tg">${day}${moved}<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span></div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>${t.note?`<span class="note">📝 ${hlHtml(esc(t.note),fQ)}</span>`:''}</div>${(isAluna()||isResponsavel())?`<button class="notice-date" data-move-notice="${t.id}" aria-label="Mudar dia do aviso" title="Mudar dia do aviso">📆</button>`:''}</div></div>`;
   }
   const moved = (t.day!==t.origin&&!t.wiz) ? `<span class="st mv">Mudou de dia</span>` : '';
-  const dchip = inImp ? `<span class="dchip" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
-  const subj = `<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span>`;
+  const dchip = inImp ? `<span class="dchip ${t.day===diaHojeK()?'hoje':''}" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
+  const grade = gradeForTask(t);
+  const subj = `<span class="st sj ${gradeClass(grade)}">${subjectVisual(SUBJ[t.subj])}</span>`;
+  const gradeTag = grade!=null ? `<span class="grade-note ${gradeClass(grade)}">${fmtGrade(grade)}</span>` : '';
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
   // ordem das etiquetas: materia, foto, mudou de dia, para segunda... e a de status (Feito, Falta fazer...) sempre por ultimo
   const status=moved+(t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'');
@@ -4248,7 +4450,7 @@ function taskHtml(t,inImp){
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(NEXT_R[t.status]||'done')}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${swLbl(NEXT_L[t.status]||'doing')}</div>`: ''}
     <div class="tin">
-      <div class="t"><div class="tg">${dchip}${subj}${status}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
+      <div class="t"><div class="tg">${dchip}${subj}${gradeTag}${status}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
 ${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${(t.day!==t.origin&&!t.wiz&&t.moveWhy)?`<span class="note">${ICO.aulas} <b>${esc(t.moveBy||'')}:</b> ${esc(t.moveWhy)}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
       ${(t.reacts&&Object.keys(t.reacts).length)?(()=>{ const rs=Object.values(t.reacts); const som=rs.some(r=>r.a); const qtd=rs.length;
         return `<button type="button" class="star rea ${som?'audio':''}" data-rea="${t.id}" aria-label="Ver quem reagiu" title="Ver quem reagiu">${som?ICO.tocar:`<span class="emo">${rs[0].e||'💛'}</span>`}${qtd>1?`<b class="qtd">${qtd}</b>`:''}</button>`; })():''}
@@ -4410,7 +4612,8 @@ function setStatus(id,status,el,semDesfazer){
 // Para a direita: falta → fazendo → concluída → reabrir (falta) → ...  Para a esquerda: o caminho inverso.
 const NEXT_R={todo:'doing',doing:'done',done:'todo'}, NEXT_L={todo:'done',done:'doing',doing:'todo'};
 const SWLBL={doing:['Fazendo','doing'],done:['Concluir','done'],todo:['Reabrir','todo']};
-function swLbl(k){ return '<span>'+SWLBL[k][0]+'</span>'; }   // rotulo do arrastar: so a palavra, centrada na faixa que aparece
+const SWICO={doing:'ampulheta',done:'feito',todo:'voltar'};   // cada acao tem o seu simbolo, no mesmo traco do texto
+function swLbl(k){ return '<span><i class="swi" aria-hidden="true">'+(ICO[SWICO[k]]||'')+'</i>'+SWLBL[k][0]+'</span>'; }   // rotulo do arrastar: simbolo + palavra, centrados na faixa
 const SWMSG={doing:'Marcada como fazendo',done:'Concluída! Mandou bem',todo:'Reaberta. Ficou como falta fazer'};
 function swipeAction(id,dir,el){
   if(!isAluna()){ el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast('Só a Maria marca as tarefas 😉'); return; }
@@ -4564,7 +4767,7 @@ function bindTasks(root=document.getElementById('app')){
 /* ================= SHEETS ================= */
 const veil=document.getElementById('veil'), sheet=document.getElementById('sheet');
 let scrollY0=0;
-function show(html){if(sheet._aoFechar){const f=sheet._aoFechar;sheet._aoFechar=null;try{f();}catch(e){}}fitSearchViewport.cleanup?.();initChatJump.cleanup?.();sheet.classList.toggle('activity-search-sheet',/id="srchTxt"/.test(html));sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.classList.toggle('resumosheet',/id="sumBody"/.test(html));sheet.classList.toggle('tlsheet',/id="mobileTimelineBody"/.test(html));sheet.classList.toggle('sharesheet',/id="shBox"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap','sobe');
+function show(html){if(sheet._aoFechar){const f=sheet._aoFechar;sheet._aoFechar=null;try{f();}catch(e){}}fitSearchViewport.cleanup?.();initChatJump.cleanup?.();sheet.classList.toggle('activity-search-sheet',/id="srchTxt"/.test(html));sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.classList.toggle('resumosheet',/id="sumBody"/.test(html));sheet.classList.toggle('tlsheet',/id="mobileTimelineBody"/.test(html));sheet.classList.toggle('sharesheet',/id="shBox"/.test(html));sheet.classList.toggle('notassheet',/id="notasBody"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap','sobe');
   if(!sheet.classList.contains('sem-anim')){ void sheet.offsetWidth; sheet.classList.add('sobe'); }
   if(!veil.classList.contains('on')){scrollY0=window.scrollY;document.body.classList.add('locked');document.body.style.top=(-scrollY0)+'px';}
   veil.classList.add('on');sheet.scrollTop=0;sheet.querySelector('.x')?.addEventListener('click',hide);}
@@ -4582,7 +4785,7 @@ function gripLargura(p){
 }
 sheet.addEventListener('touchstart',e=>{
   const bloqueado=e.target.closest('.nodrag');
-  const lista=e.target.closest('#msgs,#mobileTimelineBody,#sumBody');   // conversa, historico e resumo: vale puxar quando a lista ja esta no topo
+  const lista=e.target.closest('#msgs,#mobileTimelineBody,#sumBody,#notasBody');   // conversa, historico, resumo e notas: vale puxar quando a lista ja esta no topo
   const parado=Date.now()-ultimaRolagem>400;   // acabou de rolar? entao esse toque e continuacao da leitura, nao um puxao
   armed = parado && sheet.scrollTop<=0 && (!bloqueado || (lista && lista.scrollTop<=0));
   sheet.classList.toggle('pronto',armed);
@@ -4708,7 +4911,7 @@ function allReacts(){ const out=[];
 }
 // curtidas e comentarios nas fotos, feitos por outra pessoa: entram como notificacao junto com os carinhos
 function fotoNotifs(){ const eu=USER?USER.id:null, out=[];
-  (EVENTOS||[]).forEach(e=>{ if(!e||!e.t||!e.id||(e.tipo!=='curtiu_foto'&&e.tipo!=='comentou_foto')||e.by===eu) return;
+  (EVENTOS||[]).forEach(e=>{ if(!e||!e.t||!e.id||(e.tipo!=='curtiu_foto'&&e.tipo!=='comentou_foto'&&e.tipo!=='reagiu_foto')||e.by===eu) return;
     let task=null, week=null; for(const w of Object.keys(DB.weeks)){ const t=allTasks(DB.weeks[w]).find(x=>x.id===e.id); if(t){ task=t; week=w; break; } } if(!task) return;
     out.push({tipo:e.tipo,uid:e.by,n:uname(e.by),t:e.t,task,week,foto:e.foto||null,texto:e.texto||''}); });
   return out; }
@@ -4728,7 +4931,7 @@ function openReacts(){
   const list=allNotifs(), aluna=isAluna();
   show(`<h2>${ICO.coracao} ${aluna?'Carinhos que você recebeu':'Carinhos enviados'} <button class="x">✕</button></h2>
     ${list.length?`<div class="realist">${list.map(r=>{ const d=DB.weeks[r.week].days.find(x=>x.k===r.task.day); const novo=(r.t||0)>reaSeen;
-      if(r.tipo) return `<button class="it2 it2-foto ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}" data-foto="${esc(r.foto||'')}"><span class="em ico-em ${r.tipo==='curtiu_foto'?'like':'com'}">${r.tipo==='curtiu_foto'?ICO.coracao:ICO.msg}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}</span>${novo?'<span class="rea-novo">Novo</span>':''}<span class="rea-activity">${r.tipo==='curtiu_foto'?'Curtiu a foto da tarefa':'Comentou a foto da tarefa'}${r.texto?`: “${esc(corta(r.texto,80))}”`:''}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${esc(corta(plain(r.task.text||''),40))}</span></span></span></button>`;
+      if(r.tipo) return `<button class="it2 it2-foto ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}" data-foto="${esc(r.foto||'')}"><span class="em ico-em ${r.tipo==='comentou_foto'?'com':'like'}">${r.tipo==='comentou_foto'?ICO.msg:(r.tipo==='reagiu_foto'?`<span class="rea-emo">${esc(r.texto||'💛')}</span>`:ICO.coracao)}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}</span>${novo?'<span class="rea-novo">Novo</span>':''}<span class="rea-activity">${r.tipo==='curtiu_foto'?'Curtiu a foto da tarefa':(r.tipo==='reagiu_foto'?'Reagiu à foto da tarefa':'Comentou a foto da tarefa')}${(r.texto&&r.tipo==='comentou_foto')?`: “${esc(corta(r.texto,80))}”`:''}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${esc(corta(plain(r.task.text||''),40))}</span></span></span></button>`;
       return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}</span>${novo?'<span class="rea-novo">Novo</span>':''}<span class="rea-activity">${esc(plain(r.task.text))}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</span></span></span></button>`; }).join('')}</div>`
       :`<p class="quiet" style="text-align:center;padding:16px 0">${aluna?'Ainda não tem carinhos. Faça as tarefas que logo chegam! 💛':'Ainda não foi mandado nenhum carinho. Segure numa tarefa e escolha Reagir 💛'}</p>`}`);
   sheet.querySelectorAll('.it2').forEach(b=>b.addEventListener('click',()=>{
@@ -4764,33 +4967,43 @@ function fotoGrande(lista,idx,opt){
   lista=(lista||[]).filter(f=>f&&f.data); if(!lista.length) return;
   let i=Math.max(0,Math.min(idx||0,lista.length-1));
   opt=opt||{}; const tarefa=opt.tarefa?findTask(opt.tarefa):null;
+  const msgK=opt.chat||null;                                   // foto que veio da conversa
+  const msgAtual=()=>msgK?((typeof CHAT!=='undefined'?CHAT:[]).find(x=>x.k===msgK)||null):null;
+  const barra=!!(tarefa||msgK);                                // tem curtir, comentar e emoji
   document.querySelector('.fotona')?.remove();
   const box=document.createElement('div'); box.className='fotona'; box.setAttribute('role','dialog'); box.setAttribute('aria-label','Foto');
   const varias=lista.length>1;
   const seta=d=>`<button type="button" class="fg-seta ${d<0?'esq':'dir'}" data-d="${d}" aria-label="${d<0?'Foto anterior':'Próxima foto'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d<0?'m15 5-7 7 7 7':'m9 5 7 7-7 7'}"/></svg></button>`;
-  box.innerHTML=`${tarefa?`<div class="fg-autor" hidden></div>`:''}${tarefa?`<button type="button" class="fg-apagar" aria-label="Apagar esta foto" title="Apagar esta foto" hidden>${ICO.lixeira}</button><div class="fg-opcoes" hidden><button type="button" class="fg-op" data-o="uma">Apagar só esta foto</button><button type="button" class="fg-op perigo" data-o="todas">Apagar as fotos</button><button type="button" class="fg-op" data-o="nao">Cancelar</button></div>`:''}<button type="button" class="fg-x" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-    <div class="fg-palco">${varias?seta(-1):''}<div class="fg-foto"><img class="fg-img" src="${lista[i].data}" alt="">${tarefa?`<div class="fg-quem" hidden></div>`:''}</div>${varias?seta(1):''}${varias?`<span class="fg-conta">${i+1}/${lista.length}</span>`:''}</div>
+  box.innerHTML=`${barra?`<div class="fg-autor" hidden></div>`:''}${barra?`<button type="button" class="fg-apagar" aria-label="Apagar esta foto" title="Apagar esta foto" hidden>${ICO.lixeira}</button><div class="fg-opcoes" hidden><button type="button" class="fg-op" data-o="uma">Apagar só esta foto</button><button type="button" class="fg-op perigo" data-o="todas">Apagar as fotos</button><button type="button" class="fg-op" data-o="nao">Cancelar</button></div>`:''}<button type="button" class="fg-x" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    <div class="fg-palco">${varias?seta(-1):''}<div class="fg-foto"><span class="fg-img-box"><img class="fg-img" src="${lista[i].data}" alt="">${barra?`<div class="fg-emos" hidden></div>`:''}</span>${barra?`<div class="fg-quem" hidden></div>`:''}</div>${varias?seta(1):''}${varias?`<span class="fg-conta">${i+1}/${lista.length}</span>`:''}</div>
     <div class="fg-legenda" ${lista[i].desc?'':'hidden'}>${esc(lista[i].desc||'')}</div>
-    ${tarefa?`<div class="fg-coments" hidden></div>`:''}`
+    ${barra?`<div class="fg-coments" hidden></div>`:''}`
     +(varias?`<div class="fg-thumbs">${lista.map((f,n)=>`<button type="button" class="fg-th ${n===i?'on':''}" data-n="${n}" aria-label="Foto ${n+1}"><img src="${f.thumb||f.data}" alt=""></button>`).join('')}</div>`:'')
-    +(tarefa?`<div class="fg-acoes"><span class="fg-campo"><input class="fg-coment" type="text" maxlength="200" placeholder="Comentar..." aria-label="Comentar a foto" autocomplete="off"><button type="button" class="fg-enviar" aria-label="Enviar comentário">Comentar</button></span>
-      <button type="button" class="fg-curtir" aria-label="Curtir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.7s-7.7-4.8-7.7-10.4A4.4 4.4 0 0 1 12 8.2a4.4 4.4 0 0 1 7.7 2.1c0 5.6-7.7 10.4-7.7 10.4Z"/></svg><b class="fg-n"></b></button>
-      <button type="button" class="fg-mandar" aria-label="Mandar para a conversa" title="Mandar para a conversa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 20.4 22 12 3.4 3.6 3.4 10l12.6 2-12.6 2Z" fill="currentColor"/></svg></button>
+    +(barra?`<div class="fg-acoes"><span class="fg-campo"><input class="fg-coment" type="text" maxlength="200" placeholder="Comentar..." aria-label="Comentar a foto" autocomplete="off"><button type="button" class="fg-enviar" aria-label="Enviar comentário">Comentar</button></span>
+      <button type="button" class="fg-emobt" aria-label="Reagir com emoji" title="Reagir com emoji">${ICO_EMO}</button>
+      <div class="fg-emopick" hidden>${REACTS.map(e=>`<button type="button" data-fe="${e}" aria-label="Reagir com ${e}">${e}</button>`).join('')}</div>
+      ${msgK?'':`<button type="button" class="fg-mandar" aria-label="Mandar para a conversa" title="Mandar para a conversa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 20.4 22 12 3.4 3.6 3.4 10l12.6 2-12.6 2Z" fill="currentColor"/></svg></button>`}
       </div>`:'');
   const img=box.querySelector('.fg-img'), conta=box.querySelector('.fg-conta');
   // ---- barra de baixo: curtir e comentar (so nas fotos de tarefa) ----
   const acoes=box.querySelector('.fg-acoes');
   // comentarios feitos na foto ficam na propria foto
-  const pintaAutor=()=>{ const a=box.querySelector('.fg-autor'); if(!a) return; const f=lista[i];
-    a.textContent=f.by?('Foto de '+uname(f.by)+(f.t?' · '+fmtT(f.t):'')):''; a.hidden=!f.by; };
+  const pintaAutor=()=>{ const a=box.querySelector('.fg-autor'); if(!a) return;
+    const m=msgAtual(); const quem=m?m.by:lista[i].by, quando=m?m.t:lista[i].t;
+    a.textContent=quem?('Foto de '+uname(quem)+(quando?' · '+fmtT(quando):'')):''; a.hidden=!quem; };
   const pintaComents=()=>{ pintaAutor(); const c=box.querySelector('.fg-coments'); if(!c) return;
-    const lst=Object.entries(lista[i].coments||{}).map(([k,x])=>Object.assign({k},x)).sort((a,b)=>(a.t||0)-(b.t||0));
+    const lst=msgK
+      ? (typeof CHAT!=='undefined'?CHAT:[]).filter(x=>x.reply&&x.reply.k===msgK&&(x.text||'').trim())
+          .map(x=>({k:x.k,by:x.by,t:x.t,texto:x.text})).sort((a,b)=>(a.t||0)-(b.t||0))
+      : Object.entries(lista[i].coments||{}).map(([k,x])=>Object.assign({k},x)).sort((a,b)=>(a.t||0)-(b.t||0));
     c.innerHTML=(lst.length?`<div class="fg-com-tit">${lst.length>1?'Comentários':'Comentário'}</div>`:'')+lst.map(x=>`<div class="fg-com" data-ck="${esc(x.k)}"><span class="fg-com-tx"><b>${esc(uname(x.by))}</b> ${esc(x.texto||'')}</span>${USER&&x.by===USER.id?`<button type="button" class="fg-com-x" aria-label="Apagar comentário" title="Apagar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6.5 7 7 19a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l.5-12"/><path d="M9.5 7V5.4A1.4 1.4 0 0 1 11 4h2a1.4 1.4 0 0 1 1.5 1.4V7"/></svg></button>`:''}</div>`).join('');
     c.hidden=!lst.length; };
   // apagar o proprio comentario: sai na hora, com Desfazer
   const cLista=box.querySelector('.fg-coments');
   if(cLista) cLista.addEventListener('click',e=>{ const bx=e.target.closest('.fg-com-x'); if(!bx) return; e.stopPropagation();
     if(!USER||!famRef){ toast('Precisa da nuvem ligada'); return; }
+    if(msgK){ const ck=bx.closest('.fg-com').dataset.ck;
+      famRef.child('chat/'+ck).remove().then(()=>{ vibrate([30,30]); toast('Comentário apagado'); pintaComents(); }).catch(()=>toast('Não consegui apagar')); return; }
     const row=bx.closest('.fg-com'), ck=row&&row.dataset.ck, f=lista[i], k=(opt.chaves||[])[i];
     if(!ck||!f.coments||!f.coments[ck]||!k) return;
     const c=Object.assign({},f.coments[ck]); if(c.by!==USER.id) return;
@@ -4801,8 +5014,65 @@ function fotoGrande(lista,idx,opt){
         cam.set(c).then(()=>{ vibrate(20); toast('Comentário de volta'); }).catch(()=>{ delete f.coments[ck]; pintaComents(); toast('Não consegui trazer de volta'); }); },6000); })
       .catch(()=>{ f.coments=f.coments||{}; f.coments[ck]=c; pintaComents(); toast('Não consegui apagar'); });
   });
+  // reacoes com emoji na propria foto: uma por pessoa, toca de novo e tira
+  const pintaEmojis=()=>{
+    const el=box.querySelector('.fg-emos'); if(!el) return;
+    const m=msgK?{}:(lista[i].emojis||{}), grupos={};
+    if(msgK){ const rs=((msgAtual()||{}).reacts)||{}; Object.keys(rs).forEach(e=>{ const us=Object.keys(rs[e]||{}); if(us.length) grupos[e]=us; }); }
+    else Object.entries(m).forEach(([uid,r])=>{ const e=r&&r.e; if(!e) return; (grupos[e]=grupos[e]||[]).push(uid); });
+    const chaves=Object.keys(grupos);
+    el.innerHTML=chaves.map(e=>{ const quem=grupos[e].map(u=>USER&&u===USER.id?'Você':uname(u)).join(', ');
+      return `<button type="button" class="fg-emo ${USER&&grupos[e].includes(USER.id)?'mine':''}" data-fe2="${e}" title="${esc(quem)}" aria-label="${esc(quem)}"><span>${e}</span>${grupos[e].length>1?`<b>${grupos[e].length}</b>`:''}</button>`;
+    }).join('');
+    el.hidden=!chaves.length;
+    // quem reagiu, pelo nome, logo abaixo da foto
+    const q=box.querySelector('.fg-quem');
+    if(q){ const pares=[]; Object.keys(grupos).forEach(e=>grupos[e].forEach(u=>pares.push({e,u})));
+      const eu=USER?USER.id:null; pares.sort((a,b)=>(a.u===eu?-1:0)-(b.u===eu?-1:0));
+      const nomes=pares.map(x=>`<b>${esc(USER&&x.u===USER.id?'Você':uname(x.u))}</b>`);
+      const emos=[...new Set(pares.map(x=>x.e))].slice(0,3).join('');
+      let txt='';
+      if(nomes.length===1) txt='Reagido por '+nomes[0];
+      else if(nomes.length&&nomes.length<=3) txt='Reagido por '+nomes.slice(0,-1).join(', ')+' e '+nomes[nomes.length-1];
+      else if(nomes.length) txt='Reagido por '+nomes.slice(0,2).join(', ')+' e mais '+(nomes.length-2);
+      q.innerHTML=txt?`<span class="fg-q-emo">${emos}</span>${txt}`:''; q.hidden=!txt; }
+    const pk=box.querySelector('.fg-emopick');
+    const meu=msgK?(Object.keys(grupos).find(e=>USER&&grupos[e].includes(USER.id))||null):(USER&&m[USER.id]?m[USER.id].e:null);
+    if(pk) pk.querySelectorAll('[data-fe]').forEach(b=>b.classList.toggle('mine',b.dataset.fe===meu));
+    const bt=box.querySelector('.fg-emobt'); if(bt) bt.classList.toggle('on',!!meu);
+  };
+  const meuEmoji=()=>{
+    if(!USER) return null;
+    if(msgK){ const rs=((msgAtual()||{}).reacts)||{}; return Object.keys(rs).find(e=>rs[e]&&rs[e][USER.id])||null; }
+    const m=lista[i].emojis||{}; return m[USER.id]?m[USER.id].e:null;
+  };
+  const poeEmoji=e=>{
+    if(!USER||!famRef){ toast('Precisa da nuvem ligada'); return; }
+    if(msgK){                                   // uma reacao por pessoa: a nova tira a anterior
+      const m=msgAtual()||{}, rs=m.reacts||{}, eu=USER.id;
+      const meus=Object.keys(rs).filter(x=>rs[x]&&rs[x][eu]);
+      const tira=meus.includes(e), upd={};
+      meus.forEach(x=>{ upd['reacts/'+x+'/'+eu]=null; if(m.reacts&&m.reacts[x]) delete m.reacts[x][eu]; });
+      if(!tira){ upd['reacts/'+e+'/'+eu]=true; m.reacts=m.reacts||{}; m.reacts[e]=m.reacts[e]||{}; m.reacts[e][eu]=true; }
+      pintaEmojis(); vibrate(tira?8:15); if(!tira) SFX.pop();
+      famRef.child('chat/'+msgK).update(upd).catch(()=>{});
+      return; }
+    const f=lista[i], k=(opt.chaves||[])[i]; if(!k){ toast('Não consegui localizar esta foto'); return; }
+    f.emojis=f.emojis||{};
+    const tira=f.emojis[USER.id]&&f.emojis[USER.id].e===e;
+    const r={e,t:Date.now(),n:USER.nome||''};
+    if(tira) delete f.emojis[USER.id]; else f.emojis[USER.id]=r;
+    pintaEmojis(); vibrate(tira?8:15); if(!tira) SFX.pop();
+    famRef.child('fotos/'+opt.tarefa+'/'+k+'/emojis/'+USER.id).set(tira?null:r).catch(()=>{});
+    if(!tira&&tarefa) logEvt('reagiu_foto',{id:opt.tarefa,det:plain(tarefa.text||''),foto:k,texto:e});
+  };
+  const listaEmos=box.querySelector('.fg-emos');
+  if(listaEmos){ ['touchstart','touchmove','touchend','pointerdown'].forEach(ev=>listaEmos.addEventListener(ev,e=>e.stopPropagation(),{passive:true}));
+    listaEmos.addEventListener('click',ev=>{ ev.stopPropagation(); const b=ev.target.closest('[data-fe2]'); if(b) poeEmoji(b.dataset.fe2); }); }
   const bApagar=box.querySelector('.fg-apagar');
-  const pintaApagar=()=>{ if(bApagar) bApagar.hidden=!(USER&&lista[i]&&lista[i].by===USER.id); };
+  const pintaApagar=()=>{ if(!bApagar) return;
+    if(msgK){ const m=msgAtual(); bApagar.hidden=!(USER&&m&&m.by===USER.id); return; }
+    bApagar.hidden=!(USER&&lista[i]&&lista[i].by===USER.id); };
   // apaga as fotos das posicoes dadas (so as minhas); fecha e oferece Desfazer, que traz todas de volta
   const apagaFotos=idxs=>{
     if(!famRef||!USER||box._apagando) return;
@@ -4820,6 +5090,10 @@ function fotoGrande(lista,idx,opt){
   const opcoes=box.querySelector('.fg-opcoes');
   if(bApagar) bApagar.addEventListener('click',e=>{ e.stopPropagation();
     if(!famRef||!USER) { toast('Precisa da nuvem ligada'); return; }
+    if(msgK){ const m=msgAtual(); if(!m||m.by!==USER.id) return;
+      Promise.all([famRef.child('chat/'+msgK).remove(),famRef.child('anexos/'+msgK).remove()])
+        .then(()=>{ vibrate([30,30]); toast('Foto apagada da conversa'); fecha(); }).catch(()=>toast('Não consegui apagar'));
+      return; }
     const minhas=minhasFotos();
     if(minhas.length<=1||!opcoes){ apagaFotos([i]); return; }
     // mais de uma foto minha: so esta ou todas
@@ -4831,49 +5105,29 @@ function fotoGrande(lista,idx,opt){
     opcoes.addEventListener('click',e=>{ e.stopPropagation(); const b=e.target.closest('[data-o]'); if(!b) return; opcoes.hidden=true;
       if(b.dataset.o==='uma') apagaFotos([i]); else if(b.dataset.o==='todas') apagaFotos(minhasFotos()); });
   }
-  const pintaCurtir=()=>{ if(!acoes) return; const f=lista[i]; const likes=f.likes||{}; const n=Object.keys(likes).length;
-    const b=acoes.querySelector('.fg-curtir'); b.classList.toggle('on',!!(USER&&likes[USER.id])); b.title=n?(n===1?'1 curtida':n+' curtidas'):'Curtir';
-    // quem curtiu, pelo nome
-    const q=box.querySelector('.fg-quem'); if(q){ const ids=Object.keys(likes).sort((a,c)=>(likes[a]||0)-(likes[c]||0));
-      const eu=USER?USER.id:null; const ordem=ids.filter(u=>u===eu).concat(ids.filter(u=>u!==eu));   // quem esta olhando vem primeiro
-      const nomes=ordem.map(u=>`<b>${esc(uname(u))}</b>`);
-      let txt='';   // "Curtido por" simples e os nomes em negrito
-      if(!nomes.length) txt='';
-      else if(nomes.length===1) txt='Curtido por '+nomes[0];
-      else if(nomes.length<=3) txt='Curtido por '+nomes.slice(0,-1).join(', ')+' e '+nomes[nomes.length-1];
-      else txt='Curtido por '+nomes.slice(0,2).join(', ')+' e mais '+(nomes.length-2);
-      q.innerHTML=txt; q.hidden=!txt; } };
   if(acoes){
     ['touchstart','touchmove','touchend','pointerdown','mousedown'].forEach(ev=>acoes.addEventListener(ev,e=>e.stopPropagation(),{passive:true}));
     acoes.addEventListener('click',e=>e.stopPropagation());
-    const bCurtir=acoes.querySelector('.fg-curtir');
-    // grande: veio de dois toques na foto; mostra o coracao grande no meio (cheio ao curtir, vazado ao descurtir)
-    const alternaCurtir=grande=>{
-      if(!USER||!famRef){ toast('Precisa da nuvem ligada'); return; }
-      const f=lista[i]; f.likes=f.likes||{}; const eu=USER.id; const tinha=!!f.likes[eu];
-      if(tinha) delete f.likes[eu]; else f.likes[eu]=Date.now();
-      pintaCurtir();
-      if(!tinha){
-        bCurtir.classList.remove('pulse');
-        void bCurtir.offsetWidth;
-        bCurtir.classList.add('pulse');
-        setTimeout(()=>bCurtir.classList.remove('pulse'),450);
-      }
-      if(grande){ const palco=box.querySelector('.fg-palco'); palco.querySelectorAll('.fg-big').forEach(b=>b.remove());
-        const big=document.createElement('div'); big.className='fg-big'+(tinha?' off':''); big.setAttribute('aria-hidden','true');
-        big.innerHTML='<svg viewBox="0 0 24 24" '+(tinha?'fill="none" stroke="currentColor" stroke-width="1.6"':'fill="currentColor" stroke="none"')+' stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.7s-7.7-4.8-7.7-10.4A4.4 4.4 0 0 1 12 8.2a4.4 4.4 0 0 1 7.7 2.1c0 5.6-7.7 10.4-7.7 10.4Z"/></svg>';
+    // dois toques na foto: reage com coracao e mostra o coracao grande no meio
+    box._alternaCurtir=grande=>{
+      const meuAntes=meuEmoji();
+      poeEmoji('❤️');
+      if(grande){ const tirou=meuAntes==='❤️'; const palco=box.querySelector('.fg-palco'); palco.querySelectorAll('.fg-big').forEach(b=>b.remove());
+        const big=document.createElement('div'); big.className='fg-big'+(tirou?' off':''); big.setAttribute('aria-hidden','true');
+        big.innerHTML='<svg viewBox="0 0 24 24" '+(tirou?'fill="none" stroke="currentColor" stroke-width="1.6"':'fill="currentColor" stroke="none"')+' stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.7s-7.7-4.8-7.7-10.4A4.4 4.4 0 0 1 12 8.2a4.4 4.4 0 0 1 7.7 2.1c0 5.6-7.7 10.4-7.7 10.4Z"/></svg>';
         palco.appendChild(big); setTimeout(()=>big.remove(),950); }
-      vibrate(tinha?8:[15,30,20]); if(!tinha) SFX.pop();
-      const k=(opt.chaves||[])[i]; if(k) famRef.child('fotos/'+opt.tarefa+'/'+k+'/likes/'+eu).set(tinha?null:firebase.database.ServerValue.TIMESTAMP).catch(()=>{});
-      if(!tinha) logEvt('curtiu_foto',{id:opt.tarefa,det:plain(tarefa.text||''),foto:k||null});
     };
-    bCurtir.addEventListener('click',()=>alternaCurtir(false));
-    box._alternaCurtir=alternaCurtir;
     const campo=acoes.querySelector('.fg-coment');
     const comentar=()=>{
       if(!USER||!famRef){ toast('Precisa da nuvem ligada'); return; }
       const texto=campo.value.trim();
       if(!texto) return;
+      if(msgK){ const m=msgAtual();
+        famRef.child('chat').push({by:USER.id,text:texto,t:firebase.database.ServerValue.TIMESTAMP,
+          reply:{k:msgK,by:m?m.by:'',text:'📷 Foto'}})
+          .then(()=>{ campo.value=''; acoes.classList.remove('escrevendo'); vibrate(15); SFX.pop(); toast('Comentário enviado'); setTimeout(pintaComents,200); })
+          .catch(()=>toast('Não consegui comentar'));
+        return; }
       const f=lista[i], k=(opt.chaves||[])[i];
       if(!k){ toast('Não consegui localizar esta foto'); return; }
       const c={by:USER.id,t:Date.now(),texto};
@@ -4891,7 +5145,7 @@ function fotoGrande(lista,idx,opt){
     acoes.querySelector('.fg-enviar').addEventListener('click',comentar);
     // balao: manda a foto para a conversa (mesmo formato da foto mandada pela conversa, apontando a tarefa)
     const bMandar=acoes.querySelector('.fg-mandar');
-    bMandar.addEventListener('click',()=>{
+    if(bMandar) bMandar.addEventListener('click',()=>{
       if(!USER||!famRef){ toast('Precisa da nuvem ligada'); return; }
       if(acoes.classList.contains('enviando')) return;
       const f=lista[i];
@@ -4909,16 +5163,28 @@ function fotoGrande(lista,idx,opt){
     campo.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); comentar(); } });
     // escrevendo: some o coracao e entra o aviaozinho no lugar dele
     campo.addEventListener('input',()=>acoes.classList.toggle('escrevendo',!!campo.value.trim()));
-    pintaCurtir(); pintaComents();
+    const bEmo=acoes.querySelector('.fg-emobt'), pick=acoes.querySelector('.fg-emopick');
+    if(bEmo&&pick){
+      bEmo.addEventListener('click',()=>{ pick.hidden=!pick.hidden; vibrate(8); });
+      pick.addEventListener('click',ev=>{ const b=ev.target.closest('[data-fe]'); if(!b) return; poeEmoji(b.dataset.fe); pick.hidden=true; });
+      box.addEventListener('click',ev=>{ if(!pick.hidden&&!ev.target.closest('.fg-emopick')&&!ev.target.closest('.fg-emobt')) pick.hidden=true; });
+    }
+    // limpa reacoes repetidas minhas que ficaram de antes (agora e uma por pessoa)
+    if(msgK&&USER&&famRef){ const m=msgAtual()||{}, rs=m.reacts||{}, eu=USER.id;
+      const meus=Object.keys(rs).filter(x=>rs[x]&&rs[x][eu]);
+      if(meus.length>1){ const upd={}; meus.slice(1).forEach(x=>{ upd['reacts/'+x+'/'+eu]=null; delete m.reacts[x][eu]; });
+        famRef.child('chat/'+msgK).update(upd).catch(()=>{}); } }
+    pintaComents(); pintaEmojis();
   }
   pintaApagar();
   const vai=n=>{ n=((n%lista.length)+lista.length)%lista.length;   // gira sem fim: da ultima volta para a primeira
     if(n===i) return; i=n; img.classList.add('troca'); img.src=lista[i].data; setTimeout(()=>img.classList.remove('troca'),160);
     if(conta) conta.textContent=(i+1)+'/'+lista.length;
     const lg=box.querySelector('.fg-legenda'); if(lg){ lg.textContent=lista[i].desc||''; lg.hidden=!lista[i].desc; }
-    pintaCurtir(); pintaApagar(); pintaComents();
+    pintaApagar(); pintaComents(); pintaEmojis();
     box.querySelectorAll('.fg-th').forEach(b=>{ const on=+b.dataset.n===i; b.classList.toggle('on',on); if(on) b.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'}); }); vibrate(8); };
   const fecha=()=>{ box.classList.remove('on'); setTimeout(()=>box.remove(),180); document.removeEventListener('keydown',tecla); };
+  if(msgK) box._refresh=()=>{ if(!msgAtual()){ fecha(); return; } pintaEmojis(); pintaComents(); pintaApagar(); };
   const tecla=e=>{ if(e.key==='Escape') fecha(); else if(e.key==='ArrowRight') vai(i+1); else if(e.key==='ArrowLeft') vai(i-1); };
   // so o X fecha: tocar no fundo ou na foto nao fecha sem querer
   let toque0=0,tx=0,ty=0;   // dois toques seguidos na foto curtem (e descurtem)
@@ -5209,7 +5475,8 @@ const TL_TIPOS={
   nota:     {ic:ICO.lapis,   cor:'var(--seg)',   txt:e=>e.vazia?'apagou a observação':'escreveu uma observação'},
   foto:     {ic:ICO.camera,  cor:'var(--qua)',   txt:()=>'tirou uma foto da tarefa'},
   curtiu_foto:{ic:ICO.coracao,cor:'var(--seg)',  txt:()=>'curtiu a foto da tarefa'},
-  comentou_foto:{ic:ICO.msg,  cor:'var(--seg)',  txt:a=>'comentou a foto da tarefa'+(a&&a.texto?' · “'+corta(a.texto,70)+'”':'')}
+  comentou_foto:{ic:ICO.msg,  cor:'var(--seg)',  txt:a=>'comentou a foto da tarefa'+(a&&a.texto?' · “'+corta(a.texto,70)+'”':'')},
+  reagiu_foto:{ic:ICO.coracao, cor:'var(--seg)',  txt:a=>'reagiu à foto da tarefa'+(a&&a.texto?' '+a.texto:'')}
 };
 // avisos que nao aparecem mais na conversa (ficaram gravados de versoes antigas)
 const EVT_OCULTOS={apagou_foto:1};
@@ -5380,6 +5647,7 @@ function openMain(){
   show(`<h2>${ICO.menu} Menu <button class="x">✕</button></h2>
    ${famRef?`<button class="opt mobile-menu-chat" data-m="chat"><span class="ic">${ICO.msg}</span>Conversa${n?` (${n})`:""}</button>`:""}
    <button class="opt" data-m="summary"><span class="ic">${ICO.resumo}</span>Resumo</button>
+   <button class="opt" data-m="notas"><span class="ic">${ICO.resumo}</span>Notas</button>
    <button class="opt menu-dock-duplicate" data-m="tt"><span class="ic">${ICO.aulas}</span>Aulas da semana</button>
    <button class="opt" data-m="share"><span class="ic">${ICO.compart}</span>Compartilhar tarefas</button>
    <button class="opt" data-m="wk"><span class="ic">${ICO.semanas}</span>Ver semana</button>
@@ -5387,7 +5655,7 @@ function openMain(){
    <button class="opt" data-m="rea"><span class="ic">${ICO.coracao}</span>${isAluna()?'Carinhos recebidos':'Carinhos enviados'}</button>
    ${CLOUD_CFG?`<button class="opt" data-m="nudge"><span class="ic">${ICO.sino}</span>Chamar atenção</button>`:''}
 `);
-  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='summary')openSummary(); if(m==='tema')openTema(); if(m==='rea')openReacts(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='nudge'){ hide(); chamarAtencao(); } if(m==='user')openLogin(); if(m==='chat')openChat();}));
+  sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='summary')openSummary(); if(m==='notas')openNotas(); if(m==='tema')openTema(); if(m==='rea')openReacts(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='nudge'){ hide(); chamarAtencao(); } if(m==='user')openLogin(); if(m==='chat')openChat();}));
 }
 const SUMMARY_STATES=[
   {key:'todo',label:'Falta fazer',color:'#B98BEA',light:'#D8C2F5'},
@@ -5574,6 +5842,173 @@ function openTema(abaInicial){
   }));
   liga();
 }
+function gradeClass(v){
+  if(v==null || Number.isNaN(Number(v))) return 'grade-empty';
+  const n=Number(v);
+  if(n<7) return 'grade-red';
+  if(n<9) return 'grade-yellow';
+  return 'grade-green';
+}
+function fmtGrade(v){ return Number(v).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+function gradeDelta(a,b){
+  if(a==null || b==null || Number(a)===0) return '';
+  const pct=((Number(b)-Number(a))/Number(a))*100;
+  const cls=pct>0.05?'up':pct<-0.05?'down':'flat';
+  const icon=pct>0.05?'↑':pct<-0.05?'↓':'→';
+  return `<span class="grade-delta ${cls}" title="Variação em relação ao 1º trimestre">${icon} ${Math.abs(pct).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</span>`;
+}
+// Boletim informado pela foto enviada: notas em escala 0–10.
+// O 2º trimestre é a última nota liberada e, por isso, é a usada nas etiquetas das tarefas.
+const BOLETIM = {
+  art:{nome:'Arte',t1:8.0,t2:8.0,t3:null,anual:8.0},
+  cie:{nome:'Ciências',t1:7.5,t2:8.9,t3:null,anual:8.4},
+  edf:{nome:'Ed. Física',t1:8.5,t2:9.3,t3:null,anual:9.0},
+  rel:{nome:'Religião',t1:9.0,t2:8.0,t3:null,anual:8.3},
+  geo:{nome:'Geografia',t1:6.5,t2:6.0,t3:null,anual:6.2},
+  his:{nome:'História',t1:7.5,t2:8.0,t3:null,anual:7.8},
+  ing:{nome:'Inglês',t1:8.7,t2:6.2,t3:null,anual:7.0},
+  por:{nome:'Português',t1:8.3,t2:7.2,t3:null,anual:7.6},
+  mat:{nome:'Matemática',t1:6.3,t2:5.4,t3:null,anual:5.7},
+  fil:{nome:'Filosofia',t1:8.5,t2:7.3,t3:null,anual:7.7},
+  esp:{nome:'Espanhol',t1:9.8,t2:7.9,t3:null,anual:8.5},
+  pdv:{nome:'Proj. Vida',t1:10.0,t2:8.8,t3:null,anual:9.2}
+};
+function gradeForTask(t){
+  const b=BOLETIM[t&&t.subj];
+  return b && b.t2!=null ? b.t2 : null;
+}
+function gradeCell(v,opts={}){
+  if(v==null) return '<span class="grade-val grade-empty"></span>';
+  const cls=gradeClass(v)+(opts.annual?' grade-annual':'');
+  return `<span class="grade-val ${cls}">${fmtGrade(v)}</span>`;
+}
+// Pesos dos trimestres no boletim: 1º vale 1, 2º vale 2 e 3º vale 3.
+// Confere com a coluna Média do colégio: (1º + 2x2º)/3 da exatamente as medias de hoje.
+const NOTA_PESO={t1:1,t2:2,t3:3};
+const NOTA_META=7.0;                      // media que precisa fechar no ano
+let SIM3={};                              // notas do 3º digitadas para simular (so neste aparelho)
+try{ SIM3=JSON.parse(localStorage.getItem(KEY+'-sim3')||'{}')||{}; }catch(e){ SIM3={}; }
+function salvaSim3(){ try{ localStorage.setItem(KEY+'-sim3',JSON.stringify(SIM3)); }catch(e){}
+  if(typeof famRef!=='undefined'&&famRef){ try{ famRef.child('notas3').set(Object.keys(SIM3).length?SIM3:null).catch(()=>{}); }catch(e){} } }
+// a nuvem manda as notas do 3º digitadas em qualquer aparelho
+let sim3Pronto=false;
+function aplicaSim3daNuvem(v){
+  const novo={}; Object.keys(v||{}).forEach(k=>{ const n=Number(v[k]); if(BOLETIM[k]&&!Number.isNaN(n)) novo[k]=n; });
+  if(!v&&!sim3Pronto&&Object.keys(SIM3).length){ sim3Pronto=true; salvaSim3(); return; }   // nada na nuvem ainda: sobe o que ja foi digitado aqui
+  sim3Pronto=true;
+  if(JSON.stringify(novo)===JSON.stringify(SIM3)) return;
+  SIM3=novo; try{ localStorage.setItem(KEY+'-sim3',JSON.stringify(SIM3)); }catch(e){}
+  const corpo=document.getElementById('notasBody');
+  if(corpo&&!document.querySelector('.grade-in:focus')){ corpo.innerHTML=gradesHtml(); bindNotas(); }
+}
+function calcMedia(t1,t2,t3){
+  let soma=0,peso=0;
+  [[NOTA_PESO.t1,t1],[NOTA_PESO.t2,t2],[NOTA_PESO.t3,t3]].forEach(([w,v])=>{
+    if(v!=null&&v!==''&&!Number.isNaN(Number(v))){ soma+=w*Number(v); peso+=w; }
+  });
+  return peso? soma/peso : null;
+}
+function nota3(k){ const b=BOLETIM[k]; if(!b) return null; if(b.t3!=null) return b.t3;
+  const v=SIM3[k]; return (v==null||v==='')?null:Number(v); }
+function mediaDe(k){ const b=BOLETIM[k]; if(!b) return null; const t3=nota3(k);
+  if(t3==null) return b.anual!=null?b.anual:calcMedia(b.t1,b.t2,null);
+  return calcMedia(b.t1,b.t2,t3); }
+function simulando(){ return Object.keys(BOLETIM).some(k=>BOLETIM[k].t3==null&&SIM3[k]!=null&&SIM3[k]!==''); }
+function precisaNo3(k){                    // quanto falta tirar no 3º para fechar a meta
+  const b=BOLETIM[k]; if(!b||b.t1==null||b.t2==null) return null;
+  const tot=NOTA_PESO.t1+NOTA_PESO.t2+NOTA_PESO.t3;
+  return (NOTA_META*tot - NOTA_PESO.t1*b.t1 - NOTA_PESO.t2*b.t2)/NOTA_PESO.t3;
+}
+function mediaLista(l){ const v=l.filter(x=>x!=null&&!Number.isNaN(Number(x)));
+  return v.length? v.reduce((a,b)=>a+Number(b),0)/v.length : null; }
+function notasTopo(){
+  const ks=Object.keys(BOLETIM);
+  const m1=mediaLista(ks.map(k=>BOLETIM[k].t1));
+  const m2=mediaLista(ks.map(k=>BOLETIM[k].t2));
+  const mv=mediaLista(ks.map(k=>{const b=BOLETIM[k];
+    return (b.t1!=null&&b.t2!=null&&Number(b.t1)!==0)?((b.t2-b.t1)/b.t1)*100:null;}));
+  const mg=mediaLista(ks.map(k=>mediaDe(k)));
+  const cls=mv>0.05?'up':mv<-0.05?'down':'flat', ico=mv>0.05?'↑':mv<-0.05?'↓':'→';
+  const chip=(rot,val,extra='')=>`<div class="gchip ${extra}"><small>${rot}</small>${val}</div>`;
+  return `<div class="grade-top">
+    ${chip('Média 1º', m1==null?'<b>–</b>':`<b class="${gradeClass(m1)}">${fmtGrade(m1)}</b>`)}
+    ${chip('Média 2º', m2==null?'<b>–</b>':`<b class="${gradeClass(m2)}">${fmtGrade(m2)}</b>`)}
+    ${chip('Variação', mv==null?'<b>–</b>':`<b class="gdelta ${cls}">${ico} ${fmtGrade(Math.abs(mv))}%</b>`)}
+    ${chip('Média geral', mg==null?'<b>–</b>':`<b class="${gradeClass(mg)}">${fmtGrade(mg)}</b>`, simulando()?'sim':'')}
+  </div>`;
+}
+function celula3(k){
+  const b=BOLETIM[k];
+  if(b.t3!=null) return gradeCell(b.t3);
+  const v=SIM3[k];
+  const txt=(v==null||v==='')?'':fmtGrade(v);
+  return `<input class="grade-val grade-in ${txt?'cheio':''}" data-k="${k}" type="text" inputmode="decimal" maxlength="4" value="${txt}" placeholder="–" aria-label="Nota do 3º trimestre de ${b.nome}">`;
+}
+function celulaMedia(k){
+  const m=mediaDe(k);
+  const cls=m==null?'grade-empty':gradeClass(m)+' grade-annual'+(nota3(k)!=null&&BOLETIM[k].t3==null?' grade-sim':'');
+  return `<span class="grade-val grade-media ${cls}">${m==null?'':fmtGrade(m)}</span>`;
+}
+function gradesHtml(){
+  const rows=Object.keys(BOLETIM).map(k=>{
+    const b=BOLETIM[k];
+    return `<div class="grade-row" data-k="${k}">
+      <div class="grade-subj"><span>${b.nome}</span></div>
+      ${gradeCell(b.t1)}${gradeCell(b.t2)}<div class="grade-trend">${gradeDelta(b.t1,b.t2)}</div>${celula3(k)}${celulaMedia(k)}
+    </div>`;
+  }).join('');
+  return `${notasTopo()}
+    <div class="grade-acts">
+      <button type="button" class="gbtn" id="gMeta">Quanto preciso para ${fmtGrade(NOTA_META)}</button>
+      <button type="button" class="gbtn ghost" id="gLimpar">Limpar</button>
+    </div>
+    <div class="grades">
+      <div class="grade-head"><span>Matéria</span><span>1º</span><span>2º</span><span aria-hidden="true"></span><span>3º</span><span>Média</span></div>
+      ${rows}
+    </div>`;
+}
+function atualizaLinhaNota(k){
+  const row=document.querySelector('.grade-row[data-k="'+k+'"]'); if(!row) return;
+  const cel=row.querySelector('.grade-media'); if(cel){ const novo=document.createElement('div'); novo.innerHTML=celulaMedia(k);
+    cel.className=novo.firstElementChild.className; cel.textContent=novo.firstElementChild.textContent; }
+  const inp=row.querySelector('.grade-in');
+  if(inp){ const v=SIM3[k]; inp.className='grade-val grade-in '+((v==null||v==='')?'':'cheio'); }
+}
+function atualizaTopoNotas(){ const t=document.querySelector('.grade-top'); if(t) t.outerHTML=notasTopo(); }
+function bindNotas(){
+  const body=document.getElementById('notasBody'); if(!body) return;
+  const redesenha=()=>{ body.innerHTML=gradesHtml(); bindNotas(); };
+  body.querySelectorAll('.grade-in').forEach(inp=>{
+    inp.addEventListener('focus',()=>setTimeout(()=>inp.select(),0));
+    inp.addEventListener('input',()=>{
+      let v=inp.value.replace(',','.').replace(/[^0-9.]/g,'');
+      const partes=v.split('.'); if(partes.length>2) v=partes[0]+'.'+partes.slice(1).join('');
+      if(v.includes('.')) v=v.slice(0,v.indexOf('.')+2);
+      const n=parseFloat(v);
+      if(v===''||Number.isNaN(n)) delete SIM3[inp.dataset.k];
+      else { if(n>10){ v='10'; } SIM3[inp.dataset.k]=Math.max(0,Math.min(10,parseFloat(v))); }
+      inp.value=v.replace('.',',');
+      salvaSim3(); atualizaLinhaNota(inp.dataset.k); atualizaTopoNotas();
+    });
+    inp.addEventListener('blur',()=>{ const v=SIM3[inp.dataset.k]; inp.value=(v==null||v==='')?'':fmtGrade(v); });
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter') inp.blur(); });
+  });
+  const bm=document.getElementById('gMeta');
+  if(bm) bm.addEventListener('click',()=>{
+    Object.keys(BOLETIM).forEach(k=>{ if(BOLETIM[k].t3!=null) return;
+      const p=precisaNo3(k); if(p==null) return;
+      SIM3[k]=Math.max(0,Math.min(10,Math.ceil(p*10)/10));
+    });
+    salvaSim3(); vibrate(15); redesenha(); toast('Preenchi o 3º com a nota que falta para '+fmtGrade(NOTA_META));
+  });
+  const bl=document.getElementById('gLimpar');
+  if(bl) bl.addEventListener('click',()=>{ SIM3={}; salvaSim3(); vibrate(10); redesenha(); });
+}
+function openNotas(){
+  show(`<h2>${ICO.resumo} Notas <button class="x">✕</button></h2>
+    <div id="notasBody" class="nodrag">${gradesHtml()}</div>`);
+  bindNotas();
+}
 function openTimetable(){
   const dow=new Date().getDay();
   const keys=['dom','seg','ter','qua','qui','sex','sab'];
@@ -5582,24 +6017,23 @@ function openTimetable(){
   const SHORT={cie:'Ciências',por:'Português',mat:'Matemát.',rel:'Religião',edf:'Ed. Física',ing:'Inglês',pdv:'Proj. Vida',geo:'Geografia',his:'História',esp:'Espanhol',art:'Arte',fil:'Filosofia'};
   const col=k=>getComputedStyle(document.documentElement).getPropertyValue(DAYMETA[k][1]).trim();
   const idx=k=>keys.indexOf(k);
-  const showWholeWeek=!ks.includes(tomK); // Amanhã sem aula: grade inteira nas cores normais.
-  const mark=k=>showWholeWeek?'':(k===tomK?'tom':(idx(k)<=idx(todayK)?'past':''));
+  const showWholeWeek=!ks.includes(tomK);
+  const mark=k=>showWholeWeek?'':(k===todayK?'hoje':(k===tomK?'tom':(idx(k)<idx(todayK)?'past':'')));
   let g=`<div class="h"></div>`+ks.map(k=>`<div class="dh ${mark(k)}" style="background:${dayCss(k)}">${DAYMETA[k][0].slice(0,3)}${k===tomK?'<small>amanhã</small>':k===todayK?'<small>hoje</small>':''}</div>`).join('');
   TIMETABLE.hours.forEach((h,i)=>{g+=`<div class="h">${h}</div>`+ks.map(k=>{const sk=TIMETABLE.days[k][i];
     return `<div class="c ${mark(k)}" data-sk="${sk}" style="--dc:${col(k)}"><span>${SHORT[sk]}</span></div>`;}).join('');});
-  // o curso de ingles nao e do colegio: entra numa linha so dele
   g+=`<div class="h">${WIZ_HORA.replace('h',':00')}</div>`+ks.map(k=>k===WIZ_DIA
     ? `<div class="c wiz ${mark(k)}" data-sk="wiz" style="--dc:${col(k)}"><span>Inglês<br>Wizard</span></div>`
     : `<div class="c vaga" aria-hidden="true"></div>`).join('');
-  show(`<h2>${ICO.aulas} Aulas do ${TIMETABLE.turma} <button class="x">✕</button></h2><div class="tt" id="tt">${g}</div>`);
-  let picked=null;
-  const tt=document.getElementById('tt');
+  show(`<h2>${ICO.aulas} Aulas <button class="x">✕</button></h2>
+    <div class="tt" id="tt">${g}</div>`);
+  let picked=null; const tt=document.getElementById('tt'); if(!tt) return;
   tt.querySelectorAll('.c').forEach(c=>c.addEventListener('click',()=>{
-    const sk=c.dataset.sk; picked = picked===sk ? null : sk; vibrate(15);
-    tt.classList.toggle('pick',!!picked);
+    const sk=c.dataset.sk; picked=picked===sk?null:sk; vibrate(15); tt.classList.toggle('pick',!!picked);
     tt.querySelectorAll('.c').forEach(x=>x.classList.toggle('hit',!!picked&&x.dataset.sk===picked));
   }));
 }
+
 function openWeeks(){
   const ids=weekIds().reverse();
   show(`<h2>${ICO.semanas} Semanas <button class="x">✕</button></h2>
@@ -5655,6 +6089,50 @@ function refreshReminder(){
   sheet.querySelector('.x').addEventListener('click',hide); bindTasks(sheet);
   document.getElementById('remGo').addEventListener('click',()=>{hide();vibrate(20);});
 }
+// puxar a tela para baixo, la em cima: vai abrindo a semana anterior
+(function(){
+  const wrap=document.querySelector('.wrap'), app=document.getElementById('app'); if(!wrap||!app) return;
+  const veu=document.getElementById('veil');
+  const el=document.createElement('div'); el.className='puxa'; el.id='puxaSemana'; el.setAttribute('aria-hidden','true');
+  el.innerHTML='<div class="pz-in"><span class="pz-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 5 7 7 7-7"/><path d="m5 12 7 7 7-7"/></svg></span>'
+    +'<span class="pz-tx">Semana anterior</span><span class="pz-bar"><i></i></span></div>';
+  wrap.insertBefore(el,app);
+  const LIM=112, ALT=76;                          // o quanto precisa puxar e a altura da faixa
+  let y0=null,x0=null,ativo=false,dy=0,alvo=null;
+  const anterior=()=>{ const ids=weekIds(); const i=ids.indexOf(current); return i>0?ids[i-1]:null; };
+  const pinta=()=>{
+    const p=Math.min(1,dy/LIM), pronto=p>=1&&!!alvo;
+    el.classList.toggle('pronto',pronto); el.classList.toggle('vazio',!alvo);
+    el.style.height=Math.min(ALT,dy*.62).toFixed(1)+'px';
+    el.querySelector('.pz-bar i').style.width=(alvo?p*100:0)+'%';
+    const w=alvo?DB.weeks[alvo]:null;                       // um aviso so, dizendo qual semana vai abrir
+    el.querySelector('.pz-tx').textContent=!alvo?'Não tem semana anterior':('Semana anterior'+(w&&w.label?' · '+w.label:''));
+  };
+  const volta=()=>{ dy=0; el.style.transition='height .24s cubic-bezier(.2,.9,.3,1)'; el.style.height='0px';
+    setTimeout(()=>{ el.style.transition=''; el.classList.remove('pronto','vazio'); },260); };
+  document.addEventListener('touchstart',e=>{
+    y0=null; if(e.touches.length>1) return;
+    if(veu.classList.contains('on')||document.body.classList.contains('locked')||document.querySelector('.fotona')) return;
+    if(window.scrollY>0) return;
+    if(e.target.closest('.dock,.sheet,.fotona,.aviso-msg,.puxa,input,textarea,button,.chips,.filters,.filter-row,.searchbar')) return;
+    el.style.transition=''; y0=e.touches[0].clientY; x0=e.touches[0].clientX; ativo=false; dy=0; alvo=anterior();
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{
+    if(y0==null) return; const t=e.touches[0]; const d=t.clientY-y0, dx=Math.abs(t.clientX-x0);
+    if(!ativo){ if(d>8&&d>dx*1.4&&window.scrollY<=0) ativo=true; else if(d<-6||dx>16){ y0=null; return; } else return; }
+    if(e.cancelable) e.preventDefault();
+    dy=Math.max(0,Math.min(d,240)); pinta();
+  },{passive:false});
+  const solta=()=>{
+    if(y0==null) return; const trocar=ativo&&alvo&&dy>=LIM, destino=alvo, voltar=current;
+    y0=null; ativo=false; volta();
+    if(trocar){ vibrate([15,30]); SFX.pop(); current=destino; render(); window.scrollTo({top:0});
+      const w=DB.weeks[destino];
+      toastAcao('Semana de '+((w&&w.label)||destino),'Voltar',()=>{ current=voltar; render(); window.scrollTo({top:0}); vibrate(10); },6000); }
+  };
+  document.addEventListener('touchend',solta,{passive:true});
+  document.addEventListener('touchcancel',solta,{passive:true});
+})();
 // puxar a barra de baixo para cima: o Menu sobe acompanhando o dedo
 (function(){ const dk=document.querySelector('.dock'); if(!dk) return;
   const veu=document.getElementById('veil');
@@ -5662,7 +6140,7 @@ function refreshReminder(){
   const solta=()=>{
     if(!abriu){ y0=null; arrastando=false; return; }
     sheet.classList.remove('sem-anim');
-    if(resto<62){                                   // completa a subida e para: nada de piscar
+    if(resto<94){                                   // abre com um puxao curto, sem exigir arrastar ate o alto
       sheet.style.transition='transform .3s cubic-bezier(.22,.85,.28,1)';
       sheet.style.transform='translateY(0)'; veu.style.background='rgba(38,36,58,.45)'; gripLargura(1); vibrate(12);
       setTimeout(()=>{ sheet.style.transition=''; sheet.style.transform=''; sheet.classList.remove('puxando'); gripLargura(null); },310);
@@ -5677,7 +6155,7 @@ function refreshReminder(){
     const t=e.touches[0]; y0=t.clientY; x0=t.clientX; arrastando=false; abriu=false; resto=100; },{passive:true});
   dk.addEventListener('touchmove',e=>{ if(y0==null) return;
     const t=e.touches[0], dy=y0-t.clientY, dx=Math.abs(t.clientX-x0);
-    if(!arrastando){ if(dy>10&&dy>dx*1.2) arrastando=true; else if(dy<-10||dx>14){ y0=null; return; } else return; }
+    if(!arrastando){ if(dy>5&&dy>dx*1.05) arrastando=true; else if(dy<-10||dx>14){ y0=null; return; } else return; }
     if(e.cancelable) e.preventDefault();   // segura a tela de tras parada
     if(!abriu){ abriu=true; sheet.classList.add('sem-anim','puxando'); openMain(); }
     const alt=sheet.getBoundingClientRect().height||1;
@@ -5854,7 +6332,7 @@ function avisoMsg(m,quantas){
   el.className='aviso-msg'; el.id='avisoMsg'; el.style.setProperty('--uc',corDe(u));
   el.innerHTML=`<span class="av-foto">${avatarHtml(u)}</span>
     <span class="av-corpo"><span class="av-topo"><b class="av-nome">${esc(u.nome)}</b>${extra}<span class="av-hora">${fmtT(m.t)}</span></span>
-      <span class="av-txt">${esc(msgPreview(m).slice(0,90))}</span></span>
+      <span class="av-txt">${esc(msgPreview(m).slice(0,300))}</span></span>
     <button type="button" class="av-re" id="avResponder">Responder</button>
     <button type="button" class="av-ig" id="avIgnorar" aria-label="Ignorar"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>`;
   document.body.appendChild(el);
