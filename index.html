@@ -559,7 +559,7 @@
     body .imp summary .n{font-size:18px} body .imp summary .cnt{font-size:11px;padding:4px 10px}   /* Importantes igual aos dias */
     body .tl-head-tx{font-size:18px} body h1{font-size:24px} body .fam .p>span{font-size:calc(1em - 1px)} body .fam .p small{font-size:10px}
     body .day summary,body .imp summary{padding:6px 14px} body .tl-head{padding:7px 15px}
-    body .next h2{font-size:17px} body .next .topic-list{font-size:14px}   /* celular: caixa do Conteudo 1px menor */
+    body .next h2{font-size:17px} body .next .topic-list,body .cal .topic-list{font-size:14px}   /* celular: caixa do Conteudo 1px menor */
     body .task.wizt .tg{display:inline;margin:0 4px 0 0;vertical-align:1px} body .task.wizt .tg .st,body .task.wizt .tg .dchip{margin:0 4px 0 0;vertical-align:1px} body .task.wizt .tx{display:inline}   /* Curso de Ingles: descricao na linha das etiquetas */
     body .day summary .arrow,body .imp summary .arrow,body .tl-head .arrow{width:22px;height:22px}
     body .day summary .arrow .ico,body .imp summary .arrow .ico,body .tl-head .arrow .ico{width:16px;height:16px}
@@ -682,6 +682,7 @@
   @keyframes hintr{0%,8%{opacity:0}18%,48%{opacity:1}58%,100%{opacity:0}}
   @keyframes hintl{0%,62%{opacity:0}72%,94%{opacity:1}100%{opacity:0}}
   .bring .task{--tbg:var(--bring)} .home .task{--tbg:var(--home)} .imp .task{--tbg:#fff}
+  .imp .imp-sep{height:2px;background:#F0E29A;border-radius:2px;margin:10px 10px 0}   /* separador amarelinho reto entre as atividades */
   .box .task+.task::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:#fff;z-index:2;pointer-events:none}
   #app .day .box .task .tin{padding-left:0;padding-right:0}   /* etiqueta, descricao e simbolos alinhados com o titulo da caixa */   /* linha reta branca entre as atividades */
   @keyframes bounce{0%{transform:scale(.7)}50%{transform:scale(1.25)}75%{transform:scale(.95)}100%{transform:scale(1)}}
@@ -726,6 +727,8 @@
   .tg{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:4px}
   .tg .st,.tg .dchip{margin:0;vertical-align:0}
   .st.sj{background:var(--t10);color:var(--ink)}
+  .st.sj .sj-sep{font-style:normal;opacity:.55;margin:0 4px}
+  .st.sj .sj-nota{font-weight:900}
   /* Notas: a etiqueta da matéria acompanha a última nota liberada (2º trimestre). */
   .st.sj.grade-red{background:#F9D5D5;color:#A32424}
   .st.sj.grade-yellow{background:#FFF1B8;color:#806400}
@@ -795,6 +798,26 @@
   .rem .rw .task{--tbg:var(--t05);border-top:0;margin-bottom:6px;background:var(--t05)}
   .rem .rw .task.doing{--tbg:var(--doing);background:var(--doing)}
   .next{background:#fff;border:3px dashed var(--lilas-line);border-radius:22px;padding:14px 16px;margin:12px 0 0}
+  /* blocos do rodape (Ver a proxima semana, Conteudo, Avisos): mesmo molde, mesma cor, mesma letra */
+  .cal{display:block;background:#fff;border:3px dashed var(--lilas-line);border-radius:22px;margin:12px 0 0;overflow:hidden;box-sizing:border-box}
+  .cal summary{list-style:none;display:flex;align-items:center;gap:8px;padding:12px 14px 12px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .cal summary::-webkit-details-marker{display:none}
+  .cal .n{font-size:18px;font-weight:900;color:var(--ink);flex:1;min-width:0}
+  .cal .arrow{flex:none;width:32px;height:32px;border-radius:50%;background:var(--t08);display:flex;align-items:center;justify-content:center;color:var(--lilas-ink);transition:transform .2s}
+  .cal .arrow svg{width:18px;height:18px}
+  .cal[open] summary .arrow{transform:rotate(180deg)}
+  .cal-body{padding:0 16px 14px;display:flex;flex-direction:column;gap:8px}
+  .cal-body.next-body{padding-top:0}
+  .cal-st{border:2px solid var(--lilas-line);border-radius:16px;padding:10px 12px;background:#fff}
+  .cal-st.passou{opacity:.45}
+  .cal-st{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:6px 7px;align-items:center}   /* duas partes: texto a esquerda, data e contagem a direita, sempre na mesma largura */
+  .cal-esq{min-width:0}
+  .cal-n{display:block}
+  .cal-r{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.2;padding-left:6px;border-left:2px solid var(--t08);align-self:stretch;min-width:0}
+  .cal-q{font-size:11px;font-weight:800;color:var(--soft);white-space:nowrap;margin-top:2px}
+  .cal-n{font-size:15px;font-weight:900;color:var(--ink)}
+  .cal-d{font-size:12px;font-weight:900;color:var(--lilas-ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .cal-l{font-size:min(15px,3.2vw);color:var(--soft);margin-top:2px;line-height:1.3}   /* materias da recuperacao */
   .next h2{margin:0 0 6px;font-size:18px;font-weight:900}
   .next .topic-list{font-size:15px}
   /* flutuante */
@@ -963,13 +986,11 @@
   .puxa .pz-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--t51),var(--t56))}
   .puxa.pronto .pz-bar i{background:linear-gradient(90deg,#4FA877,#2F7D4F)}
   @media(prefers-reduced-motion:reduce){.puxa .pz-ic{transition:none}}
-  /* ir para a semana seguinte, no fim da lista de dias */
-  .prox-semana{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:2px 0 18px;padding:13px 14px;
-    border:2px dashed var(--lilas-line);background:#fff;border-radius:18px;font:inherit;font-size:15px;font-weight:900;color:var(--lilas-ink);cursor:pointer}
-  .prox-semana:active{transform:scale(.98)}
-  .prox-semana svg{width:20px;height:20px;order:2;color:var(--lilas)}
-  .prox-semana span{order:1;text-align:center}
-  .prox-semana small{display:block;font-size:12px;font-weight:700;color:var(--soft)}
+  /* ir para a semana seguinte: mesmo molde dos blocos de baixo */
+  .prox-semana{display:flex;align-items:center;gap:8px;width:100%;padding:12px 14px 12px 16px;font:inherit;text-align:left;cursor:pointer;color:var(--ink)}
+  .prox-semana:active{transform:scale(.99)}
+  .prox-semana .arrow.lado svg{transform:rotate(-90deg)}
+  .prox-semana small{display:block;font-size:13px;font-weight:700;color:var(--soft);margin-top:1px;line-height:1.2}
   .wk{display:flex;align-items:center;gap:10px;width:100%;border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:16px;font-weight:800;color:var(--ink);text-align:left}
   .wk.cur{border-color:var(--ok);background:#EEF9F4}
   .wk .pr{margin-left:auto;font-size:13px;color:var(--soft);text-align:right}
@@ -1052,6 +1073,13 @@
   .chathead{flex:none;padding:18px 14px 12px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
   .chat h2{font-size:20px;margin:0 0 8px;color:#fff;display:flex;align-items:center;gap:8px}
   .chat h2 .gear,.chat h2 .x{background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:18px;flex:none;display:flex;align-items:center;justify-content:center}
+  .chat h2 .gear.back{margin-right:2px}
+  .chat h2 .chat-title{flex:1;min-width:0}
+  .chat h2 #chatMais{margin-left:auto}
+  .chatmenu{display:flex;flex-direction:column;gap:2px;padding:6px;min-width:212px}
+  .chatmenu .mini{display:flex;align-items:center;gap:10px;width:100%;justify-content:flex-start;padding:10px 12px;border-radius:12px;font-size:15px;font-weight:800;color:var(--ink);background:transparent;border:0;text-align:left}
+  .chatmenu .mini:active{background:var(--t08)}
+  .chatmenu .mini svg{width:20px;height:20px;flex:none;color:var(--lilas-ink)}
   .chat h2 .gear svg{width:20px;height:20px;display:block}
 
   .chat h2 .x{background:#fff;color:var(--lilas-ink)}
@@ -1197,16 +1225,15 @@
   .chat h2 .gear.find{margin-left:auto;margin-right:6px}
   .chat h2 .gear+.gear{margin-left:0}
   .msg .b{background:#fff;border-radius:11px;padding:8px 13px 6px;font-size:16px;line-height:1.35;box-shadow:0 2px 6px rgba(38,36,58,.10);min-width:64px}
-  /* foto sozinha: a propria foto e o balao, sem borda, com o nome e a hora por cima */
-  .msg .b.sofoto,.msg.me .b.sofoto{padding:0;background:transparent;min-width:0;overflow:hidden;border-radius:16px;line-height:0}
-  .msg .b.sofoto .pic{display:block;margin:0;border-radius:16px;width:100%;max-width:100%}
-  .msg .b.sofoto .hd{position:absolute;top:0;left:0;right:0;z-index:2;margin:0;padding:6px 10px 12px;line-height:1.2;
-    background:linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,0));border-radius:16px 16px 0 0;pointer-events:none}
-  .msg .b.sofoto .hd b,.msg.me .b.sofoto .hd b{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5)}
-  .msg .b.sofoto .msg-meta,.msg.me .b.sofoto .msg-meta{position:absolute;right:6px;bottom:5px;z-index:2;margin:0;padding:0;
-    background:transparent;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.75),0 0 8px rgba(0,0,0,.45);line-height:14px;min-height:14px}
-  .msg .b.sofoto .lido,.msg.me .b.sofoto .lido{right:7px;bottom:8px;z-index:3;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
-  .msg .b.sofoto::before,.msg .b.sofoto::after{display:none!important}
+  /* foto sozinha: faixa do balao em cima com o nome e outra igual embaixo com a hora; a foto no meio, de borda a borda */
+  .msg .b.sofoto,.msg.me .b.sofoto{padding:0!important;min-width:0;line-height:0}
+  .msg .b.sofoto .hd{position:static;margin:0;padding:7px 12px 6px;line-height:1.2;background:none;pointer-events:auto;border-radius:0}
+  .msg.cont .b.sofoto .hd,.msg.mesmo .b.sofoto .hd{display:none}            /* sem nome no meio da sequencia */
+  .msg .b.sofoto .pic{display:block;margin:0;width:100%;max-width:100%;border-radius:0}
+  .msg.cont .b.sofoto .pic,.msg.mesmo .b.sofoto .pic{border-top-left-radius:inherit;border-top-right-radius:inherit}
+  .msg .b.sofoto .msg-meta,.msg.me .b.sofoto .msg-meta{position:static;display:flex;align-items:center;justify-content:flex-end;
+    margin:0;padding:6px 12px 7px;background:transparent;text-shadow:none;line-height:1.2;min-height:0}
+  .msg .b.sofoto .lido,.msg.me .b.sofoto .lido{right:11px;bottom:8px;filter:none}
   .msg.me .b{color:#fff}
   .msg .b small{display:block;font-size:10px;opacity:.7;margin-top:2px;text-align:right}
   .msg .b .msg-meta{min-height:11px;line-height:11px;margin-top:3px}
@@ -1329,25 +1356,21 @@
   .msgs.sel .msg .ck{display:flex;position:absolute;top:50%;transform:translateY(-50%);right:2px;left:auto}
   .msgs.sel .msg.me .ck{right:auto;left:2px}
   .msgs.sel .msg .bacts{visibility:hidden}
-  .msgs.sel .msg{border-radius:16px;transition:background-color .15s ease}
-  .msgs.sel .msg.sel-on{background:color-mix(in srgb,var(--lilas) 15%,transparent)}
-  .chatsheet .msgs.sel .msg.sel-on{margin-left:calc(-16px - env(safe-area-inset-left));margin-right:calc(-16px - env(safe-area-inset-right));padding-left:calc(16px + env(safe-area-inset-left));padding-right:calc(16px + env(safe-area-inset-right));border-radius:0;margin-top:-6px;padding-top:6px;padding-bottom:6px;margin-bottom:4px}   /* folga em cima e embaixo do balao, sem mexer no lugar das outras linhas */
-  .chatsheet .msgs.sel .msg.sel-on .ck{right:calc(18px + env(safe-area-inset-right))}      /* o check fica na mesma coluna das outras linhas */
-  .chatsheet .msgs.sel .msg.sel-on.me .ck{right:auto;left:calc(18px + env(safe-area-inset-left))}
-  /* linhas marcadas em sequencia: o realce de uma emenda no da outra, sem vao */
-  .chatsheet .msgs.sel .msg.sel-on:has(+ .msg.sel-on){margin-bottom:0;padding-bottom:10px}
-  .chatsheet .msgs.sel .msg.sel-on+.msg.sel-on{margin-top:0;padding-top:0}
-  .chatsheet .msgs.sel .msg.sel-on+.msg.sel-on.cont{margin-top:0}
-  .chatsheet .msgs.sel .msg.sel-on:has(+ .msg.sel-on) .ck{top:calc(50% - 2px)}
-  .chatsheet .msgs.sel .msg.sel-on+.msg.sel-on .ck{top:calc(50% - 3px)}
-  .chatsheet .msgs.sel .msg.sel-on+.msg.sel-on:has(+ .msg.sel-on) .ck{top:calc(50% - 5px)}
+  .msgs.sel .msg{transition:background-color .15s ease}
+  /* marcada: faixa lilas cobrindo o balao inteiro, com cantos arredondados; marcadas vizinhas viram um bloco so */
+  .msgs.sel .msg.sel-on{background:color-mix(in srgb,var(--lilas) 15%,transparent);border-radius:18px;
+    margin-left:6px;margin-right:6px;padding:8px 8px;margin-top:6px;margin-bottom:6px}
+  .msgs.sel .msg.sel-on:has(+ .msg.sel-on){border-bottom-left-radius:0;border-bottom-right-radius:0;margin-bottom:0;padding-bottom:5px}
+  .msgs.sel .msg.sel-on+.msg.sel-on{border-top-left-radius:0;border-top-right-radius:0;margin-top:0;padding-top:5px}
+  .chatsheet .msgs.sel .msg.sel-on .ck{right:10px}                       /* a bolinha acompanha a faixa */
+  .chatsheet .msgs.sel .msg.sel-on.me .ck{right:auto;left:10px}
   .msgs.sel .msg{cursor:pointer}
   .msg.sel-on .ck{background:var(--lilas);border-color:var(--lilas)}
-  .msg.sel-on .ck::after{content:"✓"}
-  .msg.sel-on .b{box-shadow:0 0 0 2px color-mix(in srgb,var(--lilas) 50%,transparent)}
-  .selbar{display:none;align-items:center;gap:8px;background:var(--t18);border-left:4px solid var(--lilas);padding:8px 10px 8px 12px;font-size:13px;color:var(--ink);flex:none}
+  .msg.sel-on .ck::after{content:"";width:11px;height:6px;border:0 solid #fff;border-left-width:2.6px;border-bottom-width:2.6px;border-radius:1px;transform:rotate(-45deg) translate(1px,-1px)}   /* visto desenhado, no lugar do caractere */
+  .msg.sel-on .b{box-shadow:0 0 0 2px color-mix(in srgb,var(--lilas) 45%,transparent)}
+  .selbar{display:none;align-items:center;gap:8px;background:var(--t18);padding:8px 10px 8px 14px;font-size:13px;color:var(--ink);flex:none}
   .selbar.on{display:flex}
-  .selbar span{flex:1;min-width:0;font-weight:800}
+  .selbar span{flex:1;min-width:0;font-weight:800;line-height:1.2}
   .selbar button{border:0;border-radius:999px;padding:7px 14px;font:inherit;font-weight:800;font-size:13px;background:var(--lilas);color:#fff;cursor:pointer}
   .selbar button:disabled{opacity:.45}
   .selbar button.sx{background:transparent;color:var(--lilas-ink);padding:4px 8px;font-size:17px}
@@ -1509,7 +1532,7 @@
   .cropasp button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   /* avisos: faixa na largura do app, texto a esquerda (mesmo modelo do aviso com Desfazer) */
   .toast{position:fixed;left:16px;right:16px;bottom:100px;margin:0 auto;max-width:528px;box-sizing:border-box;background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;font-weight:600;font-size:14px;line-height:1.3;text-align:left;box-shadow:0 6px 18px rgba(var(--r01),.28);z-index:70;opacity:0;transition:opacity .25s;pointer-events:none}
-  .toast.on{opacity:1}
+  .toast.on{opacity:1;pointer-events:auto;touch-action:none}   /* visivel = da para empurrar para fechar */
   /* aviso com Desfazer: uma linha so, texto a esquerda e o botao sempre a direita */
   .toast.acao{pointer-events:auto;display:flex;flex-direction:row;align-items:center;gap:12px;padding:8px 6px 8px 16px;white-space:normal}
   .toast.acao span{flex:1;min-width:0}
@@ -1551,7 +1574,7 @@
     .wk{font-size:18px;padding:14px 16px}
     .rem .it,.rem .sec h3{font-size:17px}
     .next{padding:18px 22px} .next h2{font-size:20px} .quiet{font-size:16px}
-    .next .topic-list{font-size:15px}
+    .next .topic-list,.cal .topic-list{font-size:15px}
   }
   @media (min-width:1000px){
     .wrap{max-width:1180px}
@@ -1602,9 +1625,10 @@
   .chat-history:has(.msgs.bg-foto){--msgs-bg:rgba(var(--r07),.92)}
 
   .chatsheet .msg .b{padding:10px 14px 8px;line-height:1.45;box-shadow:0 2px 8px rgba(var(--r01),.06)}
-  .chatsheet .daysep{font-weight:700;font-size:12px;padding:6px 12px;position:sticky;top:4px;z-index:3;box-shadow:0 1px 4px rgba(38,36,58,.12);background:var(--t42)}
-  .chatsheet .daysep{margin-bottom:0}                    /* do "Hoje" para o que vem depois: o mesmo respiro dos avisos */
-  .chatsheet .msgs .dia+.dia>.daysep{margin-top:10px}     /* e o mesmo respiro para o que vem antes */   /* fundo solido: nada aparece atras quando fica congelado */
+  .chatsheet .daysep{font-weight:700;font-size:12px;padding:6px 12px;position:static;box-shadow:0 1px 4px rgba(38,36,58,.12);background:var(--t42)}   /* nao congela: assim nunca passa por cima de um balao (a barra de dias no topo ja mostra o dia) */
+  .chatsheet .daysep{margin-bottom:10px}                  /* do "Hoje" para o que vem depois */
+  .chatsheet .msgs .dia+.dia>.daysep{margin-top:14px}     /* e o respiro para o balao de cima: congelado, nunca encosta */
+  .chatsheet .msgs .dia{scroll-margin-top:34px}
   .chatsheet .msgs.bg-noite .daysep{background:#3B3852;color:#fff}
   .chatsheet .msgs .dia:last-child>:last-child{margin-bottom:4px}
   .chatsheet .msgs .dia:last-child>.nudge-msg.evt:has(.reacts):last-child{margin-bottom:24px}
@@ -1622,11 +1646,14 @@
   body .chatsheet .chatin button{width:44px;height:44px;box-shadow:none}
   body .chatsheet .chatin .emo,body .chatsheet .chatin .clip,body .chatsheet .chatin .mic{border:1px solid color-mix(in srgb,var(--c2,var(--t53)) 16%,#fff);background:#fff;color:var(--ink)}
   /* Campo e acoes compartilham uma unica barra; microfone fica externo. */
-  .chatin .chatcompose{display:flex;flex:1;min-width:0;align-items:flex-end;gap:0;padding:0 3px 0 0;border:1px solid color-mix(in srgb,var(--c2,var(--t53)) 22%,#fff);border-radius:24px;background:#fff}
+  .chatin .chatcompose{display:flex;flex:1;min-width:0;align-items:flex-end;gap:0;padding:0 3px;border:1px solid color-mix(in srgb,var(--c2,var(--t53)) 22%,#fff);border-radius:24px;background:#fff}
   .chatin .chatcompose:focus-within{border-color:var(--c2,var(--t53));box-shadow:0 0 0 3px color-mix(in srgb,var(--c2,var(--t53)) 14%,transparent)}
-  body .chatsheet .chatin .chatcompose textarea{border:0;background:transparent;border-radius:24px;box-shadow:none;min-height:44px;max-height:180px;padding:11px 4px 11px 14px}
+  body .chatsheet .chatin .chatcompose textarea{border:0;background:transparent;border-radius:24px;box-shadow:none;min-height:44px;max-height:180px;padding:11px 6px 11px 6px;flex:1;min-width:0}
+  body .chatsheet .chatin .chatcompose .cam svg{width:22px;height:22px}
   body .chatsheet .chatin .chatcompose textarea:focus{border:0;box-shadow:none}
-  body .chatsheet .chatin .chatcompose button{border:0;background:transparent;box-shadow:none;align-self:flex-end;display:flex;align-items:center;justify-content:center;padding:0}
+  body .chatsheet .chatin .chatcompose button{border:0;background:transparent;box-shadow:none;align-self:flex-end;display:flex;align-items:center;justify-content:center;padding:0;width:38px;height:44px;flex:none;color:var(--soft)}
+  body .chatsheet .chatin .chatcompose button:active{transform:scale(.92)}
+  body .chatsheet .chatin .chatcompose #emoBtn{margin-left:4px}
   body .chatsheet .chatin #chatSend{align-self:flex-end;background:linear-gradient(135deg,var(--c1,var(--t48)),var(--c2,var(--t53)));color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--c2,var(--t53)) 24%,transparent)}
   .chatsheet button:focus-visible,.chatsheet summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
   @media(hover:hover){body .chatsheet .chat h2 button:hover{background:rgba(255,255,255,.3)}.chatsheet .chatin button:hover{transform:translateY(-1px)}}
@@ -1716,7 +1743,7 @@
   @keyframes heart-beat{0%,38%,100%{transform:scale(1)}12%{transform:scale(1.13)}22%{transform:scale(1)}30%{transform:scale(1.08)}}
   @media(prefers-reduced-motion:reduce){.top-title .heart-icon{animation:none}}
   .subject-flag{display:inline-block;width:1.25em;height:.84em;vertical-align:-.08em;border-radius:2px;overflow:hidden;flex-shrink:0}
-  .next .topic-list{display:flex;flex-direction:column;gap:8px;margin:0;line-height:1.5}
+  .next .topic-list,.cal .topic-list{display:flex;flex-direction:column;gap:8px;margin:0;line-height:1.5}
   .next h2{margin-bottom:12px}
   body .aulas.fill-row{flex-wrap:nowrap}
   body .aulas.fill-row>span{flex:1 0 auto;text-align:center}
@@ -2153,7 +2180,7 @@
     body .chatsheet .chat h2{gap:10px;margin-bottom:14px}
     body .chatsheet .chatin{gap:10px;padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
     body .chatsheet .chatin button{width:56px;height:56px;font-size:25px}
-    body .chatsheet .chatin .chatcompose textarea{min-height:56px;padding:16px 4px 16px 16px}
+    body .chatsheet .chatin .chatcompose textarea{min-height:56px;padding:16px 4px 16px 8px}
     body .chatsheet .chatin .emo,body .chatsheet .chatin .mic{font-size:25px}
     body .chatsheet .chatin #chatSend{font-size:25px}
     body .chatsheet .chatin input,body .chatsheet .chatin textarea{min-height:0;padding:15px 18px;font-size:18px;border-radius:26px}
@@ -2422,12 +2449,11 @@
     .tl-mais{font-size:16px}
   }
   @media print{.tl{display:none}}
-  /* cabecalho da conversa: lupa, anexo, chamar atencao e tema no centro; X sozinho a direita */
-  body .chatsheet .chat h2{position:relative;justify-content:center;gap:8px}
-  body .chatsheet .chat h2 .chat-title{display:none}
-  body .chatsheet .chat h2 .gear.find{margin-left:0;margin-right:0}
-  body .chatsheet .chat h2 .gear+.gear{margin-left:0}
-  body .chatsheet .chat h2 .x{position:absolute;right:0;top:50%;transform:translateY(-50%);margin:0;background:#fff;color:var(--lilas-ink)}
+  /* cabecalho da conversa: voltar na ponta esquerda, titulo no meio, tres pontinhos na ponta direita */
+  body .chatsheet .chat h2{position:relative;justify-content:space-between;gap:8px}
+  body .chatsheet .chat h2 .chat-title{display:block;flex:1;min-width:0;text-align:center;font-size:17px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body .chatsheet .chat h2 .gear.back{margin:0}
+  body .chatsheet .chat h2 #chatMais{margin:0}
 
   body .chatsheet #cfTxt,body .chatsheet #cfTxt:focus,body .chatsheet #cfTxt:focus-visible{border:0;outline:none;box-shadow:none}
   .cfdate svg{width:23px;height:23px;pointer-events:none}
@@ -2629,9 +2655,27 @@ const TIMETABLE = {
          qua:['geo','edf','cie','his','mat','esp'], qui:['art','his','cie','ing','fil','geo'],
          sex:['mat','his','geo','por','ing','por'] }
 };
+// Calendario do 3º trimestre (folha do colegio), agrupado por etapa: a prova e a 2ª chamada dela ficam no mesmo cartao.
+// ini/fim = periodo principal; ate = quando a etapa termina de vez (2ª chamada, resultado); det = o que aparece embaixo.
+const CALENDARIO_TRI={titulo:'Avisos',etapas:[
+  {nome:'Avaliação 1',ini:'2026-09-24',fim:'2026-10-02'},
+  {nome:'2ª chamada da Avaliação 1',ini:'2026-10-05'},
+  {nome:'Simulado',ini:'2026-10-23'},
+  {nome:'2ª chamada do Simulado',ini:'2026-10-26'},
+  {nome:'Mostra Vicentina',ini:'2026-11-07'},
+  {nome:'Avaliação 2',ini:'2026-11-10',fim:'2026-11-17'},
+  {nome:'2ª chamada da Avaliação 2',ini:'2026-11-19'},
+  {nome:'Recuperação 1',ini:'2026-11-24',det:'Português, História, Inglês'},
+  {nome:'Recuperação 2',ini:'2026-11-26',det:'Matemática, Geografia e Ciências'},
+  {nome:'Entrega dos boletins',ini:'2026-12-08'},
+  {nome:'Exame final',ini:'2026-12-09',fim:'2026-12-15'},
+  {nome:'Resultado final',ini:'2026-12-16'}
+]};
 const DAYMETA = {dom:['Domingo','--dom'],seg:['Segunda','--seg'],ter:['Terça','--ter'],qua:['Quarta','--qua'],qui:['Quinta','--qui'],sex:['Sexta','--sex'],sab:['Sábado','--sab']};
 const B='bring', H='home';
-const T=(type,subj,text,important,skip)=>({type,subj,text,important:!!important,skip:!!skip});
+const T=(type,subj,text,important,skip,ate)=>{ const t={type,subj,text,important:!!important,skip:!!skip}; if(ate) t.ate=ate; return t; };
+// tarefa de casa com prazo proprio: aparece uns dias antes, e so vira "esquecida" na manha da data
+const P=(subj,text,ate)=>T(H,subj,text,0,0,ate);
 const X=(type,subj,text)=>T(type,subj,text,0,1); // item repetido, escondido
 
 const SEED_WEEKS = [
@@ -2716,63 +2760,64 @@ const SEED_WEEKS = [
   id:'2026-09-20', label:'21 a 25 de setembro', roteiro:'Roteiro 15 · semana 1 · 7º ano D',
   topics:'Português: produção de conto de terror, concordância verbal que foge da regra e o verbo "ser" (páginas 140 a 153). Começa a leitura do livro do trimestre, Prisioneiros na Biblioteca, de Manuel Filho.<br>Matemática: juros simples e revisão para a Avaliação 1 (capítulo 8). A prova é sexta 25/09.<br>História: o patriarcalismo e a Igreja Católica na colonização (economia e sociedade colonial).<br>Geografia: revisão da Região Centro-Oeste e começo do trabalho trimestral. A prova é quinta 24/09.<br>Ciências: degradação ambiental, desmatamento e queimadas (capítulo 7). A prova é segunda 28/09.<br>Inglês: Chapter 6 (They made it!), o time de futebol preso na caverna e biografias.<br>Espanhol: salud y bienestar, a busca do equilíbrio e da felicidade.<br>Filosofia: os amigos são uma só pessoa (capítulo 4). Na semana que vem tem atividade avaliativa: uma história de livro, filme ou música sobre amizade.<br>Ed. Física: fundamentos do vôlei, toque, manchete e saque.<br>Ens. Religioso: o olhar empático de São Vicente de Paulo na rotina do estudante.<br>Arte: uma paisagem feita com origami.<br>Projeto de Vida: valores e atitudes.',
   days:[
-   {k:'dom',date:'2026-09-20',tasks:[]},
+   {k:'dom',date:'2026-09-20',tasks:[
+     P('pdv','Anotar no caderno: que problemas a falta de amor ou de responsabilidade causa na escola, e o que dá para fazer para resolver. É para compartilhar na aula de terça 22/09','2026-09-22')]},
    {k:'seg',date:'2026-09-21',tasks:[
-     T(H,'pdv','Anotar no caderno: que problemas a falta de amor ou de responsabilidade causa na escola, e o que dá para fazer para resolver. É para compartilhar na aula de amanhã')]},
+     P('cie','Responder as <b>páginas 41, 46, 48, 50 e 54</b> de Ciências. O visto é na quinta 24/09','2026-09-24')]},
    {k:'ter',date:'2026-09-22',tasks:[
-     T(B,'pdv','Caderno com as anotações sobre os problemas da escola e as soluções, para compartilhar na aula')]},
+     T(B,'pdv','Caderno com as anotações sobre os problemas da escola e as soluções, para compartilhar na aula'),
+     P('geo','Estudar para a Avaliação 1 de Geografia de quinta 24/09: Região Centro-Oeste, capítulo 9','2026-09-24')]},
    {k:'qua',date:'2026-09-23',tasks:[
      T(B,'esp','Interpretação das <b>páginas 15 a 18</b> de Espanhol feita'),
-     T(H,'geo','Estudar para a Avaliação 1 de Geografia de amanhã: Região Centro-Oeste, capítulo 9'),
-     T(H,'cie','Responder as <b>páginas 41, 46, 48, 50 e 54</b> de Ciências. O visto é amanhã'),
+     P('mat','Estudar para a Avaliação 1 de Matemática de sexta 25/09: porcentagem e juros simples','2026-09-25'),
      T(H,'art','Separar papel colorido para a paisagem de origami de amanhã')]},
    {k:'qui',date:'2026-09-24',tasks:[
      T(B,'geo','Dia da Avaliação 1 de Geografia'),
      T(B,'cie','Páginas 41, 46, 48, 50 e 54 de Ciências feitas para o visto'),
      T(B,'fil','Exercícios 3 e 4 da página 70 de Filosofia feitos'),
      T(B,'art','Papel colorido para a paisagem de origami'),
-     T(H,'mat','Estudar para a Avaliação 1 de Matemática de amanhã: porcentagem e juros simples')]},
+     P('mat','Fazer a Lista 8 de Matemática. Entrega na segunda 28/09','2026-09-28')]},
    {k:'sex',date:'2026-09-25',tasks:[
      T(B,'mat','Dia da Avaliação 1 de Matemática'),
-     T(H,'mat','Fazer a Lista 8 de Matemática. Entrega na segunda 28/09'),
-     T(H,'cie','Estudar para a Avaliação 1 de Ciências de segunda 28/09: degradação ambiental, desmatamento e queimadas (capítulo 7)'),
-     T(H,'por','Fazer os exercícios de revisão de Português na folha impressa ou no caderno. É a preparação para a avaliação de terça 29/09')]}
+     P('cie','Estudar para a Avaliação 1 de Ciências de segunda 28/09: degradação ambiental, desmatamento e queimadas (capítulo 7)','2026-09-28'),
+     P('por','Fazer os exercícios de revisão de Português na folha impressa ou no caderno. A avaliação é na terça 29/09','2026-09-29')]},
+   {k:'sab',date:'2026-09-26',tasks:[
+     P('fil','Pesquisar uma história de livro, filme ou música sobre amizade. Escrever no caderno ou imprimir: a descrição da obra e o que ela tem a ver com a amizade. É atividade avaliativa na quinta 01/10','2026-10-01'),
+     P('esp','Fazer as atividades de compreensão e interpretação das <b>páginas 16 a 21</b> de Espanhol. Entregar na quarta 30/09','2026-09-30')]}
   ]
  },
  {
   id:'2026-09-27', label:'28 de setembro a 2 de outubro', roteiro:'Roteiro 15 · semana 2 · 7º ano D',
   topics:'Português: Aprimorando (páginas 155 a 158), revisão, avaliação e Testando (páginas 161 a 165). A prova é terça 29/09.<br>Matemática: triângulos (capítulo 9): elementos, classificação, soma dos ângulos internos e condição de existência.<br>História: avaliação na quarta 30/09 e as dinâmicas comerciais internas da colônia.<br>Geografia: fim e apresentação do trabalho trimestral e a Região Sudeste (capítulo 10).<br>Ciências: avaliação na segunda 28/09, mineração, biomagnificação e o agravamento das mudanças climáticas.<br>Inglês: Test 1 na terça 29/09 e biografia (writing e speaking).<br>Espanhol: compreensão de texto e a tabela nutricional.<br>Filosofia: histórias sobre amizade, atividade avaliativa na sala.<br>Ed. Física: vôlei, recepção, levantamento, ataque e sistema de jogo.<br>Ens. Religioso: o poder transformador da empatia.<br>Arte: uma paisagem feita com origami.<br>Projeto de Vida: mundo do trabalho.',
   days:[
-   {k:'dom',date:'2026-09-27',tasks:[]},
+   {k:'dom',date:'2026-09-27',tasks:[
+     P('ing','Estudar para o Test 1 de Inglês de terça 29/09: Chapter 6, They made it!','2026-09-29'),
+     P('pdv','Escolher um item curioso ou divertido para a dinâmica de Projeto de Vida de terça 29/09','2026-09-29')]},
    {k:'seg',date:'2026-09-28',tasks:[
      T(B,'mat','Lista 8 de Matemática pronta para entregar'),
      T(B,'cie','Dia da Avaliação 1 de Ciências'),
-     T(H,'ing','Estudar para o Test 1 de Inglês de amanhã: Chapter 6, They made it!'),
-     T(H,'por','Estudar para a Avaliação 1 de Português de amanhã: conto de terror, concordância verbal e o verbo "ser" (páginas 140 a 153)'),
-     T(H,'pdv','Escolher um item curioso ou divertido para a dinâmica de amanhã')]},
+     P('por','Estudar para a Avaliação 1 de Português de amanhã: conto de terror, concordância verbal e o verbo "ser" (páginas 140 a 153)','2026-09-29'),
+     P('cie','Responder o estudo dirigido de Ciências que a professora entregou na sala. Entregar na quarta 30/09','2026-09-30')]},
    {k:'ter',date:'2026-09-29',tasks:[
      T(B,'ing','Dia do Test 1 de Inglês'),
      T(B,'por','Dia da Avaliação 1 de Português'),
      T(B,'pdv','Item curioso ou divertido para a dinâmica da aula'),
-     T(H,'his','Estudar para a Avaliação 1 de História de amanhã: o patriarcalismo, a Igreja na colonização e o engenho de açúcar'),
-     T(H,'esp','Fazer as atividades de compreensão e interpretação das <b>páginas 16 a 21</b> de Espanhol. Entregar amanhã'),
-     T(H,'cie','Responder o estudo dirigido de Ciências que a professora entregou na sala. Entregar amanhã')]},
+     P('his','Estudar para a Avaliação 1 de História de amanhã: o patriarcalismo, a Igreja na colonização e o engenho de açúcar','2026-09-30')]},
    {k:'qua',date:'2026-09-30',tasks:[
      T(B,'his','Dia da Avaliação 1 de História'),
      T(B,'esp','Atividades das <b>páginas 16 a 21</b> de Espanhol prontas para entregar'),
      T(B,'cie','Estudo dirigido de Ciências pronto para entregar'),
-     T(H,'fil','Pesquisar uma história de livro, filme ou música sobre amizade. Escrever no caderno ou imprimir: a descrição da obra e o que ela tem a ver com a amizade. É atividade avaliativa amanhã!'),
-     T(H,'fil','Fazer os exercícios 5 a 7 das <b>páginas 73 e 74</b> de Filosofia. É para amanhã'),
-     T(H,'cie','Responder as <b>páginas 56 e 58</b> de Ciências. O visto é amanhã')]},
+     P('fil','Fazer os exercícios 5 a 7 das <b>páginas 73 e 74</b> de Filosofia. É para amanhã','2026-10-01'),
+     P('cie','Responder as <b>páginas 56 e 58</b> de Ciências. O visto é amanhã','2026-10-01')]},
    {k:'qui',date:'2026-10-01',tasks:[
      T(B,'fil','Caderno com a história sobre amizade: livro, filme ou música, com a descrição e a relação com a amizade. Vale nota na sala!'),
      T(B,'fil','Exercícios 5 a 7 das páginas 73 e 74 de Filosofia feitos'),
      T(B,'cie','Páginas 56 e 58 de Ciências feitas para o visto'),
      T(B,'geo','Hoje é a apresentação do trabalho trimestral de Geografia'),
-     T(B,'art','Papel colorido para terminar a paisagem de origami')]},
+     T(B,'art','Papel colorido para terminar a paisagem de origami'),
+     P('his','Fazer a atividade da <b>página 65</b> de História: O Brasil Colônia em quadros, e um mapa mental no caderno sobre as dinâmicas comerciais da colônia. É para a próxima aula, quarta 07/10','2026-10-07')]},
    {k:'sex',date:'2026-10-02',tasks:[
-     T(H,'his','Fazer a atividade da <b>página 65</b> de História: O Brasil Colônia em quadros, e um mapa mental no caderno sobre as dinâmicas comerciais da colônia. É para a semana que vem'),
-     T(H,'esp','Fazer as atividades das <b>páginas 24 e 25</b> de Espanhol, a tabela nutricional. É para a próxima aula, quarta 07/10')]}
+     P('esp','Fazer as atividades das <b>páginas 24 e 25</b> de Espanhol, a tabela nutricional. É para a próxima aula, quarta 07/10','2026-10-07')]}
   ]
  }
 ];
@@ -2794,7 +2839,7 @@ SEED_WEEKS.forEach(w=>{
     DB.weeks[w.id]=copy;
   } else { // migração: atualiza texto/matéria/importante sem perder progresso
     const sw=DB.weeks[w.id]; sw.label=w.label; sw.roteiro=w.roteiro; sw.topics=w.topics; delete sw.alerts;
-    sw.days.forEach(d=>d.tasks.forEach(t=>{const s=seedTasks[t.id]; if(!s) return; t.text=s.text; t.subj=s.subj; t.skip=!!s.skip; if(!t.impU) t.important=!!s.important;}));
+    sw.days.forEach(d=>d.tasks.forEach(t=>{const s=seedTasks[t.id]; if(!s) return; t.text=s.text; t.subj=s.subj; t.skip=!!s.skip; if(s.ate) t.ate=s.ate; else delete t.ate; if(!t.impU) t.important=!!s.important;}));
     sw.days.forEach(d=>{const sd=w.days.find(x=>x.k===d.k); if(sd&&sd.feriado) d.feriado=sd.feriado;});
   }
 });
@@ -3405,7 +3450,7 @@ function saiSel(){ selMode=false; selKeys=new Set(); const box=document.getEleme
 function atualizaSel(){ const box=document.getElementById('msgs'); if(!box) return;
   box.querySelectorAll('.msg').forEach(x=>x.classList.toggle('sel-on',selKeys.has(x.dataset.k)));
   const sb=document.getElementById('selbar'); if(sb){ sb.classList.add('on'); const n=selKeys.size;
-    sb.querySelector('span').textContent=n?(n+(n>1?' mensagens marcadas':' mensagem marcada')):'Toque nos balões para marcar'; sb.querySelector('.sc').disabled=!n;
+    sb.querySelector('span').textContent=n?(n+(n>1?' marcadas':' marcada')):'Toque para marcar'; sb.querySelector('.sc').disabled=!n;
     const minhas=CHAT.filter(m=>selKeys.has(m.k)&&USER&&m.by===USER.id).length;
     const dosOutros=CHAT.filter(m=>selKeys.has(m.k)&&USER&&m.by!==USER.id).length;
     const bd=sb.querySelector('.sd');
@@ -3474,8 +3519,10 @@ function openNudgeMenu(chaves,el){
   wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
   document.getElementById('nudgeDel').addEventListener('click',async()=>{
     const b=document.getElementById('nudgeDel'); if(b.disabled) return; b.disabled=true;
-    try{ const apaga={}; chaves.forEach(k=>apaga['chat/'+k]=null); await famRef.update(apaga);
-      vibrate([30,30]); toast(chaves.length>1?'Chamados apagados':'Chamado apagado'); closePop(); }
+    try{
+      for(const k of chaves){ const m=CHAT.find(x=>x.k===k); if(m&&m.att&&m.att.kind==='evento'){ try{ await apagaReflexo(m); }catch(e){} } }
+      const apaga={}; chaves.forEach(k=>apaga['chat/'+k]=null); await famRef.update(apaga);
+      vibrate([30,30]); toast(chaves.length>1?'Avisos apagados':'Aviso apagado'); closePop(); }
     catch(e){ b.disabled=false; toast('Não consegui apagar'); }
   });
 }
@@ -3585,13 +3632,15 @@ function bindMsgs(){
       if(b.dataset.verFoto){ verFotosTarefa(b.dataset.ver,0,b.dataset.verFoto); return; }
       hide(); setTimeout(()=>tlAbreTarefa(b.dataset.ver),180); }); });
   box.querySelectorAll('[data-emo]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); if(selMode) return; vibrate(12); openMsgMenu(b.dataset.emo); }));
-  box.querySelectorAll('.nudge-msg.evt').forEach(el=>{ const abre=e=>{ if(selMode||e.target.closest('.react')) return; e.stopPropagation(); vibrate(10);
+  box.querySelectorAll('.nudge-msg.evt').forEach(el=>{
+    const menu=()=>{ if(USER) openNudgeMenu([el.dataset.k],el); };                     // aviso de acao: so o Apagar, igual ao dos chamados
+    const abre=e=>{ if(selMode||e.target.closest('.react')) return; e.stopPropagation(); vibrate(10);
       const m=CHAT.find(x=>x.k===el.dataset.k); if(m&&m.att&&m.att.foto&&m.att.id){ verFotosTarefa(m.att.id,0,m.att.foto); return; }   // aviso de foto: abre a foto
-      openMsgMenu(el.dataset.k); };
+      menu(); };
     let segurou=null, seguroTocou=false;
     el.addEventListener('click',e=>{ if(seguroTocou){ seguroTocou=false; e.stopPropagation(); e.preventDefault(); return; } abre(e); });
-    el.addEventListener('contextmenu',e=>{ e.preventDefault(); e.stopPropagation(); if(!selMode) openMsgMenu(el.dataset.k); });
-    el.addEventListener('touchstart',()=>{ clearTimeout(segurou); segurou=setTimeout(()=>{ if(selMode) return; seguroTocou=true; vibrate(30); openMsgMenu(el.dataset.k); },520); },{passive:true});
+    el.addEventListener('contextmenu',e=>{ e.preventDefault(); e.stopPropagation(); if(!selMode) menu(); });
+    el.addEventListener('touchstart',()=>{ clearTimeout(segurou); segurou=setTimeout(()=>{ if(selMode) return; seguroTocou=true; vibrate(30); menu(); },520); },{passive:true});
     ['touchmove','touchend','touchcancel'].forEach(ev=>el.addEventListener(ev,()=>clearTimeout(segurou),{passive:true})); el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); abre(e); } }); });
   if(selMode){ box.classList.add('sel'); atualizaSel(); }
   box.querySelectorAll('[data-fala]').forEach(a=>{ const go=e=>{e.stopPropagation(); falar(a.dataset.fala,a);};
@@ -4105,11 +4154,37 @@ function animateSentMessages(box){
     el.addEventListener('animationend',finish);
   });
 }
+// menu dos tres pontinhos da conversa: leva as opcoes que ficavam no cabecalho
+function abreMenuChat(){
+  closePop();
+  const btn=document.getElementById('chatMais'); if(!btn) return;
+  const itens=[
+    {id:'chatFind',nome:'Procurar mensagem'},
+    {id:'attBtn',nome:'Anexar do aparelho'},
+    {id:'chatNudge',nome:'Chamar atenção'},
+    {id:'chatLook',nome:'Aparência da conversa'}
+  ].filter(x=>document.getElementById(x.id));
+  const wrap=document.createElement('div'); wrap.className='popwrap';
+  wrap.innerHTML=`<div class="lidopop minipop chatmenu" id="chatMenuPop">${itens.map(x=>{
+    const o=document.getElementById(x.id); const ic=o?o.innerHTML:'';
+    return `<button class="mini" data-go="${x.id}">${ic}<span>${x.nome}</span></button>`;}).join('')}</div>`;
+  document.body.appendChild(wrap);
+  const pop=wrap.querySelector('#chatMenuPop'), vv=window.visualViewport;
+  const vl=vv?vv.offsetLeft:0, vt=vv?vv.offsetTop:0, vw=vv?vv.width:innerWidth, vh=vv?vv.height:innerHeight, edge=10, gap=8;
+  const r=btn.getBoundingClientRect();
+  let top=r.bottom+gap; if(top+pop.offsetHeight>vt+vh-edge) top=Math.max(vt+edge,r.top-gap-pop.offsetHeight);
+  pop.style.top=top+'px';
+  pop.style.left=Math.max(vl+edge,Math.min(r.right-pop.offsetWidth,vl+vw-pop.offsetWidth-edge))+'px';
+  wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
+  pop.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{ const o=document.getElementById(b.dataset.go); closePop(); if(o) o.click(); }));
+}
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
   chatSeenKeys=new Set(CHAT.map(msg=>msg.k)); chatSendAnimations.clear();
-  show(`<div class="chat"><div class="chathead"><h2><span class="chat-title" aria-label="Conversa da família"></span><button class="gear find" id="chatFind" aria-label="Buscar" title="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="gear" id="camBtn" aria-label="Tirar foto" title="Tirar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 8.5h3l1.4-2h6.2l1.4 2h3a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18v-8a1.5 1.5 0 0 1 1.5-1.5Z"/><circle cx="12" cy="14" r="3.4"/></svg></button><button class="gear" id="attBtn" aria-label="Anexar do aparelho" title="Anexar do aparelho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5 12.4 19a5 5 0 0 1-7-7l7.6-7.5a3.3 3.3 0 0 1 4.7 4.7l-7.6 7.5a1.7 1.7 0 0 1-2.4-2.4l7-6.9"/></svg></button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/><path d="M22 8c0-2.3-.8-4.3-2-6"/></svg></button><button class="gear" id="chatLook" aria-label="Aparência" title="Aparência"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2a1.8 1.8 0 0 1 1.3-3h2.1A4.3 4.3 0 0 0 21 10.7C21 6.4 16.9 3 12 3Z"/><circle cx="8" cy="11" r="1.1"/><circle cx="11.5" cy="7.6" r="1.1"/><circle cx="15.6" cy="9.4" r="1.1"/></svg></button><button class="x" aria-label="Fechar conversa">✕</button></h2><div class="cfbar" id="cfBar"><span class="cflupa" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="cfTxt" placeholder="Procurar mensagem" autocomplete="off"><button type="button" class="cflimpa" id="cfLimpa" aria-label="Limpar a procura" title="Limpar" hidden>✕</button><button type="button" class="cfdate" id="cfDate" title="Datas com mensagens" aria-label="Datas com mensagens" aria-expanded="false" aria-controls="cfDates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2M8 18h2"/></svg></button><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div><div class="cfdates nodrag" id="cfDates" hidden role="region" aria-label="Datas com mensagens"><div class="cfdates-list" id="cfDatesList"></div></div></div>
-    <div class="chat-history"><div class="daybar nodrag" id="dayBar" role="tablist" aria-label="Partes da conversa"></div><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
+  show(`<div class="chat"><div class="chathead"><h2><button class="gear back" id="chatBack" aria-label="Voltar" title="Voltar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button><span class="chat-title" aria-label="Conversa da família">Conversa</span><button class="gear" id="chatMais" aria-label="Mais opções" title="Mais opções" aria-haspopup="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></h2><div class="cfbar" id="cfBar"><span class="cflupa" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="cfTxt" placeholder="Procurar mensagem" autocomplete="off"><button type="button" class="cflimpa" id="cfLimpa" aria-label="Limpar a procura" title="Limpar" hidden>✕</button><button type="button" class="cfdate" id="cfDate" title="Datas com mensagens" aria-label="Datas com mensagens" aria-expanded="false" aria-controls="cfDates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2M8 18h2"/></svg></button><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div><div class="cfdates nodrag" id="cfDates" hidden role="region" aria-label="Datas com mensagens"><div class="cfdates-list" id="cfDatesList"></div></div></div>
+    <div class="chatacts-hidden" hidden><button class="gear find" id="chatFind" aria-label="Buscar" title="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="gear" id="attBtn" aria-label="Anexar do aparelho" title="Anexar do aparelho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5 12.4 19a5 5 0 0 1-7-7l7.6-7.5a3.3 3.3 0 0 1 4.7 4.7l-7.6 7.5a1.7 1.7 0 0 1-2.4-2.4l7-6.9"/></svg></button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/><path d="M22 8c0-2.3-.8-4.3-2-6"/></svg></button><button class="gear" id="chatLook" aria-label="Aparência" title="Aparência"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2a1.8 1.8 0 0 1 1.3-3h2.1A4.3 4.3 0 0 0 21 10.7C21 6.4 16.9 3 12 3Z"/><circle cx="8" cy="11" r="1.1"/><circle cx="11.5" cy="7.6" r="1.1"/><circle cx="15.6" cy="9.4" r="1.1"/></svg></button></div>
+    <div class="selbar nodrag" id="selbar"><span></span><button type="button" class="sd" id="selDel" hidden>Apagar</button><button type="button" class="sc" id="selCopy">Copiar</button><button type="button" class="sx" id="selCancel" aria-label="Cancelar">✕</button></div>
+    <div class="chat-history"><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
     <div class="picker nodrag" id="picker">
       <div class="pkbusca"><span class="pklupa" aria-hidden="true">${ICO.lupa}</span><input id="pkTxt" type="search" autocomplete="off" placeholder="Procurar emoji: coração, escola…" aria-label="Procurar emoji"><button type="button" class="pkx" id="pkLimpa" aria-label="Limpar" hidden>✕</button></div>
       <div class="pkgrade" id="pkGrade">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
@@ -4119,9 +4194,8 @@ function openChat(){
     </div>
     <div class="typing" id="typing" aria-live="polite"></div>
     <div class="editbar" id="editbar"><span></span><button id="editCancel" aria-label="Cancelar edição">✕</button></div>
-    <div class="selbar nodrag" id="selbar"><span></span><button type="button" class="sd" id="selDel" hidden>Apagar</button><button type="button" class="sc" id="selCopy">Copiar</button><button type="button" class="sx" id="selCancel" aria-label="Cancelar">✕</button></div>
     <div class="recbar" id="recBar" aria-live="polite"><span class="rdot" aria-hidden="true"></span><span class="rlbl" id="recLbl">Gravando…</span><span class="rnum" id="recTime">10</span><span class="rseg" id="recSeg">s</span><button class="rcancel" id="recCancel" aria-label="Descartar" title="Descartar">🗑</button><button class="rpause" id="recPause" aria-label="Pausar gravação" title="Pausar">⏸</button><button class="rplay" id="recPlay" aria-label="Ouvir o áudio gravado" title="Ouvir">▶</button></div>
-    <div class="chatin"><div class="chatcompose"><textarea id="chatTxt" rows="1" enterkeyhint="enter" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button class="emo" id="emoBtn" aria-label="Emojis">${ICO.sorriso}</button></div><button id="chatSend" class="mic" aria-label="Gravar áudio">${ICO.micro}</button></div>
+    <div class="chatin"><div class="chatcompose"><button class="emo" id="emoBtn" aria-label="Emojis">${ICO.sorriso}</button><textarea id="chatTxt" rows="1" enterkeyhint="enter" aria-label="Mensagem" placeholder="Escreve aqui…" autocomplete="off" maxlength="500"></textarea><button class="emo cam" id="camBtn2" aria-label="Tirar foto" title="Tirar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="3.5"/><path d="M8.5 6 10 3.6h4L15.5 6"/><circle cx="12" cy="13" r="3.6"/><circle cx="12" cy="13" r="1.2" fill="currentColor" stroke="none"/></svg></button></div><button id="chatSend" class="mic" aria-label="Gravar áudio">${ICO.micro}</button></div>
     </div>`);
   fechaAviso(); selMode=false; selKeys=new Set(); applyPref(); markRead(); scrollMsgs(); bindMsgs(); initChatJump(); editingKey=null; replyTo=null;
   document.getElementById('selCopy').addEventListener('click',copiaSel); document.getElementById('selDel').addEventListener('click',apagaSel); document.getElementById('selCancel').addEventListener('click',()=>{ saiSel(); vibrate(8); });
@@ -4168,10 +4242,12 @@ function openChat(){
   cft.addEventListener('focus',closeDates);
   document.getElementById('cfLimpa').addEventListener('click',()=>{ cft.value=''; closeDates(); upd(); cft.focus(); vibrate(8); });
   document.getElementById('cfClose').addEventListener('click',()=>{ closeDates(); chatQ=''; cft.value=''; bar.classList.remove('on'); upd(); });
+  document.getElementById('chatBack').addEventListener('click',()=>{ vibrate(10); hide(); });
+  document.getElementById('chatMais').addEventListener('click',()=>{ vibrate(10); abreMenuChat(); });
   document.getElementById('chatFind').addEventListener('click',()=>{ const on=!bar.classList.contains('on'); closeDates(); bar.classList.toggle('on',on); vibrate(15);
     if(on){ setTimeout(()=>cft.focus(),150); } else { chatQ=''; cft.value=''; upd(); } });
   document.getElementById('attBtn').addEventListener('click',()=>document.getElementById('attFile').click());
-  document.getElementById('camBtn').addEventListener('click',()=>document.getElementById('attCam').click());
+  document.getElementById('camBtn2').addEventListener('click',()=>document.getElementById('attCam').click());   // camera dentro do campo de escrever
   sheet.querySelectorAll('[data-ap-play]').forEach(b=>b.addEventListener('click',()=>ouvirSom(+b.dataset.apPlay,b)));
   sheet.querySelectorAll('[data-ap-send]').forEach(b=>b.addEventListener('click',()=>{ enviarSom(+b.dataset.apSend); audPanel(false); }));
   if('speechSynthesis' in window) speechSynthesis.getVoices();
@@ -4280,12 +4356,33 @@ function qMatch(t){ if(fQ.length<2) return true; const ql=fQ.toLowerCase();
   return plain(t.text||'').toLowerCase().includes(ql)||(SUBJ[t.subj]||'').toLowerCase().includes(ql)||(t.note||'').toLowerCase().includes(ql); }
 function pass(t){ if(!qMatch(t)) return false; if(t.type===B) return fType==='all'&&(fSubj==='all'||t.subj===fSubj); const st = fType==='all' || fSet().some(k=>passaSituacao(t,k)); return st && (fSubj==='all' || t.subj===fSubj); }
 const addDays=(dIso,n)=>{const d=new Date(dIso+'T12:00:00');d.setDate(d.getDate()+n);return iso(d);};
+function venceEm(w,d){                                                     // proximo dia de aula depois de d: quando a caixa "para amanha" vence
+  const i=w.days.indexOf(d);
+  for(let j=i+1;j<w.days.length;j++){ if(DIAS_AULA.includes(w.days[j].k)) return w.days[j].date; }
+  const dd=new Date(d.date+'T12:00:00'); do{ dd.setDate(dd.getDate()+1); }while(dd.getDay()!==1); return iso(dd);   // fim de semana: vence na segunda
+}
 function boxPassed(w,d,type){
   if(type===B) return d.date<TODAY || (d.date===TODAY && NOW_H>=12.5);       // depois da aula, "levar" já passou
-  const i=w.days.indexOf(d); let nx=null;                                  // "para amanhã" vence quando começa a aula do dia seguinte
-  for(let j=i+1;j<w.days.length;j++){ if(DIAS_AULA.includes(w.days[j].k)){ nx=w.days[j].date; break; } }
-  if(!nx){ const dd=new Date(d.date+'T12:00:00'); do{ dd.setDate(dd.getDate()+1); }while(dd.getDay()!==1); nx=iso(dd); }   // fim de semana: vence na segunda
+  const nx=venceEm(w,d);                                                    // "para amanhã" vence quando começa a aula do dia seguinte
   return nx<TODAY || (nx===TODAY && NOW_H>=7.3);
+}
+function nomeDiaDe(dateIso){ const k=['dom','seg','ter','qua','qui','sex','sab'][new Date(dateIso+'T12:00:00').getDay()]; return DAYMETA[k]?DAYMETA[k][0].toLowerCase():dateIso; }
+// bloco "3º trimestre": um cartao por etapa, a proxima em destaque e as que passaram apagadas
+function htmlCalendario(){
+  const C=(typeof CALENDARIO_TRI!=='undefined')?CALENDARIO_TRI:null; if(!C||!C.etapas||!C.etapas.length) return '';
+  const dm=x=>{ const [y,m,d]=x.split('-'); return d+'/'+m; };
+  const dias=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000);
+  const quando=e=>{ const fimTudo=e.ate||e.fim||e.ini;
+    if(fimTudo<TODAY) return {cls:'passou',txt:'Já passou'};
+    if(e.ini<=TODAY) return {cls:'agora',txt:(e.fim&&e.fim>=TODAY)?'É agora':(e.ini===TODAY?'É hoje':'Em andamento')};
+    const n=dias(TODAY,e.ini); return {cls:'vem',txt:n===1?'Amanhã':'Em '+n+' dias'}; };
+  const lista=C.etapas.map(e=>({e,q:quando(e)}));
+  const aberto=!!openState['cal'];
+  const cards=lista.map(({e,q})=>`<div class="cal-st ${q.cls}">
+      <div class="cal-esq"><span class="cal-n">${esc(e.nome)}</span>${e.det?`<div class="cal-l">${esc(e.det)}</div>`:''}</div>
+      <div class="cal-r"><span class="cal-d">${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span><span class="cal-q">${q.txt}</span></div></div>`).join('');
+  return `<details class="cal" data-date="cal" ${aberto?'open':''}><summary><span class="n">${esc(C.titulo)}</span><span class="arrow">${ICO.chev}</span></summary>
+    <div class="cal-body">${cards}</div></details>`;
 }
 function diaHojeK(){ const w=DB.weeks[current]; const d=w&&w.days.find(x=>x.date===TODAY); return d?d.k:null; }
 // a semana de uma tarefa (o id comeca com o id da semana) e o dia dela dentro dessa semana
@@ -4305,7 +4402,9 @@ function atrasadasDeSemanasAnteriores(w){
   // as tarefas do Wizard nao vem: cada semana ja tem as suas, para a aula daquela segunda
   return weekIds().filter(id=>id<w.id).flatMap(id=>allTasks(DB.weeks[id]).filter(t=>!t.wiz&&t.subj!=='wiz'&&vemParaHoje(t)));
 }
-function taskPassed(t){const w=semanaDe(t)||DB.weeks[current];const d=w&&w.days.find(x=>x.k===t.day);return d?boxPassed(w,d,t.type):false;}
+function taskPassed(t){const w=semanaDe(t)||DB.weeks[current];const d=w&&w.days.find(x=>x.k===t.day);if(!d)return false;
+  if(t.type===H&&t.ate) return t.ate<TODAY||(t.ate===TODAY&&NOW_H>=7.3);   // prazo proprio: so vence na manha da data
+  return boxPassed(w,d,t.type);}
 function findTask(id){for(const w of Object.values(DB.weeks)){const t=allTasks(w).find(t=>t.id===id);if(t)return t;}}
 function dayCss(k){return `var(${DAYMETA[k][1]})`;}
 
@@ -4391,8 +4490,8 @@ function render(){
   const imp=allTasks(w).concat(atrasadasDeSemanasAnteriores(w)).filter(t=>impVale(t)&&pass(t)).sort((a,b)=>order.indexOf(a.day)-order.indexOf(b.day));
   const impPend=imp.length;
   const impGuardadas=allTasks(w).filter(t=>t.type===H&&t.important&&!impVale(t)).length;
-  if(imp.length) html+=`<details class="imp" data-date="imp" ${openState['imp']?'open':''}><summary><span class="n">Importantes</span><span class="cnt">${impPend?impPend+' para fazer':'Tudo em dia'}</span><span class="arrow">${ICO.chev}</span></summary>
-    <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join(''):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':(impGuardadas?'Nada de importante para agora. Aqui só ficam as que ainda dá para fazer.':(isAluna()?'Toca na estrelinha de uma tarefa para ela aparecer aqui.':'As tarefas marcadas com a estrelinha aparecem aqui.'))}</p>`}</div></details>`;
+  if(imp.length) html+=`<details class="imp" data-date="imp" ${openState['imp']!==false?'open':''}><summary><span class="n">Importantes</span><span class="cnt">${impPend?impPend+' para fazer':'Tudo em dia'}</span><span class="arrow">${ICO.chev}</span></summary>
+    <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join('<div class="imp-sep" aria-hidden="true"></div>'):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':(impGuardadas?'Nada de importante para agora. Aqui só ficam as que ainda dá para fazer.':(isAluna()?'Toca na estrelinha de uma tarefa para ela aparecer aqui.':'As tarefas marcadas com a estrelinha aparecem aqui.'))}</p>`}</div></details>`;
   const inWeek=w.days.some(d=>d.date===TODAY);
   html+='<div class="days">';
   const tomorrowDate=(()=>{const d=new Date(TODAY+'T12:00:00');d.setDate(d.getDate()+1);return iso(d);})();
@@ -4433,7 +4532,7 @@ function render(){
         <div class="tags">${cntTag}${isToday?'<span class="tag">HOJE</span>':''}${complete?'<span class="tag complete-tag">Tudo feito!</span>':''}</div>
         <span class="arrow">${ICO.chev}</span></summary>
       <div class="body">
-        ${(d.feriado||matDia.length)?`<div class="aulas">${d.feriado?`<span>🎉 Feriado: ${d.feriado}</span>`:''}${matDia.map(k=>`<span>${subjectVisual(SUBJ[k])}</span>`).join('')}</div>`:''}
+        ${d.feriado?`<div class="aulas"><span>🎉 Feriado: ${d.feriado}</span></div>`:''}
         ${boxes||'<div class="empty">Nada aqui com esse filtro.</div>'}
       </div></details>`;
   });
@@ -4441,11 +4540,11 @@ function render(){
   {                                   // olhando uma semana antiga: atalho para ir para a proxima
     const ids=weekIds(), pos=ids.indexOf(current), prox=pos>=0&&pos<ids.length-1?ids[pos+1]:null;
     if(prox){ const pw=DB.weeks[prox];
-      html+=`<button type="button" class="prox-semana" id="proxSemana" data-prox="${prox}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 5 7 7-7 7"/><path d="m13 5 7 7-7 7"/></svg>
-        <span>Ver a próxima semana${pw&&pw.label?`<small>${esc(pw.label)}</small>`:''}</span></button>`; }
+      html+=`<button type="button" class="cal prox-semana" id="proxSemana" data-prox="${prox}">
+        <span class="n">Próxima semana</span>
+        <span class="arrow lado" aria-hidden="true">${ICO.chev}</span></button>`; }
   }
-  let htmlTopicos=''; if(w.topics) htmlTopicos=`<div class="next"><h2>Conteúdo</h2><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${linhaConteudo(line)}</div>`).join('')}</div></div>`;
+  let htmlTopicos=''; if(w.topics) htmlTopicos=`<details class="cal" data-date="conteudo" ${openState['conteudo']?'open':''}><summary><span class="n">Conteúdo</span><span class="arrow">${ICO.chev}</span></summary><div class="cal-body next-body"><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${linhaConteudo(line)}</div>`).join('')}</div></div></details>`;
   html+=`<section class="tl ${tlAberta?'aberta':''}" id="tl">
     <button class="tl-head" id="tlToggle" type="button" aria-expanded="${tlAberta}" aria-controls="tlBody">
       <span class="tl-head-ic" aria-hidden="true">${ICO.historico}</span><span class="tl-head-tx">Histórico</span>
@@ -4454,6 +4553,7 @@ function render(){
     <div class="tl-body" id="tlBody" ${tlAberta?'':'hidden'}></div>
   </section>`;
   html+=htmlTopicos;            // "o que cada materia esta estudando" vem depois da linha do tempo
+  html+=htmlCalendario();       // datas do trimestre: o que vem por ai
   document.getElementById('app').innerHTML=html;
   const bProx=document.getElementById('proxSemana');
   if(bProx) bProx.addEventListener('click',()=>{ const id=bProx.dataset.prox; if(!DB.weeks[id]) return;
@@ -4463,7 +4563,7 @@ function render(){
   ajustaProgressoTablet();
   if(typeof appBadge==='function') appBadge();
   if(typeof updateReaFab==='function') updateReaFab();
-  document.querySelectorAll('.day,.imp').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
+  document.querySelectorAll('.day,.imp,.cal').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
   // segurar o cabecalho de um dia: compartilha so aquele dia
   document.querySelectorAll('#app .day>summary').forEach(sm=>{
     let t=null,x0=0,y0=0,agiu=false;
@@ -4531,11 +4631,14 @@ function taskHtml(t,inImp){
   const moved = (t.day!==t.origin&&!t.wiz) ? `<span class="st mv">Mudou de dia</span>` : '';
   const dchip = inImp ? `<span class="dchip ${t.day===diaHojeK()?'hoje':''}" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
   const grade = gradeForTask(t);
-  const subj = `<span class="st sj ${gradeClass(grade)}">${subjectVisual(SUBJ[t.subj])}</span>`;
-  const gradeTag = grade!=null ? `<span class="grade-note ${gradeClass(grade)}">${fmtGrade(grade)}</span>` : '';
+  // materia e nota na mesma etiqueta, separadas por uma bolinha
+  const subj = `<span class="st sj ${gradeClass(grade)}">${subjectVisual(SUBJ[t.subj])}${grade!=null?`<i class="sj-sep" aria-hidden="true">·</i><b class="sj-nota">${fmtGrade(grade)}</b>`:''}</span>`;
+  const gradeTag = '';
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
   // ordem das etiquetas: materia, foto, mudou de dia, para segunda... e a de status (Feito, Falta fazer...) sempre por ultimo
-  const status=moved+(t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'');
+  const prazoTag=(()=>{ if(t.type!==H||!t.ate||t.wiz) return ''; const w=semanaDe(t),d=w&&w.days.find(x=>x.k===t.day);
+    if(d&&venceEm(w,d)===t.ate) return ''; return `<span class="st pics">Para ${nomeDiaDe(t.ate)}</span>`; })();
+  const status=moved+prazoTag+(t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'');
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''} ${t.wiz?'wizt':''}" data-id="${t.id}">
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(NEXT_R[t.status]||'done')}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${swLbl(NEXT_L[t.status]||'doing')}</div>`: ''}
@@ -4660,7 +4763,7 @@ function sparks(x,y,color){for(let i=0;i<10;i++){const e=document.createElement(
   const a=Math.random()*Math.PI*2,r=40+Math.random()*50;e.style.setProperty('--dx',Math.cos(a)*r+'px');e.style.setProperty('--dy',Math.sin(a)*r+'px');
   document.body.appendChild(e);setTimeout(()=>e.remove(),800);}}
 function toastSumiu(t){ const f=t._aoSumir; t._aoSumir=null; if(f) setTimeout(f,0); }
-function toast(m){const t=document.getElementById('toast');toastSumiu(t);t.textContent=semEmoji(String(m==null?'':m));t.classList.remove('acao');t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1800);}
+function toast(m){const t=document.getElementById('toast');toastSumiu(t);t.textContent=semEmoji(String(m==null?'':m));t.classList.remove('acao');t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),3800);}
 // aviso que fica mais tempo e traz um botao (ex.: Desfazer)
 function toastAcao(m,rotulo,acao,ms,aoSumir){
   const t=document.getElementById('toast'); clearTimeout(t._h); toastSumiu(t);
@@ -4670,8 +4773,14 @@ function toastAcao(m,rotulo,acao,ms,aoSumir){
   const b=document.createElement('button'); b.type='button'; b.className='undo'; b.textContent=rotulo;
   b.addEventListener('click',()=>{ clearTimeout(t._h); t._aoSumir=null; t.classList.remove('on','acao'); t.textContent=''; acao(); });
   t.appendChild(b); t.classList.add('on','acao');
-  t._h=setTimeout(()=>{ t.classList.remove('on','acao'); toastSumiu(t); },ms||6000);
+  t._h=setTimeout(()=>{ t.classList.remove('on','acao'); toastSumiu(t); },(ms||6000)+2000);
 }
+// empurrar a mensagem para qualquer lado faz ela sumir na hora
+(function(){ const t=document.getElementById('toast'); if(!t) return; let p=null;
+  t.addEventListener('pointerdown',e=>{ p=[e.clientX,e.clientY]; },{passive:true});
+  t.addEventListener('pointermove',e=>{ if(!p) return; if(Math.hypot(e.clientX-p[0],e.clientY-p[1])>34){ p=null; clearTimeout(t._h); t.classList.remove('on','acao'); toastSumiu(t); } },{passive:true});
+  t.addEventListener('pointerup',()=>{ p=null; },{passive:true}); t.addEventListener('pointercancel',()=>{ p=null; },{passive:true});
+})();
 function colorOf(el){return getComputedStyle(el).getPropertyValue('--c').trim()||corT('#7C4DC4');}
 
 function setStatus(id,status,el,semDesfazer){
@@ -6439,7 +6548,9 @@ function avisoMsg(m,quantas){
   let y0=null;
   el.addEventListener('pointerdown',e=>{ y0=e.clientY; });
   el.addEventListener('pointerup',e=>{ if(y0!==null&&e.clientY-y0<-40) fechaAviso(); y0=null; });
-  avisoT=setTimeout(fechaAviso,9000);
+  let px=null; el.addEventListener('pointerdown',e=>{ px=[e.clientX,e.clientY]; },{passive:true});       // empurrar para qualquer lado tambem fecha
+  el.addEventListener('pointermove',e=>{ if(px&&Math.hypot(e.clientX-px[0],e.clientY-px[1])>34){ px=null; fechaAviso(); } },{passive:true});
+  avisoT=setTimeout(fechaAviso,11000);
 }
 async function notifyMsg(m){ if(!('Notification' in window)||Notification.permission!=='granted') return;
   try{ const reg=await navigator.serviceWorker?.getRegistration(); const opt={body:msgPreview(m),icon:'icon-192.png',badge:'icon-192.png',tag:'chat-'+m.k,vibrate:[60,40,60]};
@@ -6516,6 +6627,7 @@ function esticaAula(el){
   window.addEventListener('popstate',()=>{
     if(saindo) return;
     if(document.querySelector('.popwrap')){ closePop(); arma(); return; }          // menu da mensagem
+    if(typeof selMode!=='undefined'&&selMode){ saiSel(); vibrate(8); arma(); return; }   // marcando mensagens: voltar so desmarca
     if(veil.classList.contains('on')){ hide(); arma(); return; }                   // folha aberta (conversa, tarefa, menu…)
     const agora=Date.now();
     if(agora-ultimoVoltar>2500){ ultimoVoltar=agora; toast('Toca em voltar de novo para sair'); arma(); return; }
