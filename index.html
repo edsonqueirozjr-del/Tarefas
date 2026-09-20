@@ -735,6 +735,9 @@
   .cmtsheet{padding-bottom:0!important}
   .cmts{display:flex;flex-direction:column;height:min(86dvh,860px)}
   .cmts h2{flex:none}
+  .cmts h2 .cmtsync{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--t08);color:var(--lilas-ink);border:0;display:flex;align-items:center;justify-content:center}
+  .cmts h2 .cmtsync svg{width:19px;height:19px}
+  .cmts h2 .x{margin-left:8px}
   .cmts .ctarefa{flex:none;margin:0 0 10px;font-size:13px;line-height:1.35}
   .cmts .clista{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:2px 2px 8px;display:flex;flex-direction:column;gap:10px}
   .cmts .cvazio{margin:18px 0;text-align:center}
@@ -3133,6 +3136,18 @@ function mergeRemote(remote){
         if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
         lt.day=rt.day;lt.moveU=rt.moveU;lt.moveBy=rt.moveBy||'';lt.moveWhy=rt.moveWhy||'';changed=true;
       }
+      // comentarios: junta os dois lados sempre, sem perder nenhum
+      { const meus=Array.isArray(lt.coments)?lt.coments:[], deles=Array.isArray(rt.coments)?rt.coments:[];
+        if(meus.length||deles.length){ const vistos={};
+          const juntos=[...meus,...deles].filter(c=>c&&c.k&&!vistos[c.k]&&(vistos[c.k]=1)).sort((a,b)=>(a.t||0)-(b.t||0));
+          const apagados=(lt.comApagados||[]).concat(rt.comApagados||[]);
+          const limpos=juntos.filter(c=>!apagados.includes(c.k));
+          if(JSON.stringify(limpos)!==JSON.stringify(meus)){
+            if(limpos.length>meus.length) MERGE_EVT.push('💬 Comentário novo em '+curto);
+            lt.coments=limpos; const ult=limpos[limpos.length-1];
+            lt.note=ult?ult.txt:''; lt.noteBy=ult?ult.by:''; lt.noteU=ult?ult.t:0;
+            if(apagados.length) lt.comApagados=[...new Set(apagados)];
+            changed=true; } } }
       const diff = rt.status!==lt.status || JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null) || (rt.pics||0)!==(lt.pics||0) || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day;
       if(diff && (!isAluna() || (rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){
         if(rt.status!==lt.status) MERGE_EVT.push(STICON[rt.status]+' '+(ela?ela+STVERB[rt.status]+' '+curto:curto+' agora está '+STLBL[rt.status]));
@@ -3140,8 +3155,6 @@ function mergeRemote(remote){
         else if(!!rt.off!==!!lt.off) MERGE_EVT.push(rt.off?('🚫 '+(ela?ela+'cancelou '+curto:curto+' foi cancelada')):('↩️ '+curto+' voltou a valer'));
         else if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
         else if((rt.pics||0)>(lt.pics||0)) MERGE_EVT.push('📸 Foto nova em '+curto);
-        if(Array.isArray(rt.coments)){ const meus=Array.isArray(lt.coments)?lt.coments:[]; const vistos={};
-          lt.coments=[...meus,...rt.coments].filter(c=>c&&c.k&&!vistos[c.k]&&(vistos[c.k]=1)).sort((a,b)=>(a.t||0)-(b.t||0)); }
         lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; changed=true; }
     }));
   });
@@ -4879,7 +4892,7 @@ ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(N
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${swLbl(NEXT_L[t.status]||'doing')}</div>`: ''}
     <div class="tin">
       <div class="t"><div class="tg">${dchip}${subj}${gradeTag}${status}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
-${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${(t.day!==t.origin&&!t.wiz&&t.moveWhy)?`<span class="note">${ICO.aulas} <b>${esc(t.moveBy||'')}:</b> ${esc(t.moveWhy)}</span>`:''}${t.note?`<span class="note nt" data-note="${t.id}" role="button" tabindex="0" title="Toca para mudar ou apagar">📝 ${t.noteBy&&(!USER||t.noteBy!==USER.nome)?'<b>'+esc(t.noteBy)+':</b> ':''}${esc(t.note)}</span>`:''}</div>
+${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${(t.day!==t.origin&&!t.wiz&&t.moveWhy)?`<span class="note">${ICO.aulas} <b>${esc(t.moveBy||'')}:</b> ${esc(t.moveWhy)}</span>`:''}</div>
       ${(t.reacts&&Object.keys(t.reacts).length)?(()=>{ const rs=Object.values(t.reacts); const som=rs.some(r=>r.a); const qtd=rs.length;
         return `<button type="button" class="star rea ${som?'audio':''}" data-rea="${t.id}" aria-label="Ver quem reagiu" title="Ver quem reagiu">${som?ICO.tocar:`<span class="emo">${rs[0].e||'💛'}</span>`}${qtd>1?`<b class="qtd">${qtd}</b>`:''}</button>`; })():''}
       ${(()=>{ const qc=comentarios(t).length; return qc?`<button type="button" class="star obs" data-obs="${t.id}" aria-label="Ver os comentários" title="Ver os comentários"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z"/></svg>${qc>1?`<b class="qtd">${qc}</b>`:''}</button>`:''; })()}
@@ -5247,6 +5260,7 @@ function openMenu(id){
   show(`<h2>${ICO.lapis} Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=3" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
    <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]} · ${t.text}</p>
    <button class="opt" data-a="note"><span class="ic">${ICO.msg}</span>${comentarios(t).length?'Ver os comentários':'Escrever um comentário'}</button>
+   <button class="opt" data-a="sync"><span class="ic">${ICO.sync||ICO.historico}</span>Atualizar do aparelho de todos</button>
    ${(CLOUD_CFG&&isAluna())?`<button class="opt" data-a="foto"><span class="ic">${ICO.camera}</span>Tirar foto do que fez</button>`:''}
    ${(CLOUD_CFG&&isAluna()&&(t.pics||0))?`<button class="opt danger" data-a="pics-org"><span class="ic">${ICO.lixo||ICO.proibido}</span>Apagar foto</button>`:''}
    ${((isAluna()||isResponsavel())&&!t.wiz)?`<button class="opt" data-a="move"><span class="ic">${ICO.aulas}</span>Mudar de dia</button>`:''}
@@ -5267,6 +5281,7 @@ function openMenu(id){
     if(a==='foto'){ if(isAluna()){ picTaskId=id; document.getElementById('taskFoto').click(); } }
     if(a==='move') openMove(id);
     if(a==='note') openComentarios(id);
+    if(a==='sync') atualizaDaNuvem();
     if(a==='delnote'){t.note='';t.noteBy='';t.noteU=Date.now();t.u=Date.now();save();logEvt('nota',{id,det:plain(t.text||''),vazia:true});hide();render();toast('Observação apagada');}
   }));
 }
@@ -5840,6 +5855,17 @@ function resumoComents(t){ const c=comentarios(t); const ult=c[c.length-1];
   t.note=ult?ult.txt:''; t.noteBy=ult?ult.by:''; t.noteU=ult?ult.t:0; }
 function fmtHora(ms){ const d=new Date(ms); const hj=new Date(); const hora=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   return (d.toDateString()===hj.toDateString())?hora:(('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+' '+hora); }
+// pede a versao mais nova da nuvem e redesenha
+function atualizaDaNuvem(aberto){
+  if(!cloudRef){ toast('A nuvem não está ligada'); return; }
+  toast('Atualizando…'); vibrate(8);
+  cloudRef.once('value',sn=>{
+    const remote=sn.val();
+    if(remote&&remote.weeks){ try{ mergeRemote(remote); }catch(e){} }
+    save(); render(); if(aberto) openComentarios(aberto);
+    vibrate(12); toast('Tudo em dia');
+  },()=>toast('Não consegui atualizar agora'));
+}
 function openComentarios(id){
   const t=findTask(id); if(!t) return;
   vibrate(8);
@@ -5856,12 +5882,13 @@ function openComentarios(id){
             <button type="button" class="ccur ${curtiu?'on':''}" data-cur="${c.k}" aria-label="${curtiu?'Descurtir':'Curtir'}"><svg viewBox="0 0 24 24" fill="${curtiu?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.6-7-9.3A4 4 0 0 1 12 8a4 4 0 0 1 7 2.7C19 15.4 12 20 12 20Z"/></svg>${n?`<b>${n}</b>`:''}</button>
           </div></div></div>`; }).join('')
       : '<p class="quiet cvazio">Nenhum comentário ainda. Escreve o primeiro!</p>';
-    show(`<div class="cmts"><h2>${ICO.msg} Comentários <button class="x">✕</button></h2>
+    show(`<div class="cmts"><h2>${ICO.msg} Comentários <button class="gear cmtsync" id="cSync" aria-label="Atualizar" title="Atualizar">${ICO.sync||ICO.historico}</button><button class="x">✕</button></h2>
       <p class="quiet ctarefa">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]} · ${esc(plain(t.text))}</p>
       <div class="clista" id="cLista">${corpo}</div>
       <div class="cbar"><textarea id="cTxt" rows="1" placeholder="Escreve um comentário…" maxlength="600"></textarea>
         <button class="cenv" id="cEnv" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m3 20 18-8L3 4l4 8-4 8Z"/></svg></button></div></div>`);
     sheet.classList.add('cmtsheet');
+    document.getElementById('cSync')?.addEventListener('click',()=>atualizaDaNuvem(id));
     const lst=document.getElementById('cLista'); if(lst) lst.scrollTop=lst.scrollHeight;
     const ta=document.getElementById('cTxt');
     const cresce=()=>{ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight+2,140)+'px'; };
@@ -5890,6 +5917,7 @@ function openComentarios(id){
         pop.style.top=top+'px'; pop.style.left=Math.max(vl+edge,Math.min(r.left+r.width/2-pop.offsetWidth/2,vl+vw-pop.offsetWidth-edge))+'px';
         wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
         document.getElementById('cmtDel').addEventListener('click',()=>{
+          t.comApagados=[...new Set([...(t.comApagados||[]),c.k])];
           t.coments=comentarios(t).filter(x=>x.k!==c.k); resumoComents(t); t.u=Date.now(); save();
           closePop(); vibrate(20); render(); desenha(); toast('Comentário apagado'); });
       };
@@ -6658,19 +6686,18 @@ function refreshReminder(){
   const wrap=document.querySelector('.wrap'), app=document.getElementById('app'); if(!wrap||!app) return;
   const veu=document.getElementById('veil');
   const el=document.createElement('div'); el.className='puxa'; el.id='puxaSemana'; el.setAttribute('aria-hidden','true');
-  el.innerHTML='<div class="pz-in"><span class="pz-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 5 7 7 7-7"/><path d="m5 12 7 7 7-7"/></svg></span>'
-    +'<span class="pz-tx">Semana anterior</span><span class="pz-bar"><i></i></span></div>';
+  el.innerHTML='<div class="pz-in"><span class="pz-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg></span>'
+    +'<span class="pz-tx">Atualizar tudo</span><span class="pz-bar"><i></i></span></div>';
   wrap.insertBefore(el,app);
   const LIM=112, ALT=76;                          // o quanto precisa puxar e a altura da faixa
   let y0=null,x0=null,ativo=false,dy=0,alvo=null;
   const anterior=()=>{ const ids=weekIds(); const i=ids.indexOf(current); return i>0?ids[i-1]:null; };
   const pinta=()=>{
-    const p=Math.min(1,dy/LIM), pronto=p>=1&&!!alvo;
-    el.classList.toggle('pronto',pronto); el.classList.toggle('vazio',!alvo);
+    const p=Math.min(1,dy/LIM), pronto=p>=1;
+    el.classList.toggle('pronto',pronto); el.classList.remove('vazio');
     el.style.height=Math.min(ALT,dy*.62).toFixed(1)+'px';
-    el.querySelector('.pz-bar i').style.width=(alvo?p*100:0)+'%';
-    const w=alvo?DB.weeks[alvo]:null;                       // um aviso so, dizendo qual semana vai abrir
-    el.querySelector('.pz-tx').textContent=!alvo?'Não tem semana anterior':('Semana anterior'+(w&&w.label?' · '+w.label:''));
+    el.querySelector('.pz-bar i').style.width=(p*100)+'%';
+    el.querySelector('.pz-tx').textContent='Atualizar tudo';   // puxar para baixo agora e o F5 do app
   };
   const volta=()=>{ dy=0; el.style.transition='height .24s cubic-bezier(.2,.9,.3,1)'; el.style.height='0px';
     setTimeout(()=>{ el.style.transition=''; el.classList.remove('pronto','vazio'); },260); };
@@ -6688,11 +6715,11 @@ function refreshReminder(){
     dy=Math.max(0,Math.min(d,240)); pinta();
   },{passive:false});
   const solta=()=>{
-    if(y0==null) return; const trocar=ativo&&alvo&&dy>=LIM, destino=alvo, voltar=current;
+    if(y0==null) return; const atualizar=ativo&&dy>=LIM;
     y0=null; ativo=false; volta();
-    if(trocar){ vibrate([15,30]); SFX.pop(); current=destino; render(); window.scrollTo({top:0});
-      const w=DB.weeks[destino];
-      toastAcao('Semana de '+((w&&w.label)||destino),'Voltar',()=>{ current=voltar; render(); window.scrollTo({top:0}); vibrate(10); },6000); }
+    if(atualizar){ vibrate([15,30]); SFX.pop();
+      if(typeof atualizaDaNuvem==='function') atualizaDaNuvem(); else { render(); toast('Tudo em dia'); }
+      window.scrollTo({top:0}); }
   };
   document.addEventListener('touchend',solta,{passive:true});
   document.addEventListener('touchcancel',solta,{passive:true});
