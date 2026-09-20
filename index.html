@@ -546,19 +546,24 @@
   button{font-family:inherit;cursor:pointer}
   .prog{margin:-10px 0 14px}
   .top .prog{margin:0 0 4px}
-  .prog .row{display:flex;align-items:baseline;justify-content:center;font-size:15px;color:var(--soft);margin-bottom:4px;line-height:1.3}
-  .prog .row .sep{font-style:normal;margin:0 7px;color:var(--soft);font-weight:900}
-  .prog .row b{color:var(--ink);font-size:15px;font-weight:600}
+  .prog .row{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;font-size:min(14px,3.2vw);color:var(--soft);margin-bottom:4px;line-height:1.3}
+  .prog .row .sep{font-style:normal;margin:0 6px;color:var(--soft);font-weight:900}
+  .prog .row .wk-dias{font-weight:900;color:var(--lilas-ink);white-space:nowrap}
+  .prog .row .wk-cnt{white-space:nowrap;font-weight:900;color:var(--lilas-ink)}
+  .prog .row .wk-cnt b{color:var(--lilas-ink);font-weight:900;font-size:inherit}
+  .prog .row .wk-line>b{color:var(--lilas-ink);font-weight:900;font-size:inherit}
+  .prog .row .wk-line{display:inline-flex;align-items:baseline;flex-wrap:wrap;justify-content:center;gap:0 2px;max-width:100%;min-width:0}
+  .prog .row b{color:var(--ink);font-size:inherit;font-weight:600}
   .prog .bar{height:30px;border-radius:12px;background:var(--t41);overflow:hidden;position:relative;border:1px solid var(--t45);box-shadow:inset 0 2px 4px rgba(var(--r01),.14)}
   @media screen and (max-width:599px), screen and (max-height:599px){ .prog .bar{height:34px;border-radius:12px} .prog .row{justify-content:center} .prog .row>span:last-child{flex:none;justify-content:center} .prog .sapo-prog{display:none!important}
     body .dl .n{font-size:18px} body .dl .d{font-size:12px} body .day summary .tag{font-size:10px} body .task .tx{font-size:13px} body .day .aulas span{font-size:11px} body .box h3{font-size:13px}
     body .task .star{font-size:18px}
-    body .prog .row,body .prog .row b{font-size:14px}   /* celular: "13 de 16 feitas" 1px menor */
+    body .prog .row,body .prog .row b{font-size:min(14px,3.2vw)}   /* celular: a linha toda um pouco menor */
     body .box h3 .bang{width:14px!important;height:14px!important;font-size:9px!important}
-    body .task .st,body .task .dchip{font-size:11px} body .day summary .tag{font-size:11px}
+    body .task .st,body .task .dchip,body .cal-h .st{font-size:11px} body .day summary .tag{font-size:11px}
     body .imp summary .n{font-size:18px} body .imp summary .cnt{font-size:11px;padding:4px 10px}   /* Importantes igual aos dias */
     body .tl-head-tx{font-size:18px} body h1{font-size:24px} body .fam .p>span{font-size:calc(1em - 1px)} body .fam .p small{font-size:10px}
-    body .day summary,body .imp summary{padding:6px 14px} body .tl-head{padding:7px 15px}
+    body .day summary,body .imp summary{padding:9px 14px} body .tl-head{padding:9px 15px}
     body .next h2{font-size:17px} body .next .topic-list,body .cal .topic-list{font-size:14px}   /* celular: caixa do Conteudo 1px menor */
     body .task.wizt .tg{display:inline;margin:0 4px 0 0;vertical-align:1px} body .task.wizt .tg .st,body .task.wizt .tg .dchip{margin:0 4px 0 0;vertical-align:1px} body .task.wizt .tx{display:inline}   /* Curso de Ingles: descricao na linha das etiquetas */
     body .day summary .arrow,body .imp summary .arrow,body .tl-head .arrow{width:22px;height:22px}
@@ -622,7 +627,7 @@
   .imp summary .cnt{margin-left:auto;background:#F5E04F;color:#5E4E00;border-radius:999px;padding:4px 10px;font-size:14px;font-weight:900;white-space:nowrap;line-height:1.2;letter-spacing:0;font-family:inherit}
   .imp summary .arrow{font-size:14px;opacity:.85;transition:transform .2s}
   /* seta de abrir/fechar: chevron fino dentro de um circulo suave, gira ao abrir */
-  .day summary .arrow,.imp summary .arrow,.tl-head .arrow{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.28);display:inline-flex;align-items:center;justify-content:center;line-height:0;opacity:1;transition:transform .25s ease,background .2s}
+  .day summary .arrow,.imp summary .arrow,.tl-head .arrow{width:28px;height:28px;flex:none;border-radius:50%;background:rgba(255,255,255,.28);display:inline-flex;align-items:center;justify-content:center;line-height:0;opacity:1;transition:transform .25s ease,background .2s}
   .day summary .arrow .ico,.imp summary .arrow .ico,.tl-head .arrow .ico{width:18px;height:18px;stroke-width:2.2}
   .day:not(.today) summary .arrow,.imp summary .arrow,.tl-head .arrow{background:rgba(38,36,58,.07)}
   .imp[open] summary .arrow{transform:rotate(180deg)}
@@ -638,16 +643,38 @@
   .day.today{animation:glow 2.2s ease-in-out infinite}
   .day.today summary{position:relative;overflow:hidden}
   @keyframes glow{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 0%,transparent)}50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--c) 28%,transparent)}}
-  .day summary{list-style:none;cursor:pointer;background:var(--c);color:var(--lilas-ink);padding:12px 14px;display:flex;align-items:center;gap:10px}
+  .day summary{list-style:none;cursor:pointer;background:var(--c);color:var(--lilas-ink);padding:9px 14px;display:flex;align-items:center;gap:10px}
   .day.today summary{color:#fff}                 /* so o dia de hoje fica com letra branca */
   .day summary::-webkit-details-marker{display:none}
   .dl{display:flex;align-items:baseline;gap:8px;flex:none}
-  .dl .n{font-size:21px;font-weight:900;line-height:1}
-  .dl .d{opacity:1;font-size:16px;font-weight:500;line-height:1}
+  .dl .n{font-size:19px;font-weight:900;line-height:1}
+  .dl .d{opacity:1;font-size:15px;font-weight:500;line-height:1}
   .dl .feira,.dl .sep{display:none}          /* celular: sem "-feira" e sem bolinha */
-  .tags{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .tags{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
   .day:not(.today) .tag{color:var(--lilas-ink)}   /* no dia clarinho, a etiqueta precisa de letra escura */
-  .tag{background:#fff;color:var(--c);border-radius:999px;padding:4px 10px;font-size:14px;font-weight:900;white-space:nowrap;line-height:1.2;letter-spacing:0;font-family:inherit;display:inline-block}
+  .box.prova-box{background:#FDECEC;border-color:#F6D6D6}
+  .prova-task{background:transparent!important;box-shadow:none!important}
+  .prova-task .tin{background:transparent}
+  .prova-task .tx .st{vertical-align:middle;margin:0 4px 0 0}
+  .prova-task .tin{padding-left:0}
+  .prova-task .t{padding-left:0}
+  .prova-task+.prova-task{position:relative;margin-top:8px;padding-top:8px}
+  .prova-task+.prova-task::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:#F6D6D6}
+  .tag.prova-tag{background:#fff;color:#A32424;order:-1;border:0;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:3px;padding-right:7px}
+  .tag.prova-tag svg{width:9px;height:9px;flex:none}
+  .tag.prova-tag:active{transform:scale(.95)}
+  .provapop{min-width:240px;padding:12px 14px;overflow:visible}
+  .provapop::before{content:"";position:absolute;top:-8px;left:var(--bico,34px);border:8px solid transparent;border-top:0;border-bottom-color:#fff}
+  .provapop{margin-top:4px}
+  .provapop.embaixo::before{top:auto;bottom:-8px;border-bottom:0;border-top-color:#fff;border-top-width:8px}
+  .provapop h4{margin:0 0 8px;padding:0}
+  .provapop .prova-it{padding:0}
+  .provapop>h4{margin-left:0!important;padding-left:0!important}
+  .provapop .prova-tp{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 6px}
+  .provapop .prova-tp .st{margin-left:0}
+  .provapop .prova-det{margin:0;font-size:13.5px;line-height:1.35;color:var(--ink)}
+  .provapop .prova-sep{height:1.5px;background:var(--t08);margin:8px 0}
+  .tag{background:#fff;color:var(--c);border-radius:999px;padding:3px 9px;font-size:12.5px;font-weight:900;white-space:nowrap;line-height:1.2;letter-spacing:0;font-family:inherit;display:inline-block}
   .day summary .arrow{font-size:14px;opacity:.85;flex:none;transition:transform .2s}
   .day[open] summary .arrow{transform:rotate(180deg)}
   .body{padding:12px 14px 14px}
@@ -800,24 +827,27 @@
   .next{background:#fff;border:3px dashed var(--lilas-line);border-radius:22px;padding:14px 16px;margin:12px 0 0}
   /* blocos do rodape (Ver a proxima semana, Conteudo, Avisos): mesmo molde, mesma cor, mesma letra */
   .cal{display:block;background:#fff;border:3px dashed var(--lilas-line);border-radius:22px;margin:12px 0 0;overflow:hidden;box-sizing:border-box}
-  .cal summary{list-style:none;display:flex;align-items:center;gap:8px;padding:12px 14px 12px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #provasTopo .cal{margin:0 0 10px}
+  #provasTopo .prox-semana{margin:0 0 10px}
+  #provasTopo:empty{display:none}
+  .cal summary{list-style:none;display:flex;align-items:center;gap:8px;padding:8px 12px 8px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .cal summary::-webkit-details-marker{display:none}
   .cal .n{font-size:18px;font-weight:900;color:var(--ink);flex:1;min-width:0}
-  .cal .arrow{flex:none;width:32px;height:32px;border-radius:50%;background:var(--t08);display:flex;align-items:center;justify-content:center;color:var(--lilas-ink);transition:transform .2s}
-  .cal .arrow svg{width:18px;height:18px}
+  .cal .arrow{flex:none;width:28px;height:28px;border-radius:50%;background:var(--t08);display:flex;align-items:center;justify-content:center;color:var(--lilas-ink);transition:transform .2s}
+  .cal .arrow svg{width:17px;height:17px}
   .cal[open] summary .arrow{transform:rotate(180deg)}
-  .cal-body{padding:0 16px 14px;display:flex;flex-direction:column;gap:8px}
+  .cal-body{padding:0 16px 10px;display:flex;flex-direction:column}
   .cal-body.next-body{padding-top:0}
-  .cal-st{border:2px solid var(--lilas-line);border-radius:16px;padding:10px 12px;background:#fff}
-  .cal-st.passou{opacity:.45}
-  .cal-st{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:6px 7px;align-items:center}   /* duas partes: texto a esquerda, data e contagem a direita, sempre na mesma largura */
-  .cal-esq{min-width:0}
-  .cal-n{display:block}
-  .cal-r{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.2;padding-left:6px;border-left:2px solid var(--t08);align-self:stretch;min-width:0}
-  .cal-q{font-size:11px;font-weight:800;color:var(--soft);white-space:nowrap;margin-top:2px}
-  .cal-n{font-size:15px;font-weight:900;color:var(--ink)}
-  .cal-d{font-size:12px;font-weight:900;color:var(--lilas-ink);white-space:nowrap;font-variant-numeric:tabular-nums}
-  .cal-l{font-size:min(15px,3.2vw);color:var(--soft);margin-top:2px;line-height:1.3}   /* materias da recuperacao */
+  .cal-st{position:relative;padding:10px 2px}
+  .cal-st+.cal-st::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:var(--t08);pointer-events:none}
+  .cal-h{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:4px}
+  .cal-h .st{margin-left:0}
+  .cal-d{background:var(--t10);color:var(--ink)}
+  .cal-q{background:var(--t10);color:var(--ink)}
+  .cal-st.agora .cal-q{background:#F9D5D5;color:#A32424}
+  .cal-st.passou .cal-q{background:#EEE;color:#888}
+  .cal-n{font-size:14px;font-weight:900;color:var(--ink);line-height:1.35}
+  .cal-l{font-size:13.5px;color:var(--soft);margin-top:2px;line-height:1.35}   /* materias da recuperacao */
   .next h2{margin:0 0 6px;font-size:18px;font-weight:900}
   .next .topic-list{font-size:15px}
   /* flutuante */
@@ -827,12 +857,12 @@
   .fab:active{transform:scale(.92)}
   /* sheet */
   .veil{position:fixed;inset:0;background:rgba(38,36,58,.45);display:none;z-index:60;align-items:flex-end;justify-content:center}
-  .veil.on{display:flex}
+  .veil.on{display:flex;animation:veilOn .3s ease-out}
   body.locked{overflow:hidden;position:fixed;width:100%}
   .sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:6px 16px calc(14px + env(safe-area-inset-bottom));max-height:94dvh;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;will-change:transform}
   .sheet.drag{animation:none;transition:none}
   .sheet.snap{transition:transform .25s ease-out}
-  .sheet.sobe{animation:up .26s cubic-bezier(.2,.9,.3,1)}
+  .sheet.sobe{animation:up .38s cubic-bezier(.22,1.1,.32,1)}
   .sheet.sem-anim{animation:none}
   @media(prefers-reduced-motion:reduce){.sheet.sobe{animation:none}}
   /* subindo com o dedo: sombra funda e alcinha destacada */
@@ -842,7 +872,8 @@
   .grip{transition:width .18s ease,background .18s ease}
   .sheet.drag>.grip,.sheet.puxando>.grip{transition:background .18s ease}
   .grip{width:44px;height:5px;border-radius:3px;background:#DAD6E6;margin:6px auto 12px}
-  @keyframes up{from{transform:translateY(40px);opacity:0}}
+  @keyframes up{0%{transform:translateY(64px) scale(.985);opacity:0}55%{opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
+  @keyframes veilOn{from{background:rgba(38,36,58,0);backdrop-filter:blur(0)}}
   .sheet h2{margin:0 0 12px;font-size:20px;font-weight:900;display:flex;align-items:center;gap:8px}
   @media screen and (max-width:599px){
     .sheet{max-height:94dvh;padding-top:5px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
@@ -986,11 +1017,26 @@
   .puxa .pz-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--t51),var(--t56))}
   .puxa.pronto .pz-bar i{background:linear-gradient(90deg,#4FA877,#2F7D4F)}
   @media(prefers-reduced-motion:reduce){.puxa .pz-ic{transition:none}}
-  /* ir para a semana seguinte: mesmo molde dos blocos de baixo */
-  .prox-semana{display:flex;align-items:center;gap:8px;width:100%;padding:12px 14px 12px 16px;font:inherit;text-align:left;cursor:pointer;color:var(--ink)}
-  .prox-semana:active{transform:scale(.99)}
-  .prox-semana .arrow.lado svg{transform:rotate(-90deg)}
-  .prox-semana small{display:block;font-size:13px;font-weight:700;color:var(--soft);margin-top:1px;line-height:1.2}
+  /* trocar de semana: bolinha no meio, arrasta para um lado ou para o outro */
+  .prox-semana{position:relative;display:flex;align-items:center;justify-content:center;gap:56px;height:50px;padding:0 14px;overflow:hidden;border-style:solid;border-color:var(--t18);background:var(--t12);touch-action:pan-y}
+  .prox-semana .ps-fill{position:absolute;top:0;bottom:0;width:0;z-index:1;pointer-events:none}
+  /* a cor e forte junto da bolinha e vai sumindo para tras, como um rastro */
+  .prox-semana .ps-dir{left:50%;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 45%);mask-image:linear-gradient(90deg,transparent,#000 45%)}
+  .prox-semana .ps-esq{right:50%;background:linear-gradient(270deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));
+    -webkit-mask-image:linear-gradient(270deg,transparent,#000 45%);mask-image:linear-gradient(270deg,transparent,#000 45%)}
+  .prox-semana .ps-rot{position:relative;z-index:2;font-size:14.5px;font-weight:900;color:var(--lilas-ink);pointer-events:none;transition:color .15s,opacity .15s;white-space:nowrap}
+  .prox-semana .ps-rot.claro{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+  .prox-semana .ps-pux{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;
+    background:var(--lilas);border:0;color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;
+    box-shadow:0 3px 10px rgba(124,77,196,.38);touch-action:none;cursor:grab;animation:psPulso 2.6s ease-in-out infinite}
+  .prox-semana .ps-pux:active{cursor:grabbing}
+  .prox-semana.arrastando .ps-pux{animation:none}   /* enquanto arrasta, o balancinho para e a bolinha segue o dedo */
+  .prox-semana .ps-pux svg{width:22px;height:22px}
+  @keyframes psPulso{0%,84%,100%{transform:translate(-50%,-50%)}88%{transform:translate(calc(-50% + 5px),-50%)}94%{transform:translate(calc(-50% - 5px),-50%)}}
+  @media(prefers-reduced-motion:reduce){.prox-semana .ps-pux{animation:none}}
+  .prox-semana .n.claro{text-shadow:0 1px 3px rgba(0,0,0,.35)}
+  .prox-semana .n.claro{color:#fff}
   .wk{display:flex;align-items:center;gap:10px;width:100%;border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:16px;font-weight:800;color:var(--ink);text-align:left}
   .wk.cur{border-color:var(--ok);background:#EEF9F4}
   .wk .pr{margin-left:auto;font-size:13px;color:var(--soft);text-align:right}
@@ -1320,6 +1366,18 @@
   .chat .empty{color:var(--soft);text-align:center;margin:auto;font-size:16px;line-height:1.5}
   .msg .b i.ed{font-style:normal;font-size:11px;opacity:.6;margin-left:4px}
   .msg.pressing .b{filter:brightness(.92)}
+  /* a tarefa que a gente veio ver pela conversa ou pelo historico fica em destaque */
+  /* ao chegar pela conversa ou pelo historico, so a tarefa procurada fica acesa; todo o resto desbota */
+  .task.achei{position:relative;z-index:1;animation:acheiPulso 1.1s ease-out 2}
+  #app.procurando .task:not(.achei),
+  #app.procurando .box>h3,
+  #app.procurando .day:not(.tem-achei),
+  #app.procurando .imp:not(.tem-achei),
+  #app.procurando .cal,
+  #app.procurando .prox-semana{opacity:.3;transition:opacity .35s ease}
+  #app.procurando .day.tem-achei .box:not(:has(.task.achei)){opacity:.3;transition:opacity .35s ease}
+  @keyframes acheiPulso{0%{transform:scale(1)}18%{transform:scale(1.02)}100%{transform:scale(1)}}
+  @media(prefers-reduced-motion:reduce){.task.achei{animation:none}}
   .reacts{display:flex;flex-wrap:wrap;gap:3px;margin-top:-4px;padding:0 6px;position:relative;z-index:1}
   .msg.me .reacts{justify-content:flex-end}
   .react span{font-weight:600;font-size:.82em}
@@ -1426,8 +1484,11 @@
   .fotona .fg-seta:active{background:rgba(255,255,255,.32);transform:translateY(-50%) scale(.9)}
   .fotona .fg-conta{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);background:rgba(0,0,0,.42);color:#fff;font-size:13px;font-weight:800;padding:3px 10px;border-radius:999px;pointer-events:none;font-variant-numeric:tabular-nums}
   @media screen and (min-width:600px) and (min-height:600px){ .fotona .fg-seta{width:52px;height:52px} .fotona .fg-seta.esq{left:10px} .fotona .fg-seta.dir{right:10px} .fotona .fg-x{width:48px;height:48px;right:18px} }
-  .fotona .fg-img{max-width:min(100%,900px);max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.5);transform:scale(.94);transition:transform .2s,opacity .16s}
-  .fotona.on .fg-img{transform:none}
+  /* a foto abre embacada e vai ficando nitida, como se estivesse carregando */
+  .fotona .fg-img{max-width:min(100%,900px);max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.5);
+    transform:scale(1.05);filter:blur(18px);opacity:.45;transition:transform .42s ease-out,filter .42s ease-out,opacity .3s ease-out}
+  .fotona.on .fg-img{transform:none;filter:blur(0);opacity:1}
+  @media(prefers-reduced-motion:reduce){.fotona .fg-img{filter:none;transform:none;opacity:1;transition:opacity .2s}}
   .fotona .fg-img{touch-action:manipulation}
   .fotona .fg-big{position:absolute;left:50%;top:50%;width:118px;height:118px;margin:-59px 0 0 -59px;pointer-events:none;color:#FF3B5C;filter:drop-shadow(0 8px 22px rgba(0,0,0,.45));animation:fgBig .9s cubic-bezier(.2,.8,.3,1) forwards}
   .fotona .fg-big.off{color:#fff}
@@ -1611,6 +1672,12 @@
   }
   .chatsheet .chatwho{gap:6px;font-size:13px}
   .chatsheet .chatwho span{padding:5px 9px;background:rgba(var(--r05),.16);font-weight:400}
+  .chatsheet.abrindo .msgs>*{animation:chatEntra .34s cubic-bezier(.2,.9,.3,1) both}
+  .chatsheet.abrindo .msgs>*:nth-child(1){animation-delay:.04s}
+  .chatsheet.abrindo .msgs>*:nth-child(2){animation-delay:.08s}
+  .chatsheet.abrindo .msgs>*:nth-child(3){animation-delay:.12s}
+  @keyframes chatEntra{from{transform:translateY(14px);opacity:0}}
+  @media(prefers-reduced-motion:reduce){.chatsheet.abrindo .msgs>*{animation:none}}
   .chatsheet .msgs{padding:8px 16px 8px;gap:0;scrollbar-width:thin;scrollbar-color:var(--t43) transparent}
   /* Transicao suave nas bordas da conversa: um veu por cima das mensagens.
      Fica ABAIXO da pilula do dia (que e sticky, z-index 2), entao ela continua solida. */
@@ -1873,8 +1940,9 @@
   .nudge-msg small{font-size:11px;font-weight:600;opacity:.7;flex:none;align-self:baseline}   /* hora igual a do balao: sem negrito forte */
   .nudge-msg.evt,.nudge-msg.evt .nt{white-space:normal;min-width:0;overflow-wrap:anywhere}
   .nudge-msg.evt{border-radius:16px;text-align:left;flex-wrap:wrap;cursor:pointer}
-  .nudge-msg.evt .evt-ver{flex:none;margin-left:6px;display:inline-flex;align-items:center;gap:0;border:0;border-radius:999px;padding:3px 6px 3px 9px;background:var(--uc,var(--lilas));color:#fff;font:inherit;font-size:11px;font-weight:900;letter-spacing:.4px;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .nudge-msg.evt .evt-ver svg{width:13px;height:13px}
+  .nudge-msg.evt .evt-ver{flex:none;margin-left:6px;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:0;border-radius:0;padding:0;background:transparent;color:var(--uc,var(--lilas));font:inherit;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .nudge-msg.evt .evt-ver:active{transform:scale(.88)}
+  .nudge-msg.evt .evt-ver svg{width:18px;height:18px;stroke-width:3}
   .nudge-msg.evt .evt-ver:active{transform:scale(.92)}
   .nudge-msg.evt:active{transform:scale(.98)}
   .nudge-msg.evt{position:relative}
@@ -2510,8 +2578,11 @@
   }
 
   @media screen and (max-width:599px){
-    #app #tl,#filterSearch{display:none!important}
-    body .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+    #app #tl{display:none!important}
+    body .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 40px}
+    body .filter-row>.filter-search{display:flex;grid-column:3;grid-row:1;align-self:stretch;height:34px;border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(var(--r01),.08)}
+    body .filter-row>.filter-search svg{width:21px;height:21px}
+    body .filter-row>.filter-search.on{background:var(--lilas);color:#fff}
     #mobileDockTimeline .mobile-dock-label{white-space:normal;max-width:65px;text-align:center}
     .dock-mobile-action .mobile-dock-label{min-height:23px;display:flex;align-items:center;justify-content:center}
   }
@@ -2566,6 +2637,7 @@
     <div class="fam" id="fam"></div>
     <div class="prog" id="prog"></div>
   </div>
+  <div id="provasTopo"></div>
   <div class="filter-row"><button class="chip mobile-filter-toggle" id="mobileStatusToggle" aria-expanded="false" aria-controls="fType">Ver status</button><button class="chip mobile-filter-toggle" id="mobileSubjectToggle" aria-expanded="false" aria-controls="fSubj">Ver matérias</button><div class="filters" id="fType"></div><button class="filter-search" id="filterSearch" aria-label="Buscar tarefa" title="Buscar tarefa" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button></div>
   <div class="searchbar" id="searchBar"><span class="qlupa" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="qTxt" type="search" placeholder="Procurar tarefa…" autocomplete="off" aria-label="Procurar tarefa nesta semana"><span class="qcnt" id="qCnt"></span><button class="qx" id="qClose" aria-label="Fechar busca">✕</button></div>
   <button class="qall" id="qAll">🔎 Procurar em todas as semanas</button>
@@ -2574,9 +2646,9 @@
 </div>
 
 <nav class="dock" id="fabs" aria-label="Ações">
-  <button type="button" class="dock-mobile-action" id="mobileDockTimeline" aria-label="Histórico"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Histórico</span></button>
-  <button type="button" class="dock-mobile-action" id="mobileDockSearch" aria-label="Procurar atividade"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Procurar</span></button>
-  <button type="button" class="dock-mobile-action" id="mobileDockClasses" aria-label="Aulas da semana"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Aulas</span></button>
+  <button type="button" class="dock-mobile-action" id="mobileDockTimeline" aria-label="Aulas da semana"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Aulas</span></button>
+  <button type="button" class="dock-mobile-action" id="mobileDockSearch" aria-label="Notas"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Notas</span></button>
+  <button type="button" class="dock-mobile-action" id="mobileDockClasses" aria-label="Histórico"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Histórico</span></button>
   <button type="button" class="dock-mobile-action" id="mobileDockChat" aria-label="Conversa"><span class="mobile-dock-icon" aria-hidden="true"></span><span class="mobile-dock-label">Conversa</span></button>
 
   <button class="dock-b" id="fab" aria-label="Menu"><span class="di" aria-hidden="true">☰</span><span class="dt">Menu</span></button>
@@ -2659,6 +2731,12 @@ const TIMETABLE = {
 // ini/fim = periodo principal; ate = quando a etapa termina de vez (2ª chamada, resultado); det = o que aparece embaixo.
 const CALENDARIO_TRI={titulo:'Avisos',etapas:[
   {nome:'Avaliação 1',ini:'2026-09-24',fim:'2026-10-02'},
+  {nome:'Prova',subj:'geo',ini:'2026-09-24',det:'Região Centro-Oeste, capítulo 9'},
+  {nome:'Prova',subj:'mat',ini:'2026-09-25',det:'Porcentagem e juros simples, capítulo 8'},
+  {nome:'Prova',subj:'cie',ini:'2026-09-28',det:'Degradação dos ambientes, capítulo 7'},
+  {nome:'Prova',subj:'por',ini:'2026-09-29',det:'Conto de terror, concordância verbal e verbo "ser"'},
+  {nome:'Test 1',subj:'ing',ini:'2026-09-29',det:'Chapter 6 (They made it!)'},
+  {nome:'Prova',subj:'his',ini:'2026-09-30',det:'Economia e sociedade colonial'},
   {nome:'2ª chamada da Avaliação 1',ini:'2026-10-05'},
   {nome:'Simulado',ini:'2026-10-23'},
   {nome:'2ª chamada do Simulado',ini:'2026-10-26'},
@@ -2687,22 +2765,22 @@ const SEED_WEEKS = [
      X(H,'pdv','Pensar nas atitudes empreendedoras que você teve nas últimas duas semanas e anotar no caderno'),
      X(H,'mat','Começar a Lista 7 de Matemática. Entrega na sexta 11/09')]},
    {k:'seg',date:'2026-09-07',feriado:'7 de Setembro',tasks:[
-     T(H,'pdv','Terminar as anotações sobre atitudes empreendedoras para compartilhar amanhã'),
+     T(H,'pdv','Terminar as anotações sobre atitudes empreendedoras para compartilhar na terça 08/09'),
      X(H,'mat','Continuar a Lista 7 de Matemática')]},
    {k:'ter',date:'2026-09-08',tasks:[
      T(B,'pdv','Caderno com as anotações sobre atitudes empreendedoras',1),
-     T(H,'esp','Deixar o caderno de Espanhol em ordem, com as atividades das últimas aulas. A professora vai revisar amanhã e vale <b>30 pontos</b>',1),
+     T(H,'esp','Deixar o caderno de Espanhol em ordem, com as atividades das últimas aulas. A professora vai revisar na quarta 09/09 e vale <b>30 pontos</b>',1),
      X(H,'mat','Continuar a Lista 7 de Matemática')]},
    {k:'qua',date:'2026-09-09',tasks:[
      T(B,'esp','Caderno de Espanhol em ordem. Vale <b>30 pontos</b>',1),
-     T(H,'cie','Separar um brinde para o bingo de amanhã (de 10 a 30 reais): papelaria, chocolate, brinquedo ou jogo',1),
+     T(H,'cie','Separar um brinde para o bingo de quinta 10/09 (de 10 a 30 reais): papelaria, chocolate, brinquedo ou jogo',1),
      T(H,'geo','Fazer a tarefa da <b>página 89</b>'),
      X(H,'esp','Ler e interpretar a <b>página 13</b>'),
      X(H,'mat','Continuar a Lista 7 de Matemática')]},
    {k:'qui',date:'2026-09-10',tasks:[
      T(B,'cie','Brinde para o bingo do reino Animalia',1),
      T(B,'art','Pode levar cola e tesoura para a Land Art'),
-     T(H,'mat','Terminar a Lista 7 de Matemática. Entrega amanhã!',1),
+     T(H,'mat','Terminar a Lista 7 de Matemática. A entrega é na sexta 11/09!',1),
      T(H,'fil','Fazer os exercícios 1 e 2 (páginas 65 e 66)')]},
    {k:'sex',date:'2026-09-11',tasks:[
      T(B,'mat','Lista 7 de Matemática pronta para entregar',1),
@@ -2711,7 +2789,7 @@ const SEED_WEEKS = [
   ]
  },
  {
-  id:'2026-09-13', label:'14 a 18 de setembro', roteiro:'Roteiro 14 · 7º ano D',
+  id:'2026-09-13', ver:2, label:'14 a 18 de setembro', roteiro:'Roteiro 14 · 7º ano D',
   topics:'Português: contos de mistério e de terror, concordância verbal e o verbo "ser".<br>Matemática: porcentagem e juros simples.<br>História: o engenho de açúcar e a sociedade colonial.<br>Geografia: a Região Centro-Oeste do Brasil.<br>Ciências: os biomas brasileiros.<br>Inglês: Chapter 6 (They made it).<br>Espanhol: aumentativos e diminutivos.<br>Filosofia: como nasce uma amizade.<br>Arte: Land Art, arte feita com coisas da natureza.<br>Projeto de Vida: Mundo dos Pets.',
   days:[
    {k:'dom',date:'2026-09-13',tasks:[
@@ -2728,7 +2806,7 @@ const SEED_WEEKS = [
      X(B,'ing','Atividades de Inglês terminadas'),
      T(H,'cie','Treinar a apresentação dos biomas em voz alta. Vale <b>50 pontos</b>!',1),
      T(H,'edf','Escrever o Hino Nacional em papel almaço, com capricho'),
-     T(H,'esp','Ler e interpretar a <b>página 13</b>. A professora vai corrigir amanhã'),
+     T(H,'esp','Ler e interpretar a <b>página 13</b>. A professora vai corrigir na quarta 16/09'),
      X(H,'geo','Conferir se a <b>página 89</b> está feita'),
      X(H,'mat','Continuar a leitura de Matemática (páginas 80 a 88)')]},
    {k:'qua',date:'2026-09-16',tasks:[
@@ -2753,71 +2831,73 @@ const SEED_WEEKS = [
      X(B,'mat','Leitura de Matemática feita (páginas 80 a 88)'),
      X(B,'por','Atividade "Aprimorando" terminada'),
      X(B,'ing','Inglês em dia'),
-     T(H,'esp','Interpretar os textos das <b>páginas 15, 16, 17 e 18</b>. É para quarta 23/09'),
-     T(H,'fil','Fazer os exercícios 3 e 4 da <b>página 70</b>. É para quinta 24/09')]}
+     P('esp','Interpretar os textos das <b>páginas 15, 16, 17 e 18</b>. É para quarta 23/09','2026-09-23'),
+     P('fil','Fazer os exercícios 3 e 4 da <b>página 70</b>. É para quinta 24/09','2026-09-24')]}
   ] },
  {
-  id:'2026-09-20', label:'21 a 25 de setembro', roteiro:'Roteiro 15 · semana 1 · 7º ano D',
-  topics:'Português: produção de conto de terror, concordância verbal que foge da regra e o verbo "ser" (páginas 140 a 153). Começa a leitura do livro do trimestre, Prisioneiros na Biblioteca, de Manuel Filho.<br>Matemática: juros simples e revisão para a Avaliação 1 (capítulo 8). A prova é sexta 25/09.<br>História: o patriarcalismo e a Igreja Católica na colonização (economia e sociedade colonial).<br>Geografia: revisão da Região Centro-Oeste e começo do trabalho trimestral. A prova é quinta 24/09.<br>Ciências: degradação ambiental, desmatamento e queimadas (capítulo 7). A prova é segunda 28/09.<br>Inglês: Chapter 6 (They made it!), o time de futebol preso na caverna e biografias.<br>Espanhol: salud y bienestar, a busca do equilíbrio e da felicidade.<br>Filosofia: os amigos são uma só pessoa (capítulo 4). Na semana que vem tem atividade avaliativa: uma história de livro, filme ou música sobre amizade.<br>Ed. Física: fundamentos do vôlei, toque, manchete e saque.<br>Ens. Religioso: o olhar empático de São Vicente de Paulo na rotina do estudante.<br>Arte: uma paisagem feita com origami.<br>Projeto de Vida: valores e atitudes.',
+  id:'2026-09-20', ver:2, label:'21 a 25 de setembro', roteiro:'Roteiro 15 · semana 1 · 7º ano D',
+  topics:'Português: produção de texto, um conto de terror (página 140), concordância verbal que foge da regra (páginas 141 a 144), revisão para a prova, biblioteca para a leitura do trimestre e o verbo "ser" (páginas 145 a 153).<br>Matemática: juros simples, exercícios em sala e revisão para a prova (volume 3, capítulo 8: porcentagem e juros simples).<br>História: o patriarcalismo, a Igreja Católica na colonização e as atividades das páginas 57, 58 e 59 (volume 3: economia e sociedade colonial).<br>Geografia: revisão para a prova, o Aprimorando do capítulo e o começo do trabalho trimestral em sala (volume 3, capítulo 9: Região Centro-Oeste, o coração do Brasil).<br>Ciências: degradação ambiental e seus tipos (páginas 40 a 50), desmatamento e queimadas (páginas 52 e 53), do capítulo 7.<br>Inglês: Chapter 6 (They made it!), com o time de futebol preso na caverna, biografia (estrutura e escrita) e revisão.<br>Espanhol: unidade 2, capítulo 5 (Salud y bienestar), com reflexão sobre a busca do equilíbrio e da felicidade e as atividades das páginas 22 e 23.<br>Filosofia: capítulo 4 (A alegria de estar com o outro), com o tema os amigos são uma só pessoa (páginas 70 a 73).<br>Ed. Física: fundamentos do vôlei, com toque, manchete e saque por baixo e por cima.<br>Ens. Religioso: o olhar empático de São Vicente de Paulo na rotina do estudante vicentino.<br>Arte: elaborar uma paisagem utilizando origami.<br>Projeto de Vida: valores e atitudes.',
   days:[
    {k:'dom',date:'2026-09-20',tasks:[
-     P('pdv','Anotar no caderno: que problemas a falta de amor ou de responsabilidade causa na escola, e o que dá para fazer para resolver. É para compartilhar na aula de terça 22/09','2026-09-22')]},
+     P('pdv','Refletir sobre os problemas causados na escola pela falta de amor ou de responsabilidade e anotar no caderno as possíveis soluções. É para compartilhar na aula de terça 22/09','2026-09-22')]},
    {k:'seg',date:'2026-09-21',tasks:[
-     P('cie','Responder as <b>páginas 41, 46, 48, 50 e 54</b> de Ciências. O visto é na quinta 24/09','2026-09-24')]},
+     P('cie','Responder as <b>páginas 41, 46, 48, 50 e 54</b> de Ciências. O visto é na última aula da semana, quinta 24/09','2026-09-24')]},
    {k:'ter',date:'2026-09-22',tasks:[
-     T(B,'pdv','Caderno com as anotações sobre os problemas da escola e as soluções, para compartilhar na aula'),
-     P('geo','Estudar para a Avaliação 1 de Geografia de quinta 24/09: Região Centro-Oeste, capítulo 9','2026-09-24')]},
+     T(B,'pdv','Caderno com as anotações sobre os problemas da escola e as soluções, para compartilhar na aula de Projeto de Vida'),
+]},
    {k:'qua',date:'2026-09-23',tasks:[
      T(B,'esp','Interpretação das <b>páginas 15 a 18</b> de Espanhol feita'),
-     P('mat','Estudar para a Avaliação 1 de Matemática de sexta 25/09: porcentagem e juros simples','2026-09-25'),
-     T(H,'art','Separar papel colorido para a paisagem de origami de amanhã')]},
+     P('geo','Estudar para a prova de Geografia de quinta 24/09: Região Centro-Oeste, capítulo 9','2026-09-24'),
+     P('art','Separar papel colorido para a paisagem de origami da aula de quinta 24/09','2026-09-24')]},
    {k:'qui',date:'2026-09-24',tasks:[
-     T(B,'geo','Dia da Avaliação 1 de Geografia'),
+     T(B,'geo','Dia da prova de Geografia'),
      T(B,'cie','Páginas 41, 46, 48, 50 e 54 de Ciências feitas para o visto'),
      T(B,'fil','Exercícios 3 e 4 da página 70 de Filosofia feitos'),
-     T(B,'art','Papel colorido para a paisagem de origami'),
-     P('mat','Fazer a Lista 8 de Matemática. Entrega na segunda 28/09','2026-09-28')]},
+     T(B,'art','Papel colorido para elaborar a paisagem de origami'),
+     P('mat','Estudar para a prova de Matemática de sexta 25/09: porcentagem e juros simples, capítulo 8','2026-09-25'),
+     P('mat','Fazer a Lista de exercícios 8 de Matemática. A entrega é na segunda 28/09','2026-09-28')]},
    {k:'sex',date:'2026-09-25',tasks:[
-     T(B,'mat','Dia da Avaliação 1 de Matemática'),
-     P('cie','Estudar para a Avaliação 1 de Ciências de segunda 28/09: degradação ambiental, desmatamento e queimadas (capítulo 7)','2026-09-28'),
-     P('por','Fazer os exercícios de revisão de Português na folha impressa ou no caderno. A avaliação é na terça 29/09','2026-09-29')]},
+     T(B,'mat','Dia da prova de Matemática'),
+     P('por','Fazer os exercícios de revisão para a avaliação de Português, na folha impressa ou no caderno. A prova é na terça 29/09','2026-09-29')]},
    {k:'sab',date:'2026-09-26',tasks:[
-     P('fil','Pesquisar uma história de livro, filme ou música sobre amizade. Escrever no caderno ou imprimir: a descrição da obra e o que ela tem a ver com a amizade. É atividade avaliativa na quinta 01/10','2026-10-01'),
-     P('esp','Fazer as atividades de compreensão e interpretação das <b>páginas 16 a 21</b> de Espanhol. Entregar na quarta 30/09','2026-09-30')]}
+     P('fil','Pesquisar e trazer uma história de livro, filme ou música sobre amizade. Trazer escrito no caderno ou impresso em folha à parte: a descrição da obra e a relação dela com a amizade. É atividade avaliativa em sala, na quinta 01/10','2026-10-01'),
+     P('esp','Realizar as atividades de compreensão e interpretação de texto das <b>páginas 16 a 21</b> de Espanhol. Entregar na próxima aula, quarta 30/09','2026-09-30')]}
   ]
  },
  {
-  id:'2026-09-27', label:'28 de setembro a 2 de outubro', roteiro:'Roteiro 15 · semana 2 · 7º ano D',
-  topics:'Português: Aprimorando (páginas 155 a 158), revisão, avaliação e Testando (páginas 161 a 165). A prova é terça 29/09.<br>Matemática: triângulos (capítulo 9): elementos, classificação, soma dos ângulos internos e condição de existência.<br>História: avaliação na quarta 30/09 e as dinâmicas comerciais internas da colônia.<br>Geografia: fim e apresentação do trabalho trimestral e a Região Sudeste (capítulo 10).<br>Ciências: avaliação na segunda 28/09, mineração, biomagnificação e o agravamento das mudanças climáticas.<br>Inglês: Test 1 na terça 29/09 e biografia (writing e speaking).<br>Espanhol: compreensão de texto e a tabela nutricional.<br>Filosofia: histórias sobre amizade, atividade avaliativa na sala.<br>Ed. Física: vôlei, recepção, levantamento, ataque e sistema de jogo.<br>Ens. Religioso: o poder transformador da empatia.<br>Arte: uma paisagem feita com origami.<br>Projeto de Vida: mundo do trabalho.',
+  id:'2026-09-27', ver:2, label:'28 de setembro a 2 de outubro', roteiro:'Roteiro 15 · semana 2 · 7º ano D',
+  topics:'Português: Aprimorando (páginas 155 a 158), revisão no caderno, prova de português e Testando (páginas 161 a 165).<br>Matemática: volume 3, capítulo 9 (Triângulo), com elementos e classificação, soma dos ângulos internos, condição de existência e exercícios em sala.<br>História: prova e as dinâmicas comerciais internas da colônia (volume 3: economia e sociedade colonial).<br>Geografia: término e apresentação do trabalho trimestral e a localização da região Sudeste (volume 4, capítulo 10: entre as serras e o mar, o Sudeste do Brasil).<br>Ciências: prova, mineração e biomagnificação (páginas 54 e 55) e o agravamento das mudanças climáticas (página 56), do capítulo 7.<br>Inglês: Chapter 6 (They made it!), com o Test 1 e biografia, na escrita e na fala.<br>Espanhol: unidade 2, capítulo 5 (Salud y bienestar), com compreensão e interpretação de texto e atividades de retomada (páginas 26 a 29).<br>Filosofia: capítulo 4 (A alegria de estar com o outro), com uma história de livro, filme ou música sobre amizade e atividade avaliativa em sala.<br>Ed. Física: fundamentos do vôlei, com recepção, levantamento, ataque e sistema de jogo.<br>Ens. Religioso: o poder transformador da empatia.<br>Arte: elaborar uma paisagem utilizando origami.<br>Projeto de Vida: mundo do trabalho.',
   days:[
    {k:'dom',date:'2026-09-27',tasks:[
-     P('ing','Estudar para o Test 1 de Inglês de terça 29/09: Chapter 6, They made it!','2026-09-29'),
-     P('pdv','Escolher um item curioso ou divertido para a dinâmica de Projeto de Vida de terça 29/09','2026-09-29')]},
+     P('cie','Estudar para a prova de Ciências de segunda 28/09: degradação dos ambientes, desmatamento e queimadas, capítulo 7','2026-09-28'),
+     P('pdv','Escolher um item curioso ou divertido para levar na aula de Projeto de Vida de terça 29/09. Vai ter uma dinâmica com esses itens','2026-09-29')]},
    {k:'seg',date:'2026-09-28',tasks:[
-     T(B,'mat','Lista 8 de Matemática pronta para entregar'),
-     T(B,'cie','Dia da Avaliação 1 de Ciências'),
-     P('por','Estudar para a Avaliação 1 de Português de amanhã: conto de terror, concordância verbal e o verbo "ser" (páginas 140 a 153)','2026-09-29'),
-     P('cie','Responder o estudo dirigido de Ciências que a professora entregou na sala. Entregar na quarta 30/09','2026-09-30')]},
+     T(B,'mat','Lista de exercícios 8 de Matemática pronta para entregar'),
+     T(B,'cie','Dia da prova de Ciências'),
+     P('ing','Estudar para o Test 1 de Inglês de terça 29/09: Chapter 6, They made it!','2026-09-29'),
+     P('por','Estudar para a prova de Português de terça 29/09: conto de terror, concordância verbal e o verbo "ser" (páginas 140 a 153)','2026-09-29'),
+     P('cie','Responder o estudo dirigido de Ciências entregue em sala. A entrega é na primeira aula depois da prova, quarta 30/09','2026-09-30')]},
    {k:'ter',date:'2026-09-29',tasks:[
      T(B,'ing','Dia do Test 1 de Inglês'),
-     T(B,'por','Dia da Avaliação 1 de Português'),
-     T(B,'pdv','Item curioso ou divertido para a dinâmica da aula'),
-     P('his','Estudar para a Avaliação 1 de História de amanhã: o patriarcalismo, a Igreja na colonização e o engenho de açúcar','2026-09-30')]},
+     T(B,'por','Dia da prova de Português'),
+     T(B,'pdv','Item curioso ou divertido para a dinâmica da aula de Projeto de Vida'),
+     P('his','Estudar para a prova de História de quarta 30/09: economia e sociedade colonial, o patriarcalismo e a Igreja na colonização','2026-09-30'),
+]},
    {k:'qua',date:'2026-09-30',tasks:[
-     T(B,'his','Dia da Avaliação 1 de História'),
+     T(B,'his','Dia da prova de História'),
      T(B,'esp','Atividades das <b>páginas 16 a 21</b> de Espanhol prontas para entregar'),
      T(B,'cie','Estudo dirigido de Ciências pronto para entregar'),
-     P('fil','Fazer os exercícios 5 a 7 das <b>páginas 73 e 74</b> de Filosofia. É para amanhã','2026-10-01'),
-     P('cie','Responder as <b>páginas 56 e 58</b> de Ciências. O visto é amanhã','2026-10-01')]},
+     P('fil','Realizar os exercícios 5 a 7 das <b>páginas 73 e 74</b> de Filosofia. É para quinta 01/10','2026-10-01'),
+     P('cie','Responder as <b>páginas 56 e 58</b> de Ciências. O visto é na última aula da semana, quinta 01/10','2026-10-01')]},
    {k:'qui',date:'2026-10-01',tasks:[
-     T(B,'fil','Caderno com a história sobre amizade: livro, filme ou música, com a descrição e a relação com a amizade. Vale nota na sala!'),
+     T(B,'fil','Caderno ou folha com a história sobre amizade: a descrição da obra e a relação dela com a amizade. A atividade avaliativa é em sala!'),
      T(B,'fil','Exercícios 5 a 7 das páginas 73 e 74 de Filosofia feitos'),
      T(B,'cie','Páginas 56 e 58 de Ciências feitas para o visto'),
      T(B,'geo','Hoje é a apresentação do trabalho trimestral de Geografia'),
      T(B,'art','Papel colorido para terminar a paisagem de origami'),
-     P('his','Fazer a atividade da <b>página 65</b> de História: O Brasil Colônia em quadros, e um mapa mental no caderno sobre as dinâmicas comerciais da colônia. É para a próxima aula, quarta 07/10','2026-10-07')]},
+     P('his','Fazer a atividade da <b>página 65</b> de História: o Brasil Colônia em quadros e um mapa mental no caderno sobre as dinâmicas comerciais internas da colônia. É para a próxima aula, quarta 07/10','2026-10-07')]},
    {k:'sex',date:'2026-10-02',tasks:[
-     P('esp','Fazer as atividades das <b>páginas 24 e 25</b> de Espanhol, a tabela nutricional. É para a próxima aula, quarta 07/10','2026-10-07')]}
+     P('esp','Realizar as atividades das <b>páginas 24 e 25</b> de Espanhol, a partir do estudo do gênero textual tabela nutricional. É para a próxima aula, quarta 07/10','2026-10-07')]}
   ]
  }
 ];
@@ -2836,10 +2916,33 @@ SEED_WEEKS.forEach(w=>{
   if(!DB.weeks[w.id]){
     const copy=JSON.parse(JSON.stringify(w));
     copy.days.forEach((d,di)=>d.tasks.forEach((t,ti)=>{t.id=`${w.id}-${di}-${ti}`;t.status='todo';t.note='';t.day=d.k;t.origin=d.k;}));
-    DB.weeks[w.id]=copy;
+    copy.ver=w.ver||0; DB.weeks[w.id]=copy;
+  } else if((DB.weeks[w.id].ver||0)!==(w.ver||0)){
+    // roteiro corrigido: refaz a semana inteira, mas guarda o que a familia ja tinha marcado (pelo texto da tarefa)
+    const chave=t=>String(t.text||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim().toLowerCase();
+    const antes={}; DB.weeks[w.id].days.forEach(d=>d.tasks.forEach(t=>{ if(!t.wiz) antes[chave(t)]=t; }));
+    const wiz=[]; DB.weeks[w.id].days.forEach(d=>d.tasks.forEach(t=>{ if(t.wiz) wiz.push(t); }));
+    const copy=JSON.parse(JSON.stringify(w));
+    copy.days.forEach((d,di)=>d.tasks.forEach((t,ti)=>{
+      t.id=`${w.id}-${di}-${ti}`; t.status='todo'; t.note=''; t.day=d.k; t.origin=d.k;
+      const v=antes[chave(t)];
+      if(v){ t.status=v.status||'todo'; t.note=v.note||''; t.noteBy=v.noteBy||''; t.off=!!v.off; t.offWhy=v.offWhy||''; t.pics=v.pics||0; t.thumbs=v.thumbs||null; t.reacts=v.reacts||null;
+             if(v.impU){ t.important=!!v.important; t.impU=v.impU; t.impBy=v.impBy||''; }
+             if(v.moveU){ t.day=v.day||t.day; t.moveU=v.moveU; t.moveBy=v.moveBy||''; t.moveWhy=v.moveWhy||''; }
+             t.u=Date.now(); }
+    }));
+    wiz.forEach(t=>{ const d=copy.days.find(x=>x.k===t.day)||copy.days[0]; if(d) d.tasks.push(t); });
+    copy.ver=w.ver||0; DB.weeks[w.id]=copy;
   } else { // migração: atualiza texto/matéria/importante sem perder progresso
-    const sw=DB.weeks[w.id]; sw.label=w.label; sw.roteiro=w.roteiro; sw.topics=w.topics; delete sw.alerts;
+    const sw=DB.weeks[w.id]; sw.label=w.label; sw.roteiro=w.roteiro; sw.topics=w.topics; sw.ver=w.ver||0; delete sw.alerts;
     sw.days.forEach(d=>d.tasks.forEach(t=>{const s=seedTasks[t.id]; if(!s) return; t.text=s.text; t.subj=s.subj; t.skip=!!s.skip; if(s.ate) t.ate=s.ate; else delete t.ate; if(!t.impU) t.important=!!s.important;}));
+    // tira o que saiu do roteiro e ninguem mexeu, e traz o que entrou
+    sw.days.forEach(d=>{ d.tasks=d.tasks.filter(t=>{
+      if(t.wiz||seedTasks[t.id]||!String(t.id||'').startsWith(w.id+'-')||!/^\d{4}-\d{2}-\d{2}-\d+-\d+$/.test(String(t.id||''))) return true;
+      return t.status!=='todo'||t.note||(t.pics||0)||t.important||t.day!==t.origin; }); });
+    Object.keys(seedTasks).forEach(id=>{ if(sw.days.some(d=>d.tasks.some(t=>t.id===id))) return;
+      const s=seedTasks[id], d=sw.days.find(x=>x.k===s.day)||sw.days[0];
+      if(d) d.tasks.push({...s,id,status:'todo',note:''}); });
     sw.days.forEach(d=>{const sd=w.days.find(x=>x.k===d.k); if(sd&&sd.feriado) d.feriado=sd.feriado;});
   }
 });
@@ -3126,7 +3229,7 @@ function openSearch(q0){
       return `<button class="hit" data-w="${h.w}" data-id="${h.t.id}"><b>${est} ${subjectVisual(SUBJ[h.t.subj]||'')} · ${DAYMETA[h.t.day][0]} ${d?fmt(d.date):''} · ${DB.weeks[h.w].label}</b>${hl(h.txt,q)}</button>`; }).join('');
     res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; fType='all';fSubj='all'; fQ=''; filtroTocado=true; { const bar=document.getElementById('searchBar'),bt=document.getElementById('filterSearch'),qi=document.getElementById('qTxt'),qa=document.getElementById('qAll'); if(bar){bar.classList.remove('on');bt.classList.remove('on');qi.value='';qa.classList.remove('on');} } const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
       const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
-      setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500); } },200); }));
+      setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); acendeSoEssa(el); } },200); }));
   };
   inp.addEventListener('input',run); if(typeof q0==='string'&&q0.trim()){ inp.value=q0.trim(); run(); } setTimeout(()=>inp.focus(),300);
 }
@@ -3413,7 +3516,7 @@ function msgHtml(m,i,arr){
   const u=USERS.find(x=>x.id===m.by)||{emoji:'👤',nome:m.by,id:m.by,cor:'#7A6B9B'}; const me=USER&&m.by===USER.id;
   if(m.att&&m.att.kind==='evento'){ const tp=TL_TIPOS[m.att.tipo]||{ic:ICO.lapis,txt:()=>'mexeu na tarefa'};
     const d=new Date(m.t||0), hm0=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-    return `<div class="nudge-msg evt" data-k="${m.k}" role="button" tabindex="0" style="--uc:${corDe(u)}"><span class="linha"><span class="hand" aria-hidden="true">${tp.ic}</span><span class="nt"><small class="evt-hora">${hm0}</small> <b>${me?'Você':esc(u.nome)}</b> ${tp.txt(m.att)}${m.att.det?` · <i>${esc(corta(m.att.det,90))}</i>`:''}</span>${m.att.id?`<button type="button" class="evt-ver" data-ver="${m.att.id}" ${m.att.foto?`data-ver-foto="${m.att.foto}"`:''} aria-label="Ver">VER<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5.5 6.5 6.5L9 18.5"/></svg></button>`:''}</span>${reactsHtml(m)}</div>`; }
+    return `<div class="nudge-msg evt" data-k="${m.k}" role="button" tabindex="0" style="--uc:${corDe(u)}"><span class="linha"><span class="hand" aria-hidden="true">${tp.ic}</span><span class="nt"><small class="evt-hora">${hm0}</small> <b>${me?'Você':esc(u.nome)}</b> ${tp.txt(m.att)}${m.att.det?` · <i>${esc(corta(m.att.det,90))}</i>`:''}</span>${m.att.id?`<button type="button" class="evt-ver" data-ver="${m.att.id}" ${m.att.foto?`data-ver-foto="${m.att.foto}"`:''} aria-label="Ver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5.5 6.5 6.5L9 18.5"/></svg></button>`:''}</span>${reactsHtml(m)}</div>`; }
   if(m.att&&m.att.kind==='nudge'){ const hm0=String(new Date(m.t||0).getHours()).padStart(2,'0')+':'+String(new Date(m.t||0).getMinutes()).padStart(2,'0');
     const group=m.nudgeGroup;
     const names=group?group.senders.map(id=>USER&&id===USER.id?'Você':esc((USERS.find(x=>x.id===id)||{nome:id}).nome)):[];
@@ -3630,12 +3733,15 @@ function bindMsgs(){
   box.querySelectorAll('[data-ver]').forEach(b=>{ ['pointerdown','touchstart','mousedown'].forEach(ev=>b.addEventListener(ev,e=>e.stopPropagation(),{passive:true}));
     b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); if(selMode) return; vibrate(12);
       if(b.dataset.verFoto){ verFotosTarefa(b.dataset.ver,0,b.dataset.verFoto); return; }
-      hide(); setTimeout(()=>tlAbreTarefa(b.dataset.ver),180); }); });
+      vaiParaTarefa(b.dataset.ver); }); });
   box.querySelectorAll('[data-emo]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); e.preventDefault(); if(selMode) return; vibrate(12); openMsgMenu(b.dataset.emo); }));
   box.querySelectorAll('.nudge-msg.evt').forEach(el=>{
     const menu=()=>{ if(USER) openNudgeMenu([el.dataset.k],el); };                     // aviso de acao: so o Apagar, igual ao dos chamados
+    // tocar leva ate a tarefa (ou a foto); o Apagar so aparece se segurar
     const abre=e=>{ if(selMode||e.target.closest('.react')) return; e.stopPropagation(); vibrate(10);
-      const m=CHAT.find(x=>x.k===el.dataset.k); if(m&&m.att&&m.att.foto&&m.att.id){ verFotosTarefa(m.att.id,0,m.att.foto); return; }   // aviso de foto: abre a foto
+      const m=CHAT.find(x=>x.k===el.dataset.k), att=m&&m.att;
+      if(att&&att.foto&&att.id){ verFotosTarefa(att.id,0,att.foto); return; }   // aviso de foto: abre a foto
+      if(att&&att.id){ vaiParaTarefa(att.id); return; }
       menu(); };
     let segurou=null, seguroTocou=false;
     el.addEventListener('click',e=>{ if(seguroTocou){ seguroTocou=false; e.stopPropagation(); e.preventDefault(); return; } abre(e); });
@@ -3647,7 +3753,7 @@ function bindMsgs(){
     a.addEventListener('click',go); a.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ') go(e); }); });
   box.querySelectorAll('[data-aud]').forEach(a=>{ const go=e=>{e.stopPropagation(); playAudio(a.dataset.aud,a);};
     a.addEventListener('click',go); a.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ') go(e); }); });
-  box.querySelectorAll('.qt').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=findTask(q.dataset.task); if(!t){toast('Essa tarefa não está mais aqui');return;} hide(); const w=DB.weeks[current]; const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; render(); setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500);} },200); }));
+  box.querySelectorAll('.qt').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=findTask(q.dataset.task); if(!t){toast('Essa tarefa não está mais aqui');return;} hide(); const w=DB.weeks[current]; const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; render(); setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); acendeSoEssa(el); } },200); }));
   box.querySelectorAll('.q:not(.qt)').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=box.querySelector(`.msg[data-k="${q.dataset.go}"]`); if(t){t.scrollIntoView({behavior:'smooth',block:'center'}); t.classList.add('flash'); setTimeout(()=>t.classList.remove('flash'),1300);} }));
   box.querySelectorAll('.msg').forEach(el=>{
     let timer=null,sx=0,sy=0,mdx=0,mmode=null,ico=null,armado=false;
@@ -3862,7 +3968,7 @@ async function startRec(opts){
     const dur=Math.min(RECMAX,recElapsed()), cancelou=REC&&REC._cancel; REC=null; recPausedAt=0; recPausedTotal=0;
     if(cancelou){ recBar(false); toast('Gravação descartada'); return; }
     if(!recChunks.length){ recBar(false); toast('Não gravou nada'); return; }
-    if(dur<1){ recBar(false); toast('Muito curtinho — segura mais um pouco'); return; }
+    if(dur<1){ recBar(false); toast('Muito curtinho, segura mais um pouco'); return; }
     const blob=new Blob(recChunks,{type:recChunks[0].type||mime||'audio/webm'});
     if(recAuto){ recBar(false); sendAudio(blob,dur); return; }   // segurou e soltou: vai direto
     RECDONE={blob,dur}; recBar('pronto'); vibrate(15); };
@@ -3872,7 +3978,7 @@ async function startRec(opts){
     const t=document.getElementById('recTime'); if(t) t.textContent=Math.ceil(resta);
     const b=document.getElementById('recBar'); if(b) b.classList.toggle('fim',resta<=3);
     const a=document.getElementById('recArc'); if(a) a.style.setProperty('--p',(resta/RECMAX*100)+'%');
-    if(resta<=0){ toast(recAuto?'10 segundos — enviando':'10 segundos — pronto para enviar'); stopRec(false); } },100);
+    if(resta<=0){ toast(recAuto?'10 segundos, enviando':'10 segundos, pronto para enviar'); stopRec(false); } },100);
 }
 function togglePauseRec(){
   if(!REC) return; const b=document.getElementById('recBar'), pb=document.getElementById('recPause');
@@ -4181,7 +4287,8 @@ function abreMenuChat(){
 function openChat(){
   if(!famRef){toast('A conversa precisa da nuvem ligada');return;}
   chatSeenKeys=new Set(CHAT.map(msg=>msg.k)); chatSendAnimations.clear();
-  show(`<div class="chat"><div class="chathead"><h2><button class="gear back" id="chatBack" aria-label="Voltar" title="Voltar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button><span class="chat-title" aria-label="Conversa da família">Conversa</span><button class="gear" id="chatMais" aria-label="Mais opções" title="Mais opções" aria-haspopup="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></h2><div class="cfbar" id="cfBar"><span class="cflupa" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="cfTxt" placeholder="Procurar mensagem" autocomplete="off"><button type="button" class="cflimpa" id="cfLimpa" aria-label="Limpar a procura" title="Limpar" hidden>✕</button><button type="button" class="cfdate" id="cfDate" title="Datas com mensagens" aria-label="Datas com mensagens" aria-expanded="false" aria-controls="cfDates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2M8 18h2"/></svg></button><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div><div class="cfdates nodrag" id="cfDates" hidden role="region" aria-label="Datas com mensagens"><div class="cfdates-list" id="cfDatesList"></div></div></div>
+  setTimeout(()=>{ sheet.classList.add('abrindo'); setTimeout(()=>sheet.classList.remove('abrindo'),700); },0);
+  show(`<div class="chat"><div class="chathead"><h2><button class="gear back" id="chatBack" aria-label="Voltar" title="Voltar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button><span class="chat-title" aria-label="Conversa da família"></span><button class="gear" id="chatMais" aria-label="Mais opções" title="Mais opções" aria-haspopup="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></h2><div class="cfbar" id="cfBar"><span class="cflupa" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="cfTxt" placeholder="Procurar mensagem" autocomplete="off"><button type="button" class="cflimpa" id="cfLimpa" aria-label="Limpar a procura" title="Limpar" hidden>✕</button><button type="button" class="cfdate" id="cfDate" title="Datas com mensagens" aria-label="Datas com mensagens" aria-expanded="false" aria-controls="cfDates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2M8 18h2"/></svg></button><span class="cnt" id="cfCnt"></span><button id="cfClose" aria-label="Fechar busca">✕</button></div><div class="cfdates nodrag" id="cfDates" hidden role="region" aria-label="Datas com mensagens"><div class="cfdates-list" id="cfDatesList"></div></div></div>
     <div class="chatacts-hidden" hidden><button class="gear find" id="chatFind" aria-label="Buscar" title="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="gear" id="attBtn" aria-label="Anexar do aparelho" title="Anexar do aparelho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5 12.4 19a5 5 0 0 1-7-7l7.6-7.5a3.3 3.3 0 0 1 4.7 4.7l-7.6 7.5a1.7 1.7 0 0 1-2.4-2.4l7-6.9"/></svg></button><button class="gear nudge" id="chatNudge" aria-label="Chamar atenção" title="Chamar atenção"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/><path d="M22 8c0-2.3-.8-4.3-2-6"/></svg></button><button class="gear" id="chatLook" aria-label="Aparência" title="Aparência"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2a1.8 1.8 0 0 1 1.3-3h2.1A4.3 4.3 0 0 0 21 10.7C21 6.4 16.9 3 12 3Z"/><circle cx="8" cy="11" r="1.1"/><circle cx="11.5" cy="7.6" r="1.1"/><circle cx="15.6" cy="9.4" r="1.1"/></svg></button></div>
     <div class="selbar nodrag" id="selbar"><span></span><button type="button" class="sd" id="selDel" hidden>Apagar</button><button type="button" class="sc" id="selCopy">Copiar</button><button type="button" class="sx" id="selCancel" aria-label="Cancelar">✕</button></div>
     <div class="chat-history"><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
@@ -4335,8 +4442,8 @@ function garanteWizard(w){
     }
     if(t.text!==texto){ t.text=texto; mudou=true; }
     if(!t.wiz){ t.wiz=true; mudou=true; }
-    // enquanto nao esta feita (nem cancelada), fica sempre no dia de hoje
-    const alvo=(t.status==='done'||t.off)?null:(hoje||aula);
+    // acompanha sempre o dia de hoje, mesmo depois de feita: assim aparece como "Feito" no dia certo
+    const alvo=(hoje||aula);
     if(alvo&&dono&&dono.k!==alvo.k){
       dono.tasks=dono.tasks.filter(x=>x.id!==id); alvo.tasks.push(t); t.day=alvo.k; mudou=true;
     }
@@ -4367,27 +4474,77 @@ function boxPassed(w,d,type){
   return nx<TODAY || (nx===TODAY && NOW_H>=7.3);
 }
 function nomeDiaDe(dateIso){ const k=['dom','seg','ter','qua','qui','sex','sab'][new Date(dateIso+'T12:00:00').getDay()]; return DAYMETA[k]?DAYMETA[k][0].toLowerCase():dateIso; }
+// "hoje", "amanha" ou o nome do dia, do jeito que a gente fala
+function comoFalaDia(dateIso){
+  if(dateIso===TODAY) return 'hoje';
+  const d=new Date(TODAY+'T12:00:00'); d.setDate(d.getDate()+1);
+  if(iso(d)===dateIso) return 'amanhã';
+  return nomeDiaDe(dateIso);
+}
 // bloco "3º trimestre": um cartao por etapa, a proxima em destaque e as que passaram apagadas
-function htmlCalendario(){
+// etiqueta da materia com a nota, igual a das atividades
+function matTag(k){ if(!k||!SUBJ[k]) return '';
+  const b=BOLETIM[k], nota=b&&b.t2!=null?b.t2:null;
+  return `<span class="st sj ${nota!=null?gradeClass(nota):''}">${subjectVisual(SUBJ[k])}${nota!=null?`<i class="sj-sep" aria-hidden="true">·</i><b class="sj-nota">${fmtGrade(nota)}</b>`:''}</span>`;
+}
+function htmlCalendario(qual){
   const C=(typeof CALENDARIO_TRI!=='undefined')?CALENDARIO_TRI:null; if(!C||!C.etapas||!C.etapas.length) return '';
+  const prova=e=>!!e.subj;
+  const etapas=C.etapas.filter(e=>qual==='provas'?prova(e):!prova(e)); if(!etapas.length) return '';
+  const titulo=qual==='provas'?'Provas':C.titulo, chave=qual==='provas'?'provas':'cal';
   const dm=x=>{ const [y,m,d]=x.split('-'); return d+'/'+m; };
   const dias=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000);
   const quando=e=>{ const fimTudo=e.ate||e.fim||e.ini;
     if(fimTudo<TODAY) return {cls:'passou',txt:'Já passou'};
     if(e.ini<=TODAY) return {cls:'agora',txt:(e.fim&&e.fim>=TODAY)?'É agora':(e.ini===TODAY?'É hoje':'Em andamento')};
     const n=dias(TODAY,e.ini); return {cls:'vem',txt:n===1?'Amanhã':'Em '+n+' dias'}; };
-  const lista=C.etapas.map(e=>({e,q:quando(e)}));
-  const aberto=!!openState['cal'];
+  const w=DB.weeks[current], dias15=(()=>{ if(!w||!w.days.length) return null;
+    const fim=new Date(w.days[w.days.length-1].date+'T12:00:00'); fim.setDate(fim.getDate()+7); return iso(fim); })();
+  const ini15=w&&w.days.length?w.days[0].date:null;
+  const lista=etapas.filter(e=>!ini15||((e.ate||e.fim||e.ini)>=ini15&&e.ini<=dias15)).map(e=>({e,q:quando(e)}));
+  if(!lista.length) return '';
+  const aberto=!!openState[chave];
   const cards=lista.map(({e,q})=>`<div class="cal-st ${q.cls}">
-      <div class="cal-esq"><span class="cal-n">${esc(e.nome)}</span>${e.det?`<div class="cal-l">${esc(e.det)}</div>`:''}</div>
-      <div class="cal-r"><span class="cal-d">${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span><span class="cal-q">${q.txt}</span></div></div>`).join('');
-  return `<details class="cal" data-date="cal" ${aberto?'open':''}><summary><span class="n">${esc(C.titulo)}</span><span class="arrow">${ICO.chev}</span></summary>
+      <div class="cal-h">${qual==='provas'?`${matTag(e.subj)}<span class="st cal-d">${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span><span class="st cal-q">${q.txt}</span>`:`<span class="st cal-d">${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span><span class="cal-n">${esc(e.nome)}</span><span class="st cal-q">${q.txt}</span>`}</div>
+      ${e.det?`<div class="cal-l">${esc(e.det)}</div>`:''}</div>`).join('');
+  return `<details class="cal" data-date="${chave}" ${aberto?'open':''}><summary><span class="n">${esc(titulo)}</span><span class="arrow">${ICO.chev}</span></summary>
     <div class="cal-body">${cards}</div></details>`;
+}
+// materias com prova naquele dia, para a etiqueta no cabecalho
+function provasDoDia(dateIso){
+  const C=(typeof CALENDARIO_TRI!=='undefined')?CALENDARIO_TRI:null; if(!C) return [];
+  return C.etapas.filter(e=>e.subj&&e.ini===dateIso);
+}
+// balaozinho da prova do dia: materia, nota da ultima prova e conteudo
+function abreProvaPop(dateIso,btn){
+  const lista=provasDoDia(dateIso); if(!lista.length||!btn) return;
+  closePop();
+  const [y,m,dd]=dateIso.split('-');
+  const corpo=lista.map(e=>{
+    const b=BOLETIM[e.subj], nota=b&&b.t2!=null?b.t2:null;
+    return `<div class="prova-it">
+      <div class="prova-tp"><span class="st sj ${nota!=null?gradeClass(nota):''}">${subjectVisual(SUBJ[e.subj]||'')}${nota!=null?`<i class="sj-sep" aria-hidden="true">·</i><b class="sj-nota">${fmtGrade(nota)}</b>`:''}</span><span class="st cal-d">${dd}/${m}</span></div>
+      ${e.det?`<p class="prova-det">${esc(e.det)}</p>`:''}
+    </div>`; }).join('<div class="prova-sep" aria-hidden="true"></div>');
+  const wrap=document.createElement('div'); wrap.className='popwrap';
+  wrap.innerHTML=`<div class="lidopop provapop" id="provaPop"><h4>${lista.length>1?'Provas de '+comoFalaDia(dateIso):'Prova de '+comoFalaDia(dateIso)}</h4>${corpo}</div>`;
+  document.body.appendChild(wrap);
+  const pop=wrap.querySelector('#provaPop'), vv=window.visualViewport;
+  const vl=vv?vv.offsetLeft:0, vt=vv?vv.offsetTop:0, vw=vv?vv.width:innerWidth, vh=vv?vv.height:innerHeight, edge=10, gap=14;
+  const r=btn.getBoundingClientRect();
+  let top=r.bottom+gap, embaixo=false;
+  if(top+pop.offsetHeight>vt+vh-edge){ top=Math.max(vt+edge,r.top-gap-pop.offsetHeight); embaixo=true; }
+  pop.classList.toggle('embaixo',embaixo);
+  const left=Math.max(vl+edge,Math.min(r.left+r.width/2-pop.offsetWidth/2,vl+vw-pop.offsetWidth-edge));
+  pop.style.top=top+'px'; pop.style.left=left+'px';
+  pop.style.setProperty('--bico',Math.max(14,Math.min(r.left+r.width/2-left-8,pop.offsetWidth-30))+'px');   // o rabinho fica embaixo da etiqueta
+  wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
 }
 function diaHojeK(){ const w=DB.weeks[current]; const d=w&&w.days.find(x=>x.date===TODAY); return d?d.k:null; }
 // a semana de uma tarefa (o id comeca com o id da semana) e o dia dela dentro dessa semana
-function semanaDe(t){ if(!t) return null; const w=DB.weeks[String(t.id||'').slice(0,10)]; if(w) return w;
-  return Object.values(DB.weeks).find(x=>x.days.some(d=>d.tasks.includes(t)))||null; }
+function semanaDe(t){ if(!t) return null;
+  const dono=Object.values(DB.weeks).find(x=>x.days.some(d=>d.tasks.includes(t))); if(dono) return dono;
+  return DB.weeks[String(t.id||'').slice(0,10)]||null; }
 function diaDe(t){ const w=semanaDe(t); return w?w.days.find(x=>x.k===t.day):null; }
 // tarefa de casa de um dia que ja passou, ainda sem fazer: ela sai do dia antigo e aparece no dia de hoje
 // (vale para a semana atual e tambem para as semanas anteriores)
@@ -4403,6 +4560,7 @@ function atrasadasDeSemanasAnteriores(w){
   return weekIds().filter(id=>id<w.id).flatMap(id=>allTasks(DB.weeks[id]).filter(t=>!t.wiz&&t.subj!=='wiz'&&vemParaHoje(t)));
 }
 function taskPassed(t){const w=semanaDe(t)||DB.weeks[current];const d=w&&w.days.find(x=>x.k===t.day);if(!d)return false;
+  if(t.wiz) return false;                                                  // Wizard acompanha o dia de hoje: nunca fica esquecida
   if(t.type===H&&t.ate) return t.ate<TODAY||(t.ate===TODAY&&NOW_H>=7.3);   // prazo proprio: so vence na manha da data
   return boxPassed(w,d,t.type);}
 function findTask(id){for(const w of Object.values(DB.weeks)){const t=allTasks(w).find(t=>t.id===id);if(t)return t;}}
@@ -4476,7 +4634,7 @@ function render(){
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
     const deOndeEstava=pctNaTela();   // continua de onde a barrinha esta (0 quando o app abre)
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span class="wk-line"><b>${esc(nomeSemana(w))}</b><i class="sep" aria-hidden="true">·</i><b>${dn}</b> de ${hs.length} feitas<img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span class="wk-line"><b>${esc(nomeSemana(w))}</b><i class="sep" aria-hidden="true">·</i><span class="wk-dias">${esc(w.label||'')}</span><i class="sep" aria-hidden="true">·</i><span class="wk-cnt"><b>${dn}</b> de ${hs.length} feitas</span><img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -4490,7 +4648,7 @@ function render(){
   const imp=allTasks(w).concat(atrasadasDeSemanasAnteriores(w)).filter(t=>impVale(t)&&pass(t)).sort((a,b)=>order.indexOf(a.day)-order.indexOf(b.day));
   const impPend=imp.length;
   const impGuardadas=allTasks(w).filter(t=>t.type===H&&t.important&&!impVale(t)).length;
-  if(imp.length) html+=`<details class="imp" data-date="imp" ${openState['imp']!==false?'open':''}><summary><span class="n">Importantes</span><span class="cnt">${impPend?impPend+' para fazer':'Tudo em dia'}</span><span class="arrow">${ICO.chev}</span></summary>
+  if(imp.length) html+=`<details class="imp" data-date="imp" ${openState['imp']!==false?'open':''}><summary><span class="n">Importantes</span><span class="cnt">${impPend?impPend+' tarefa'+(impPend>1?'s':''):'Tudo em dia'}</span><span class="arrow">${ICO.chev}</span></summary>
     <div class="ib">${imp.length?imp.map(t=>taskHtml(t,true)).join('<div class="imp-sep" aria-hidden="true"></div>'):`<p class="hint">${filtering?'Nenhuma tarefa importante com esse filtro.':(impGuardadas?'Nada de importante para agora. Aqui só ficam as que ainda dá para fazer.':(isAluna()?'Toca na estrelinha de uma tarefa para ela aparecer aqui.':'As tarefas marcadas com a estrelinha aparecem aqui.'))}</p>`}</div></details>`;
   const inWeek=w.days.some(d=>d.date===TODAY);
   html+='<div class="days">';
@@ -4509,7 +4667,7 @@ function render(){
     const homePassed=boxPassed(w,d,H);
     const ordemSubj=Object.keys(SUBJ);
     const matDia=[...new Set(tasksAll.filter(t=>!t.off&&pass(t)).map(t=>t.subj))].sort((a,b)=>ordemSubj.indexOf(a)-ordemSubj.indexOf(b));
-    const cntTag=(pendNoPrazo>0?`<span class="tag">${pendNoPrazo} para fazer</span>`:'')
+    const cntTag=(pendNoPrazo>0?`<span class="tag">${pendNoPrazo} tarefa${pendNoPrazo>1?'s':''}</span>`:'')
       +(pendAtrasadas>0?`<span class="tag no">${pendAtrasadas} esquecida${pendAtrasadas>1?'s':''}</span>`:'');
     if(filtering && !tasksAll.some(pass)) return;   // com filtro ativo, dia sem resultado não aparece
     const open = openState[d.date]!==undefined ? openState[d.date] : (isToday || fQ.length>=2);
@@ -4526,10 +4684,17 @@ function render(){
     };
     const bxCol=box(H,'Colégio','Nada para fazer em casa 🎉',t=>!t.wiz);
     const bxWiz=box(H,'Curso de Inglês','',t=>!!t.wiz);
-    const boxes=(bxCol||bxWiz)?`<div class="boxes one">${bxCol}${bxWiz}</div>`:'';
+    // a prova do dia aparece no mesmo estilo das tarefas, no topo
+    const bxProva=(()=>{ const pv=provasDoDia(d.date); if(!pv.length||filtering) return '';
+      const itens=pv.map(e=>{ const b=BOLETIM[e.subj], nota=b&&b.t2!=null?b.t2:null;
+        return `<div class="task prova-task"><div class="tin"><div class="t">
+          <div class="tx"><span class="st sj ${nota!=null?gradeClass(nota):''}">${subjectVisual(SUBJ[e.subj]||'')}${nota!=null?`<i class="sj-sep" aria-hidden="true">·</i><b class="sj-nota">${fmtGrade(nota)}</b>`:''}</span> ${e.det?esc(e.det):'Dia da prova'}</div>
+          </div></div></div>`; }).join('');
+      return `<div class="box prova-box"><h3>Prova</h3>${itens}</div>`; })();
+    const boxes=(bxProva||bxCol||bxWiz)?`<div class="boxes one">${bxProva}${bxCol}${bxWiz}</div>`:'';
     html+=`<details class="day ${past&&!isToday?'past':''} ${isToday?'today':''} ${complete?'complete':''}" style="--c:var(${isToday?'--dia-hoje':'--dia-claro'})" data-date="${d.date}" ${open?'open':''}>
       <summary><div class="dl"><span class="n">${name}${['seg','ter','qua','qui','sex'].includes(d.k)?'<span class="feira">-feira</span>':''}</span><span class="sep" aria-hidden="true"></span><span class="d">${fmt(d.date)}</span></div>
-        <div class="tags">${cntTag}${isToday?'<span class="tag">HOJE</span>':''}${complete?'<span class="tag complete-tag">Tudo feito!</span>':''}</div>
+        <div class="tags">${provasDoDia(d.date).length?`<button type="button" class="tag prova-tag" data-prova="${d.date}">Prova<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>`:''}${cntTag}${complete?'<span class="tag complete-tag">Tudo feito!</span>':''}</div>
         <span class="arrow">${ICO.chev}</span></summary>
       <div class="body">
         ${d.feriado?`<div class="aulas"><span>🎉 Feriado: ${d.feriado}</span></div>`:''}
@@ -4537,33 +4702,73 @@ function render(){
       </div></details>`;
   });
   html+='</div>';
-  {                                   // olhando uma semana antiga: atalho para ir para a proxima
-    const ids=weekIds(), pos=ids.indexOf(current), prox=pos>=0&&pos<ids.length-1?ids[pos+1]:null;
-    if(prox){ const pw=DB.weeks[prox];
-      html+=`<button type="button" class="cal prox-semana" id="proxSemana" data-prox="${prox}">
-        <span class="n">Próxima semana</span>
-        <span class="arrow lado" aria-hidden="true">${ICO.chev}</span></button>`; }
+  if(w.topics){                     // "o que cada materia esta estudando"
+    html+=`<details class="cal" data-date="conteudo" ${openState['conteudo']?'open':''}><summary><span class="n">Conteúdo</span><span class="arrow">${ICO.chev}</span></summary><div class="cal-body next-body"><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${linhaConteudo(line)}</div>`).join('')}</div></div></details>`;
   }
-  let htmlTopicos=''; if(w.topics) htmlTopicos=`<details class="cal" data-date="conteudo" ${openState['conteudo']?'open':''}><summary><span class="n">Conteúdo</span><span class="arrow">${ICO.chev}</span></summary><div class="cal-body next-body"><div class="quiet topic-list">${w.topics.split(/<br\s*\/?\s*>/i).filter(Boolean).map(line=>`<div class="topic-item">${linhaConteudo(line)}</div>`).join('')}</div></div></details>`;
-  html+=`<section class="tl ${tlAberta?'aberta':''}" id="tl">
-    <button class="tl-head" id="tlToggle" type="button" aria-expanded="${tlAberta}" aria-controls="tlBody">
-      <span class="tl-head-ic" aria-hidden="true">${ICO.historico}</span><span class="tl-head-tx">Histórico</span>
-      <span class="arrow" aria-hidden="true">${ICO.chev}</span>
-    </button>
-    <div class="tl-body" id="tlBody" ${tlAberta?'':'hidden'}></div>
-  </section>`;
-  html+=htmlTopicos;            // "o que cada materia esta estudando" vem depois da linha do tempo
-  html+=htmlCalendario();       // datas do trimestre: o que vem por ai
+  html+=htmlCalendario('avisos');   // as datas do trimestre
+  if(typeof limpaAcende==='function') limpaAcende();
   document.getElementById('app').innerHTML=html;
+  const provasTopo=document.getElementById('provasTopo');
+  if(provasTopo){                     // trocar de semana e, logo abaixo, as provas
+    let topo='';
+    {
+      const ids=weekIds(), pos=ids.indexOf(current);
+      const ant=pos>0?ids[pos-1]:null, prox=pos>=0&&pos<ids.length-1?ids[pos+1]:null;
+      if(ant||prox){
+        topo+=`<div class="cal prox-semana" id="proxSemana" data-prox="${prox||''}" data-ant="${ant||''}" role="group" aria-label="Arraste para trocar de semana">
+          <span class="ps-fill ps-esq" aria-hidden="true"></span>
+          <span class="ps-fill ps-dir" aria-hidden="true"></span>
+          <span class="ps-rot ps-ant">${ant?'Anterior':''}</span>
+          <span class="ps-rot ps-prox">${prox?'Próxima':''}</span>
+          <span class="ps-pux" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span>
+        </div>`;
+      }
+    }
+    topo+=htmlCalendario('provas');
+    provasTopo.innerHTML=topo;
+  }
   const bProx=document.getElementById('proxSemana');
-  if(bProx) bProx.addEventListener('click',()=>{ const id=bProx.dataset.prox; if(!DB.weeks[id]) return;
-    const voltar=current; current=id; vibrate(12); SFX.pop(); render(); window.scrollTo({top:0});
-    const w=DB.weeks[id]; toastAcao('Semana de '+((w&&w.label)||id),'Voltar',()=>{ current=voltar; render(); window.scrollTo({top:0}); vibrate(10); },6000); });
+  if(bProx){
+    const troca=id=>{ if(!id||!DB.weeks[id]) return;
+      const voltar=current; current=id; vibrate(20); SFX.pop(); render(); window.scrollTo({top:0});
+      const w=DB.weeks[id]; toastAcao('Semana de '+((w&&w.label)||id),'Voltar',()=>{ current=voltar; render(); window.scrollTo({top:0}); vibrate(10); },6000); };
+    const pux=bProx.querySelector('.ps-pux'), fE=bProx.querySelector('.ps-esq'), fD=bProx.querySelector('.ps-dir');
+    const rA=bProx.querySelector('.ps-ant'), rP=bProx.querySelector('.ps-prox');
+    let x0=null,ult=0,max=0,passou=false,marco=0;
+    const pinta=()=>{ const v=Math.abs(ult)/max, dir=ult>0;
+      pux.style.transform='translate(calc(-50% + '+ult+'px),-50%)';
+      fD.style.width=dir?(v*50)+'%':'0'; fE.style.width=dir?'0':(v*50)+'%';
+      rP.classList.toggle('claro',dir&&v>.55); rA.classList.toggle('claro',!dir&&v>.55);
+      rP.style.opacity=dir?1:Math.max(.25,1-v*1.2); rA.style.opacity=dir?Math.max(.25,1-v*1.2):1; };
+    const zera=()=>{ [pux,fE,fD].forEach(el=>el.style.transition='transform .2s,width .2s');
+      setTimeout(()=>bProx.classList.remove('arrastando'),240);
+      pux.style.transform=''; fE.style.width=''; fD.style.width='';
+      [rA,rP].forEach(el=>{ el.classList.remove('claro'); el.style.opacity=''; });
+      setTimeout(()=>[pux,fE,fD].forEach(el=>el.style.transition=''),220); };
+    const pega=e=>{ bProx.classList.add('arrastando'); x0=e.clientX; ult=0; passou=false; marco=0;
+      max=Math.max(60,(bProx.getBoundingClientRect().width-48)/2); vibrate(8);
+      try{pux.setPointerCapture(e.pointerId);}catch(err){} };
+    pux.addEventListener('pointerdown',pega);
+    pux.addEventListener('pointermove',e=>{ if(x0===null) return;
+      let d=e.clientX-x0;
+      if(d>0&&!bProx.dataset.prox) d=0;                  // nao tem proxima semana
+      if(d<0&&!bProx.dataset.ant) d=0;                   // nao tem semana anterior
+      ult=Math.max(-max,Math.min(d,max)); const v=Math.abs(ult)/max;
+      const m=Math.floor(v*5); if(m>marco){ marco=m; vibrate(5); } if(m<marco) marco=m;
+      if(v>=.85&&!passou){ passou=true; vibrate([14,40,14]); } if(v<.85) passou=false;
+      pinta(); });
+    const solta=()=>{ if(x0===null) return; const v=Math.abs(ult)/max, dir=ult>0; x0=null; zera();
+      if(v>=.85) troca(dir?bProx.dataset.prox:bProx.dataset.ant); else if(v>.1) vibrate(6); };
+    pux.addEventListener('pointerup',solta); pux.addEventListener('pointercancel',solta); pux.addEventListener('lostpointercapture',solta);
+    bProx.addEventListener('click',e=>{ if(e.target.closest('.ps-pux')) return; toast('Arraste a bolinha para o lado para trocar de semana'); });
+  }
+
   fitSubjectRows();
   ajustaProgressoTablet();
   if(typeof appBadge==='function') appBadge();
   if(typeof updateReaFab==='function') updateReaFab();
-  document.querySelectorAll('.day,.imp,.cal').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
+  document.querySelectorAll('.day,.imp,.cal,#provasTopo .cal').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
+  document.querySelectorAll('[data-prova]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); vibrate(10); abreProvaPop(b.dataset.prova,b); }));
   // segurar o cabecalho de um dia: compartilha so aquele dia
   document.querySelectorAll('#app .day>summary').forEach(sm=>{
     let t=null,x0=0,y0=0,agiu=false;
@@ -4636,8 +4841,7 @@ function taskHtml(t,inImp){
   const gradeTag = '';
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
   // ordem das etiquetas: materia, foto, mudou de dia, para segunda... e a de status (Feito, Falta fazer...) sempre por ultimo
-  const prazoTag=(()=>{ if(t.type!==H||!t.ate||t.wiz) return ''; const w=semanaDe(t),d=w&&w.days.find(x=>x.k===t.day);
-    if(d&&venceEm(w,d)===t.ate) return ''; return `<span class="st pics">Para ${nomeDiaDe(t.ate)}</span>`; })();
+  const prazoTag=(t.type===H&&t.ate&&!t.wiz)?`<span class="st pics">Para ${comoFalaDia(t.ate)}</span>`:'';   // sempre que a tarefa tem dia marcado
   const status=moved+prazoTag+(t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'');
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''} ${t.wiz?'wizt':''}" data-id="${t.id}">
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(NEXT_R[t.status]||'done')}</div>
@@ -5012,7 +5216,7 @@ function openMenu(id){
    ${t.note?`<button class="opt danger" data-a="delnote"><span class="ic">${ICO.lixeira}</span>Apagar observação</button>`:''}`:''}
    ${(CLOUD_CFG&&isAluna())?`<button class="opt" data-a="foto"><span class="ic">${ICO.camera}</span>Tirar foto do que fez</button>`:''}
    ${(CLOUD_CFG&&isAluna()&&(t.pics||0))?`<button class="opt danger" data-a="pics-org"><span class="ic">${ICO.lixo||ICO.proibido}</span>Apagar foto</button>`:''}
-   ${(isAluna()||isResponsavel())?`<button class="opt" data-a="move"><span class="ic">${ICO.aulas}</span>Mudar de dia</button>`:''}
+   ${((isAluna()||isResponsavel())&&!t.wiz)?`<button class="opt" data-a="move"><span class="ic">${ICO.aulas}</span>Mudar de dia</button>`:''}
    ${CLOUD_CFG?`<button class="opt" data-a="chat"><span class="ic">${ICO.enviar}</span>Mandar para a conversa</button>`:''}
    ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">${ICO.reagir}</span>Reagir</button>`:''}
    ${isAluna()?(t.off?`<button class="opt" data-a="undel"><span class="ic">${ICO.voltar}</span>Voltar a valer</button>`:`<button class="opt danger" data-a="del"><span class="ic">${ICO.proibido}</span>Cancelar a tarefa</button>`):''}`);
@@ -5142,7 +5346,7 @@ function openReacts(){
     if(b.classList.contains('it2-foto')){ hide(); verFotosTarefa(b.dataset.id,0,b.dataset.foto||undefined); return; }   // curtida ou comentario: abre a foto
     current=b.dataset.w; const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
     const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
-    setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500);} },200); }));
+    setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); acendeSoEssa(el); } },200); }));
   const top=list[0]&&list[0].t||0; if(aluna&&top>reaSeen){ reaSeen=top; try{localStorage.setItem(KEY+'-reaseen',String(reaSeen));}catch(e){} }
   setTimeout(updateReaFab,300);
 }
@@ -5547,19 +5751,31 @@ async function writeMove(id,day){
 function openMove(id){
   if(!isAluna()&&!isResponsavel()) return;
   const t=findTask(id), w=Object.values(DB.weeks).find(w=>allTasks(w).some(t=>t.id===id)); if(!t||!w) return;
+  const ids=weekIds(), i=ids.indexOf(w.id);
+  const semanas=[w.id,ids[i+1]].filter(Boolean).map(id=>DB.weeks[id]);     // so para a frente: esta semana e a proxima
+  const bloco=x=>{
+    const dias=x.days.filter(d=>d.date>=TODAY||(x.id===w.id&&d.k===t.day));   // dia que ja passou nao entra
+    if(!dias.length) return '';
+    return `<p class="quiet" style="margin:${x.id===w.id?'2px':'12px'} 0 6px">${esc(x.id===w.id?'Esta semana':'Próxima semana')} · ${esc(x.label||'')}</p>`
+      +dias.map(d=>{ const aqui=x.id===w.id&&d.k===t.day;
+        return `<button class="opt ${aqui?'d':''}" style="--c:${dayCss(d.k)}" data-k="${d.k}" data-w="${x.id}"${aqui?' disabled':''}><span class="ic">${aqui?ICO.pin:ICO.aulas}</span>${DAYMETA[d.k][0]} ${fmt(d.date)}${aqui?' <small>(está aqui)</small>':''}</button>`;
+      }).join('');
+  };
+  const lista=semanas.map(bloco).join('');
   show(`<h2>${ICO.aulas} Mudar para qual dia? <button class="x">✕</button></h2>
-   ${w.days.map(d=>`<button class="opt ${d.k===t.day?'d':''}" style="--c:${dayCss(d.k)}" data-k="${d.k}"><span class="ic">${d.k===t.day?ICO.pin:ICO.aulas}</span>${DAYMETA[d.k][0]} ${fmt(d.date)}${d.k===t.day?' <small>(está aqui)</small>':''}${d.k===t.origin&&d.k!==t.day?' <small>(dia de antes)</small>':''}</button>`).join('')}`);
+   ${lista||'<p class="quiet">Não tem outro dia para onde mudar.</p>'}`);
   const buttons=[...sheet.querySelectorAll('[data-k]')];
-  buttons.forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.k===t.day) return; vibrate(10); openMoveMotivo(id,b.dataset.k); }));
+  buttons.forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.w===w.id&&b.dataset.k===t.day) return; vibrate(10); openMoveMotivo(id,b.dataset.k,b.dataset.w); }));
 }
 // segundo passo: o motivo da mudanca e obrigatorio, como no cancelar
-function openMoveMotivo(id,day){
-  const t=findTask(id), w=Object.values(DB.weeks).find(w=>allTasks(w).some(t=>t.id===id)); if(!t||!w) return;
-  const d=w.days.find(x=>x.k===day); if(!d) return;
-  show(`<h2>${ICO.aulas} Mudar para ${DAYMETA[day][0]} <button class="x">✕</button></h2>
+function openMoveMotivo(id,day,wid){
+  const t=findTask(id), w=semanaDe(t); if(!t||!w) return;
+  const alvo=DB.weeks[wid]||w; const d=alvo.days.find(x=>x.k===day); if(!d) return;
+  const outra=alvo.id!==w.id;
+  show(`<h2>${ICO.aulas} Mudar para ${DAYMETA[day][0]}${outra?' '+fmt(d.date):''} <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text||''))}</p>
     <textarea id="moveTxt" maxlength="200" placeholder="Por que mudou de dia? Exemplo: a professora adiou a entrega"></textarea>
-    <div class="row"><button class="opt" id="moveNo">Voltar</button><button class="opt primary" id="moveOk">Mudar para ${DAYMETA[day][0]}</button></div>`);
+    <div class="row"><button class="opt" id="moveNo">Voltar</button><button class="opt primary" id="moveOk">Mudar para ${DAYMETA[day][0]}${outra?' '+fmt(d.date):''}</button></div>`);
   document.getElementById('moveTxt').focus();
   document.getElementById('moveNo').addEventListener('click',()=>openMove(id));
   document.getElementById('moveOk').addEventListener('click',async()=>{
@@ -5567,6 +5783,13 @@ function openMoveMotivo(id,day){
     if(v.length<3){ vibrate([40,40,40]); SFX.err(); toast('Escreve o motivo da mudança'); document.getElementById('moveTxt').focus(); return; }
     const ok=document.getElementById('moveOk'); ok.disabled=true;
     t.moveWhy=v;
+    if(outra){ // vai para outra semana: a tarefa muda de lugar na lista
+      const de=w.days.find(x=>x.tasks.includes(t));
+      if(de){ de.tasks=de.tasks.filter(x=>x!==t); d.tasks.push(t); }
+      t.day=day; t.moveU=Math.max(Date.now(),(t.moveU||0)+1); t.moveBy=USER?USER.nome:''; t.u=Date.now(); save();
+      logEvt('move',{id,det:plain(t.text||'')+' · '+v,dia:DAYMETA[day][0]});
+      current=alvo.id; hide(); openState[d.date]=true; render(); refreshReminder(); vibrate(20); toast('Mudou para '+DAYMETA[day][0]+' '+fmt(d.date)); return;
+    }
     if(!await writeMove(id,day)){ ok.disabled=false; return; }
     logEvt('move',{id,det:plain(t.text||'')+' · '+v,dia:DAYMETA[t.day][0]});
     hide(); openState[d.date]=true; render(); refreshReminder(); vibrate(20); toast('Mudou para '+DAYMETA[t.day][0]);
@@ -5785,6 +6008,32 @@ function tlAbreMensagem(k){
     el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1400);
   },320);
 }
+// sai da conversa e vai ate a tarefa, com a chance de voltar
+function vaiParaTarefa(id){
+  const semanaAntes=current;
+  hide();
+  setTimeout(()=>{ tlAbreTarefa(id);
+    toastAcao('Aqui está a tarefa','Voltar',()=>{ current=semanaAntes; render(); vibrate(10); openChat(); },40000);
+  },180);
+}
+// deixa so a tarefa procurada acesa; um toque em qualquer outro lugar traz tudo de volta
+function acendeSoEssa(el){
+  const app=document.getElementById('app'); if(!app||!el) return;
+  limpaAcende();
+  el.classList.add('achei');
+  el.closest('.day,.imp')?.classList.add('tem-achei');
+  app.classList.add('procurando');
+  limpaAcende._t=setTimeout(limpaAcende,40000);
+  limpaAcende._fora=e=>{ if(e.target.closest('.task.achei')) return; limpaAcende(); };
+  setTimeout(()=>document.addEventListener('pointerdown',limpaAcende._fora,true),300);
+}
+function limpaAcende(){
+  clearTimeout(limpaAcende._t);
+  if(limpaAcende._fora){ document.removeEventListener('pointerdown',limpaAcende._fora,true); limpaAcende._fora=null; }
+  document.getElementById('app')?.classList.remove('procurando');
+  document.querySelectorAll('.task.achei').forEach(x=>x.classList.remove('achei'));
+  document.querySelectorAll('.tem-achei').forEach(x=>x.classList.remove('tem-achei'));
+}
 function tlAbreTarefa(id){
   const semana=Object.keys(DB.weeks).find(x=>allTasks(DB.weeks[x]).some(t=>t.id===id));
   if(!semana){ toast('Essa tarefa não está mais aqui'); renderMobileTimeline(); render(); return; }   // some com o registro velho da lista
@@ -5798,7 +6047,7 @@ function tlAbreTarefa(id){
   setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${id}"]`);
     if(!el){ toast('Não achei a tarefa na tela'); return; }
     el.scrollIntoView({behavior:'smooth',block:'center'});
-    el.classList.add('pressing'); setTimeout(()=>el.classList.remove('pressing'),1500); },240);
+    acendeSoEssa(el); },240);
 }
 function bindTimelineItems(corpo,refresh){
   const mais=corpo.querySelector('#tlMais');
@@ -6469,7 +6718,7 @@ document.getElementById('qAll').addEventListener('click',()=>openSearch(fQ));
     setTimeout(abre, de===0?0:180);         // deixa a janelinha sair antes de abrir a outra
   }
   // lugares onde o arrasto para o lado ja faz outra coisa
-  const PROIBIDO='.task,.toast,.msg,.nudge-msg,.dock,.summary-hero,.summary-body,.summary-nav,.daybar,.filters,.chips,.filter-row,.apgrid,.alist,.picker,.tt,.crop,.viewer,input,textarea,.searchbar,.recbar,.chatin,.realist,.tl-body';
+  const PROIBIDO='.task,.toast,.msg,.nudge-msg,.dock,.prox-semana,.summary-hero,.summary-body,.summary-nav,.daybar,.filters,.chips,.filter-row,.apgrid,.alist,.picker,.tt,.crop,.viewer,input,textarea,.searchbar,.recbar,.chatin,.realist,.tl-body';
   let x0=0,y0=0,ativo=false,pid=null;
   document.addEventListener('pointerdown',e=>{
     if(e.pointerType==='mouse'&&e.button!==0) return;
@@ -6489,7 +6738,7 @@ document.getElementById('qAll').addEventListener('click',()=>openSearch(fQ));
   window.__telas={telaAgora,vaiPara};
 })();
 document.getElementById('fab').addEventListener('click',openMain);
-[['mobileDockTimeline',ICO.historico,openMobileTimeline],['mobileDockSearch',SV('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/>'),openMobileSearch],['mobileDockClasses',ICO.aulas,openTimetable],['mobileDockChat',ICO.msg,openChat]].forEach(([id,icon,action])=>{
+[['mobileDockTimeline',ICO.aulas,openTimetable],['mobileDockSearch',SV('<path d="M5 4.5h11.5L19 7v12.5H5z"/><path d="M8.5 9.5h7"/><path d="M8.5 13h7"/><path d="M8.5 16.5h4"/>'),openNotas],['mobileDockClasses',ICO.historico,openMobileTimeline],['mobileDockChat',ICO.msg,openChat]].forEach(([id,icon,action])=>{
   const button=document.getElementById(id); button.querySelector('.mobile-dock-icon').innerHTML=icon;
   button.addEventListener('click',()=>action());
 });
