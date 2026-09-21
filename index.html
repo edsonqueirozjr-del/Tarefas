@@ -674,7 +674,10 @@
   .provapop .prova-tp .st{margin-left:0}
   .provapop .prova-det{margin:0;font-size:13.5px;line-height:1.35;color:var(--ink)}
   .provapop .prova-sep{height:1.5px;background:var(--t08);margin:8px 0}
-  .tag{background:#fff;color:var(--c);border-radius:999px;padding:3px 9px;font-size:12.5px;font-weight:900;white-space:nowrap;line-height:1.2;letter-spacing:0;font-family:inherit;display:inline-block}
+  .tag{background:#fff;color:var(--c);border-radius:999px;padding:3px 9px;font-size:12.5px;font-weight:900;white-space:nowrap;line-height:1.2;letter-spacing:0;font-family:inherit;
+    display:inline-flex;align-items:center;justify-content:center;min-width:80px}   /* largura igual para "1 tarefa" e "4 tarefas" */
+  .tag.prova-tag{min-width:0}
+  .tag.complete-tag{min-width:80px}
   .day summary .arrow{font-size:14px;opacity:.85;flex:none;transition:transform .2s}
   .day[open] summary .arrow{transform:rotate(180deg)}
   .body{padding:12px 14px 14px}
@@ -728,32 +731,36 @@
   .star.rea .emo{width:1.16em;height:1.16em;font-size:.95em;line-height:1;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 2px 2px rgba(var(--r01),.28))}   /* mesmo quadrado dos outros simbolos */
   .star.foto .qtd{position:absolute;right:-1px;bottom:-1px;min-width:13px;height:13px;padding:0 2px;border-radius:999px;background:var(--t61);color:#fff;font-size:9px;font-weight:900;line-height:13px;text-align:center;box-shadow:0 0 0 1.5px var(--tbg,#fff)}
   .star+.star{margin-left:-10px}   /* mesma distancia entre todos os simbolos, bem juntinhos */
-  .star.obs{color:var(--lilas);width:30px;height:26px;display:inline-flex;align-items:center;justify-content:center;opacity:1;position:relative}
-  .star.obs svg{width:21px;height:21px;display:block}
-  .star.obs .qtd{position:absolute;top:-2px;right:0;min-width:14px;height:14px;border-radius:999px;background:var(--lilas);color:#fff;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 3px}
+  .star.obs{color:var(--lilas-ink);width:32px;height:28px;display:inline-flex;align-items:center;justify-content:center;opacity:1;position:relative;overflow:visible}
+  .star.obs svg{width:23px;height:23px;display:block}
+  .star.obs .ico{fill:var(--lilas);filter:drop-shadow(0 -1px 0 color-mix(in srgb,#fff 70%,var(--lilas))) drop-shadow(0 2px 3px rgba(124,77,196,.38))}
+  .star.obs .qtd{position:absolute;top:-2px;right:-3px;min-width:13px;height:13px;border-radius:999px;background:#fff;color:var(--lilas-ink);border:1.5px solid var(--lilas);font-size:8.5px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 2px;box-shadow:0 1px 3px rgba(124,77,196,.3);line-height:1}
   /* tela de comentarios: ocupa a folha inteira, com a barra de escrever no pe */
-  .cmtsheet{padding-bottom:0!important}
-  .cmts{display:flex;flex-direction:column;height:min(86dvh,860px)}
+  body .cmtsheet{padding-bottom:0!important;max-height:94dvh!important;height:94dvh}
+  body .telacheia{height:94dvh;max-height:94dvh!important;display:flex;flex-direction:column}
+  body .telacheia>h2{flex:none}
+  body .telacheia>*:not(h2){min-height:0}
+  body .telacheia #notasBody,body .telacheia #mobileTimelineBody,body .telacheia #tt{flex:1;overflow:auto;overscroll-behavior:contain}
+  .cmts{display:flex;flex-direction:column;height:100%}
   .cmts h2{flex:none}
-  .cmts h2 .cmtsync{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--t08);color:var(--lilas-ink);border:0;display:flex;align-items:center;justify-content:center}
-  .cmts h2 .cmtsync svg{width:19px;height:19px}
-  .cmts h2 .x{margin-left:8px}
-  .cmts .ctarefa{flex:none;margin:0 0 10px;font-size:13px;line-height:1.35}
-  .cmts .clista{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:2px 2px 8px;display:flex;flex-direction:column;gap:10px}
+  .cmts .ctarefa{flex:none;margin:0 0 8px;font-size:12.5px;line-height:1.35;max-height:2.8em;overflow:hidden}
+  .cmts .clista{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:2px 2px 14px;display:flex;flex-direction:column;gap:10px;scroll-padding-bottom:14px}
   .cmts .cvazio{margin:18px 0;text-align:center}
   .cmt{display:flex}
   .cmt.meu{justify-content:flex-end}
-  .cmt .cbolha{max-width:86%;background:var(--t08);border-radius:16px;padding:8px 12px 6px}
+  .cmt .cbolha{max-width:82%;min-width:112px;background:var(--t08);border-radius:16px;padding:8px 12px 7px}
   .cmt.meu .cbolha{background:var(--t12)}
   .cmt .cquem{display:block;font-size:11.5px;font-weight:900;color:var(--lilas-ink);margin-bottom:2px}
   .cmt .ctxt{font-size:14.5px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
-  .cmt .cpe{display:flex;align-items:center;gap:8px;margin-top:5px}
-  .cmt .chora{font-size:10.5px;font-weight:700;color:var(--soft);margin-right:auto}
-  .cmt .ccur{border:0;background:transparent;padding:2px;font:inherit;line-height:1;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:var(--soft);opacity:.6}
-  .cmt .ccur svg{width:16px;height:16px;display:block}
+  .cmt .cpe{display:flex;align-items:center;gap:10px;margin-top:6px;min-height:21px}
+  .cmt .chora{font-size:10.5px;font-weight:700;color:var(--soft);margin-right:auto;line-height:1}
+  .cmt .ccur{border:0;background:transparent;padding:0;font:inherit;line-height:1;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:var(--soft);opacity:.6}
+  .cmt .ccur svg{width:21px;height:21px;display:block}
   .cmt .ccur.on{opacity:1;color:#D64545}
-  .cmt .ccur b{font-size:10.5px;font-weight:900}
+  .cmt .ccur b{font-size:11.5px;font-weight:900}
   .cmt .ccur:active{transform:scale(.9)}
+  .cmt .cquem-cur{display:block;margin-top:3px;font-size:11px;font-weight:800;color:var(--soft)}
+  .cmt.meu .cquem-cur{text-align:right}
   .cmts .cbar{flex:none;display:flex;align-items:flex-end;gap:8px;padding:8px 0 calc(10px + env(safe-area-inset-bottom));background:#fff;position:sticky;bottom:0}
   .cmts .cbar textarea{flex:1;min-height:44px;max-height:140px;border-radius:22px;padding:11px 14px;font-size:14px;resize:none;min-width:0}
   .cmts .cenv{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--lilas);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -1061,11 +1068,9 @@
   .prox-semana .ps-rot.claro{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.35)}
   .prox-semana .ps-pux{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;
     background:var(--lilas);border:0;color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;
-    box-shadow:0 3px 10px rgba(124,77,196,.38);touch-action:none;cursor:grab;animation:psPulso 2.6s ease-in-out infinite}
+    box-shadow:0 3px 10px rgba(124,77,196,.38);touch-action:none;cursor:grab}
   .prox-semana .ps-pux:active{cursor:grabbing}
-  .prox-semana.arrastando .ps-pux{animation:none}   /* enquanto arrasta, o balancinho para e a bolinha segue o dedo */
   .prox-semana .ps-pux svg{width:22px;height:22px}
-  @keyframes psPulso{0%,84%,100%{transform:translate(-50%,-50%)}88%{transform:translate(calc(-50% + 5px),-50%)}94%{transform:translate(calc(-50% - 5px),-50%)}}
   @media(prefers-reduced-motion:reduce){.prox-semana .ps-pux{animation:none}}
   .prox-semana .n.claro{text-shadow:0 1px 3px rgba(0,0,0,.35)}
   .prox-semana .n.claro{color:#fff}
@@ -3666,10 +3671,15 @@ function openNudgeMenu(chaves,el){
   wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
   document.getElementById('nudgeDel').addEventListener('click',async()=>{
     const b=document.getElementById('nudgeDel'); if(b.disabled) return; b.disabled=true;
+    const copias=chaves.map(k=>{ const m=CHAT.find(x=>x.k===k); return m?JSON.parse(JSON.stringify(m)):null; }).filter(Boolean);
     try{
       for(const k of chaves){ const m=CHAT.find(x=>x.k===k); if(m&&m.att&&m.att.kind==='evento'){ try{ await apagaReflexo(m); }catch(e){} } }
       const apaga={}; chaves.forEach(k=>apaga['chat/'+k]=null); await famRef.update(apaga);
-      vibrate([30,30]); toast(chaves.length>1?'Avisos apagados':'Aviso apagado'); closePop(); }
+      vibrate([30,30]); closePop();
+      toastAcao(chaves.length>1?'Avisos apagados':'Aviso apagado','Desfazer',async()=>{     // dá para voltar atrás
+        try{ const volta={}; copias.forEach(m=>{ const {k,...resto}=m; volta['chat/'+k]=resto; }); await famRef.update(volta);
+          vibrate(15); toast(copias.length>1?'Avisos de volta':'Aviso de volta'); }
+        catch(e){ toast('Não consegui trazer de volta'); } },8000); }
     catch(e){ b.disabled=false; toast('Não consegui apagar'); }
   });
 }
@@ -4711,8 +4721,8 @@ function render(){
     const homePassed=boxPassed(w,d,H);
     const ordemSubj=Object.keys(SUBJ);
     const matDia=[...new Set(tasksAll.filter(t=>!t.off&&pass(t)).map(t=>t.subj))].sort((a,b)=>ordemSubj.indexOf(a)-ordemSubj.indexOf(b));
-    const cntTag=(pendNoPrazo>0?`<span class="tag">${pendNoPrazo} tarefa${pendNoPrazo>1?'s':''}</span>`:'')
-      +(pendAtrasadas>0?`<span class="tag no">${pendAtrasadas} esquecida${pendAtrasadas>1?'s':''}</span>`:'');
+    const pendTotal=pendNoPrazo+pendAtrasadas;                                   // uma etiqueta so, juntando o que falta fazer
+    const cntTag=pendTotal>0?`<span class="tag">${pendTotal} tarefa${pendTotal>1?'s':''}</span>`:'';
     if(filtering && !tasksAll.some(pass)) return;   // com filtro ativo, dia sem resultado não aparece
     const open = openState[d.date]!==undefined ? openState[d.date] : (isToday || fQ.length>=2);
     const box=(type,title,emptyTxt,filtro)=>{
@@ -4785,11 +4795,10 @@ function render(){
       rP.classList.toggle('claro',dir&&v>.55); rA.classList.toggle('claro',!dir&&v>.55);
       rP.style.opacity=dir?1:Math.max(.25,1-v*1.2); rA.style.opacity=dir?Math.max(.25,1-v*1.2):1; };
     const zera=()=>{ [pux,fE,fD].forEach(el=>el.style.transition='transform .2s,width .2s');
-      setTimeout(()=>bProx.classList.remove('arrastando'),240);
       pux.style.transform=''; fE.style.width=''; fD.style.width='';
       [rA,rP].forEach(el=>{ el.classList.remove('claro'); el.style.opacity=''; });
       setTimeout(()=>[pux,fE,fD].forEach(el=>el.style.transition=''),220); };
-    const pega=e=>{ bProx.classList.add('arrastando'); x0=e.clientX; ult=0; passou=false; marco=0;
+    const pega=e=>{ x0=e.clientX; ult=0; passou=false; marco=0;
       max=Math.max(60,(bProx.getBoundingClientRect().width-48)/2); vibrate(8);
       try{pux.setPointerCapture(e.pointerId);}catch(err){} };
     pux.addEventListener('pointerdown',pega);
@@ -4895,7 +4904,7 @@ ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(N
 ${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${(t.day!==t.origin&&!t.wiz&&t.moveWhy)?`<span class="note">${ICO.aulas} <b>${esc(t.moveBy||'')}:</b> ${esc(t.moveWhy)}</span>`:''}</div>
       ${(t.reacts&&Object.keys(t.reacts).length)?(()=>{ const rs=Object.values(t.reacts); const som=rs.some(r=>r.a); const qtd=rs.length;
         return `<button type="button" class="star rea ${som?'audio':''}" data-rea="${t.id}" aria-label="Ver quem reagiu" title="Ver quem reagiu">${som?ICO.tocar:`<span class="emo">${rs[0].e||'💛'}</span>`}${qtd>1?`<b class="qtd">${qtd}</b>`:''}</button>`; })():''}
-      ${(()=>{ const qc=comentarios(t).length; return qc?`<button type="button" class="star obs" data-obs="${t.id}" aria-label="Ver os comentários" title="Ver os comentários"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z"/></svg>${qc>1?`<b class="qtd">${qc}</b>`:''}</button>`:''; })()}
+      ${(()=>{ const qc=comentarios(t).length; return qc?`<button type="button" class="star obs" data-obs="${t.id}" aria-label="Ver os comentários" title="Ver os comentários"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5c0 4.1-3.6 7.5-8 7.5H6.6L3 21.8V11.5C3 7.4 6.6 4 11 4h2c4.4 0 8 3.4 8 7.5Z"/><path d="M8 9.4h8M8 13h5" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round"/></svg></button>`:''; })()}
       ${(t.pics||0)?`<button type="button" class="star foto" data-pics="${t.id}" aria-label="Ver ${t.pics>1?'as '+t.pics+' fotos':'a foto'}" title="${t.pics>1?'Ver as '+t.pics+' fotos':'Ver a foto'}">${ICO.camera}${t.pics>1?`<b class="qtd">${t.pics}</b>`:''}</button>`:''}${t.status==='doing'?`<button type="button" class="star fazendo" data-fx="fazendo" aria-label="Fazendo" title="Fazendo">${ICO.ampulheta}</button>`:''}${(t.status==='todo'&&!t.off)?`<button type="button" class="star pendente" data-fx="pendente" aria-label="Falta fazer" title="Falta fazer">${ICO.pendente}</button>`:''}
       ${t.status==='done'
         ? `<button type="button" class="star feito" data-fx="feito" aria-label="Feito" title="Feito">${ICO.feito}</button>`
@@ -5222,7 +5231,9 @@ function bindTasks(root=document.getElementById('app')){
 /* ================= SHEETS ================= */
 const veil=document.getElementById('veil'), sheet=document.getElementById('sheet');
 let scrollY0=0;
-function show(html){if(sheet._aoFechar){const f=sheet._aoFechar;sheet._aoFechar=null;try{f();}catch(e){}}fitSearchViewport.cleanup?.();initChatJump.cleanup?.();sheet.classList.toggle('activity-search-sheet',/id="srchTxt"/.test(html));sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.classList.toggle('resumosheet',/id="sumBody"/.test(html));sheet.classList.toggle('tlsheet',/id="mobileTimelineBody"/.test(html));sheet.classList.toggle('sharesheet',/id="shBox"/.test(html));sheet.classList.toggle('notassheet',/id="notasBody"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap','sobe');
+function show(html){if(sheet._aoFechar){const f=sheet._aoFechar;sheet._aoFechar=null;try{f();}catch(e){}}fitSearchViewport.cleanup?.();initChatJump.cleanup?.();
+  sheet.classList.remove('telacheia','cmtsheet','notassheet','ttsheet','tlsheet');   // cada tela escolhe o seu tamanho de novo
+sheet.classList.toggle('activity-search-sheet',/id="srchTxt"/.test(html));sheet.classList.toggle('chatsheet',/id="msgs"/.test(html));sheet.classList.toggle('looksheet',/id="lookPrev"/.test(html));sheet.classList.toggle('resumosheet',/id="sumBody"/.test(html));sheet.classList.toggle('tlsheet',/id="mobileTimelineBody"/.test(html));sheet.classList.toggle('sharesheet',/id="shBox"/.test(html));sheet.classList.toggle('notassheet',/id="notasBody"/.test(html));sheet.innerHTML='<div class="grip"></div>'+html;sheet.style.transform='';sheet.classList.remove('drag','snap','sobe');
   if(!sheet.classList.contains('sem-anim')){ void sheet.offsetWidth; sheet.classList.add('sobe'); }
   if(!veil.classList.contains('on')){scrollY0=window.scrollY;document.body.classList.add('locked');document.body.style.top=(-scrollY0)+'px';}
   veil.classList.add('on');sheet.scrollTop=0;sheet.querySelector('.x')?.addEventListener('click',hide);}
@@ -5282,7 +5293,9 @@ function openMenu(id){
     if(a==='move') openMove(id);
     if(a==='note') openComentarios(id);
     if(a==='sync') atualizaDaNuvem();
-    if(a==='delnote'){t.note='';t.noteBy='';t.noteU=Date.now();t.u=Date.now();save();logEvt('nota',{id,det:plain(t.text||''),vazia:true});hide();render();toast('Observação apagada');}
+    if(a==='delnote'){ const antes={note:t.note,noteBy:t.noteBy,noteU:t.noteU,coments:JSON.parse(JSON.stringify(t.coments||[]))};
+      t.note='';t.noteBy='';t.noteU=Date.now();t.coments=[];t.u=Date.now();save();logEvt('nota',{id,det:plain(t.text||''),vazia:true});hide();render();
+      toastAcao('Observação apagada','Desfazer',()=>{ Object.assign(t,antes); t.u=Date.now(); save(); render(); vibrate(15); toast('Observação de volta'); },8000); }
   }));
 }
 const TREACTS=[['🎉','Parabéns!'],['😬','Ansioso'],['⭐','Caprichou'],['💛','Orgulho'],['💪','Força'],['🤗','Tamo junto'],['🙂','Tudo bem'],['😕','Fiquei triste'],['⏰','Não esquece']];
@@ -5414,7 +5427,12 @@ function openPics(id){
       :'<p class="quiet" style="text-align:center;padding:10px 0">Ainda não há fotos desta tarefa.</p>';
     box.querySelectorAll('[data-big]').forEach(im=>im.addEventListener('click',()=>{ const k=im.dataset.big;
       fotoGrande(ks.map(x=>v[x]),ks.indexOf(k),{tarefa:id,chaves:ks}); }));
-    box.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ if(!isAluna()) return; picsRef(id).child(b.dataset.del).remove().then(()=>{ countPics(id); openPics(id); toast('Foto apagada'); }); }));
+    box.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ if(!isAluna()) return;
+      const chave=b.dataset.del;
+      picsRef(id).child(chave).once('value',sn=>{ const dados=sn.val();
+        picsRef(id).child(chave).remove().then(()=>{ countPics(id); openPics(id);
+          toastAcao('Foto apagada','Desfazer',()=>{ picsRef(id).child(chave).set(dados).then(()=>{ countPics(id); openPics(id); vibrate(15); toast('Foto de volta'); })
+            .catch(()=>toast('Não consegui trazer de volta')); },8000); }); }); }));
   });
 }
 // foto em tela cheia: so a foto no meio, o resto desfocado atras; toca em qualquer lugar para fechar
@@ -5847,8 +5865,9 @@ function openMoveMotivo(id,day,wid){
 // ===== comentarios da tarefa: todo mundo escreve, curte e apaga o que e seu =====
 function comentarios(t){ if(!t) return [];
   if(!Array.isArray(t.coments)) t.coments=[];
-  if(!t.coments.length && t.note)                                 // observacao antiga (ou vinda da nuvem): vira o primeiro comentario
+  if(!t.comMig && !t.coments.length && t.note)                    // observacao antiga (ou vinda da nuvem): vira o primeiro comentario, uma vez so
     t.coments=[{k:'c0', by:t.noteBy||'', txt:t.note, t:t.noteU||t.u||Date.now(), likes:{}}];
+  t.comMig=1;
   return t.coments;
 }
 function resumoComents(t){ const c=comentarios(t); const ult=c[c.length-1];
@@ -5866,6 +5885,11 @@ function atualizaDaNuvem(aberto){
     vibrate(12); toast('Tudo em dia');
   },()=>toast('Não consegui atualizar agora'));
 }
+function quemCurtiu(c){ const nomes=Object.values((c&&c.likes)||{}).filter(Boolean);
+  if(!nomes.length) return '';
+  if(nomes.length===1) return 'Curtido por '+nomes[0];
+  if(nomes.length<=3) return 'Curtido por '+nomes.slice(0,-1).join(', ')+' e '+nomes[nomes.length-1];
+  return 'Curtido por '+nomes.slice(0,2).join(', ')+' e mais '+(nomes.length-2); }
 function openComentarios(id){
   const t=findTask(id); if(!t) return;
   vibrate(8);
@@ -5880,15 +5904,15 @@ function openComentarios(id){
           <div class="ctxt">${esc(c.txt)}</div>
           <div class="cpe"><span class="chora">${fmtHora(c.t)}</span>
             <button type="button" class="ccur ${curtiu?'on':''}" data-cur="${c.k}" aria-label="${curtiu?'Descurtir':'Curtir'}"><svg viewBox="0 0 24 24" fill="${curtiu?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.6-7-9.3A4 4 0 0 1 12 8a4 4 0 0 1 7 2.7C19 15.4 12 20 12 20Z"/></svg>${n?`<b>${n}</b>`:''}</button>
-          </div></div></div>`; }).join('')
+          </div>
+          <span class="cquem-cur" data-quem="${c.k}"${n?'':' hidden'}>${esc(quemCurtiu(c))}</span></div></div>`; }).join('')
       : '<p class="quiet cvazio">Nenhum comentário ainda. Escreve o primeiro!</p>';
-    show(`<div class="cmts"><h2>${ICO.msg} Comentários <button class="gear cmtsync" id="cSync" aria-label="Atualizar" title="Atualizar">${ICO.sync||ICO.historico}</button><button class="x">✕</button></h2>
+    show(`<div class="cmts"><h2>${ICO.msg} Comentários <button class="x">✕</button></h2>
       <p class="quiet ctarefa">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]} · ${esc(plain(t.text))}</p>
       <div class="clista" id="cLista">${corpo}</div>
       <div class="cbar"><textarea id="cTxt" rows="1" placeholder="Escreve um comentário…" maxlength="600"></textarea>
         <button class="cenv" id="cEnv" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m3 20 18-8L3 4l4 8-4 8Z"/></svg></button></div></div>`);
     sheet.classList.add('cmtsheet');
-    document.getElementById('cSync')?.addEventListener('click',()=>atualizaDaNuvem(id));
     const lst=document.getElementById('cLista'); if(lst) lst.scrollTop=lst.scrollHeight;
     const ta=document.getElementById('cTxt');
     const cresce=()=>{ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight+2,140)+'px'; };
@@ -5901,8 +5925,17 @@ function openComentarios(id){
     ta.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); manda(); } });
     sheet.querySelectorAll('[data-cur]').forEach(b=>b.addEventListener('click',()=>{ if(!USER) return;
       const c=comentarios(t).find(x=>x.k===b.dataset.cur); if(!c) return;
-      c.likes=c.likes||{}; if(c.likes[USER.id]) delete c.likes[USER.id]; else c.likes[USER.id]=USER.nome;
-      t.u=Date.now(); save(); vibrate(10); desenha(); }));
+      c.likes=c.likes||{}; const tinha=!!c.likes[USER.id];
+      if(tinha) delete c.likes[USER.id]; else c.likes[USER.id]=USER.nome;
+      t.u=Date.now(); save(); vibrate(10);
+      const n=Object.keys(c.likes).length;                       // muda so o coracao, sem repintar a tela
+      b.classList.toggle('on',!tinha);
+      b.setAttribute('aria-label',tinha?'Curtir':'Descurtir');
+      b.querySelector('svg').setAttribute('fill',tinha?'none':'currentColor');
+      let cnt=b.querySelector('b'); if(n){ if(!cnt){ cnt=document.createElement('b'); b.appendChild(cnt); } cnt.textContent=n; } else if(cnt) cnt.remove();
+      const quem=sheet.querySelector(`[data-quem="${c.k}"]`);
+      if(quem){ quem.textContent=quemCurtiu(c); quem.hidden=!n; }
+      if(!tinha){ b.animate([{transform:'scale(1)'},{transform:'scale(1.35)'},{transform:'scale(1)'}],{duration:280,easing:'cubic-bezier(.3,1.2,.4,1)'}); } }));
     // segurar o comentario abre o Apagar, como na conversa
     sheet.querySelectorAll('.cmt[data-c]').forEach(el=>{
       const c=comentarios(t).find(x=>x.k===el.dataset.c); if(!c) return;
@@ -5917,9 +5950,14 @@ function openComentarios(id){
         pop.style.top=top+'px'; pop.style.left=Math.max(vl+edge,Math.min(r.left+r.width/2-pop.offsetWidth/2,vl+vw-pop.offsetWidth-edge))+'px';
         wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
         document.getElementById('cmtDel').addEventListener('click',()=>{
+          const copia=JSON.parse(JSON.stringify(c)), pos=comentarios(t).indexOf(c);
           t.comApagados=[...new Set([...(t.comApagados||[]),c.k])];
           t.coments=comentarios(t).filter(x=>x.k!==c.k); resumoComents(t); t.u=Date.now(); save();
-          closePop(); vibrate(20); render(); desenha(); toast('Comentário apagado'); });
+          closePop(); vibrate(20); render(); desenha();
+          toastAcao('Comentário apagado','Desfazer',()=>{                                    // traz o comentário de volta
+            t.comApagados=(t.comApagados||[]).filter(k=>k!==copia.k);
+            const lista=comentarios(t); lista.splice(Math.max(0,Math.min(pos,lista.length)),0,copia);
+            resumoComents(t); t.u=Date.now(); save(); vibrate(15); render(); desenha(); toast('Comentário de volta'); },8000); });
       };
       let pt=null,x0=0,y0=0;
       el.addEventListener('pointerdown',e=>{ if(e.button) return; x0=e.clientX; y0=e.clientY; clearTimeout(pt);
@@ -5943,7 +5981,9 @@ function openNoteMenu(id){
   sheet.querySelector('[data-n="edit"]')?.addEventListener('click',()=>{ hide(); setTimeout(()=>openNote(id),220); });
   if(dl) dl.addEventListener('click',()=>{
     if(dl.dataset.ok!=='1'){ dl.dataset.ok='1'; dl.innerHTML=`<span class="ic">${ICO.lixeira}</span>Tem certeza? Toca de novo para apagar`; vibrate(20); return; }
-    t.note=''; t.noteBy=''; t.u=Date.now(); save(); hide(); render(); vibrate(20); toast('Observação apagada');
+    const antes={note:t.note,noteBy:t.noteBy,noteU:t.noteU,coments:JSON.parse(JSON.stringify(t.coments||[]))};
+    t.note=''; t.noteBy=''; t.coments=[]; t.u=Date.now(); save(); hide(); render(); vibrate(20);
+    toastAcao('Observação apagada','Desfazer',()=>{ Object.assign(t,antes); t.u=Date.now(); save(); render(); vibrate(15); toast('Observação de volta'); },8000);
   });
 }
 function openNote(id){ if(!isAluna()&&!isResponsavel()) return;
@@ -6203,6 +6243,7 @@ function renderMobileTimeline(){
 function openMobileTimeline(){
   tlMax=40;
   show(`<h2>${ICO.historico} Histórico <button class="x" aria-label="Fechar">✕</button></h2><div class="tl-body nodrag" id="mobileTimelineBody"></div>`);
+  sheet.classList.add('telacheia','tlsheet');
   renderMobileTimeline();
 }
 // telas vazias: simbolo grande e apagadinho, com um titulo e uma frase
@@ -6239,7 +6280,6 @@ function openMain(){
   show(`<h2>${ICO.menu} Menu <button class="x">✕</button></h2>
    ${famRef?`<button class="opt mobile-menu-chat" data-m="chat"><span class="ic">${ICO.msg}</span>Conversa${n?` (${n})`:""}</button>`:""}
    <button class="opt" data-m="summary"><span class="ic">${ICO.resumo}</span>Resumo</button>
-   <button class="opt" data-m="notas"><span class="ic">${ICO.resumo}</span>Notas</button>
    <button class="opt menu-dock-duplicate" data-m="tt"><span class="ic">${ICO.aulas}</span>Aulas da semana</button>
    <button class="opt" data-m="share"><span class="ic">${ICO.compart}</span>Compartilhar tarefas</button>
    <button class="opt" data-m="wk"><span class="ic">${ICO.semanas}</span>Ver semana</button>
@@ -6599,6 +6639,7 @@ function bindNotas(){
 function openNotas(){
   show(`<h2>${ICO.resumo} Notas <button class="x">✕</button></h2>
     <div id="notasBody" class="nodrag">${gradesHtml()}</div>`);
+  sheet.classList.add('telacheia','notassheet');
   bindNotas();
 }
 function openTimetable(){
