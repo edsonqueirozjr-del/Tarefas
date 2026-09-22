@@ -3160,7 +3160,7 @@ function mergeRemote(remote){
         else if(!!rt.off!==!!lt.off) MERGE_EVT.push(rt.off?('🚫 '+(ela?ela+'cancelou '+curto:curto+' foi cancelada')):('↩️ '+curto+' voltou a valer'));
         else if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
         else if((rt.pics||0)>(lt.pics||0)) MERGE_EVT.push('📸 Foto nova em '+curto);
-        lt.status=rt.status; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; changed=true; }
+        lt.status=rt.status; lt.statusU=rt.statusU||lt.statusU||0; lt.statusBy=rt.statusBy||lt.statusBy||''; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; changed=true; }
     }));
   });
   return changed;
@@ -4498,7 +4498,7 @@ function garanteWizard(w){
     if(!t.wiz){ t.wiz=true; mudou=true; }
     // enquanto nao esta feita, acompanha o dia de hoje; depois de feita, fica parada no dia em que foi concluida
     const feito=t.status==='done';
-    const diaFeito=feito?(w.days.find(d=>d.date===iso(new Date(t.statusU||0)))||dono):null;
+    const diaFeito=feito?(w.days.find(d=>d.date===iso(new Date(t.statusU||0)))||aula||dono):null;
     const alvo=feito?(diaFeito||dono):(hoje||aula);
     if(alvo&&dono&&dono.k!==alvo.k){
       dono.tasks=dono.tasks.filter(x=>x.id!==id); alvo.tasks.push(t); t.day=alvo.k; mudou=true;
