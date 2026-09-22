@@ -4496,8 +4496,10 @@ function garanteWizard(w){
     }
     if(t.text!==texto){ t.text=texto; mudou=true; }
     if(!t.wiz){ t.wiz=true; mudou=true; }
-    // acompanha sempre o dia de hoje, mesmo depois de feita: assim aparece como "Feito" no dia certo
-    const alvo=(hoje||aula);
+    // enquanto nao esta feita, acompanha o dia de hoje; depois de feita, fica parada no dia em que foi concluida
+    const feito=t.status==='done';
+    const diaFeito=feito?(w.days.find(d=>d.date===iso(new Date(t.statusU||0)))||dono):null;
+    const alvo=feito?(diaFeito||dono):(hoje||aula);
     if(alvo&&dono&&dono.k!==alvo.k){
       dono.tasks=dono.tasks.filter(x=>x.id!==id); alvo.tasks.push(t); t.day=alvo.k; mudou=true;
     }
