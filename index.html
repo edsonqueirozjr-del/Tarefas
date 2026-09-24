@@ -652,14 +652,14 @@
   .dl .feira,.dl .sep{display:none}          /* celular: sem "-feira" e sem bolinha */
   .tags{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
   .day:not(.today) .tag{color:var(--lilas-ink)}   /* no dia clarinho, a etiqueta precisa de letra escura */
-  .box.prova-box{background:#FDECEC;border-color:#F6D6D6}
+  .box.prova-box{background:var(--home);border-color:transparent}
   .prova-task{background:transparent!important;box-shadow:none!important}
   .prova-task .tin{background:transparent}
   .prova-task .tx .st{vertical-align:middle;margin:0 4px 0 0}
   .prova-task .tin{padding-left:0}
   .prova-task .t{padding-left:0}
   .prova-task+.prova-task{position:relative;margin-top:8px;padding-top:8px}
-  .prova-task+.prova-task::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:#F6D6D6}
+  .prova-task+.prova-task::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:#fff}
   .tag.prova-tag{background:#fff;color:#A32424;order:-1;border:0;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:3px;padding-right:7px}
   .tag.prova-tag svg{width:9px;height:9px;flex:none}
   .tag.prova-tag:active{transform:scale(.95)}
@@ -761,11 +761,28 @@
   .cmt .ccur:active{transform:scale(.9)}
   .cmt .cquem-cur{display:block;margin-top:3px;font-size:11px;font-weight:800;color:var(--soft)}
   .cmt.meu .cquem-cur{text-align:right}
-  .cmts .cbar{flex:none;display:flex;align-items:flex-end;gap:8px;padding:8px 0 calc(10px + env(safe-area-inset-bottom));background:#fff;position:sticky;bottom:0}
-  .cmts .cbar textarea{flex:1;min-height:44px;max-height:140px;border-radius:22px;padding:11px 14px;font-size:14px;resize:none;min-width:0}
-  .cmts .cenv{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--lilas);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
-  .cmts .cenv:active{transform:scale(.94)}
-  .cmts .cenv svg{width:19px;height:19px}
+  .cmts .cbar{--c1:var(--t48);--c2:var(--t53);flex:none;display:flex;align-items:flex-end;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));margin:0 -16px;background:#fff;position:sticky;bottom:0}
+  .cmts .ccompose{flex:1;min-width:0;display:flex;align-items:flex-end;gap:0;padding:0 3px;border:1px solid color-mix(in srgb,var(--c2) 22%,#fff);border-radius:24px;background:#fff;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+  .cmts .ccompose:focus-within{border-color:var(--c2);box-shadow:0 0 0 3px color-mix(in srgb,var(--c2) 14%,transparent)}
+  .cmts .cemo{flex:none;width:38px;height:44px;border:0;background:transparent;color:var(--soft);display:flex;align-items:center;justify-content:center;padding:0;margin-left:4px;cursor:pointer;box-shadow:none;transition:transform .15s}
+  .cmts .cemo svg{width:24px;height:24px;display:block}
+  .cmts .cemo:active{transform:scale(.92)}
+  .cmts .cbar textarea{flex:1;min-width:0;min-height:44px;max-height:180px;border:0!important;border-radius:24px;padding:11px 6px;font-size:15px;resize:none;background:transparent;color:var(--ink);box-shadow:none!important;outline:none!important}
+  .cmts .cenv{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px color-mix(in srgb,var(--c2) 24%,transparent);transition:transform .15s,filter .15s}
+  .cmts .cenv:active{transform:scale(.9)}
+  .cmts .cenv svg{width:20px;height:20px}
+  @media(hover:hover){.cmts .cenv:hover{transform:translateY(-1px)}}
+  .cmts .cpicker{display:none;flex:none;max-height:260px;overflow:hidden;padding:8px 4px 10px;gap:8px;background:#fff}
+  .cmts .cpicker.on{display:flex;flex-direction:column}
+  .cmts .cpbusca{flex:none;display:flex;align-items:center;gap:8px;background:#fff;border:2px solid color-mix(in srgb,var(--c2) 22%,#fff);border-radius:999px;padding:5px 10px}
+  .cmts .cpbusca .pklupa{flex:none;line-height:0;color:var(--c2)}
+  .cmts .cpbusca .pklupa .ico{width:17px;height:17px;stroke-width:2.2}
+  .cmts .cpbusca input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:14px;font-weight:400;color:var(--ink);outline:none}
+  .cmts .cpbusca input::-webkit-search-cancel-button{display:none}
+  .cmts .cpgrade{display:flex;flex-wrap:wrap;gap:5px;overflow:auto;align-content:flex-start;justify-content:center;min-height:0}
+  .cmts .cpgrade.vazia::after{content:"Nenhum emoji com essa palavra";display:block;width:100%;text-align:center;color:var(--soft);font-size:13.5px;font-weight:400;padding:14px 0}
+  .cmts .cpgrade button{border:0;background:var(--t05);border-radius:10px;width:40px;height:38px;font-size:22px;padding:0;display:flex;align-items:center;justify-content:center}
+  .cmts .cpgrade button:active{transform:scale(.9)}
   @media screen and (max-width:599px), screen and (max-height:599px){ .tin .star:last-child{margin-right:-2px} .star.foto .qtd{bottom:-2px} }   /* celular: simbolos 2px mais para a direita; o numero da camera 1px mais para baixo */
   .star.feito .ico,.star.fazendo .ico,.star.pendente .ico,.star.foto .ico,.star.rea .ico{fill:var(--t50);stroke-width:1.9;filter:drop-shadow(0 -1px 0 var(--t24)) drop-shadow(0 2px 3px rgba(var(--r01),.38))}
   /* certinho verde e pendente vermelho (mesmo estilo 3D); a ampulheta segue no lilas */
@@ -874,6 +891,13 @@
   .cal .arrow{flex:none;width:28px;height:28px;border-radius:50%;background:var(--t08);display:flex;align-items:center;justify-content:center;color:var(--lilas-ink);transition:transform .2s}
   .cal .arrow svg{width:17px;height:17px}
   .cal[open] summary .arrow{transform:rotate(180deg)}
+  .provas-eye{flex:none;min-width:30px;height:30px;border:0;border-radius:999px;background:var(--t08);color:var(--lilas-ink);display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;margin-left:2px;transition:transform .15s,background .15s,color .15s;font:inherit;font-weight:800}
+  .provas-eye svg{width:18px;height:18px;display:block;flex:none}
+  .provas-eye .lbl{font-size:13px;line-height:1;white-space:nowrap}
+  .provas-eye:active{transform:scale(.9)}
+  .provas-eye[aria-pressed="false"]{color:var(--soft);background:var(--t10)}
+  .provas-notas-ocultas .prova-nota,.provas-notas-ocultas .prova-nota-sep,.provas-notas-ocultas .atividade-nota,.provas-notas-ocultas .atividade-nota-sep{display:none!important}
+.provas-notas-ocultas .st.sj.grade-red,.provas-notas-ocultas .st.sj.grade-yellow,.provas-notas-ocultas .st.sj.grade-green{background:var(--t10)!important;color:var(--ink)!important}
   .cal-body{padding:0 16px 10px;display:flex;flex-direction:column}
   .cal-body.next-body{padding-top:0}
   .cal-st{position:relative;padding:10px 2px}
@@ -882,6 +906,7 @@
   .cal-h .st{margin-left:0}
   .cal-d{background:var(--t10);color:var(--ink)}
   .cal-q{background:var(--t10);color:var(--ink)}
+.cal-q .sj-sep{font-style:normal;opacity:.55;margin:0 4px;display:inline-block}
   .cal-st.agora .cal-q{background:#F9D5D5;color:#A32424}
   .cal-st.passou .cal-q{background:#EEE;color:#888}
   .cal-n{font-size:14px;font-weight:900;color:var(--ink);line-height:1.35}
@@ -894,8 +919,9 @@
   .fab#fab{background:var(--selected-bg);color:var(--selected-ink);box-shadow:0 8px 20px rgba(var(--r04),.20)}
   .fab:active{transform:scale(.92)}
   /* sheet */
-  .veil{position:fixed;inset:0;background:rgba(38,36,58,.45);display:none;z-index:60;align-items:flex-end;justify-content:center}
+  .veil{position:fixed;inset:0;background:rgba(38,36,58,.45);display:none;z-index:120;align-items:flex-end;justify-content:center}
   .veil.on{display:flex;animation:veilOn .3s ease-out}
+  body:has(.veil.on) .dock,body:has(.veil.on) .fabs{opacity:0;pointer-events:none}
   body.locked{overflow:hidden;position:fixed;width:100%}
   .sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:6px 16px calc(14px + env(safe-area-inset-bottom));max-height:94dvh;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;will-change:transform}
   .sheet.drag{animation:none;transition:none}
@@ -920,6 +946,12 @@
   .sheet h2 .x{margin-left:auto;border:0;background:var(--t10);border-radius:50%;width:34px;height:34px;font-size:18px;font-weight:900}
   .opt{display:flex;align-items:center;gap:12px;width:100%;border:0;background:var(--t05);border-radius:16px;padding:14px;font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;text-align:left}
   .opt .ic{font-size:24px;width:32px;text-align:center}
+  /* feedback imediato ao tocar nas opcoes da tarefa */
+  .opt.tap-loading{position:relative;transform:scale(.985);background:var(--t10);box-shadow:inset 0 0 0 2px var(--t43);transition:transform .08s ease,background .08s ease,box-shadow .08s ease}
+  .opt.tap-loading::after{content:"";margin-left:auto;width:18px;height:18px;flex:none;border:2.5px solid color-mix(in srgb,currentColor 25%,transparent);border-top-color:currentColor;border-radius:50%;animation:optspin .65s linear infinite}
+  .opt.tap-loading .ic{transform:scale(.92);opacity:.75}
+  @keyframes optspin{to{transform:rotate(360deg)}}
+  @media(prefers-reduced-motion:reduce){.opt.tap-loading::after{animation:none;border-top-color:transparent}}
   .ico{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:none}
   .sheet h2 .ico{width:.95em;height:.95em}
   .opt .ic .ico{width:26px;height:26px;vertical-align:-.2em}
@@ -948,7 +980,7 @@
     .tt .c{padding:6px 2px}
     .tt .c span{font-size:min(10px,2.25vw)}
   }
-  .tt .c.past,.tt .dh.past{opacity:.38}
+  .tt .c.past,.tt .dh.past{opacity:1}
   .tt .dh.hoje{box-shadow:inset 0 0 0 999px rgba(0,0,0,.26)}   /* so o dia de hoje fica mais escuro */
   .tt .c.tom{background:color-mix(in srgb,var(--dc) 14%,#fff);border-color:var(--dc)}
   .tt .c.tom span{color:var(--dc)}
@@ -1275,19 +1307,23 @@
   #lookPrev .msg .b{font-size:14px}
   .sheet{overflow-x:hidden}
   .shdays{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
-  /* Compartilhar: o titulo fica preso em cima e os botoes presos embaixo; so o meio rola */
-  .sheet.sharesheet>h2{position:sticky;top:-6px;z-index:5;background:#fff;margin:0 -16px 12px;padding:8px 16px 10px;box-shadow:0 6px 12px -8px rgba(38,36,58,.18)}
+  /* Compartilhar: mesma linguagem visual das outras telas, com cabecalho fixo e puxar para fechar */
+  .sheet.sharesheet{display:flex;flex-direction:column;padding:0;overflow:hidden;background:#fff}
+  .sheet.sharesheet>.grip{position:sticky;top:0;z-index:7;align-self:center;margin:6px auto 0}
+  .sheet.sharesheet>h2{position:sticky;top:0;z-index:6;background:#fff;margin:0;padding:10px 16px 12px;box-shadow:0 6px 12px -8px rgba(38,36,58,.18)}
+  .sheet.sharesheet #shWrap{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:0 16px calc(16px + env(safe-area-inset-bottom))}
   .sheet.sharesheet .shprev{max-height:none}
-  .sheet.sharesheet .shfoot{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom));z-index:5;display:flex;gap:8px;background:#fff;margin:0 -16px;padding:10px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -8px 16px -10px rgba(38,36,58,.22)}
+  .sheet.sharesheet .shfoot{position:sticky;bottom:calc(-16px - env(safe-area-inset-bottom));z-index:5;display:flex;gap:8px;background:#fff;margin:0 -16px;padding:10px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -8px 16px -10px rgba(38,36,58,.22)}
   .sheet.sharesheet .shfoot .opt{margin:0;justify-content:center;gap:8px}
   .sheet.sharesheet .shfoot .opt svg{width:18px;height:18px}
   @media screen and (min-width:600px) and (min-height:600px){
-    .sheet.sharesheet>h2{margin:0 -24px 12px;padding:8px 24px 10px}
-    .sheet.sharesheet .shfoot{margin:0 -24px;bottom:-28px;padding:12px 24px 14px}
+    .sheet.sharesheet>h2{padding:10px 24px 12px}
+    .sheet.sharesheet #shWrap{padding:0 24px 22px}
+    .sheet.sharesheet .shfoot{margin:0 -24px;bottom:-22px;padding:12px 24px 14px}
   }
   .shdays button{display:flex;align-items:center;gap:10px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;font-size:16px;font-weight:800;color:var(--ink);text-align:left}
   .shdays button.on{border-color:var(--ink);background:var(--t05)}
-  .shdays .dot2{width:14px;height:14px;border-radius:50%;flex:none}
+  .shdays .dot2{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
   .shdays small{margin-left:auto;color:var(--soft);font-weight:700;font-size:13px}
   .shprev{white-space:pre-wrap;background:var(--t05);border:2px solid var(--line);border-radius:16px;padding:12px;font-size:14px;line-height:1.45;max-height:34vh;overflow:auto;margin:0 0 12px;font-family:inherit}
   .srch{display:flex;gap:8px;align-items:center;margin:0 0 10px}
@@ -1484,7 +1520,7 @@
   .pkbusca{flex:none;display:flex;align-items:center;gap:8px;background:#fff;border:2px solid color-mix(in srgb,var(--c2,#4A7FE0) 22%,#fff);border-radius:999px;padding:5px 10px}
   .pkbusca .pklupa{flex:none;line-height:0;color:var(--lilas)}
   .pkbusca .pklupa .ico{width:17px;height:17px;stroke-width:2.2}
-  .pkbusca input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:14px;font-weight:700;color:var(--ink);outline:none}
+  .pkbusca input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:14px;font-weight:400;color:var(--ink);outline:none}
   .pkbusca input::-webkit-search-cancel-button{display:none}
   .pkbusca .pkx{flex:none;border:0;background:var(--t05);color:var(--soft);width:22px;height:22px;border-radius:50%;font-size:12px;font-weight:900;line-height:1;cursor:pointer}
   .pkgrade{display:flex;flex-wrap:wrap;gap:4px;overflow:auto;flex:1;min-height:0;align-content:flex-start}
@@ -2226,14 +2262,16 @@
   }
   /* Conversa no celular: toda a area util, inclusive quando o teclado reduz a tela. */
   @media screen and (max-width:599px){
-    body .sheet.resumosheet,body .sheet.tlsheet,body .sheet.sharesheet{width:100%;max-width:none;height:100vh;height:100dvh;max-height:100dvh;border-radius:0;margin:0}   /* Resumo, Linha do tempo e Compartilhar ocupam a tela toda */
-    .veil:has(.resumosheet),.veil:has(.tlsheet),.veil:has(.sharesheet){align-items:stretch}
+    body .sheet.resumosheet,body .sheet.sharesheet{width:100%;max-width:none;height:100vh;height:100dvh;max-height:100dvh;border-radius:0;margin:0}   /* Resumo e Compartilhar ocupam a tela toda */
+    body .sheet.tlsheet{width:100%;max-width:none;height:100%;min-height:100%;max-height:100%;border-radius:0;margin:0;background:#fff}
+    .veil:has(.resumosheet),.veil:has(.sharesheet){align-items:stretch}
+    .veil:has(.tlsheet){align-items:stretch;background:#fff!important}
     body .sheet.sharesheet{display:flex;flex-direction:column}
     /* Linha do tempo: titulo parado no alto e o dia (Hoje, Ontem...) grudando embaixo dele */
     body .sheet.tlsheet{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
     body .sheet.tlsheet>.grip,body .sheet.tlsheet>h2{flex:none}
     body .sheet.tlsheet>h2{margin:0 0 6px;background:#fff;position:relative;z-index:3}
-    body .sheet.tlsheet>.tl-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-top:0;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+    body .sheet.tlsheet>.tl-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-top:0;padding-bottom:0}
     body .sheet.tlsheet .tl-dia{margin-top:0;padding-top:8px}   /* o dia cobre o topo da lista: nada passa por tras */
     /* Resumo: titulo, data e abas parados no alto; so o conteudo rola */
     body .sheet.resumosheet{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
@@ -2344,7 +2382,7 @@
   .dock .chatfab{display:none}
   .dock .chatfab.on{display:flex}
   .dock-mid{pointer-events:auto;position:absolute;left:50%;top:auto;bottom:calc(env(safe-area-inset-bottom) + 5px);margin:0;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;
-    border:4px solid var(--paper);background:linear-gradient(140deg,#fff,var(--t12));color:var(--lilas-ink);
+    border:0;background:linear-gradient(140deg,#fff,var(--t12));color:var(--lilas-ink);
     display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px rgba(var(--r01),.2);transition:transform .15s,opacity .18s}
   .dock-mid .di{font-size:28px;line-height:1;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
   /* coração desenhado, com o número de carinhos dentro dele */
@@ -2604,7 +2642,7 @@
     .dock-mobile-action .mobile-dock-label{white-space:nowrap}
     body .dock .dock-mobile-action:active{background:rgba(255,255,255,.16);transform:scale(.95)}
     .dock-mobile-action:focus-visible{outline:2px solid white;outline-offset:-3px}
-    body .dock .dock-mid{width:66px;height:66px;bottom:calc(env(safe-area-inset-bottom) + 18px);border:5px solid var(--paper);background:linear-gradient(140deg,#fff,var(--t12));box-shadow:0 4px 14px rgba(var(--r01),.22)}
+    body .dock .dock-mid{width:66px;height:66px;bottom:calc(env(safe-area-inset-bottom) + 18px);border:0;background:linear-gradient(140deg,#fff,var(--t12));box-shadow:0 4px 14px rgba(var(--r01),.22)}
     body .dock .dock-mid .mao,body .dock .dock-mid .dk-ico,body .dock .dock-mid .dk-cap{display:none!important}
     body .dock .dock-mid.alt .di{visibility:visible}
     body .dock .dock-mid:not(.aluna) .dock-menu-symbol{display:flex;align-items:center;justify-content:center;color:var(--lilas-ink)}
@@ -3286,12 +3324,21 @@ function openSearch(q0){
 function sitTask(t){
   if(t.off) return ['🚫','CANCELADA'];
   if(t.status==='done') return ['✅','FEITO'];
-  if(t.status==='doing') return ['⏳','FAZENDO'];
   if(taskPassed(t)) return ['❗','ESQUECIDO'];
+  if(t.status==='doing') return ['⏳','FAZENDO'];
   return ['⬜','FALTA FAZER'];
 }
+// Usa no Compartilhar a mesma regra visual da tela principal:
+// tarefas atrasadas saem do dia antigo e aparecem no dia de hoje como Esquecidas.
+function tarefasCompartilharDia(w,d){
+  if(!w||!d) return [];
+  if(d.date===TODAY){
+    return allTasks(w).filter(t=>t.day===d.k||vemParaHoje(t)).concat(atrasadasDeSemanasAnteriores(w));
+  }
+  return allTasks(w).filter(t=>t.day===d.k&&!vemParaHoje(t));
+}
 function blocoDia(w,d,compacto){
-  const ts=allTasks(w).filter(t=>t.day===d.k);
+  const ts=tarefasCompartilharDia(w,d);
   const L=[]; L.push(compacto?`*${DAYMETA[d.k][0]} ${fmt(d.date)}*`:`*Tarefas de ${DAYMETA[d.k][0]} ${fmt(d.date)}*`);
   const bloco=(titulo,lista)=>{ if(!lista.length) return; L.push(''); L.push(titulo);
     lista.forEach(t=>{ const [ic,sit]=sitTask(t);
@@ -3300,10 +3347,12 @@ function blocoDia(w,d,compacto){
       if(t.note) L.push(`     Obs.: ${t.note}`); }); };
   bloco('*Colégio*', ts.filter(t=>t.type===H&&!t.wiz));
   bloco('*Curso de Inglês*', ts.filter(t=>t.type===H&&t.wiz));
-  const live=ts.filter(t=>!t.off), feitas=live.filter(t=>t.status==='done').length, falta=live.length-feitas;
-  L.push(''); L.push(`*${feitas} de ${live.length} concluídas*${live.length&&feitas===live.length?' · Tudo feito!':''}`);
+  const live=ts.filter(t=>!t.off), esquecidas=live.filter(t=>taskPassed(t)).length, validas=live.filter(t=>!taskPassed(t));
+  const feitas=validas.filter(t=>t.status==='done').length, falta=validas.length-feitas;
+  L.push(''); L.push(`*${feitas} de ${validas.length} concluídas*${validas.length&&feitas===validas.length?' · Tudo feito!':''}`);
   if(falta) L.push(`Ainda falta fazer: ${falta}`);
-  return {L,live:live.length,feitas};
+  if(esquecidas) L.push(`Esquecido: ${esquecidas}`);
+  return {L,total:validas.length,feitas,esquecidas};
 }
 const ASSINA='_Enviado pelo app Gestão de tarefas_';
 function resumoDia(w,d){ return blocoDia(w,d).L.concat(['',ASSINA]).join('\n'); }
@@ -3313,17 +3362,18 @@ function resumoDias(w,keys){
   if(!dias.length) return '';
   if(dias.length===1) return resumoDia(w,dias[0]);
   const L=['*Tarefas de '+dias.map(d=>DAYMETA[d.k][0]+' '+fmt(d.date)).join(', ')+'*'];
-  let tot=0, fei=0;
-  dias.forEach(d=>{ const r=blocoDia(w,d,true); L.push(''); L.push('━━━━━━━━━━━'); L.push(...r.L); tot+=r.live; fei+=r.feitas; });
+  let tot=0, fei=0, esc=0;
+  dias.forEach(d=>{ const r=blocoDia(w,d,true); L.push(''); L.push('━━━━━━━━━━━'); L.push(...r.L); tot+=r.total; fei+=r.feitas; esc+=r.esquecidas; });
   L.push(''); L.push('━━━━━━━━━━━');
   L.push(`*No total: ${fei} de ${tot} concluídas*${tot&&fei===tot?' · Tudo feito!':''}`);
   if(tot-fei) L.push(`Ainda falta fazer: ${tot-fei}`);
+  if(esc) L.push(`Esquecido: ${esc}`);
   L.push(''); L.push(ASSINA);
   return L.join('\n');
 }
 function resumoSemana(w){
   const L=[`*Semana ${w.label}*`];
-  w.days.forEach(d=>{ const ts=allTasks(w).filter(t=>t.day===d.k&&!t.off); if(!ts.length) return;
+  w.days.forEach(d=>{ const ts=tarefasCompartilharDia(w,d).filter(t=>!t.off); if(!ts.length) return;
     const f=ts.filter(t=>t.status==='done').length; L.push(`\n*${DAYMETA[d.k][0]} ${fmt(d.date)}* · ${f}/${ts.length}`);
     ts.forEach(t=>{ const [ic,sit]=sitTask(t); L.push(`${ic} ${sit} · ${SUBJ[t.subj]||''} · ${semEmoji(plain(t.text))}`); }); });
   const all=allTasks(w).filter(t=>t.type===H&&!t.off), fe=all.filter(t=>t.status==='done').length;
@@ -3335,12 +3385,14 @@ function openShare(diaInicial){
   const w=DB.weeks[current];
   const sel=new Set(diaInicial&&w.days.some(d=>d.k===diaInicial)?[diaInicial]:[]);
   show(`<h2>${ICO.compart} Compartilhar <button class="x">✕</button></h2>
-    <div class="shdays">
-      ${w.days.map(d=>{ const ts=allTasks(w).filter(t=>t.day===d.k&&!t.off); const f=ts.filter(t=>t.status==='done').length;
-        return `<button data-d="${d.k}"><span class="dot2" style="background:${dayCss(d.k)}"></span>${DAYMETA[d.k][0]} ${fmt(d.date)}<small>${f}/${ts.length}</small></button>`; }).join('')}
-      <button data-d="all"><span class="dot2" style="background:var(--ink)"></span>Semana inteira<small>${w.label}</small></button>
-    </div>
-    <div id="shBox"></div>`);
+    <div id="shWrap">
+      <div class="shdays">
+        ${w.days.map(d=>{ const ts=tarefasCompartilharDia(w,d).filter(t=>!t.off); const f=ts.filter(t=>t.status==='done').length;
+          return `<button data-d="${d.k}"><span class="dot2" style="background:${shareDayDot(d)}"></span>${DAYMETA[d.k][0]} ${fmt(d.date)}<small>${f}/${ts.length}</small></button>`; }).join('')}
+        <button data-d="all"><span class="dot2" style="background:color-mix(in srgb,var(--ink) 68%, #fff)"></span>Semana inteira<small>${w.label}</small></button>
+      </div>
+      <div id="shBox"></div>
+    </div>`);
   const box=document.getElementById('shBox');
   const pinta=()=>sheet.querySelectorAll('[data-d]').forEach(x=>x.classList.toggle('on',x.dataset.d==='all'?sel.has('all'):sel.has(x.dataset.d)));
   const atualiza=()=>{
@@ -4347,7 +4399,7 @@ function openChat(){
     <div class="selbar nodrag" id="selbar"><span></span><button type="button" class="sd" id="selDel" hidden>Apagar</button><button type="button" class="sc" id="selCopy">Copiar</button><button type="button" class="sx" id="selCancel" aria-label="Cancelar">✕</button></div>
     <div class="chat-history"><div class="msgs nodrag" id="msgs">${chatHtml()}</div><button class="chat-jump nodrag" id="chatJump" type="button" aria-label="Ir para as mensagens mais recentes" title="Ir para o fim da conversa" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
     <div class="picker nodrag" id="picker">
-      <div class="pkbusca"><span class="pklupa" aria-hidden="true">${ICO.lupa}</span><input id="pkTxt" type="search" autocomplete="off" placeholder="Procurar emoji: coração, escola…" aria-label="Procurar emoji"><button type="button" class="pkx" id="pkLimpa" aria-label="Limpar" hidden>✕</button></div>
+      <div class="pkbusca"><span class="pklupa" aria-hidden="true">${ICO.lupa}</span><input id="pkTxt" type="search" autocomplete="off" placeholder="Procurar emoji" aria-label="Procurar emoji"></div>
       <div class="pkgrade" id="pkGrade">${EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join('')}</div>
     </div>
     <div class="audpanel nodrag" id="audPanel">
@@ -4444,16 +4496,15 @@ function openChat(){
   inp.addEventListener('input',cresce); inp.addEventListener('focus',cresce); cresce(); if(document.fonts) document.fonts.ready.then(cresce); setTimeout(cresce,300);
   const picker=document.getElementById('picker');
   { // procurar emoji digitando
-    const pk=document.getElementById('pkTxt'), grade=document.getElementById('pkGrade'), limpa=document.getElementById('pkLimpa');
+    const pk=document.getElementById('pkTxt'), grade=document.getElementById('pkGrade');
     const semAcento=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    const filtra=()=>{ const q=semAcento(pk.value.trim()); limpa.hidden=!pk.value;
+    const filtra=()=>{ const q=semAcento(pk.value.trim());
       if(!q){ grade.querySelectorAll('button').forEach(b=>b.hidden=false); grade.classList.remove('vazia'); return; }
       let achou=0;
       grade.querySelectorAll('button').forEach(b=>{ const nome=semAcento(EMOJI_NOMES[b.dataset.e]||''); const ok=nome.includes(q); b.hidden=!ok; if(ok) achou++; });
       grade.classList.toggle('vazia',!achou);
     };
     pk.addEventListener('input',filtra);
-    limpa.addEventListener('click',()=>{ pk.value=''; filtra(); pk.focus(); });
   }
   document.getElementById('emoBtn').addEventListener('click',()=>{ const on=!picker.classList.contains('on'); if(on){ inp.blur(); setTimeout(()=>{picker.classList.add('on');scrollMsgs();},120); } else { picker.classList.remove('on'); inp.focus(); } });
   inp.addEventListener('focus',()=>{ picker.classList.remove('on'); audPanel(false); setTimeout(scrollMsgs,250); });
@@ -4480,26 +4531,27 @@ function markRead(){ const last=CHAT[CHAT.length-1]; if(last&&(last.t||0)>lastRe
 /* ================= RENDER ================= */
 const fmt=d=>{const [y,m,dd]=d.split('-');return dd+'/'+m;};
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-// Toda semana tem as duas tarefas da Wizard. Enquanto nao estao feitas, elas aparecem no dia de hoje.
+// Toda semana tem as duas tarefas da Wizard. Em semana futura, começam no domingo; quando a semana chega, acompanham o dia de hoje até serem feitas.
 function garanteWizard(w){
   if(!w||!w.days||!w.days.length) return false;
   let mudou=false;
   const hoje=w.days.find(d=>d.date===TODAY);
+  const inicio=w.days.find(d=>d.k==='dom')||w.days[0];        // as tarefas semanais do inglês começam no domingo
   const aula=w.days.find(d=>d.k===WIZ_DIA)||w.days[0];
   WIZ_TAREFAS.forEach(({sufixo,texto})=>{
     const id=w.id+'-wiz-'+sufixo;
     let dono=null, t=null;
     w.days.forEach(d=>{ const achou=d.tasks.find(x=>x.id===id); if(achou){ dono=d; t=achou; } });
     if(!t){
-      t={id,type:H,subj:'wiz',text:texto,status:'todo',note:'',day:(hoje||aula).k,origin:WIZ_DIA,wiz:true};
-      (hoje||aula).tasks.push(t); dono=(hoje||aula); mudou=true;
+      t={id,type:H,subj:'wiz',text:texto,status:'todo',note:'',day:(hoje||inicio).k,origin:WIZ_DIA,wiz:true};
+      (hoje||inicio).tasks.push(t); dono=(hoje||inicio); mudou=true;
     }
     if(t.text!==texto){ t.text=texto; mudou=true; }
     if(!t.wiz){ t.wiz=true; mudou=true; }
     // enquanto nao esta feita, acompanha o dia de hoje; depois de feita, fica parada no dia em que foi concluida
     const feito=t.status==='done';
     const diaFeito=feito?(w.days.find(d=>d.date===iso(new Date(t.statusU||0)))||aula||dono):null;
-    const alvo=feito?(diaFeito||dono):(hoje||aula);
+    const alvo=feito?(diaFeito||dono):(hoje||inicio);
     if(alvo&&dono&&dono.k!==alvo.k){
       dono.tasks=dono.tasks.filter(x=>x.id!==id); alvo.tasks.push(t); t.day=alvo.k; mudou=true;
     }
@@ -4538,10 +4590,27 @@ function comoFalaDia(dateIso){
   return nomeDiaDe(dateIso);
 }
 // bloco "3º trimestre": um cartao por etapa, a proxima em destaque e as que passaram apagadas
+// O olho em Provas esconde/mostra as notas inline das atividades e das provas, sem afetar o boletim da aba Notas.
+let provasNotasVisiveis=localStorage.getItem('provasNotasVisiveis')==='1';
+const PROVA_EYE_OPEN=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.8 12s3.3-6 9.2-6 9.2 6 9.2 6-3.3 6-9.2 6-9.2-6-9.2-6Z"/><circle cx="12" cy="12" r="2.6"/></svg>`;
+const PROVA_EYE_CLOSED=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.2c.46-.13.93-.2 1.4-.2 5.9 0 9.2 7 9.2 7a16.7 16.7 0 0 1-2.7 3.5M6.2 6.2C3.9 7.8 2.8 12 2.8 12s3.3 6 9.2 6c1.4 0 2.65-.34 3.74-.88"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>`;
+function provaEyeHtml(){
+  const vis=provasNotasVisiveis;
+  return `<button type="button" class="provas-eye" data-provas-eye aria-pressed="${vis?'true':'false'}" aria-label="${vis?'Ocultar notas':'Mostrar notas'}" title="${vis?'Ocultar notas':'Mostrar notas'}"><span class="lbl">Nota</span>${vis?PROVA_EYE_OPEN:PROVA_EYE_CLOSED}</button>`;
+}
+function aplicaVisNotasProvas(){
+  document.body.classList.toggle('provas-notas-ocultas',!provasNotasVisiveis);
+  document.querySelectorAll('[data-provas-eye]').forEach(b=>{
+    b.setAttribute('aria-pressed',provasNotasVisiveis?'true':'false');
+    b.setAttribute('aria-label',provasNotasVisiveis?'Ocultar notas':'Mostrar notas');
+    b.title=provasNotasVisiveis?'Ocultar notas':'Mostrar notas';
+    b.innerHTML=`<span class="lbl">Nota</span>${provasNotasVisiveis?PROVA_EYE_OPEN:PROVA_EYE_CLOSED}`;
+  });
+}
 // etiqueta da materia com a nota, igual a das atividades
 function matTag(k){ if(!k||!SUBJ[k]) return '';
   const b=BOLETIM[k], nota=b&&b.t2!=null?b.t2:null;
-  return `<span class="st sj ${nota!=null?gradeClass(nota):''}">${subjectVisual(SUBJ[k])}${nota!=null?`<i class="sj-sep" aria-hidden="true">·</i><b class="sj-nota">${fmtGrade(nota)}</b>`:''}</span>`;
+  return `<span class="st sj ${nota!=null?gradeClass(nota):''}">${subjectVisual(SUBJ[k])}${nota!=null?`<i class="sj-sep prova-nota-sep" aria-hidden="true">·</i><b class="sj-nota prova-nota">${fmtGrade(nota)}</b>`:''}</span>`;
 }
 function htmlCalendario(qual){
   const C=(typeof CALENDARIO_TRI!=='undefined')?CALENDARIO_TRI:null; if(!C||!C.etapas||!C.etapas.length) return '';
@@ -4561,9 +4630,9 @@ function htmlCalendario(qual){
   if(!lista.length) return '';
   const aberto=!!openState[chave];
   const cards=lista.map(({e,q})=>`<div class="cal-st ${q.cls}">
-      <div class="cal-h">${qual==='provas'?`${matTag(e.subj)}<span class="st cal-d">${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span><span class="st cal-q">${q.txt}</span>`:`<span class="st cal-d">${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span><span class="cal-n">${esc(e.nome)}</span><span class="st cal-q">${q.txt}</span>`}</div>
+      <div class="cal-h">${qual==='provas'?`${matTag(e.subj)}<span class="st cal-q">${q.txt}<i class="sj-sep" aria-hidden="true">·</i>${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span>`:`<span class="st cal-d">${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span><span class="cal-n">${esc(e.nome)}</span><span class="st cal-q">${q.txt}</span>`}</div>
       ${e.det?`<div class="cal-l">${esc(e.det)}</div>`:''}</div>`).join('');
-  return `<details class="cal" data-date="${chave}" ${aberto?'open':''}><summary><span class="n">${esc(titulo)}</span><span class="arrow">${ICO.chev}</span></summary>
+  return `<details class="cal ${qual==='provas'?'provas-cal':''}" data-date="${chave}" ${aberto?'open':''}><summary><span class="n">${esc(titulo)}</span>${qual==='provas'?provaEyeHtml():''}<span class="arrow">${ICO.chev}</span></summary>
     <div class="cal-body">${cards}</div></details>`;
 }
 // materias com prova naquele dia, para a etiqueta no cabecalho
@@ -4579,7 +4648,7 @@ function abreProvaPop(dateIso,btn){
   const corpo=lista.map(e=>{
     const b=BOLETIM[e.subj], nota=b&&b.t2!=null?b.t2:null;
     return `<div class="prova-it">
-      <div class="prova-tp"><span class="st sj ${nota!=null?gradeClass(nota):''}">${subjectVisual(SUBJ[e.subj]||'')}${nota!=null?`<i class="sj-sep" aria-hidden="true">·</i><b class="sj-nota">${fmtGrade(nota)}</b>`:''}</span><span class="st cal-d">${dd}/${m}</span></div>
+      <div class="prova-tp"><span class="st sj ${nota!=null?gradeClass(nota):''}">${subjectVisual(SUBJ[e.subj]||'')}${nota!=null?`<i class="sj-sep prova-nota-sep" aria-hidden="true">·</i><b class="sj-nota prova-nota">${fmtGrade(nota)}</b>`:''}</span><span class="st cal-d">${dd}/${m}</span></div>
       ${e.det?`<p class="prova-det">${esc(e.det)}</p>`:''}
     </div>`; }).join('<div class="prova-sep" aria-hidden="true"></div>');
   const wrap=document.createElement('div'); wrap.className='popwrap';
@@ -4619,8 +4688,15 @@ function taskPassed(t){const w=semanaDe(t)||DB.weeks[current];const d=w&&w.days.
   if(t.wiz) return false;                                                  // Wizard acompanha o dia de hoje: nunca fica esquecida
   if(t.type===H&&t.ate) return t.ate<TODAY||(t.ate===TODAY&&NOW_H>=7.3);   // prazo proprio: so vence na manha da data
   return boxPassed(w,d,t.type);}
+function podeSerImportante(t){
+  if(!t||t.type!==H) return false;
+  const w=semanaDe(t)||DB.weeks[current];
+  const d=w&&w.days.find(x=>x.k===t.day);
+  return !!(d&&d.date>TODAY);   // importante so vale a partir de amanha
+}
 function findTask(id){for(const w of Object.values(DB.weeks)){const t=allTasks(w).find(t=>t.id===id);if(t)return t;}}
 function dayCss(k){return `var(${DAYMETA[k][1]})`;}
+function shareDayDot(d){ const base=dayCss(d.k); return d&&d.date===TODAY ? base : 'color-mix(in srgb,'+base+' 58%, #fff)'; }
 
 function contaTipo(k,w){
   return allTasks(w).filter(t=>{
@@ -4700,7 +4776,7 @@ function render(){
   let html='';
   // mais importantes (ordem: dia da semana)
   const order=w.days.map(d=>d.k);
-  const impVale=t=>t.type===H && t.important && !t.off && t.status!=='done' && !taskPassed(t);
+  const impVale=t=>t.type===H && t.important && podeSerImportante(t) && !t.off && t.status!=='done' && !taskPassed(t);
   const imp=allTasks(w).concat(atrasadasDeSemanasAnteriores(w)).filter(t=>impVale(t)&&pass(t)).sort((a,b)=>order.indexOf(a.day)-order.indexOf(b.day));
   const impPend=imp.length;
   const impGuardadas=allTasks(w).filter(t=>t.type===H&&t.important&&!impVale(t)).length;
@@ -4738,19 +4814,19 @@ function render(){
       const passed=boxPassed(w,d,type);
       return `<div class="box ${type} ${passed?'past':''}"><h3>${title}${now}</h3>${list.length?list.map(t=>taskHtml(t,false)).join(''):`<div class="empty">${emptyTxt}</div>`}</div>`;
     };
-    const bxCol=box(H,'Colégio','Nada para fazer em casa 🎉',t=>!t.wiz);
+    const bxCol=box(H,'Colégio',d.date<TODAY?'Não havia nada para fazer em casa 🎉':'Nada para fazer em casa 🎉',t=>!t.wiz);
     const bxWiz=box(H,'Curso de Inglês','',t=>!!t.wiz);
     // a prova do dia aparece no mesmo estilo das tarefas, no topo
     const bxProva=(()=>{ const pv=provasDoDia(d.date); if(!pv.length||filtering) return '';
       const itens=pv.map(e=>{ const b=BOLETIM[e.subj], nota=b&&b.t2!=null?b.t2:null;
         return `<div class="task prova-task"><div class="tin"><div class="t">
-          <div class="tx"><span class="st sj ${nota!=null?gradeClass(nota):''}">${subjectVisual(SUBJ[e.subj]||'')}${nota!=null?`<i class="sj-sep" aria-hidden="true">·</i><b class="sj-nota">${fmtGrade(nota)}</b>`:''}</span> ${e.det?esc(e.det):'Dia da prova'}</div>
+          <div class="tx"><span class="st sj ${nota!=null?gradeClass(nota):''}">${subjectVisual(SUBJ[e.subj]||'')}${nota!=null?`<i class="sj-sep prova-nota-sep" aria-hidden="true">·</i><b class="sj-nota prova-nota">${fmtGrade(nota)}</b>`:''}</span> ${e.det?esc(e.det):'Dia da prova'}</div>
           </div></div></div>`; }).join('');
       return `<div class="box prova-box"><h3>Prova</h3>${itens}</div>`; })();
     const boxes=(bxProva||bxCol||bxWiz)?`<div class="boxes one">${bxProva}${bxCol}${bxWiz}</div>`:'';
     html+=`<details class="day ${past&&!isToday?'past':''} ${isToday?'today':''} ${complete?'complete':''}" style="--c:var(${isToday?'--dia-hoje':'--dia-claro'})" data-date="${d.date}" ${open?'open':''}>
       <summary><div class="dl"><span class="n">${name}${['seg','ter','qua','qui','sex'].includes(d.k)?'<span class="feira">-feira</span>':''}</span><span class="sep" aria-hidden="true"></span><span class="d">${fmt(d.date)}</span></div>
-        <div class="tags">${provasDoDia(d.date).length?`<button type="button" class="tag prova-tag" data-prova="${d.date}">Prova<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>`:''}${cntTag}${complete?'<span class="tag complete-tag">Tudo feito!</span>':''}</div>
+        <div class="tags">${cntTag}${complete?'<span class="tag complete-tag">Tudo feito!</span>':''}</div>
         <span class="arrow">${ICO.chev}</span></summary>
       <div class="body">
         ${d.feriado?`<div class="aulas"><span>🎉 Feriado: ${d.feriado}</span></div>`:''}
@@ -4823,6 +4899,13 @@ function render(){
   if(typeof appBadge==='function') appBadge();
   if(typeof updateReaFab==='function') updateReaFab();
   document.querySelectorAll('.day,.imp,.cal,#provasTopo .cal').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
+  aplicaVisNotasProvas();
+  document.querySelectorAll('[data-provas-eye]').forEach(b=>b.addEventListener('click',e=>{
+    e.preventDefault(); e.stopPropagation();
+    provasNotasVisiveis=!provasNotasVisiveis;
+    localStorage.setItem('provasNotasVisiveis',provasNotasVisiveis?'1':'0');
+    aplicaVisNotasProvas(); vibrate(10);
+  }));
   document.querySelectorAll('[data-prova]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); vibrate(10); abreProvaPop(b.dataset.prova,b); }));
   // segurar o cabecalho de um dia: compartilha so aquele dia
   document.querySelectorAll('#app .day>summary').forEach(sm=>{
@@ -4892,26 +4975,26 @@ function taskHtml(t,inImp){
   const dchip = inImp ? `<span class="dchip ${t.day===diaHojeK()?'hoje':''}" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
   const grade = gradeForTask(t);
   // materia e nota na mesma etiqueta, separadas por uma bolinha
-  const subj = `<span class="st sj ${gradeClass(grade)}">${subjectVisual(SUBJ[t.subj])}${grade!=null?`<i class="sj-sep" aria-hidden="true">·</i><b class="sj-nota">${fmtGrade(grade)}</b>`:''}</span>`;
+  const subj = `<span class="st sj ${gradeClass(grade)}">${subjectVisual(SUBJ[t.subj])}${grade!=null?`<i class="sj-sep atividade-nota-sep" aria-hidden="true">·</i><b class="sj-nota atividade-nota">${fmtGrade(grade)}</b>`:''}</span>`;
   const gradeTag = '';
   const late=!t.off&&t.status!=='done'&&taskPassed(t);
   // ordem das etiquetas: materia, foto, mudou de dia, para segunda... e a de status (Feito, Falta fazer...) sempre por ultimo
-  const prazoTag=(t.type===H&&t.ate&&!t.wiz)?`<span class="st pics">Para ${comoFalaDia(t.ate)}</span>`:'';   // sempre que a tarefa tem dia marcado
-  const status=moved+prazoTag+(t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="bang late" title="Esquecido">!</span><span class="st no">Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'');
+  const prazoTag=(t.type===H&&t.ate&&!t.wiz)?`<span class="st pics">${late?'Era para':'Para'} ${comoFalaDia(t.ate)}</span>`:'';   // se o prazo passou, a mensagem muda para o passado
+  const status=moved+prazoTag+(t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="st no">Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(!late&&t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'');
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''} ${t.wiz?'wizt':''}" data-id="${t.id}">
 ${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(NEXT_R[t.status]||'done')}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${swLbl(NEXT_L[t.status]||'doing')}</div>`: ''}
     <div class="tin">
       <div class="t"><div class="tg">${dchip}${subj}${gradeTag}${status}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
-${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}${(t.day!==t.origin&&!t.wiz&&t.moveWhy)?`<span class="note">${ICO.aulas} <b>${esc(t.moveBy||'')}:</b> ${esc(t.moveWhy)}</span>`:''}</div>
+${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}</div>
       ${(t.reacts&&Object.keys(t.reacts).length)?(()=>{ const rs=Object.values(t.reacts); const som=rs.some(r=>r.a); const qtd=rs.length;
         return `<button type="button" class="star rea ${som?'audio':''}" data-rea="${t.id}" aria-label="Ver quem reagiu" title="Ver quem reagiu">${som?ICO.tocar:`<span class="emo">${rs[0].e||'💛'}</span>`}${qtd>1?`<b class="qtd">${qtd}</b>`:''}</button>`; })():''}
       ${(()=>{ const qc=comentarios(t).length; return qc?`<button type="button" class="star obs" data-obs="${t.id}" aria-label="Ver os comentários" title="Ver os comentários"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5c0 4.1-3.6 7.5-8 7.5H6.6L3 21.8V11.5C3 7.4 6.6 4 11 4h2c4.4 0 8 3.4 8 7.5Z"/><path d="M8 9.4h8M8 13h5" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round"/></svg></button>`:''; })()}
-      ${(t.pics||0)?`<button type="button" class="star foto" data-pics="${t.id}" aria-label="Ver ${t.pics>1?'as '+t.pics+' fotos':'a foto'}" title="${t.pics>1?'Ver as '+t.pics+' fotos':'Ver a foto'}">${ICO.camera}${t.pics>1?`<b class="qtd">${t.pics}</b>`:''}</button>`:''}${t.status==='doing'?`<button type="button" class="star fazendo" data-fx="fazendo" aria-label="Fazendo" title="Fazendo">${ICO.ampulheta}</button>`:''}${(t.status==='todo'&&!t.off)?`<button type="button" class="star pendente" data-fx="pendente" aria-label="Falta fazer" title="Falta fazer">${ICO.pendente}</button>`:''}
+      ${(t.pics||0)?`<button type="button" class="star foto" data-pics="${t.id}" aria-label="Ver ${t.pics>1?'as '+t.pics+' fotos':'a foto'}" title="${t.pics>1?'Ver as '+t.pics+' fotos':'Ver a foto'}">${ICO.camera}${t.pics>1?`<b class="qtd">${t.pics}</b>`:''}</button>`:''}${(t.status==='doing'&&!late)?`<button type="button" class="star fazendo" data-fx="fazendo" aria-label="Fazendo" title="Fazendo">${ICO.ampulheta}</button>`:''}${(t.status==='todo'&&!t.off&&!late)?`<button type="button" class="star pendente" data-fx="pendente" aria-label="Falta fazer" title="Falta fazer">${ICO.pendente}</button>`:''}
       ${t.status==='done'
         ? `<button type="button" class="star feito" data-fx="feito" aria-label="Feito" title="Feito">${ICO.feito}</button>`
         : t.off ? `<span class="star cancelada" aria-hidden="true" title="Cancelada">${ICO.cancelada}</span>`
-        : `<button class="star ${t.important?'on':''}" data-star="${t.id}" aria-pressed="${t.important?'true':'false'}" aria-label="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}" title="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}">${ICO.estrela}</button>`}
+        : podeSerImportante(t) ? `<button class="star ${t.important?'on':''}" data-star="${t.id}" aria-pressed="${t.important?'true':'false'}" aria-label="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}" title="${t.important?'Tirar das mais importantes':'Marcar como mais importante'}">${ICO.estrela}</button>` : ''}
     </div>
   </div>`;
 }
@@ -5120,6 +5203,7 @@ function festaFeito(el,tipo,icone){
 }
 function toggleImp(id,btn,semDesfazer){
   const t=findTask(id); if(!t||t.type!==H) return;
+  if(!podeSerImportante(t)){ toast('Importante só pode ser marcado a partir de amanhã'); return; }
   const val=!t.important; vibrate(20); SFX.pop();
   if(btn){ btn.classList.toggle('on',val); btn.setAttribute('aria-pressed',val?'true':'false'); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); }
   if(val){ festaEstrela(btn); vibrate([20,40,30]); SFX.done(); }
@@ -5186,7 +5270,7 @@ function bindTasks(root=document.getElementById('app')){
       el.addEventListener('pointerup',e=>{ if(e.target.closest('.star,.note.nt,[data-rfx],[data-pics],[data-obs]')) return;
         if(Date.now()-sapT<450 && !el.classList.contains('drag') && !el._swiped) sapinho(el); }); }
     if(!isAluna()){
-      el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label','Ver tarefa e opções de acompanhamento');
+      el.removeAttribute('aria-label');
       // opcoes so ao segurar (toque curto = sapinho); botao direito e Enter tambem abrem
       { let pt=null, px0=0, py0=0;
         let acende=null;
@@ -5253,7 +5337,7 @@ function gripLargura(p){
 }
 sheet.addEventListener('touchstart',e=>{
   const bloqueado=e.target.closest('.nodrag');
-  const lista=e.target.closest('#msgs,#mobileTimelineBody,#sumBody,#notasBody');   // conversa, historico, resumo e notas: vale puxar quando a lista ja esta no topo
+  const lista=e.target.closest('#msgs,#mobileTimelineBody,#sumBody,#notasBody,#shWrap');   // conversa, historico, resumo, notas e compartilhar: vale puxar quando a lista ja esta no topo
   const parado=Date.now()-ultimaRolagem>400;   // acabou de rolar? entao esse toque e continuacao da leitura, nao um puxao
   armed = parado && sheet.scrollTop<=0 && (!bloqueado || (lista && lista.scrollTop<=0));
   sheet.classList.toggle('pronto',armed);
@@ -5268,36 +5352,45 @@ const endDrag=()=>{sheet.classList.remove('pronto');gripLargura(null);if(!draggi
 sheet.addEventListener('touchend',endDrag); sheet.addEventListener('touchcancel',endDrag);
 veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 
+// Feedback visual dos botoes do menu de tarefa: aplicado no clique real para nao disputar o toque com o gesto da folha.
 function openMenu(id){
   const t=findTask(id); if(!t) return; if(t.type===B){openMove(id);return;}
   show(`<h2>${ICO.lapis} Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=3" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
    <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]} · ${t.text}</p>
    <button class="opt" data-a="note"><span class="ic">${ICO.msg}</span>${comentarios(t).length?'Ver os comentários':'Escrever um comentário'}</button>
-   <button class="opt" data-a="sync"><span class="ic">${ICO.sync||ICO.historico}</span>Atualizar do aparelho de todos</button>
    ${(CLOUD_CFG&&isAluna())?`<button class="opt" data-a="foto"><span class="ic">${ICO.camera}</span>Tirar foto do que fez</button>`:''}
    ${(CLOUD_CFG&&isAluna()&&(t.pics||0))?`<button class="opt danger" data-a="pics-org"><span class="ic">${ICO.lixo||ICO.proibido}</span>Apagar foto</button>`:''}
    ${((isAluna()||isResponsavel())&&!t.wiz)?`<button class="opt" data-a="move"><span class="ic">${ICO.aulas}</span>Mudar de dia</button>`:''}
    ${CLOUD_CFG?`<button class="opt" data-a="chat"><span class="ic">${ICO.enviar}</span>Mandar para a conversa</button>`:''}
    ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">${ICO.reagir}</span>Reagir</button>`:''}
    ${isAluna()?(t.off?`<button class="opt" data-a="undel"><span class="ic">${ICO.voltar}</span>Voltar a valer</button>`:`<button class="opt danger" data-a="del"><span class="ic">${ICO.proibido}</span>Cancelar a tarefa</button>`):''}`);
-  sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
+  sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',e=>{
+    e.preventDefault(); e.stopPropagation();
     const a=b.dataset.a;
     if(['del','undel'].includes(a)&&!isAluna()) return;
     if(['note','delnote'].includes(a)&&!isAluna()&&!isResponsavel()) return;   // observação: a Maria e os pais
-    if(a==='imp'){ hide(); setTimeout(()=>confirmaImp(id),220); }
-    if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
-    if(a==='del') openCancel(id);
-    if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.u=Date.now(); save(); logEvt('undel',{id,det:plain(t.text||'')}); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
-    if(a==='rea') openReagir(id);
-    if(a==='pics') verFotosTarefa(id);
-    if(a==='pics-org') openPics(id);
-    if(a==='foto'){ if(isAluna()){ picTaskId=id; document.getElementById('taskFoto').click(); } }
-    if(a==='move') openMove(id);
-    if(a==='note') openComentarios(id);
-    if(a==='sync') atualizaDaNuvem();
-    if(a==='delnote'){ const antes={note:t.note,noteBy:t.noteBy,noteU:t.noteU,coments:JSON.parse(JSON.stringify(t.coments||[]))};
-      t.note='';t.noteBy='';t.noteU=Date.now();t.coments=[];t.u=Date.now();save();logEvt('nota',{id,det:plain(t.text||''),vazia:true});hide();render();
-      toastAcao('Observação apagada','Desfazer',()=>{ Object.assign(t,antes); t.u=Date.now(); save(); render(); vibrate(15); toast('Observação de volta'); },8000); }
+    if(b.dataset.abrindo==='1') return;
+    b.dataset.abrindo='1';
+    sheet.querySelectorAll('.opt.tap-loading').forEach(x=>{ if(x!==b){ x.classList.remove('tap-loading'); delete x.dataset.abrindo; } });
+    b.classList.add('tap-loading');
+    vibrate(8);
+    setTimeout(()=>{
+      b.classList.remove('tap-loading'); delete b.dataset.abrindo;
+      if(a==='imp'){ hide(); setTimeout(()=>confirmaImp(id),220); }
+      if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
+      if(a==='del') openCancel(id);
+      if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.u=Date.now(); save(); logEvt('undel',{id,det:plain(t.text||'')}); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
+      if(a==='rea') openReagir(id);
+      if(a==='pics') verFotosTarefa(id);
+      if(a==='pics-org') openPics(id);
+      if(a==='foto'){ if(isAluna()){ picTaskId=id; document.getElementById('taskFoto').click(); } }
+      if(a==='move') openMove(id);
+      if(a==='note') openComentarios(id);
+      if(a==='sync') atualizaDaNuvem();
+      if(a==='delnote'){ const antes={note:t.note,noteBy:t.noteBy,noteU:t.noteU,coments:JSON.parse(JSON.stringify(t.coments||[]))};
+        t.note='';t.noteBy='';t.noteU=Date.now();t.coments=[];t.u=Date.now();save();logEvt('nota',{id,det:plain(t.text||''),vazia:true});hide();render();
+        toastAcao('Observação apagada','Desfazer',()=>{ Object.assign(t,antes); t.u=Date.now(); save(); render(); vibrate(15); toast('Observação de volta'); },8000); }
+    },90);
   }));
 }
 const TREACTS=[['🎉','Parabéns!'],['😬','Ansioso'],['⭐','Caprichou'],['💛','Orgulho'],['💪','Força'],['🤗','Tamo junto'],['🙂','Tudo bem'],['😕','Fiquei triste'],['⏰','Não esquece']];
@@ -5855,11 +5948,12 @@ function openMoveMotivo(id,day,wid){
     if(outra){ // vai para outra semana: a tarefa muda de lugar na lista
       const de=w.days.find(x=>x.tasks.includes(t));
       if(de){ de.tasks=de.tasks.filter(x=>x!==t); d.tasks.push(t); }
-      t.day=day; t.moveU=Math.max(Date.now(),(t.moveU||0)+1); t.moveBy=USER?USER.nome:''; t.u=Date.now(); save();
+      t.day=day; t.moveU=Math.max(Date.now(),(t.moveU||0)+1); t.moveBy=USER?USER.nome:''; t.u=Date.now(); comentarios(t); resumoComents(t); save();
       logEvt('move',{id,det:plain(t.text||'')+' · '+v,dia:DAYMETA[day][0]});
       current=alvo.id; hide(); openState[d.date]=true; render(); refreshReminder(); vibrate(20); toast('Mudou para '+DAYMETA[day][0]+' '+fmt(d.date)); return;
     }
     if(!await writeMove(id,day)){ ok.disabled=false; return; }
+    comentarios(t); resumoComents(t); t.u=Date.now(); save();
     logEvt('move',{id,det:plain(t.text||'')+' · '+v,dia:DAYMETA[t.day][0]});
     hide(); openState[d.date]=true; render(); refreshReminder(); vibrate(20); toast('Mudou para '+DAYMETA[t.day][0]);
   });
@@ -5870,6 +5964,15 @@ function comentarios(t){ if(!t) return [];
   if(!t.comMig && !t.coments.length && t.note)                    // observacao antiga (ou vinda da nuvem): vira o primeiro comentario, uma vez so
     t.coments=[{k:'c0', by:t.noteBy||'', txt:t.note, t:t.noteU||t.u||Date.now(), likes:{}}];
   t.comMig=1;
+  // Toda justificativa de mudanca de dia tambem faz parte da conversa da tarefa.
+  // comMoveU guarda qual mudanca ja foi importada para evitar comentario duplicado.
+  if(t.moveWhy && t.moveU && Number(t.comMoveU||0)!==Number(t.moveU||0)){
+    const mk='move-'+String(t.moveU);
+    if(!t.coments.some(c=>c&&c.k===mk))
+      t.coments.push({k:mk, by:t.moveBy||'', txt:t.moveWhy, t:t.moveU, likes:{}, tipo:'move'});
+    t.comMoveU=t.moveU;
+  }
+  t.coments.sort((a,b)=>(a.t||0)-(b.t||0));
   return t.coments;
 }
 function resumoComents(t){ const c=comentarios(t); const ult=c[c.length-1];
@@ -5895,6 +5998,9 @@ function quemCurtiu(c){ const nomes=Object.values((c&&c.likes)||{}).filter(Boole
 function openComentarios(id){
   const t=findTask(id); if(!t) return;
   vibrate(8);
+  const moveAntes=Number(t.comMoveU||0);
+  const listaInicial=comentarios(t);
+  if(Number(t.comMoveU||0)!==moveAntes){ resumoComents(t); t.u=Date.now(); save(); }
   const desenha=()=>{
     const lista=comentarios(t);
     const corpo=lista.length?lista.map(c=>{
@@ -5912,17 +6018,44 @@ function openComentarios(id){
     show(`<div class="cmts"><h2>${ICO.msg} Comentários <button class="x">✕</button></h2>
       <p class="quiet ctarefa">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]} · ${esc(plain(t.text))}</p>
       <div class="clista" id="cLista">${corpo}</div>
-      <div class="cbar"><textarea id="cTxt" rows="1" placeholder="Escreve um comentário…" maxlength="600"></textarea>
+      <div class="cpicker nodrag" id="cPicker"><div class="cpbusca"><span class="pklupa" aria-hidden="true">${ICO.lupa}</span><input id="cpTxt" type="search" autocomplete="off" placeholder="Procurar emoji" aria-label="Procurar emoji"></div><div class="cpgrade" id="cpGrade">${EMOJIS.map(e=>`<button type="button" data-ce="${e}" aria-label="Emoji ${e}">${e}</button>`).join('')}</div></div>
+      <div class="cbar"><div class="ccompose"><button type="button" class="cemo" id="cEmo" aria-label="Emojis" title="Emojis">${ICO.sorriso}</button><textarea id="cTxt" rows="1" placeholder="Escreve aqui…" maxlength="600"></textarea></div>
         <button class="cenv" id="cEnv" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m3 20 18-8L3 4l4 8-4 8Z"/></svg></button></div></div>`);
     sheet.classList.add('cmtsheet');
     const lst=document.getElementById('cLista'); if(lst) lst.scrollTop=lst.scrollHeight;
     const ta=document.getElementById('cTxt');
     const cresce=()=>{ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight+2,140)+'px'; };
     ta.addEventListener('input',cresce);
-    const manda=()=>{ const v=ta.value.trim(); if(!v) return;
+    const cp=document.getElementById('cPicker'), ce=document.getElementById('cEmo'), cpTxt=document.getElementById('cpTxt'), cpGrade=document.getElementById('cpGrade');
+    const semAcentoCp=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const filtraCp=()=>{ const q=semAcentoCp(cpTxt.value.trim()); let achou=0; cpGrade.querySelectorAll('[data-ce]').forEach(b=>{ const ok=!q||semAcentoCp(EMOJI_NOMES[b.dataset.ce]||'').includes(q); b.hidden=!ok; if(ok) achou++; }); cpGrade.classList.toggle('vazia',!achou); };
+    const abreCp=()=>{ cp.classList.add('on'); ta.blur(); setTimeout(()=>cpTxt.focus(),80); };
+    const fechaCp=()=>{ cp.classList.remove('on'); cpTxt.value=''; filtraCp(); };
+    cpTxt.addEventListener('input',filtraCp);
+    ce.addEventListener('click',()=>{ const on=!cp.classList.contains('on'); if(on) abreCp(); else ta.focus(); vibrate(8); });
+    const mandaValor=v=>{
+      v=String(v||'').trim();
+      if(!v) return;
       comentarios(t).push({k:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), by:USER?USER.nome:'', txt:v, t:Date.now(), likes:{}});
-      resumoComents(t); t.u=Date.now(); save(); logEvt('nota',{id,det:plain(t.text||''),vazia:false});
-      vibrate(15); SFX.pop(); render(); desenha(); };
+      resumoComents(t); t.u=Date.now(); save();
+      logEvt('nota',{id,det:plain(t.text||''),vazia:false});
+      vibrate(15); SFX.send();
+      fechaCp();
+      render(); desenha();
+    };
+    let ultimoEmojiComentario='', ultimoEmojiComentarioT=0;
+    const enviaEmojiComentario=(emoji,e)=>{
+      if(e){ e.preventDefault(); e.stopPropagation(); }
+      const agora=Date.now();
+      if(emoji===ultimoEmojiComentario && agora-ultimoEmojiComentarioT<400) return;
+      ultimoEmojiComentario=emoji; ultimoEmojiComentarioT=agora;
+      mandaValor(emoji||'');
+    };
+    cpGrade.querySelectorAll('[data-ce]').forEach(b=>{
+      ['click','touchend'].forEach(ev=>b.addEventListener(ev,e=>enviaEmojiComentario(b.dataset.ce||'',e), {passive:false}));
+    });
+    ta.addEventListener('focus',()=>fechaCp());
+    const manda=()=>mandaValor(ta.value);
     document.getElementById('cEnv').addEventListener('click',manda);
     ta.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); manda(); } });
     sheet.querySelectorAll('[data-cur]').forEach(b=>b.addEventListener('click',()=>{ if(!USER) return;
