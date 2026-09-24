@@ -3862,9 +3862,9 @@ function bindMsgs(){
   box.querySelectorAll('.qt').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=findTask(q.dataset.task); if(!t){toast('Essa tarefa não está mais aqui');return;} hide(); const w=DB.weeks[current]; const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; render(); setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); acendeSoEssa(el); } },200); }));
   box.querySelectorAll('.q:not(.qt)').forEach(q=>q.addEventListener('click',e=>{e.stopPropagation(); const t=box.querySelector(`.msg[data-k="${q.dataset.go}"]`); if(t){t.scrollIntoView({behavior:'smooth',block:'center'}); t.classList.add('flash'); setTimeout(()=>t.classList.remove('flash'),1300);} }));
   box.querySelectorAll('.msg').forEach(el=>{
-    let timer=null,sx=0,sy=0,mdx=0,mmode=null,ico=null,armado=false;
+    let timer=null,sx=0,sy=0,mdx=0,mmode=null,ico=null,armado=false,tapT=0;
     let pulaClique=false;
-    const start=(x,y)=>{ if(selMode) return; sx=x;sy=y;mdx=0;mmode=null;armado=false;el.classList.add('pressing');
+    const start=(x,y)=>{ if(selMode) return; sx=x;sy=y;mdx=0;mmode=null;armado=false;tapT=Date.now();el.classList.add('pressing');
       timer=setTimeout(()=>{ el.classList.remove('pressing'); vibrate(30); pulaClique=true; entraSel(el.dataset.k); },450); };
     const cancel=()=>{clearTimeout(timer);el.classList.remove('pressing');};
     const limpa=()=>{ el.classList.remove('sdrag','armed'); el.style.transform=''; if(ico){ico.remove();ico=null;} mdx=0; mmode=null; armado=false; };
@@ -3895,7 +3895,13 @@ function bindMsgs(){
     });
     el.addEventListener('touchstart',e=>{ if(e.target.closest('.rbtn')) return; start(e.touches[0].clientX,e.touches[0].clientY); },{passive:true});
     el.addEventListener('touchmove',e=>{ const t=e.touches[0]; if(move(t.clientX,t.clientY)) e.preventDefault(); },{passive:false});
-    el.addEventListener('touchend',solta); el.addEventListener('touchcancel',solta);
+    el.addEventListener('touchend',e=>{
+      const alvo=e.target;
+      const toqueSimples=!selMode&&!pulaClique&&mmode===null&&(Date.now()-tapT)<400&&!alvo.closest('button,a,.aud,.pic,.file,.q,.qt,.react,.lido,.av,.rbtn');
+      solta();
+      if(toqueSimples){ pulaClique=true; vibrate(10); openMsgMenu(el.dataset.k); }
+    },{passive:true});
+    el.addEventListener('touchcancel',solta);
     el.addEventListener('mousedown',e=>{ if(e.button!==0||e.target.closest('.rbtn')) return; start(e.clientX,e.clientY);
       const mv=ev=>move(ev.clientX,ev.clientY);
       const up=()=>{ document.removeEventListener('mousemove',mv); document.removeEventListener('mouseup',up); solta(); };
