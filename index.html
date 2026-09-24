@@ -704,6 +704,7 @@
   .sw.st-done{background:var(--ok)} .sw.st-doing{background:var(--t55)} .sw.st-todo{background:var(--t59)}
   .task.show-r .sw-r,.task.show-l .sw-l{opacity:1}
   .tin{position:relative;display:flex;gap:10px;align-items:center;padding:9px 8px;background:var(--tbg,#fff);transition:transform .25s ease;will-change:transform}
+  .task{touch-action:pan-y}
   .task.drag .tin{transition:none}
   .task.hint .tin{animation:hintswipe 3.2s ease-in-out 1}
   .task.hint .sw-r{animation:hintr 3.2s ease-in-out 1}
@@ -746,21 +747,39 @@
   .cmts .ctarefa{flex:none;margin:0 0 8px;font-size:12.5px;line-height:1.35;max-height:2.8em;overflow:hidden}
   .cmts .clista{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:2px 2px 14px;display:flex;flex-direction:column;gap:10px;scroll-padding-bottom:14px}
   .cmts .cvazio{margin:18px 0;text-align:center}
-  .cmt{display:flex}
-  .cmt.meu{justify-content:flex-end}
-  .cmt .cbolha{max-width:82%;min-width:112px;background:var(--t08);border-radius:16px;padding:8px 12px 7px}
-  .cmt.meu .cbolha{background:var(--t12)}
-  .cmt .cquem{display:block;font-size:11.5px;font-weight:900;color:var(--lilas-ink);margin-bottom:2px}
-  .cmt .ctxt{font-size:14.5px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
-  .cmt .cpe{display:flex;align-items:center;gap:10px;margin-top:6px;min-height:21px}
+  .cmt{display:flex;gap:8px;align-items:flex-end;max-width:85%;--uc:var(--lilas)}
+  .cmt.meu{align-self:flex-end;flex-direction:row-reverse;margin-left:auto}
+  .cmt:not(.meu){align-self:flex-start}
+  .cmt.cont{margin-top:-4px}
+  .cmt .cmain{max-width:82%;min-width:112px;display:flex;flex-direction:column;min-width:0}
+  .cmt.meu .cmain{align-items:flex-end}
+  .cmt .cav{width:40px;height:40px;border-radius:50%;background:var(--t10);display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex:none;border:3px solid #fff;box-shadow:0 2px 6px rgba(38,36,58,.18);align-self:flex-end}
+  .cmt .cav img{width:100%;height:100%;object-fit:cover}
+  .cmt .cbolha{position:relative;max-width:100%;border-radius:11px;padding:8px 13px 6px;font-size:16px;line-height:1.35;box-shadow:0 2px 6px rgba(38,36,58,.10);min-width:64px}
+  .cmt:not(.meu) .cbolha{background:color-mix(in srgb,var(--uc) 14%,#fff)}
+  .cmt.meu .cbolha{background:var(--uc);color:#fff}
+  .cmt.fim .cbolha::after{content:"";position:absolute;bottom:0;width:12px;height:17px;background:inherit;pointer-events:none;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%}
+  .cmt.fim:not(.meu) .cbolha::after{left:-8px;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M8 0H12V17H0Q8 14 8 0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M8 0H12V17H0Q8 14 8 0Z'/%3E%3C/svg%3E")}
+  .cmt.fim.meu .cbolha::after{right:-8px;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M0 0H4Q4 14 12 17H0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M0 0H4Q4 14 12 17H0Z'/%3E%3C/svg%3E")}
+  .cmt:not(.fim) .cav{visibility:hidden;height:0!important;min-height:0!important;border-width:0;box-shadow:none}
+  .cmt .cquem{display:block;font-size:14px;font-weight:900;color:var(--uc);margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cmt.meu .cquem{color:rgba(255,255,255,.68);font-weight:800}
+  .cmt.cont .cquem,.cmt.mesmo .cquem{display:none}
+  .cmt .ctxt{font-size:16px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
+  .cmt .cpe{display:flex;align-items:center;gap:8px;margin-top:4px;min-height:21px}
   .cmt .chora{font-size:10.5px;font-weight:700;color:var(--soft);margin-right:auto;line-height:1}
-  .cmt .ccur{border:0;background:transparent;padding:0;font:inherit;line-height:1;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:var(--soft);opacity:.6}
-  .cmt .ccur svg{width:21px;height:21px;display:block}
+  .cmt.meu .chora{color:rgba(255,255,255,.85)}
+  .cmt .crea,.cmt .ccur{border:0;background:transparent;padding:0;font:inherit;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;color:var(--soft);opacity:.76;transition:transform .12s,opacity .15s}
+  .cmt.meu .crea,.cmt.meu .ccur{color:rgba(255,255,255,.88)}
+  .cmt .crea svg,.cmt .ccur svg{width:21px;height:21px;display:block}
   .cmt .ccur.on{opacity:1;color:#D64545}
   .cmt .ccur b{font-size:11.5px;font-weight:900}
-  .cmt .ccur:active{transform:scale(.9)}
-  .cmt .cquem-cur{display:block;margin-top:3px;font-size:11px;font-weight:800;color:var(--soft)}
+  .cmt .crea:active,.cmt .ccur:active{transform:scale(.9)}
+  .cmt .creacts{margin-top:4px;padding:0 6px}
+  .cmt.meu .creacts{justify-content:flex-end}
+  .cmt .cquem-cur{display:block;margin-top:3px;font-size:11px;font-weight:800;color:var(--soft);padding:0 6px}
   .cmt.meu .cquem-cur{text-align:right}
+  .cmt .crea.on{opacity:1}
   .cmts .cbar{--c1:var(--t48);--c2:var(--t53);flex:none;display:flex;align-items:flex-end;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));margin:0 -16px;background:#fff;position:sticky;bottom:0}
   .cmts .ccompose{flex:1;min-width:0;display:flex;align-items:flex-end;gap:0;padding:0 3px;border:1px solid color-mix(in srgb,var(--c2) 22%,#fff);border-radius:24px;background:#fff;overflow:hidden;transition:border-color .15s,box-shadow .15s}
   .cmts .ccompose:focus-within{border-color:var(--c2);box-shadow:0 0 0 3px color-mix(in srgb,var(--c2) 14%,transparent)}
@@ -768,7 +787,7 @@
   .cmts .cemo svg{width:24px;height:24px;display:block}
   .cmts .cemo:active{transform:scale(.92)}
   .cmts .cbar textarea{flex:1;min-width:0;min-height:44px;max-height:180px;border:0!important;border-radius:24px;padding:11px 6px;font-size:15px;resize:none;background:transparent;color:var(--ink);box-shadow:none!important;outline:none!important}
-  .cmts .cenv{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px color-mix(in srgb,var(--c2) 24%,transparent);transition:transform .15s,filter .15s}
+  .cmts .cenv{flex:none;width:34px;height:34px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px color-mix(in srgb,var(--c2) 24%,transparent);transition:transform .15s,filter .15s}
   .cmts .cenv:active{transform:scale(.9)}
   .cmts .cenv svg{width:20px;height:20px}
   @media(hover:hover){.cmts .cenv:hover{transform:translateY(-1px)}}
@@ -1089,7 +1108,7 @@
   .puxa.pronto .pz-bar i{background:linear-gradient(90deg,#4FA877,#2F7D4F)}
   @media(prefers-reduced-motion:reduce){.puxa .pz-ic{transition:none}}
   /* trocar de semana: bolinha no meio, arrasta para um lado ou para o outro */
-  .prox-semana{position:relative;display:flex;align-items:center;justify-content:center;gap:56px;height:50px;padding:0 14px;overflow:hidden;border-style:solid;border-color:var(--t18);background:var(--t12);touch-action:pan-y}
+  .prox-semana{position:relative;display:flex;align-items:center;justify-content:center;gap:50px;height:34px;padding:0 14px;overflow:hidden;border-style:solid;border-color:var(--t18);background:var(--t12);touch-action:pan-y}
   .prox-semana .ps-fill{position:absolute;top:0;bottom:0;width:0;z-index:1;pointer-events:none}
   /* a cor e forte junto da bolinha e vai sumindo para tras, como um rastro */
   .prox-semana .ps-dir{left:50%;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));
@@ -1098,11 +1117,11 @@
     -webkit-mask-image:linear-gradient(270deg,transparent,#000 45%);mask-image:linear-gradient(270deg,transparent,#000 45%)}
   .prox-semana .ps-rot{position:relative;z-index:2;font-size:14.5px;font-weight:900;color:var(--lilas-ink);pointer-events:none;transition:color .15s,opacity .15s;white-space:nowrap}
   .prox-semana .ps-rot.claro{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.35)}
-  .prox-semana .ps-pux{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;
+  .prox-semana .ps-pux{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;
     background:var(--lilas);border:0;color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;
-    box-shadow:0 3px 10px rgba(124,77,196,.38);touch-action:none;cursor:grab}
+    box-shadow:0 1px 4px rgba(124,77,196,.18);touch-action:none;cursor:grab}
   .prox-semana .ps-pux:active{cursor:grabbing}
-  .prox-semana .ps-pux svg{width:22px;height:22px}
+  .prox-semana .ps-pux svg{width:13px;height:13px}
   @media(prefers-reduced-motion:reduce){.prox-semana .ps-pux{animation:none}}
   .prox-semana .n.claro{text-shadow:0 1px 3px rgba(0,0,0,.35)}
   .prox-semana .n.claro{color:#fff}
@@ -1457,7 +1476,7 @@
   .react{border:1.5px solid #fff;background:var(--t10);border-radius:999px;padding:0 8px;font-size:15px;font-weight:800;color:var(--ink);line-height:1.6;box-shadow:0 1px 3px rgba(0,0,0,.14)}
   .react.mine{background:var(--t69);border-color:var(--acc)}
   .emo+.reacts{margin-top:-4px}
-  .popwrap{position:fixed;inset:0;z-index:80}
+  .popwrap{position:fixed;inset:0;z-index:180}
   .rpill{position:fixed;background:#26243A;border-radius:999px;padding:6px 8px;display:flex;gap:2px;box-shadow:0 10px 24px rgba(0,0,0,.28);animation:pop .25s cubic-bezier(.36,1.6,.5,1);max-width:calc(100vw - 24px);overflow-x:auto;scrollbar-width:none}
   .rpill::-webkit-scrollbar{display:none}
   .rpill button{border:0;background:transparent;font-size:26px;width:40px;height:40px;border-radius:50%;flex:none;transition:transform .12s}
@@ -2981,6 +3000,37 @@ const SEED_WEEKS = [
 const KEY='minha-semana-7D-v1';
 let cloudRef=null, famRef=null, cloudReady=false, lastPushed='', pushTimer=null, cloudOnline=false, cloudErr='';
 let ONLINE={}, PERFIS={}, CHAT=[], READS={}, seenTimer=null, TYPING={}, typingTimer=null, typingOn=false; try{PERFIS=JSON.parse(localStorage.getItem(KEY+'-perfis')||'{}');}catch(e){} aplicaApelidos();
+// Reações de tarefas: proteção contra snapshots antigos do backend.
+// A chave é tarefa|usuário; enquanto existir aqui, o estado local vence snapshots defasados.
+const TASK_REACTION_PENDING=new Map();
+const TASK_REACTION_BUSY=new Set();
+const reaKey=(id,actor)=>String(id)+'|'+String(actor);
+const reaClone=v=>v==null?null:JSON.parse(JSON.stringify(v));
+const reaEq=(a,b)=>JSON.stringify(a==null?null:a)===JSON.stringify(b==null?null:b);
+function effectiveTaskReacts(id,remoteReacts){
+  const out=remoteReacts?reaClone(remoteReacts):{};
+  for(const [k,p] of [...TASK_REACTION_PENDING.entries()]){
+    if(!p||p.id!==id) continue;
+    const raw=(remoteReacts&&Object.prototype.hasOwnProperty.call(remoteReacts,p.actor))?remoteReacts[p.actor]:null;
+    // Só libera a proteção quando o listener realmente enxergar o valor confirmado pelo backend.
+    if(p.confirmed&&reaEq(raw,p.expected)){ TASK_REACTION_PENDING.delete(k); continue; }
+    if(p.reaction) out[p.actor]=reaClone(p.reaction); else delete out[p.actor];
+  }
+  return Object.keys(out).length?out:null;
+}
+function persistLocalOnly(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} }
+function bindReactionTap(el,fn){
+  if(!el) return;
+  let last=0;
+  const run=e=>{
+    const now=Date.now(); if(now-last<450) return; last=now;
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    fn(e);
+  };
+  if(window.PointerEvent) el.addEventListener('pointerup',run,{passive:false});
+  else el.addEventListener('click',run);
+  el.style.touchAction='manipulation';
+}
 let mem=null;
 function load(){ try{const s=localStorage.getItem(KEY); if(s) return JSON.parse(s);}catch(e){} return mem||{weeks:{}}; }
 function save(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} cloudPush(); }
@@ -3164,10 +3214,11 @@ function mergeRemote(remote){
       const lt=local[rt.id]; if(!lt) return;
       const ptxt=plain(lt.text||'').trim(); const curto='"'+(ptxt.length>42?ptxt.slice(0,42).trim()+'…':ptxt)+'"';
       const ela=isAluna()?'':alunaNome()+' ';
-      if(JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null)){
-        const novos=Object.keys(rt.reacts||{}).filter(u=>!((lt.reacts||{})[u]) && (!USER||u!==USER.id));
-        if(novos.length&&!isAluna()){ const r=rt.reacts[novos[0]]; MERGE_EVT.push((r&&r.e||'💛')+' '+((r&&r.n)||'Alguém')+' deixou um carinho em '+curto); }
-        lt.reacts=rt.reacts||null;changed=true;}
+      const rtReacts=effectiveTaskReacts(rt.id,rt.reacts||null);
+      if(JSON.stringify(rtReacts||null)!==JSON.stringify(lt.reacts||null)){
+        const novos=Object.keys(rtReacts||{}).filter(u=>!((lt.reacts||{})[u]) && (!USER||u!==USER.id));
+        if(novos.length&&!isAluna()){ const r=rtReacts[novos[0]]; MERGE_EVT.push((r&&r.e||'💛')+' '+((r&&r.n)||'Alguém')+' deixou um carinho em '+curto); }
+        lt.reacts=rtReacts||null;changed=true;}
       // estrela: vale sempre a mudança mais recente, venha de quem vier
       const ri=rt.impU||0, li=lt.impU||0;
       if(!!rt.important!==!!lt.important && (ri>li || (!ri&&!li&&(!isAluna()||(rt.u||0)>(lt.u||0))))){
@@ -3191,14 +3242,14 @@ function mergeRemote(remote){
             lt.note=ult?ult.txt:''; lt.noteBy=ult?ult.by:''; lt.noteU=ult?ult.t:0;
             if(apagados.length) lt.comApagados=[...new Set(apagados)];
             changed=true; } } }
-      const diff = rt.status!==lt.status || JSON.stringify(rt.reacts||null)!==JSON.stringify(lt.reacts||null) || (rt.pics||0)!==(lt.pics||0) || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day;
+      const diff = rt.status!==lt.status || JSON.stringify(rtReacts||null)!==JSON.stringify(lt.reacts||null) || (rt.pics||0)!==(lt.pics||0) || !!rt.off!==!!lt.off || (rt.offWhy||'')!==(lt.offWhy||'') || (rt.note||'')!==(lt.note||'') || rt.day!==lt.day;
       if(diff && (!isAluna() || (rt.u||0)>(lt.u||0) || (!lt.u && (rt.u||rt.status!=='todo'||rt.note)))){
         if(rt.status!==lt.status) MERGE_EVT.push(STICON[rt.status]+' '+(ela?ela+STVERB[rt.status]+' '+curto:curto+' agora está '+STLBL[rt.status]));
         else if((rt.note||'')!==(lt.note||'')) MERGE_EVT.push('📝 '+(rt.note?(ela?ela+'escreveu uma observação em '+curto:'Observação nova em '+curto):(ela?ela+'apagou a observação de '+curto:'Observação apagada em '+curto)));
         else if(!!rt.off!==!!lt.off) MERGE_EVT.push(rt.off?('🚫 '+(ela?ela+'cancelou '+curto:curto+' foi cancelada')):('↩️ '+curto+' voltou a valer'));
         else if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
         else if((rt.pics||0)>(lt.pics||0)) MERGE_EVT.push('📸 Foto nova em '+curto);
-        lt.status=rt.status; lt.statusU=rt.statusU||lt.statusU||0; lt.statusBy=rt.statusBy||lt.statusBy||''; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rt.reacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; changed=true; }
+        lt.status=rt.status; lt.statusU=rt.statusU||lt.statusU||0; lt.statusBy=rt.statusBy||lt.statusBy||''; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rtReacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; changed=true; }
     }));
   });
   return changed;
@@ -3898,9 +3949,10 @@ function bindMsgs(){
     el.addEventListener('touchend',e=>{
       const alvo=e.target;
       const toqueSimples=!selMode&&!pulaClique&&mmode===null&&(Date.now()-tapT)<400&&!alvo.closest('button,a,.aud,.pic,.file,.q,.qt,.react,.lido,.av,.rbtn');
+      if(toqueSimples&&e.cancelable) e.preventDefault();   // evita o click fantasma que abre e fecha o menu rapidinho
       solta();
       if(toqueSimples){ pulaClique=true; vibrate(10); openMsgMenu(el.dataset.k); }
-    },{passive:true});
+    },{passive:false});
     el.addEventListener('touchcancel',solta);
     el.addEventListener('mousedown',e=>{ if(e.button!==0||e.target.closest('.rbtn')) return; start(e.clientX,e.clientY);
       const mv=ev=>move(ev.clientX,ev.clientY);
@@ -4302,6 +4354,7 @@ function openMsgMenu(k){
   const mine=e=>m.reacts&&m.reacts[e]&&USER&&m.reacts[e][USER.id];
   wrap.innerHTML=`<div class="rpill" id="rpill"><span class="emos" id="rEmos">${REACTS.map(e=>`<button data-r="${e}" class="${mine(e)?'mine':''}">${e}</button>`).join('')}</span><button class="more" data-more="1" aria-label="Mais emojis">＋</button><span class="sep" aria-hidden="true"></span><span class="acts">${evt?'':`<button class="act" data-a="copy" title="Copiar" aria-label="Copiar">${ICO_COPY}</button>`}<button class="act" data-a="reply" title="Responder" aria-label="Responder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h7a9 9 0 0 1 9 9v2"/></svg></button>${me&&!evt?`<button class="act" data-a="edit" title="Editar" aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7.5 18.5 3 20l1.5-4.5Z"/></svg></button>`:''}${podeApagar?`<button class="act danger" data-a="del" title="Apagar" aria-label="Apagar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button>`:''}</span></div>`;
   document.body.appendChild(wrap);
+  const openedAt=Date.now();
   const pill=wrap.querySelector('#rpill'), menu=pill, emos=wrap.querySelector('#rEmos');
   const place=()=>{
     const pw=pill.offsetWidth, ph=pill.offsetHeight;
@@ -4316,7 +4369,11 @@ function openMsgMenu(k){
     pill.style.top=top+'px'; pill.style.left=left+'px';
   };
   place();
-  wrap.addEventListener('click',e=>{ if(e.target===wrap) closePop(); });
+  const seguraFantasma=e=>{ if(Date.now()-openedAt<350){ e.stopPropagation(); e.preventDefault(); return true; } return false; };
+  pill.addEventListener('click',e=>e.stopPropagation());
+  pill.addEventListener('touchend',e=>e.stopPropagation(),{passive:true});
+  wrap.addEventListener('click',e=>{ if(seguraFantasma(e)) return; if(e.target===wrap) closePop(); });
+  wrap.addEventListener('touchend',e=>{ if(seguraFantasma(e)) return; if(e.target===wrap) closePop(); },{passive:false});
   wrap.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);closePop();}));
   wrap.querySelector('[data-more]').addEventListener('click',()=>{ emos.innerHTML=EMOJIS.map(e=>`<button data-r="${e}">${e}</button>`).join('');
     emos.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{toggleReact(k,b.dataset.r);closePop();})); place(); });
@@ -5291,31 +5348,53 @@ function bindTasks(root=document.getElementById('app')){
       el.addEventListener('keydown',e=>{if(e.target===el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openMenu(id);}});
       return;
     }
-    let timer=null, acende=null, sx=0, sy=0, dx=0, mode=null; // mode: null | 'h' | 'v'
+    let timer=null, acende=null, sx=0, sy=0, dx=0, mode=null, pid=null; // universal: dedo, S Pen e mouse
     const cancelPress=()=>{clearTimeout(timer);clearTimeout(acende);el.classList.remove('pressing');};
-    el.addEventListener('touchstart',ev=>{const t=ev.touches[0];sx=t.clientX;sy=t.clientY;dx=0;mode=null;
-      clearTimeout(acende); acende=setTimeout(()=>{ if(mode===null) el.classList.add('pressing'); },170);   // so acende se o dedo ficar parado
-      timer=setTimeout(()=>{if(mode===null){vibrate(30);el.classList.remove('pressing');openMenu(id);mode='v';}},520);},{passive:true})
-    el.addEventListener('touchmove',ev=>{const t=ev.touches[0];const x=t.clientX-sx,y=t.clientY-sy;
-      if(mode===null){ if(Math.abs(x)>10&&Math.abs(x)>Math.abs(y)*1.4){mode='h';cancelPress();el.classList.add('drag');} else if(Math.abs(y)>10){mode='v';cancelPress();} else return; }
+    const startSwipe=ev=>{
+      if(ev.pointerType==='mouse'&&ev.button!==0) return;
+      if(ev.target.closest('.star,.note.nt,[data-rfx],[data-pics],[data-obs]')) return;
+      sx=ev.clientX; sy=ev.clientY; dx=0; mode=null; pid=ev.pointerId; el._armed=false;
+      try{ el.setPointerCapture(pid); }catch(_){ }
+      clearTimeout(acende); acende=setTimeout(()=>{ if(mode===null) el.classList.add('pressing'); },170);
+      timer=setTimeout(()=>{ if(mode===null){ vibrate(30); el.classList.remove('pressing'); openMenu(id); mode='v'; } },520);
+    };
+    const moveSwipe=ev=>{
+      if(pid===null||ev.pointerId!==pid) return;
+      const x=ev.clientX-sx, y=ev.clientY-sy;
+      if(mode===null){
+        if(Math.abs(x)>10&&Math.abs(x)>Math.abs(y)*1.35){ mode='h'; cancelPress(); el.classList.add('drag'); }
+        else if(Math.abs(y)>10){ mode='v'; cancelPress(); }
+        else return;
+      }
       if(mode!=='h') return;
-      ev.preventDefault(); dx=Math.max(-130,Math.min(130,x));
+      if(ev.cancelable) ev.preventDefault();
+      dx=Math.max(-150,Math.min(150,x));
       tin.style.transform='translateX('+dx+'px)';
       el.classList.toggle('show-r',dx>8); el.classList.toggle('show-l',dx<-8);
-      if(Math.abs(dx)>=70&&!el._armed){el._armed=true;vibrate(15);} if(Math.abs(dx)<70) el._armed=false;
-    },{passive:false});
-    const end=()=>{cancelPress(); if(mode!=='h'){return;} el.classList.remove('drag');
-      if(Math.abs(dx)>=70){el._swiped=true;setTimeout(()=>{el._swiped=false;},500);tin.style.transform='translateX('+(dx>0?'110%':'-110%')+')';setTimeout(()=>swipeAction(id,dx,el),120);}
-      else{tin.style.transform='';el.classList.remove('show-r','show-l');}
-      mode=null;};
-    el.addEventListener('touchend',end); el.addEventListener('touchcancel',end);
-    // desktop: segurar com o mouse abre o menu; arrastar com o mouse também funciona
-    el.addEventListener('mousedown',ev=>{if(ev.button!==0)return;sx=ev.clientX;dx=0;mode=null;
-      clearTimeout(acende); acende=setTimeout(()=>{ if(mode===null) el.classList.add('pressing'); },170);
-      timer=setTimeout(()=>{if(mode===null){el.classList.remove('pressing');openMenu(id);mode='v';}},520);
-      const mv=e=>{const x=e.clientX-sx;if(mode===null&&Math.abs(x)>10){mode='h';cancelPress();el.classList.add('drag');}if(mode!=='h')return;dx=Math.max(-130,Math.min(130,x));tin.style.transform='translateX('+dx+'px)';el.classList.toggle('show-r',dx>8);el.classList.toggle('show-l',dx<-8);};
-      const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);end();};
-      document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);});
+      if(Math.abs(dx)>=62&&!el._armed){ el._armed=true; vibrate(15); }
+      if(Math.abs(dx)<62) el._armed=false;
+    };
+    const endSwipe=ev=>{
+      if(pid!==null&&ev&&ev.pointerId!==undefined&&ev.pointerId!==pid) return;
+      cancelPress();
+      try{ if(pid!==null&&el.hasPointerCapture(pid)) el.releasePointerCapture(pid); }catch(_){ }
+      pid=null;
+      if(mode!=='h'){ mode=null; el.classList.remove('drag','show-r','show-l'); tin.style.transform=''; return; }
+      el.classList.remove('drag');
+      if(Math.abs(dx)>=62){
+        el._swiped=true; setTimeout(()=>{el._swiped=false;},500);
+        tin.style.transform='translateX('+(dx>0?'110%':'-110%')+')';
+        setTimeout(()=>swipeAction(id,dx,el),120);
+      } else {
+        tin.style.transform=''; el.classList.remove('show-r','show-l');
+      }
+      mode=null;
+    };
+    el.addEventListener('pointerdown',startSwipe);
+    el.addEventListener('pointermove',moveSwipe,{passive:false});
+    el.addEventListener('pointerup',endSwipe);
+    el.addEventListener('pointercancel',endSwipe);
+    el.addEventListener('lostpointercapture',endSwipe);
     el.addEventListener('contextmenu',e=>e.preventDefault());
   });
 }
@@ -5416,8 +5495,8 @@ function openTaskAudio(id){
     <div class="alist">${FX_REA.map(x=>`<div class="apitem ${mine&&mine.a===x.fx?'on':''}"><button class="so-play" data-fxp="${x.fx}" aria-label="Ouvir" title="Ouvir"><svg class="ico" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M8 5.6v12.8L19 12Z"/></svg></button><span class="apn">${x.ico} ${x.nome}</span><button data-fxs="${x.fx}" data-nome="${x.nome}" class="go" aria-label="Mandar">✓</button></div>`).join('')}</div>
     ${mine&&mine.a?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu áudio</button>':''}`);
   sheet.querySelectorAll('[data-fxp]').forEach(b=>b.addEventListener('click',()=>{ alternaFx(b.dataset.fxp,b); vibrate(10); }));
-  sheet.querySelectorAll('[data-fxs]').forEach(b=>b.addEventListener('click',()=>{ playFx(b.dataset.fxs); writeTaskReaction(id,'🔊',{a:b.dataset.fxs,an:b.dataset.nome}); }));
-  const del=document.getElementById('reaDel'); if(del) del.addEventListener('click',()=>{ writeTaskReaction(id,null); });
+  sheet.querySelectorAll('[data-fxs]').forEach(b=>bindReactionTap(b,()=>{ playFx(b.dataset.fxs); writeTaskReaction(id,'🔊',{a:b.dataset.fxs,an:b.dataset.nome}); }));
+  const del=document.getElementById('reaDel'); if(del) bindReactionTap(del,()=>{ writeTaskReaction(id,null); });
 }
 function nomeCarinho(e){ const par=(typeof TREACTS!=='undefined'?TREACTS:[]).find(x=>x[0]===e); return par?par[1]:''; }   // nome do carinho pelo emoji
 function openTaskReact(id){
@@ -5427,9 +5506,9 @@ function openTaskReact(id){
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div class="rgrid">${TREACTS.map(([e,n])=>`<button data-e="${e}" class="${mine&&mine.e===e?'on':''}"><span>${e}</span>${n}</button>`).join('')}</div>
     ${mine?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu carinho</button>':''}`);
-  sheet.querySelectorAll('[data-e]').forEach(b=>b.addEventListener('click',()=>{
+  sheet.querySelectorAll('[data-e]').forEach(b=>bindReactionTap(b,()=>{
     writeTaskReaction(id,b.dataset.e); }));
-  const del=document.getElementById('reaDel'); if(del) del.addEventListener('click',()=>{ writeTaskReaction(id,null); });
+  const del=document.getElementById('reaDel'); if(del) bindReactionTap(del,()=>{ writeTaskReaction(id,null); });
 }
 // Estrela: a Maria grava junto com o resto; o pai e a mãe gravam direto na nuvem,
 // com carimbo de hora (impU) para o app saber qual foi a última mudança.
@@ -5454,25 +5533,82 @@ async function writeImportant(id,val,btn){
     render(); toast('Não consegui salvar. Tente de novo'); return false; }
 }
 async function writeTaskReaction(id,emoji,extra){
-  if(!isResponsavel()||!cloudRef||!cloudReady) return;
-  if(!cloudOnline){toast('Conecte à internet para enviar seu carinho');return;}
-  const actor=USER.id, name=USER.nome, ref=cloudRef;
+  if(!isResponsavel()||!cloudRef||!cloudReady){ toast('Espera a nuvem conectar para enviar seu carinho'); return false; }
+  if(!cloudOnline){ toast('Conecte à internet para enviar seu carinho'); return false; }
+  const actor=USER.id, name=USER.nome, ref=cloudRef, key=reaKey(id,actor), t=findTask(id);
+  if(!t) return false;
+  // Impede duplo acionamento touch+click e toques repetidos durante a mesma gravação.
+  if(TASK_REACTION_BUSY.has(key)||TASK_REACTION_PENDING.has(key)){ return false; }
+  TASK_REACTION_BUSY.add(key);
+
+  const anterior=t.reacts&&t.reacts[actor]?reaClone(t.reacts[actor]):null;
+  const mesmoEmoji=!!(emoji&&anterior&&anterior.e===emoji&&(!(extra&&extra.a)||anterior.a===extra.a));
+  const remover=!emoji||mesmoEmoji;
+  const localReaction=remover?null:Object.assign({e:emoji,n:name,t:Date.now()},extra||{});
+
+  // Otimista: aparece imediatamente e fica protegido contra snapshots antigos.
+  TASK_REACTION_PENDING.set(key,{id,actor,reaction:reaClone(localReaction),expected:null,confirmed:false,started:Date.now()});
+  t.reacts=t.reacts||{};
+  if(localReaction) t.reacts[actor]=reaClone(localReaction); else delete t.reacts[actor];
+  if(!Object.keys(t.reacts).length) t.reacts=null;
+  persistLocalOnly();
+  hide(); render(); vibrate(20); SFX.pop();
+
+  let path=null, setOk=false;
   try{
     const snap=await ref.once('value');
-    if(!isResponsavel()||USER.id!==actor||cloudRef!==ref) return;
-    let path=null;
-    Object.entries(snap.val()?.weeks||{}).forEach(([week,w])=>(w.days||[]).forEach((d,di)=>(d.tasks||[]).forEach((t,ti)=>{if(t.id===id)path='weeks/'+week+'/days/'+di+'/tasks/'+ti+'/reacts/'+actor;})));
-    if(!path){toast('Essa tarefa ainda não está disponível para receber carinhos');return;}
-    const reaction=emoji?Object.assign({e:emoji,n:name,t:Date.now()},extra||{}):null;
-    await ref.child(path).set(reaction);
-    if(USER?.id!==actor) return;
-    const t=findTask(id); if(t){t.reacts=t.reacts||{};if(reaction)t.reacts[actor]=reaction;else delete t.reacts[actor];}
-    mem=DB;try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}
-    // a reacao tambem aparece na conversa, dizendo quem fez e o que fez
-    if(reaction&&famRef){ try{ famRef.child('chat').push({by:actor,text:'',t:firebase.database.ServerValue.TIMESTAMP,
-      att:{kind:'evento',tipo:(extra&&extra.a)?'audio_rea':'carinho',id,det:semEmoji(plain(t?t.text:'')),emoji:emoji||'',nome:(extra&&extra.a)?(extra.an||''):nomeCarinho(emoji)}}); }catch(e){} }
-    hide();render();vibrate(20);SFX.pop();toast(emoji?(extra&&extra.a?'Áudio enviado':'Carinho enviado '+emoji):'Tirei sua reação');
-  }catch(e){toast('Não consegui salvar o carinho. Tente novamente.');}
+    if(!isResponsavel()||USER.id!==actor||cloudRef!==ref) throw new Error('context_changed');
+    Object.entries(snap.val()?.weeks||{}).forEach(([week,w])=>(w.days||[]).forEach((d,di)=>(d.tasks||[]).forEach((x,ti)=>{
+      if(x.id===id) path='weeks/'+week+'/days/'+di+'/tasks/'+ti+'/reacts/'+actor;
+    })));
+    if(!path) throw new Error('task_not_found');
+
+    // O timestamp do banco vira a fonte final de verdade após confirmação.
+    const backendReaction=localReaction?Object.assign({},localReaction,{t:firebase.database.ServerValue.TIMESTAMP}):null;
+    await ref.child(path).set(backendReaction);
+    setOk=true;
+
+    // Lê de volta exatamente o que o backend confirmou e sincroniza o estado local com esse retorno.
+    const confirmedSnap=await ref.child(path).once('value');
+    const confirmed=confirmedSnap.val()||null;
+    const pending=TASK_REACTION_PENDING.get(key);
+    if(pending){ pending.confirmed=true; pending.expected=reaClone(confirmed); pending.reaction=reaClone(confirmed); }
+
+    const current=findTask(id);
+    if(current&&USER&&USER.id===actor){
+      current.reacts=current.reacts||{};
+      if(confirmed) current.reacts[actor]=reaClone(confirmed); else delete current.reacts[actor];
+      if(!Object.keys(current.reacts).length) current.reacts=null;
+      persistLocalOnly();
+      render();
+    }
+
+    // A reação também aparece na conversa apenas quando houve inclusão/troca, nunca ao remover.
+    if(confirmed&&famRef){
+      try{ famRef.child('chat').push({by:actor,text:'',t:firebase.database.ServerValue.TIMESTAMP,
+        att:{kind:'evento',tipo:(extra&&extra.a)?'audio_rea':'carinho',id,det:semEmoji(plain(current?current.text:t.text||'')),emoji:confirmed.e||emoji||'',nome:(extra&&extra.a)?(extra.an||''):nomeCarinho(confirmed.e||emoji)}}); }catch(e){}
+    }
+    toast(confirmed?((extra&&extra.a)?'Áudio enviado':'Carinho salvo '+(confirmed.e||emoji)):'Tirei sua reação');
+
+    // Se o listener não chegar imediatamente, mantém uma pequena janela de proteção.
+    setTimeout(()=>{ const p=TASK_REACTION_PENDING.get(key); if(p&&p.confirmed&&reaEq(p.expected,confirmed)) TASK_REACTION_PENDING.delete(key); },3000);
+    return true;
+  }catch(e){
+    if(!setOk){
+      // Só faz rollback se a escrita realmente não chegou ao servidor.
+      const current=findTask(id);
+      if(current){ current.reacts=current.reacts||{}; if(anterior) current.reacts[actor]=anterior; else delete current.reacts[actor]; if(!Object.keys(current.reacts).length) current.reacts=null; persistLocalOnly(); render(); }
+      TASK_REACTION_PENDING.delete(key);
+      toast(e&&e.message==='task_not_found'?'Essa tarefa ainda não está disponível para receber carinhos':'Não consegui salvar o carinho. Tente novamente.');
+    }else{
+      // A escrita foi confirmada pelo set; não apaga local só porque a leitura de confirmação falhou.
+      toast('Carinho salvo. Aguardando sincronização do banco.');
+      setTimeout(()=>TASK_REACTION_PENDING.delete(key),5000);
+    }
+    return false;
+  }finally{
+    TASK_REACTION_BUSY.delete(key);
+  }
 }
 let reaSeen=0; try{reaSeen=+localStorage.getItem(KEY+'-reaseen')||0;}catch(e){}
 function allReacts(){ const out=[];
@@ -6004,22 +6140,98 @@ function quemCurtiu(c){ const nomes=Object.values((c&&c.likes)||{}).filter(Boole
 function openComentarios(id){
   const t=findTask(id); if(!t) return;
   vibrate(8);
-  const moveAntes=Number(t.comMoveU||0);
   const listaInicial=comentarios(t);
-  if(Number(t.comMoveU||0)!==moveAntes){ resumoComents(t); t.u=Date.now(); save(); }
+  resumoComents(t);
+
+  const userByName=nome=>{
+    if(USER&&nome===USER.nome) return USER;
+    const achou=(USERS||[]).find(u=>u.nome===nome||u.id===nome);
+    return achou||null;
+  };
+  const corByName=nome=>{
+    const u=userByName(nome);
+    return u?corDe(u):'var(--lilas)';
+  };
+  const avatarByName=nome=>{
+    const ch=((nome||'?').trim().charAt(0)||'?').toUpperCase();
+    const u=userByName(nome);
+    if(u) return `<span class="cav">${avatarHtml(u)}</span>`;
+    return `<span class="cav cav-initial">${esc(ch)}</span>`;
+  };
+  const quemReagiuComent=(c,e)=>{
+    const nomes=Object.values(((c.reacts||{})[e]||{})).filter(Boolean);
+    if(!nomes.length) return '';
+    return nomes.length===1 ? nomes[0] : `${nomes[0]} e mais ${nomes.length-1}`;
+  };
+  const reactsComentHtml=c=>{
+    const r=c.reacts||{};
+    const ks=Object.keys(r).filter(e=>r[e]&&Object.keys(r[e]).length);
+    if(!ks.length) return '';
+    return `<div class="reacts creacts">${ks.map(e=>{ const nomes=quemReagiuComent(c,e); const n=Object.keys(r[e]||{}).length; const mine=!!(USER&&r[e]&&r[e][USER.id]); return `<button type="button" class="react ${mine?'mine':''}" data-creact="${c.k}" data-r="${e}" title="${esc(nomes||'')}" aria-label="Reação ${e}">${e}${n>1?` <span>${n}</span>`:''}</button>`; }).join('')}</div>`;
+  };
+  const toggleCommentReaction=(ck,emoji)=>{
+    if(!USER) return;
+    const c=comentarios(t).find(x=>x.k===ck); if(!c) return;
+    c.reacts=c.reacts||{};
+    c.reacts[emoji]=c.reacts[emoji]||{};
+    if(c.reacts[emoji][USER.id]) delete c.reacts[emoji][USER.id];
+    else c.reacts[emoji][USER.id]=USER.nome;
+    if(!Object.keys(c.reacts[emoji]).length) delete c.reacts[emoji];
+    if(!Object.keys(c.reacts).length) delete c.reacts;
+    resumoComents(t); t.u=Date.now(); save(); vibrate(10); render(); desenha();
+  };
+  const openCommentReactions=(ck,anchor)=>{
+    const c=comentarios(t).find(x=>x.k===ck); if(!c) return;
+    closePop();
+    const wrap=document.createElement('div'); wrap.className='popwrap';
+    wrap.innerHTML=`<div class="rpill" id="cRpill">${REACTS.map(e=>`<button type="button" data-r="${e}" class="${c.reacts&&c.reacts[e]&&USER&&c.reacts[e][USER.id]?'mine':''}" aria-label="${e}">${e}</button>`).join('')}</div>`;
+    document.body.appendChild(wrap);
+    const openedAt=Date.now();
+    const pill=wrap.querySelector('#cRpill');
+    const place=()=>{
+      const r=(anchor||wrap).getBoundingClientRect(), vv=window.visualViewport;
+      const vl=vv?vv.offsetLeft:0, vt=vv?vv.offsetTop:0, vw=vv?vv.width:innerWidth, vh=vv?vv.height:innerHeight, edge=10;
+      let top=r.top-pill.offsetHeight-10;
+      if(top<vt+edge) top=Math.min(vt+vh-pill.offsetHeight-edge,r.bottom+10);
+      let left=r.left+r.width/2-pill.offsetWidth/2;
+      left=Math.max(vl+edge,Math.min(left,vl+vw-pill.offsetWidth-edge));
+      pill.style.top=top+'px'; pill.style.left=left+'px';
+    };
+    place();
+    const seguraFantasma=e=>{ if(Date.now()-openedAt<350){ e.stopPropagation(); e.preventDefault(); return true; } return false; };
+    pill.addEventListener('click',e=>e.stopPropagation());
+    pill.addEventListener('touchend',e=>e.stopPropagation(),{passive:true});
+    wrap.addEventListener('click',e=>{ if(seguraFantasma(e)) return; if(e.target===wrap) closePop(); });
+    wrap.addEventListener('touchend',e=>{ if(seguraFantasma(e)) return; if(e.target===wrap) closePop(); },{passive:false});
+    pill.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{ closePop(); toggleCommentReaction(ck,b.dataset.r); }));
+  };
+
   const desenha=()=>{
     const lista=comentarios(t);
-    const corpo=lista.length?lista.map(c=>{
+    const corpo=lista.length?lista.map((c,i,arr)=>{
       const meu=USER&&c.by===USER.nome;
       const curtiu=USER&&c.likes&&c.likes[USER.id];
       const n=c.likes?Object.keys(c.likes).length:0;
-      return `<div class="cmt ${meu?'meu':''}" data-c="${c.k}">
-        <div class="cbolha"><span class="cquem">${esc(meu?'Eu':(c.by||'Alguém'))}</span>
-          <div class="ctxt">${esc(c.txt)}</div>
-          <div class="cpe"><span class="chora">${fmtHora(c.t)}</span>
-            <button type="button" class="ccur ${curtiu?'on':''}" data-cur="${c.k}" aria-label="${curtiu?'Descurtir':'Curtir'}"><svg viewBox="0 0 24 24" fill="${curtiu?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.6-7-9.3A4 4 0 0 1 12 8a4 4 0 0 1 7 2.7C19 15.4 12 20 12 20Z"/></svg>${n?`<b>${n}</b>`:''}</button>
+      const prev=arr[i-1], prox=arr[i+1];
+      const cont=prev&&prev.by===c.by&&(c.t||0)-(prev.t||0)<5*60*1000;
+      const mesmo=!!(prev&&prev.by===c.by);
+      const fim=!(prox&&prox.by===c.by);
+      return `<div class="cmt ${meu?'meu':''} ${cont?'cont':''} ${mesmo?'mesmo':''} ${fim?'fim':''}" data-c="${c.k}" style="--uc:${corByName(c.by)}">
+        ${meu?'':avatarByName(c.by)}
+        <div class="cmain">
+          <div class="cbolha">
+            <span class="cquem">${esc(meu?'Eu':(c.by||'Alguém'))}</span>
+            <div class="ctxt">${esc(c.txt)}</div>
+            <div class="cpe"><span class="chora">${fmtHora(c.t)}</span>
+              <button type="button" class="crea" data-crea="${c.k}" aria-label="Reagir" title="Reagir">${ICO.sorriso}</button>
+              <button type="button" class="ccur ${curtiu?'on':''}" data-cur="${c.k}" aria-label="${curtiu?'Descurtir':'Curtir'}" title="${curtiu?'Descurtir':'Curtir'}"><svg viewBox="0 0 24 24" fill="${curtiu?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.6-7-9.3A4 4 0 0 1 12 8a4 4 0 0 1 7 2.7C19 15.4 12 20 12 20Z"/></svg>${n?`<b>${n}</b>`:''}</button>
+            </div>
           </div>
-          <span class="cquem-cur" data-quem="${c.k}"${n?'':' hidden'}>${esc(quemCurtiu(c))}</span></div></div>`; }).join('')
+          ${reactsComentHtml(c)}
+          <span class="cquem-cur" data-quem="${c.k}"${n?'':' hidden'}>${esc(quemCurtiu(c))}</span>
+        </div>
+        ${meu?avatarByName(c.by):''}
+      </div>`; }).join('')
       : '<p class="quiet cvazio">Nenhum comentário ainda. Escreve o primeiro!</p>';
     show(`<div class="cmts"><h2>${ICO.msg} Comentários <button class="x">✕</button></h2>
       <p class="quiet ctarefa">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]} · ${esc(plain(t.text))}</p>
@@ -6033,7 +6245,7 @@ function openComentarios(id){
     const cresce=()=>{ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight+2,140)+'px'; };
     ta.addEventListener('input',cresce);
     const cp=document.getElementById('cPicker'), ce=document.getElementById('cEmo'), cpTxt=document.getElementById('cpTxt'), cpGrade=document.getElementById('cpGrade');
-    const semAcentoCp=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const semAcentoCp=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
     const filtraCp=()=>{ const q=semAcentoCp(cpTxt.value.trim()); let achou=0; cpGrade.querySelectorAll('[data-ce]').forEach(b=>{ const ok=!q||semAcentoCp(EMOJI_NOMES[b.dataset.ce]||'').includes(q); b.hidden=!ok; if(ok) achou++; }); cpGrade.classList.toggle('vazia',!achou); };
     const abreCp=()=>{ cp.classList.add('on'); ta.blur(); setTimeout(()=>cpTxt.focus(),80); };
     const fechaCp=()=>{ cp.classList.remove('on'); cpTxt.value=''; filtraCp(); };
@@ -6042,7 +6254,7 @@ function openComentarios(id){
     const mandaValor=v=>{
       v=String(v||'').trim();
       if(!v) return;
-      comentarios(t).push({k:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), by:USER?USER.nome:'', txt:v, t:Date.now(), likes:{}});
+      comentarios(t).push({k:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), by:USER?USER.nome:'', txt:v, t:Date.now(), likes:{}, reacts:{}});
       resumoComents(t); t.u=Date.now(); save();
       logEvt('nota',{id,det:plain(t.text||''),vazia:false});
       vibrate(15); SFX.send();
@@ -6064,19 +6276,26 @@ function openComentarios(id){
     const manda=()=>mandaValor(ta.value);
     document.getElementById('cEnv').addEventListener('click',manda);
     ta.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); manda(); } });
-    sheet.querySelectorAll('[data-cur]').forEach(b=>b.addEventListener('click',()=>{ if(!USER) return;
+    sheet.querySelectorAll('[data-cur]').forEach(b=>b.addEventListener('click',e=>{ if(!USER) return; e.preventDefault(); e.stopPropagation();
       const c=comentarios(t).find(x=>x.k===b.dataset.cur); if(!c) return;
       c.likes=c.likes||{}; const tinha=!!c.likes[USER.id];
       if(tinha) delete c.likes[USER.id]; else c.likes[USER.id]=USER.nome;
-      t.u=Date.now(); save(); vibrate(10);
-      const n=Object.keys(c.likes).length;                       // muda so o coracao, sem repintar a tela
+      resumoComents(t); t.u=Date.now(); save(); vibrate(10);
+      const n=Object.keys(c.likes).length;
       b.classList.toggle('on',!tinha);
       b.setAttribute('aria-label',tinha?'Curtir':'Descurtir');
-      b.querySelector('svg').setAttribute('fill',tinha?'none':'currentColor');
-      let cnt=b.querySelector('b'); if(n){ if(!cnt){ cnt=document.createElement('b'); b.appendChild(cnt); } cnt.textContent=n; } else if(cnt) cnt.remove();
+      b.setAttribute('title',tinha?'Curtir':'Descurtir');
+      const svg=b.querySelector('svg'); if(svg) svg.setAttribute('fill',tinha?'none':'currentColor');
+      let cnt=b.querySelector('b');
+      if(n){ if(!cnt){ cnt=document.createElement('b'); b.appendChild(cnt); } cnt.textContent=n; }
+      else if(cnt) cnt.remove();
       const quem=sheet.querySelector(`[data-quem="${c.k}"]`);
       if(quem){ quem.textContent=quemCurtiu(c); quem.hidden=!n; }
-      if(!tinha){ b.animate([{transform:'scale(1)'},{transform:'scale(1.35)'},{transform:'scale(1)'}],{duration:280,easing:'cubic-bezier(.3,1.2,.4,1)'}); } }));
+      if(!tinha) b.animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:220,easing:'ease-out'});
+    }));
+    sheet.querySelectorAll('[data-crea]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); vibrate(10); openCommentReactions(b.dataset.crea,b); }));
+    sheet.querySelectorAll('[data-creact][data-r]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); toggleCommentReaction(b.dataset.creact,b.dataset.r); }));
+    sheet.querySelectorAll('.cmt[data-c] .cbolha').forEach(el=>el.addEventListener('click',e=>{ if(e.target.closest('button,.react')) return; const wrap=el.closest('.cmt[data-c]'); if(!wrap) return; vibrate(8); openCommentReactions(wrap.dataset.c,el); }));
     // segurar o comentario abre o Apagar, como na conversa
     sheet.querySelectorAll('.cmt[data-c]').forEach(el=>{
       const c=comentarios(t).find(x=>x.k===el.dataset.c); if(!c) return;
@@ -6095,7 +6314,7 @@ function openComentarios(id){
           t.comApagados=[...new Set([...(t.comApagados||[]),c.k])];
           t.coments=comentarios(t).filter(x=>x.k!==c.k); resumoComents(t); t.u=Date.now(); save();
           closePop(); vibrate(20); render(); desenha();
-          toastAcao('Comentário apagado','Desfazer',()=>{                                    // traz o comentário de volta
+          toastAcao('Comentário apagado','Desfazer',()=>{
             t.comApagados=(t.comApagados||[]).filter(k=>k!==copia.k);
             const lista=comentarios(t); lista.splice(Math.max(0,Math.min(pos,lista.length)),0,copia);
             resumoComents(t); t.u=Date.now(); save(); vibrate(15); render(); desenha(); toast('Comentário de volta'); },8000); });
