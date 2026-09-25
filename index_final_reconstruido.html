@@ -3019,6 +3019,83 @@ function effectiveTaskReacts(id,remoteReacts){
   return Object.keys(out).length?out:null;
 }
 function persistLocalOnly(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} }
+// Comentarios de tarefa: junta as duas listas sem perder nada. Mesma chave, vale a versao mudada por ultimo (c.u).
+function juntaComents(a,b,apagados){
+  const fora=new Set(apagados||[]), out={};
+  [...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])].forEach(c=>{
+    if(!c||!c.k||fora.has(c.k)) return;
+    const tem=out[c.k];
+    if(!tem||((c.u||c.t||0)>=(tem.u||tem.t||0))) out[c.k]=c;
+  });
+  return Object.values(out).sort((x,y)=>(x.t||0)-(y.t||0));
+}
+// apagado dos dois lados, menos o que este aparelho tem vivo agora (isso e o "desfazer")
+function juntaApagados(remotos,locais,vivos){
+  const tem=new Set((vivos||[]).map(c=>c&&c.k).filter(Boolean));
+  return [...new Set([...(remotos||[]),...(locais||[])])].filter(k=>!tem.has(k));
+}
+function achaCaminhoTarefa(val,id){ let path=null;
+  Object.entries((val&&val.weeks)||{}).forEach(([week,w])=>(w.days||[]).forEach((d,di)=>(d.tasks||[]).forEach((x,ti)=>{ if(x&&x.id===id) path='weeks/'+week+'/days/'+di+'/tasks/'+ti; })));
+  return path; }
+// o que o pai e a mae escreveram e ainda nao subiu (nuvem fora do ar): tenta de novo quando voltar
+let COM_FILA=[]; try{COM_FILA=JSON.parse(localStorage.getItem(KEY+'-comfila')||'[]');}catch(e){}
+function guardaNaFila(id){ if(!COM_FILA.includes(id)) COM_FILA.push(id); try{localStorage.setItem(KEY+'-comfila',JSON.stringify(COM_FILA));}catch(e){} }
+function tiraDaFila(id){ COM_FILA=COM_FILA.filter(x=>x!==id); try{localStorage.setItem(KEY+'-comfila',JSON.stringify(COM_FILA));}catch(e){} }
+// A Maria grava o pacote inteiro; o pai e a mae gravam so aquela tarefa, direto na nuvem.
+async function gravaComents(id,quieto){
+  const t=findTask(id); if(!t) return false;
+  t.u=Date.now();
+  if(isAluna()){ save(); return true; }
+  persistLocalOnly();
+  if(!isResponsavel()) return false;
+  if(!cloudRef||!cloudReady||!cloudOnline){ guardaNaFila(id); if(!quieto) toast('Sem internet agora. Gravo assim que conectar'); return false; }
+  const ref=cloudRef, actor=USER?USER.id:'';
+  const locais=Array.isArray(t.coments)?JSON.parse(JSON.stringify(t.coments)):[];
+  const apagadosLocais=(t.comApagados||[]).slice();
+  try{
+    const snap=await ref.once('value');
+    if(!isResponsavel()||!USER||USER.id!==actor||cloudRef!==ref) return false;
+    const path=achaCaminhoTarefa(snap.val(),id);
+    if(!path){ guardaNaFila(id); if(!quieto) toast('Essa tarefa ainda nao esta na nuvem'); return false; }
+    const res=await ref.child(path).transaction(remote=>{
+      if(!remote) return;
+      const ap=juntaApagados(remote.comApagados,apagadosLocais,locais);
+      const juntos=juntaComents(remote.coments,locais,ap);
+      const ult=juntos[juntos.length-1];
+      return Object.assign({},remote,{coments:juntos.length?juntos:null,comApagados:ap.length?ap:null,
+        note:ult?ult.txt:'',noteBy:ult?ult.by:'',noteU:ult?ult.t:0,u:Date.now()});
+    });
+    if(!res.committed){ guardaNaFila(id); if(!quieto) toast('Nao consegui gravar agora. Tento de novo'); return false; }
+    const val=res.snapshot.val()||{};
+    const atual=findTask(id);
+    if(atual){ atual.coments=Array.isArray(val.coments)?val.coments:[]; atual.comApagados=val.comApagados||[]; resumoComents(atual); persistLocalOnly(); }
+    tiraDaFila(id);
+    return true;
+  }catch(e){ guardaNaFila(id); if(!quieto) toast('Nao consegui gravar o comentario. Tento de novo'); return false; }
+}
+// observacao escrita na mao (sem comentario): mesmo caminho, campos proprios
+async function gravaNota(id){
+  const t=findTask(id); if(!t) return false;
+  t.u=Date.now();
+  if(isAluna()){ save(); return true; }
+  persistLocalOnly();
+  if(!isResponsavel()) return false;
+  if(!cloudRef||!cloudReady||!cloudOnline){ guardaNaFila(id); toast('Sem internet agora. Gravo assim que conectar'); return false; }
+  const ref=cloudRef, actor=USER?USER.id:'', nota={note:t.note||'',noteBy:t.noteBy||'',noteU:t.noteU||0,u:t.u};
+  try{
+    const snap=await ref.once('value');
+    if(!isResponsavel()||!USER||USER.id!==actor||cloudRef!==ref) return false;
+    const path=achaCaminhoTarefa(snap.val(),id);
+    if(!path){ guardaNaFila(id); toast('Essa tarefa ainda nao esta na nuvem'); return false; }
+    await ref.child(path).update(nota);
+    tiraDaFila(id);
+    return true;
+  }catch(e){ guardaNaFila(id); toast('Nao consegui gravar a observacao. Tento de novo'); return false; }
+}
+function mandaFilaDeComents(){
+  if(!isResponsavel()||!cloudRef||!cloudReady||!cloudOnline||!COM_FILA.length) return;
+  [...new Set(COM_FILA)].forEach(id=>{ gravaComents(id,true); });
+}
 function bindReactionTap(el,fn){
   if(!el) return;
   let last=0;
@@ -3145,7 +3222,7 @@ function cloudStart(){
   clearTimeout(carregTimer); carregTimer=setTimeout(tiraCarregando,7000);
   if(!firebase.apps.length) firebase.initializeApp(FIREBASE);
   const db=firebase.database();
-  db.ref('.info/connected').on('value',sn=>{cloudOnline=!!sn.val(); updateSyncBadge(); if(!cloudOnline) setTimeout(()=>{ if(!cloudOnline) tiraCarregando(); },3000);});
+  db.ref('.info/connected').on('value',sn=>{cloudOnline=!!sn.val(); updateSyncBadge(); if(cloudOnline) setTimeout(mandaFilaDeComents,600); if(!cloudOnline) setTimeout(()=>{ if(!cloudOnline) tiraCarregando(); },3000);});
   famRef=db.ref('familias/'+famCode);
   cloudRef=famRef.child('dados');
   // migração: versão anterior gravava as semanas na raiz da família
@@ -3197,6 +3274,7 @@ function cloudStart(){
     if(isAluna()){ let after=0; Object.values(DB.weeks).forEach(w=>allTasks(w).forEach(t=>{after+=t.reacts?Object.keys(t.reacts).length:0;}));
       if(after>before&&!primeira){ vibrate([40,40,80]); SFX.party(); toast('Você recebeu um carinho! Toca no coração da barra'); notifyEvt('💛 Um carinho para você','Alguém reagiu a uma tarefa sua','carinho'); } updateReaFab(); }
     if(changed){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} render(); refreshReminder(); }
+    mandaFilaDeComents();
     cloudPush(); // envia o que só existe aqui (ex.: semana nova)
   },err=>{ cloudErr=err&&err.code||'erro'; tiraCarregando(); updateSyncBadge(); toast('Sem permissão no banco. Confira as regras do Firebase.'); });
 }
@@ -3232,10 +3310,9 @@ function mergeRemote(remote){
       }
       // comentarios: junta os dois lados sempre, sem perder nenhum
       { const meus=Array.isArray(lt.coments)?lt.coments:[], deles=Array.isArray(rt.coments)?rt.coments:[];
-        if(meus.length||deles.length){ const vistos={};
-          const juntos=[...meus,...deles].filter(c=>c&&c.k&&!vistos[c.k]&&(vistos[c.k]=1)).sort((a,b)=>(a.t||0)-(b.t||0));
-          const apagados=(lt.comApagados||[]).concat(rt.comApagados||[]);
-          const limpos=juntos.filter(c=>!apagados.includes(c.k));
+        if(meus.length||deles.length){
+          const apagados=[...new Set((lt.comApagados||[]).concat(rt.comApagados||[]))];
+          const limpos=juntaComents(meus,deles,apagados);
           if(JSON.stringify(limpos)!==JSON.stringify(meus)){
             if(limpos.length>meus.length) MERGE_EVT.push('💬 Comentário novo em '+curto);
             lt.coments=limpos; const ult=limpos[limpos.length-1];
@@ -3257,9 +3334,14 @@ function mergeRemote(remote){
 function cloudPush(now){
   if(!cloudRef||!cloudReady||!isAluna()) return;
   clearTimeout(pushTimer);
-  const doIt=()=>{ if(!isAluna()||!cloudRef||!cloudReady) return; const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.transaction(remote=>{ if(!isAluna()) return; const next=JSON.parse(json); const reactions={}, estrelas={}, datas={}; Object.values(remote?.weeks||{}).forEach(w=>(w.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{reactions[t.id]=t.reacts||null; datas[t.id]={day:t.day,u:t.moveU||0,by:t.moveBy||''}; estrelas[t.id]={imp:!!t.important,u:t.impU||0,by:t.impBy||''};}))); Object.values(next.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{if(Object.prototype.hasOwnProperty.call(reactions,t.id)) t.reacts=reactions[t.id];
+  const doIt=()=>{ if(!isAluna()||!cloudRef||!cloudReady) return; const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.transaction(remote=>{ if(!isAluna()) return; const next=JSON.parse(json); const reactions={}, estrelas={}, datas={}, conversas={}; Object.values(remote?.weeks||{}).forEach(w=>(w.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{reactions[t.id]=t.reacts||null; datas[t.id]={day:t.day,u:t.moveU||0,by:t.moveBy||''}; estrelas[t.id]={imp:!!t.important,u:t.impU||0,by:t.impBy||''}; conversas[t.id]={c:t.coments||null,ap:t.comApagados||null};}))); Object.values(next.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{if(Object.prototype.hasOwnProperty.call(reactions,t.id)) t.reacts=reactions[t.id];
       const date=datas[t.id];if(date&&date.u>(t.moveU||0)){t.day=date.day;t.moveU=date.u;t.moveBy=date.by;}
-      const e=estrelas[t.id]; if(e && e.u>(t.impU||0)){ t.important=e.imp; t.impU=e.u; t.impBy=e.by; } }))); return next; }).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
+      const e=estrelas[t.id]; if(e && e.u>(t.impU||0)){ t.important=e.imp; t.impU=e.u; t.impBy=e.by; }
+      const cv=conversas[t.id];                                          // comentario do pai ou da mae continua valendo
+      if(cv){ const ap=juntaApagados(cv.ap,t.comApagados,t.coments);
+        const juntos=juntaComents(cv.c,t.coments,ap); const ult=juntos[juntos.length-1];
+        t.coments=juntos.length?juntos:null; t.comApagados=ap.length?ap:null;
+        t.note=ult?ult.txt:''; t.noteBy=ult?ult.by:''; t.noteU=ult?ult.t:0; } }))); return next; }).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
   if(now) doIt(); else pushTimer=setTimeout(doIt,400);
 }
 function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b) return;
@@ -5472,9 +5554,10 @@ function openMenu(id){
       if(a==='move') openMove(id);
       if(a==='note') openComentarios(id);
       if(a==='sync') atualizaDaNuvem();
-      if(a==='delnote'){ const antes={note:t.note,noteBy:t.noteBy,noteU:t.noteU,coments:JSON.parse(JSON.stringify(t.coments||[]))};
-        t.note='';t.noteBy='';t.noteU=Date.now();t.coments=[];t.u=Date.now();save();logEvt('nota',{id,det:plain(t.text||''),vazia:true});hide();render();
-        toastAcao('Observação apagada','Desfazer',()=>{ Object.assign(t,antes); t.u=Date.now(); save(); render(); vibrate(15); toast('Observação de volta'); },8000); }
+      if(a==='delnote'){ const antes={note:t.note,noteBy:t.noteBy,noteU:t.noteU,coments:JSON.parse(JSON.stringify(t.coments||[])),comApagados:(t.comApagados||[]).slice()};
+        t.comApagados=[...new Set([...(t.comApagados||[]),...comentarios(t).map(c=>c.k)])];   // apagado tambem na nuvem, para todos
+        t.note='';t.noteBy='';t.noteU=Date.now();t.coments=[];t.u=Date.now();gravaComents(id);logEvt('nota',{id,det:plain(t.text||''),vazia:true});hide();render();
+        toastAcao('Observação apagada','Desfazer',()=>{ Object.assign(t,antes); t.u=Date.now(); gravaComents(id); render(); vibrate(15); toast('Observação de volta'); },8000); }
     },90);
   }));
 }
@@ -6052,6 +6135,29 @@ async function writeMove(id,day){
     return true;
   }catch(e){toast('Não consegui salvar o dia. Tente novamente.');return false;}
 }
+// Mudar de semana tira a tarefa de uma lista e poe na outra. A Maria grava o pacote inteiro;
+// o pai e a mae fazem a troca direto na nuvem, numa transacao so.
+async function writeMoveSemana(id,weekId,day,moveU,moveBy,moveWhy){
+  if(!isResponsavel()) return false;
+  if(!cloudRef||!cloudReady||!cloudOnline){ toast('Conecte à nuvem para mudar de semana'); return false; }
+  const ref=cloudRef, actor=USER.id;
+  try{
+    const res=await ref.child('weeks').transaction(remote=>{
+      if(!remote||!isResponsavel()||!USER||USER.id!==actor||cloudRef!==ref) return;
+      let obj=null;
+      Object.values(remote).forEach(w=>(w.days||[]).forEach(d=>{ const lista=d.tasks||[]; const i=lista.findIndex(x=>x&&x.id===id);
+        if(i>=0){ obj=lista[i]; lista.splice(i,1); d.tasks=lista; } }));
+      if(!obj) return;
+      const alvo=remote[weekId]; if(!alvo) return;
+      const dia=(alvo.days||[]).find(x=>x&&x.k===day); if(!dia) return;
+      obj.day=day; obj.moveU=moveU; obj.moveBy=moveBy; obj.moveWhy=moveWhy||''; obj.u=Date.now();
+      dia.tasks=(dia.tasks||[]).concat([obj]);
+      return remote;
+    });
+    if(!res.committed){ toast('Nao consegui mudar de semana. Tente de novo'); return false; }
+    return true;
+  }catch(e){ toast('Nao consegui mudar de semana. Tente de novo'); return false; }
+}
 function openMove(id){
   if(!isAluna()&&!isResponsavel()) return;
   const t=findTask(id), w=Object.values(DB.weeks).find(w=>allTasks(w).some(t=>t.id===id)); if(!t||!w) return;
@@ -6088,14 +6194,16 @@ function openMoveMotivo(id,day,wid){
     const ok=document.getElementById('moveOk'); ok.disabled=true;
     t.moveWhy=v;
     if(outra){ // vai para outra semana: a tarefa muda de lugar na lista
+      const moveU=Math.max(Date.now(),(t.moveU||0)+1), moveBy=USER?USER.nome:'';
+      if(!isAluna()&&!await writeMoveSemana(id,alvo.id,day,moveU,moveBy,v)){ ok.disabled=false; return; }
       const de=w.days.find(x=>x.tasks.includes(t));
       if(de){ de.tasks=de.tasks.filter(x=>x!==t); d.tasks.push(t); }
-      t.day=day; t.moveU=Math.max(Date.now(),(t.moveU||0)+1); t.moveBy=USER?USER.nome:''; t.u=Date.now(); comentarios(t); resumoComents(t); save();
+      t.day=day; t.moveU=moveU; t.moveBy=moveBy; t.u=Date.now(); comentarios(t); resumoComents(t); if(isAluna()) save(); else persistLocalOnly();
       logEvt('move',{id,det:plain(t.text||'')+' · '+v,dia:DAYMETA[day][0]});
       current=alvo.id; hide(); openState[d.date]=true; render(); refreshReminder(); vibrate(20); toast('Mudou para '+DAYMETA[day][0]+' '+fmt(d.date)); return;
     }
     if(!await writeMove(id,day)){ ok.disabled=false; return; }
-    comentarios(t); resumoComents(t); t.u=Date.now(); save();
+    comentarios(t); resumoComents(t); t.u=Date.now(); gravaComents(id,true);
     logEvt('move',{id,det:plain(t.text||'')+' · '+v,dia:DAYMETA[t.day][0]});
     hide(); openState[d.date]=true; render(); refreshReminder(); vibrate(20); toast('Mudou para '+DAYMETA[t.day][0]);
   });
@@ -6178,7 +6286,8 @@ function openComentarios(id){
     else c.reacts[emoji][USER.id]=USER.nome;
     if(!Object.keys(c.reacts[emoji]).length) delete c.reacts[emoji];
     if(!Object.keys(c.reacts).length) delete c.reacts;
-    resumoComents(t); t.u=Date.now(); save(); vibrate(10); render(); desenha();
+    c.u=Date.now();
+    resumoComents(t); t.u=Date.now(); gravaComents(id); vibrate(10); render(); desenha();
   };
   const openCommentReactions=(ck,anchor)=>{
     const c=comentarios(t).find(x=>x.k===ck); if(!c) return;
@@ -6254,8 +6363,9 @@ function openComentarios(id){
     const mandaValor=v=>{
       v=String(v||'').trim();
       if(!v) return;
-      comentarios(t).push({k:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), by:USER?USER.nome:'', txt:v, t:Date.now(), likes:{}, reacts:{}});
-      resumoComents(t); t.u=Date.now(); save();
+      const agoraC=Date.now();
+      comentarios(t).push({k:'c'+agoraC.toString(36)+Math.random().toString(36).slice(2,5), by:USER?USER.nome:'', txt:v, t:agoraC, u:agoraC, likes:{}, reacts:{}});
+      resumoComents(t); t.u=agoraC; gravaComents(id);
       logEvt('nota',{id,det:plain(t.text||''),vazia:false});
       vibrate(15); SFX.send();
       fechaCp();
@@ -6280,7 +6390,8 @@ function openComentarios(id){
       const c=comentarios(t).find(x=>x.k===b.dataset.cur); if(!c) return;
       c.likes=c.likes||{}; const tinha=!!c.likes[USER.id];
       if(tinha) delete c.likes[USER.id]; else c.likes[USER.id]=USER.nome;
-      resumoComents(t); t.u=Date.now(); save(); vibrate(10);
+      c.u=Date.now();
+      resumoComents(t); t.u=Date.now(); gravaComents(id); vibrate(10);
       const n=Object.keys(c.likes).length;
       b.classList.toggle('on',!tinha);
       b.setAttribute('aria-label',tinha?'Curtir':'Descurtir');
@@ -6312,12 +6423,12 @@ function openComentarios(id){
         document.getElementById('cmtDel').addEventListener('click',()=>{
           const copia=JSON.parse(JSON.stringify(c)), pos=comentarios(t).indexOf(c);
           t.comApagados=[...new Set([...(t.comApagados||[]),c.k])];
-          t.coments=comentarios(t).filter(x=>x.k!==c.k); resumoComents(t); t.u=Date.now(); save();
+          t.coments=comentarios(t).filter(x=>x.k!==c.k); resumoComents(t); t.u=Date.now(); gravaComents(id);
           closePop(); vibrate(20); render(); desenha();
           toastAcao('Comentário apagado','Desfazer',()=>{
             t.comApagados=(t.comApagados||[]).filter(k=>k!==copia.k);
             const lista=comentarios(t); lista.splice(Math.max(0,Math.min(pos,lista.length)),0,copia);
-            resumoComents(t); t.u=Date.now(); save(); vibrate(15); render(); desenha(); toast('Comentário de volta'); },8000); });
+            resumoComents(t); t.u=Date.now(); gravaComents(id); vibrate(15); render(); desenha(); toast('Comentário de volta'); },8000); });
       };
       let pt=null,x0=0,y0=0;
       el.addEventListener('pointerdown',e=>{ if(e.button) return; x0=e.clientX; y0=e.clientY; clearTimeout(pt);
@@ -6341,9 +6452,10 @@ function openNoteMenu(id){
   sheet.querySelector('[data-n="edit"]')?.addEventListener('click',()=>{ hide(); setTimeout(()=>openNote(id),220); });
   if(dl) dl.addEventListener('click',()=>{
     if(dl.dataset.ok!=='1'){ dl.dataset.ok='1'; dl.innerHTML=`<span class="ic">${ICO.lixeira}</span>Tem certeza? Toca de novo para apagar`; vibrate(20); return; }
-    const antes={note:t.note,noteBy:t.noteBy,noteU:t.noteU,coments:JSON.parse(JSON.stringify(t.coments||[]))};
-    t.note=''; t.noteBy=''; t.coments=[]; t.u=Date.now(); save(); hide(); render(); vibrate(20);
-    toastAcao('Observação apagada','Desfazer',()=>{ Object.assign(t,antes); t.u=Date.now(); save(); render(); vibrate(15); toast('Observação de volta'); },8000);
+    const antes={note:t.note,noteBy:t.noteBy,noteU:t.noteU,coments:JSON.parse(JSON.stringify(t.coments||[])),comApagados:(t.comApagados||[]).slice()};
+    t.comApagados=[...new Set([...(t.comApagados||[]),...comentarios(t).map(c=>c.k)])];
+    t.note=''; t.noteBy=''; t.coments=[]; t.u=Date.now(); gravaComents(id); hide(); render(); vibrate(20);
+    toastAcao('Observação apagada','Desfazer',()=>{ Object.assign(t,antes); t.u=Date.now(); gravaComents(id); render(); vibrate(15); toast('Observação de volta'); },8000);
   });
 }
 function openNote(id){ if(!isAluna()&&!isResponsavel()) return;
@@ -6356,7 +6468,7 @@ function openNote(id){ if(!isAluna()&&!isResponsavel()) return;
     ta.addEventListener('input',cresce); setTimeout(cresce,0); ta.focus();
     ta.setSelectionRange(ta.value.length,ta.value.length); }
   document.getElementById('noteCancel').addEventListener('click',hide);
-  document.getElementById('noteSave').addEventListener('click',()=>{if(!isAluna()&&!isResponsavel()) return;t.note=document.getElementById('noteTxt').value.trim();t.noteBy=USER?USER.nome:'';t.noteU=Date.now();t.u=Date.now();save();logEvt('nota',{id,det:plain(t.text||''),vazia:!t.note});hide();render();vibrate(20);toast(t.note?'Observação salva':'Observação apagada');});
+  document.getElementById('noteSave').addEventListener('click',()=>{if(!isAluna()&&!isResponsavel()) return;t.note=document.getElementById('noteTxt').value.trim();t.noteBy=USER?USER.nome:'';t.noteU=Date.now();t.u=Date.now();gravaNota(id);logEvt('nota',{id,det:plain(t.text||''),vazia:!t.note});hide();render();vibrate(20);toast(t.note?'Observação salva':'Observação apagada');});
 }
 /* ===================== LINHA DO TEMPO =====================
    Junta tudo o que acontece na semana: mensagens, chamados de atencao, audios,
