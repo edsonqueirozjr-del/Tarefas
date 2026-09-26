@@ -2297,9 +2297,8 @@
   }
   /* Conversa no celular: toda a area util, inclusive quando o teclado reduz a tela. */
   @media screen and (max-width:599px){
-    body .sheet.sharesheet{width:100%;max-width:none;height:100vh;height:100dvh;max-height:100dvh;border-radius:0;margin:0}   /* Compartilhar ocupa a tela toda */
+    body .sheet.sharesheet{height:94dvh;max-height:94dvh;border-radius:0}   /* Compartilhar: mesmo tamanho e formato das Notas, Historico e Resumo */
     body .sheet.resumosheet{height:94dvh;max-height:94dvh;border-radius:0}   /* Resumo: mesmo tamanho e formato das Notas e do Historico */
-    .veil:has(.sharesheet){align-items:stretch}
     body .sheet.sharesheet{display:flex;flex-direction:column}
     /* Linha do tempo: titulo parado no alto e o dia (Hoje, Ontem...) grudando embaixo dele */
     body .sheet.tlsheet{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
