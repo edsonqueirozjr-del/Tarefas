@@ -3529,6 +3529,9 @@ function sitTask(t){
 // Usa no Compartilhar a mesma regra visual da tela principal:
 // tarefas atrasadas saem do dia antigo e aparecem no dia de hoje como Esquecidas.
 function tarefasCompartilharDia(w,d){ return tarefasDoDia(w,d); }
+// "21 a 25 de setembro" -> "21 a 25 set"; "28 de setembro a 2 de outubro" -> "28 set a 2 out"
+function rotuloCurto(txt){ const M={janeiro:'jan',fevereiro:'fev','março':'mar',marco:'mar',abril:'abr',maio:'mai',junho:'jun',julho:'jul',agosto:'ago',setembro:'set',outubro:'out',novembro:'nov',dezembro:'dez'};
+  return String(txt||'').replace(/ de (janeiro|fevereiro|março|marco|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\b/gi,(x,m)=>' '+(M[m.toLowerCase()]||m)); }
 function blocoDia(w,d,compacto){
   const ts=tarefasCompartilharDia(w,d);
   const L=[]; L.push(compacto?`*${DAYMETA[d.k][0]} ${fmt(d.date)}*`:`*Tarefas de ${DAYMETA[d.k][0]} ${fmt(d.date)}*`);
@@ -4987,7 +4990,7 @@ function render(){
   renderFam();
   { const hs=allTasks(w).filter(t=>t.type===H&&!t.off); const dn=hs.filter(t=>t.status==='done').length; const pct=hs.length?Math.round(dn/hs.length*100):0;
     const deOndeEstava=pctNaTela();   // continua de onde a barrinha esta (0 quando o app abre)
-    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span class="wk-line"><b>${esc(nomeSemana(w))}</b><i class="sep" aria-hidden="true">·</i><span class="wk-dias">${esc(w.label||'')}</span><i class="sep" aria-hidden="true">·</i><span class="wk-cnt"><b>${dn}</b> de ${hs.length} feitas</span><img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
+    document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span class="wk-line"><b>${esc(nomeSemana(w))}</b><i class="sep" aria-hidden="true">·</i><span class="wk-dias">${esc(rotuloCurto(w.label||''))}</span><i class="sep" aria-hidden="true">·</i><span class="wk-cnt"><b>${dn}</b> de ${hs.length} feitas</span><img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
   renderFilters();
   const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
@@ -5045,7 +5048,7 @@ function render(){
     const boxes=(bxProva||bxCol||bxWiz)?`<div class="boxes one">${bxProva}${bxCol}${bxWiz}</div>`:'';
     html+=`<details class="day ${past&&!isToday?'past':''} ${isToday?'today':''} ${complete?'complete':''}" style="--c:var(${isToday?'--dia-hoje':'--dia-claro'})" data-date="${d.date}" ${open?'open':''}>
       <summary><div class="dl"><span class="n">${name}${['seg','ter','qua','qui','sex'].includes(d.k)?'<span class="feira">-feira</span>':''}</span><span class="sep" aria-hidden="true"></span><span class="d">${fmt(d.date)}</span></div>
-        <div class="tags">${cntTag}${complete?'<span class="tag complete-tag">Tudo feito!</span>':''}</div>
+        <div class="tags">${provasDoDia(d.date).length?`<button type="button" class="tag prova-tag" data-prova="${d.date}">Prova<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>`:''}${cntTag}${complete?'<span class="tag complete-tag">Tudo feito!</span>':''}</div>
         <span class="arrow">${ICO.chev}</span></summary>
       <div class="body">
         ${d.feriado?`<div class="aulas"><span>🎉 Feriado: ${d.feriado}</span></div>`:''}
@@ -5069,8 +5072,8 @@ function render(){
         topo+=`<div class="cal prox-semana" id="proxSemana" data-prox="${prox||''}" data-ant="${ant||''}" role="group" aria-label="Arraste para trocar de semana">
           <span class="ps-fill ps-esq" aria-hidden="true"></span>
           <span class="ps-fill ps-dir" aria-hidden="true"></span>
-          <span class="ps-rot ps-ant">${ant?'Anterior':''}</span>
-          <span class="ps-rot ps-prox">${prox?'Próxima':''}</span>
+          <span class="ps-rot ps-ant"${ant?'':' style="visibility:hidden" aria-hidden="true"'}>Anterior</span>
+          <span class="ps-rot ps-prox"${prox?'':' style="visibility:hidden" aria-hidden="true"'}>Próxima</span>
           <span class="ps-pux" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span>
         </div>`;
       }
@@ -5491,7 +5494,7 @@ function bindTasks(root=document.getElementById('app')){
     { let sapT=0;
       el.addEventListener('pointerdown',()=>{ sapT=Date.now(); });
       el.addEventListener('pointerup',e=>{ if(e.target.closest('.star,.note.nt,[data-rfx],[data-pics],[data-obs]')) return;
-        if(Date.now()-sapT<450 && !el.classList.contains('drag') && !el._swiped) sapinho(el); }); }
+        /* sapinho no toque: tirado a pedido */ }); }
     if(!isAluna()){
       el.removeAttribute('aria-label');
       // opcoes so ao segurar (toque curto = sapinho); botao direito e Enter tambem abrem
