@@ -772,7 +772,8 @@
   .cmt .chora{font-size:10.5px;font-weight:700;color:var(--soft);margin-right:auto;line-height:1}
   .cmt .chora{display:inline-flex;align-items:center;gap:4px}
   .ctick{display:inline-flex;line-height:0} .ctick svg{width:16px;height:10px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-  .cmt.meu .ctick{color:rgba(255,255,255,.62)} .cmt.meu .ctick.lido{color:#7FD8FF}   /* cinza: ninguem viu; azul: ja viram */
+  .ctick{border:0;background:none;padding:2px;margin:-2px;cursor:pointer;font:inherit}
+  .cmt.meu .ctick{color:rgba(255,255,255,.62)} .cmt.meu .ctick.lido{color:#7CF3A8}   /* neutro: ninguem viu; verde: ja viram */
   .cmt.meu .chora{color:rgba(255,255,255,.85)}
   .cmt .crea,.cmt .ccur{border:0;background:transparent;padding:0;font:inherit;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;color:var(--soft);opacity:.76;transition:transform .12s,opacity .15s}
   .cmt.meu .crea,.cmt.meu .ccur{color:rgba(255,255,255,.88)}
@@ -929,9 +930,11 @@
   .cal-h{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:4px}
   .cal-h .st{margin-left:0}
   .cal-d{background:var(--t10);color:var(--ink)}
+  .st.prova-st{background:var(--t10);color:var(--ink)}   /* etiqueta Prova da atividade: cinza neutro, sem destaque */
   .cal-q{background:var(--t10);color:var(--ink)}
 .cal-q .sj-sep{font-style:normal;opacity:.55;margin:0 4px;display:inline-block}
   .cal-st.agora .cal-q{background:#F9D5D5;color:#A32424}
+  .cal:not(.provas-cal) .cal-st.agora .cal-q{background:var(--t10);color:var(--ink)}   /* avisos: cinza neutro, igual aos outros */
   .cal-st.passou .cal-q{background:#EEE;color:#888}
   .cal-n{font-size:14px;font-weight:900;color:var(--ink);line-height:1.35}
   .cal-l{font-size:13.5px;color:var(--soft);margin-top:2px;line-height:1.35}   /* materias da recuperacao */
@@ -1071,7 +1074,7 @@
   .grade-val.grade-sim{box-shadow:inset 0 0 0 2px rgba(var(--r01),.14)}
   /* Notas no celular: a folha usa a tela inteira e as linhas se ajustam sozinhas para caber sem rolagem (no tablet fica como sempre) */
   @media screen and (max-width:599px){
-    .sheet.notassheet{height:100dvh;max-height:100dvh;border-radius:0;display:flex;flex-direction:column;overflow:hidden;
+    .sheet.notassheet,body .sheet.tlsheet{height:100dvh;max-height:100dvh;border-radius:0;display:flex;flex-direction:column;overflow:hidden;
       padding:calc(4px + env(safe-area-inset-top)) 12px calc(8px + env(safe-area-inset-bottom))}
     .sheet.notassheet>.grip{flex:none;margin:2px auto 8px}
     .sheet.notassheet h2{flex:none;margin:0 0 8px;font-size:18px}
@@ -1908,6 +1911,7 @@
   @media(prefers-reduced-motion:reduce){.top-title .heart-icon{animation:none}}
   .subject-flag{display:inline-block;width:1.25em;height:.84em;vertical-align:-.08em;border-radius:2px;overflow:hidden;flex-shrink:0}
   .next .topic-list,.cal .topic-list{display:flex;flex-direction:column;gap:8px;margin:0;line-height:1.5}
+  .topic-list .topic-item+.topic-item{border-top:1px solid rgba(120,110,150,.16);padding-top:8px}   /* risquinho discreto entre uma materia e outra */
   .next h2{margin-bottom:12px}
   body .aulas.fill-row{flex-wrap:nowrap}
   body .aulas.fill-row>span{flex:1 0 auto;text-align:center}
@@ -2293,9 +2297,7 @@
   /* Conversa no celular: toda a area util, inclusive quando o teclado reduz a tela. */
   @media screen and (max-width:599px){
     body .sheet.resumosheet,body .sheet.sharesheet{width:100%;max-width:none;height:100vh;height:100dvh;max-height:100dvh;border-radius:0;margin:0}   /* Resumo e Compartilhar ocupam a tela toda */
-    body .sheet.tlsheet{width:100%;max-width:none;height:100%;min-height:100%;max-height:100%;border-radius:0;margin:0;background:#fff}
     .veil:has(.resumosheet),.veil:has(.sharesheet){align-items:stretch}
-    .veil:has(.tlsheet){align-items:stretch;background:#fff!important}
     body .sheet.sharesheet{display:flex;flex-direction:column}
     /* Linha do tempo: titulo parado no alto e o dia (Hoje, Ontem...) grudando embaixo dele */
     body .sheet.tlsheet{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
@@ -3070,16 +3072,21 @@ function marcaVisto(id){ if(!famRef||!USER||!id) return; try{ famRef.child('vist
 function vistoHtml(t){
   const lista=comentarios(t); const ult=lista[lista.length-1]; if(!ult) return '';
   const autor=autorDe(ult), v=(VISTOS&&VISTOS[t.id])||{};
-  const quem=USERS.filter(u=>(!autor||u.id!==autor.id)&&(v[u.id]||0)>=(ult.t||0)).map(u=>esc(USER&&u.id===USER.id?'Você':u.nome)+' '+fmtHora(v[u.id]));
+  const quem=USERS.filter(u=>(!autor||u.id!==autor.id)&&(v[u.id]||0)>=(ult.t||0)).map(u=>esc(USER&&u.id===USER.id?'Você':nomeLegivel(u))+' '+fmtHora(v[u.id]));
   return quem.length?'<span class="cv-ic" aria-hidden="true">'+ICO.feito+'</span>Visto por '+quem.join(' · '):'';
 }
 // certinho do comentario, como no WhatsApp: cinza = ainda ninguem abriu; azul = ja viram (o nome aparece ao tocar e na linha Visto por)
+// nome para ler numa frase: apelido sem nenhuma letra (ex.: ".") vira o nome original
+function nomeLegivel(u){ return u?(/[\p{L}\p{N}]/u.test(u.nome||'')?u.nome:(u.nomeBase||u.nome)):''; }
+// atividade que fala de prova: etiqueta neutra "Prova" e a palavra em negrito no texto
+function ehProva(t){ return !!t&&/(^|[^\p{L}])provas?([^\p{L}]|$)/iu.test(plain(t.text||'')); }
+function provaNegrito(html){ return String(html||'').replace(/(<[^>]+>)|([^<]+)/g,(m,tag,txt)=>tag?tag:txt.replace(/(^|[^\p{L}])(provas?)(?=[^\p{L}]|$)/giu,'$1<b>$2</b>')); }
 function tickHtml(t,c){
   const autor=autorDe(c), v=(VISTOS&&VISTOS[t.id])||{};
   const viram=USERS.filter(u=>(!autor||u.id!==autor.id)&&(v[u.id]||0)>=(c.t||0));
-  const titulo=viram.length?'Visto por '+viram.map(u=>u.nome).join(', '):'Enviado. Ainda ninguem viu';
-  return '<span class="ctick'+(viram.length?' lido':'')+'" data-tick="'+esc(c.k)+'" role="img" aria-label="'+esc(titulo)+'" title="'+esc(titulo)+'">'
-    +'<svg viewBox="0 0 18 11" aria-hidden="true"><path d="M1 6.2 4.2 9.3 11 1.8"/><path d="M7.2 9.3 14 1.8"/><path d="M6.5 8.6 7.2 9.3"/></svg></span>';
+  const titulo=viram.length?'Visto por '+viram.map(u=>nomeLegivel(u)+' '+fmtHora(v[u.id])).join(' · '):'Enviado. Ainda ninguém viu';
+  return '<button type="button" class="ctick'+(viram.length?' lido':'')+'" data-tick="'+esc(c.k)+'" aria-label="'+esc(titulo)+'" title="'+esc(titulo)+'">'
+    +'<svg viewBox="0 0 18 11" aria-hidden="true"><path d="M1 6.2 4.2 9.3 11 1.8"/><path d="M7.2 9.3 14 1.8"/><path d="M6.5 8.6 7.2 9.3"/></svg></button>';
 }
 function atualizaVistoAberto(){ const el=document.getElementById('cVisto'); if(!sheet._cmtId) return; const t=findTask(sheet._cmtId); if(!t) return;
   if(el){ el.innerHTML=vistoHtml(t); el.hidden=!el.innerHTML; }
@@ -4896,6 +4903,7 @@ function provaEyeHtml(){
 }
 function aplicaVisNotasProvas(){
   document.body.classList.toggle('provas-notas-ocultas',!provasNotasVisiveis);
+  if(typeof ajustaDockNotas==='function') try{ ajustaDockNotas(); }catch(e){}
   document.querySelectorAll('[data-provas-eye]').forEach(b=>{
     b.setAttribute('aria-pressed',provasNotasVisiveis?'true':'false');
     b.setAttribute('aria-label',provasNotasVisiveis?'Ocultar notas':'Mostrar notas');
@@ -4917,7 +4925,7 @@ function htmlCalendario(qual){
   const dias=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000);
   const quando=e=>{ const fimTudo=e.ate||e.fim||e.ini;
     if(fimTudo<TODAY||(fimTudo===TODAY&&NOW_H>=FIM_AULA_H)) return {cls:'passou',txt:'Já passou'};   // a prova e de manha: acabou a aula, ja passou
-    if(e.ini<=TODAY) return {cls:'agora',txt:(e.fim&&e.fim>=TODAY)?'É agora':(e.ini===TODAY?'É hoje':'Em andamento')};
+    if(e.ini<=TODAY) return {cls:'agora',txt:(e.fim&&e.fim>=TODAY)?(qual==='provas'?'É agora':'Em andamento'):(e.ini===TODAY?'É hoje':'Em andamento')};
     const n=dias(TODAY,e.ini); return {cls:'vem',txt:n===1?'Amanhã':'Em '+n+' dias'}; };
   const w=DB.weeks[current], dias15=(()=>{ if(!w||!w.days.length) return null;
     const fim=new Date(w.days[w.days.length-1].date+'T12:00:00'); fim.setDate(fim.getDate()+7); return iso(fim); })();
@@ -4926,7 +4934,7 @@ function htmlCalendario(qual){
   if(!lista.length) return '';
   const aberto=!!openState[chave];
   const cards=lista.map(({e,q})=>`<div class="cal-st ${q.cls}">
-      <div class="cal-h">${qual==='provas'?`${matTag(e.subj)}<span class="st cal-q">${q.txt}<i class="sj-sep" aria-hidden="true">·</i>${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span>`:`<span class="st cal-d">${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span><span class="cal-n">${esc(e.nome)}</span><span class="st cal-q">${q.txt}</span>`}</div>
+      <div class="cal-h">${qual==='provas'?`${matTag(e.subj)}<span class="st cal-q">${q.txt}<i class="sj-sep" aria-hidden="true">·</i>${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span>`:`<span class="st cal-q">${q.txt}</span><span class="st cal-d">${dm(e.ini)}${e.fim?' a '+dm(e.fim):''}</span><span class="cal-n">${esc(e.nome)}</span>`}</div>
       ${e.det?`<div class="cal-l">${esc(e.det)}</div>`:''}</div>`).join('');
   return `<details class="cal ${qual==='provas'?'provas-cal':''}" data-date="${chave}" ${aberto?'open':''}><summary><span class="n">${esc(titulo)}</span>${qual==='provas'?provaEyeHtml():''}<span class="arrow">${ICO.chev}</span></summary>
     <div class="cal-body">${cards}</div></details>`;
@@ -5282,7 +5290,7 @@ function taskHtml(t,inImp){
   if(t.type===B){
     const moved=(t.day!==t.origin&&!t.wiz)?'<span class="st mv">Mudou de dia</span>':'';
     const day=inImp?`<span class="dchip ${t.day===diaHojeK()?'hoje':''}" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>`:'';
-    return `<div class="task notice" data-id="${t.id}"><div class="tin"><div class="t"><div class="tg">${day}${moved}<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span></div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>${t.note?`<span class="note">📝 ${hlHtml(esc(t.note),fQ)}</span>`:''}</div>${(isAluna()||isResponsavel())?`<button class="notice-date" data-move-notice="${t.id}" aria-label="Mudar dia do aviso" title="Mudar dia do aviso">📆</button>`:''}</div></div>`;
+    return `<div class="task notice" data-id="${t.id}"><div class="tin"><div class="t"><div class="tg">${day}${moved}<span class="st sj">${subjectVisual(SUBJ[t.subj])}</span>${ehProva(t)?'<span class="st prova-st">Prova</span>':''}</div><div class="tx">${provaNegrito(hlHtml(semEmoji(t.text),fQ))}</div>${t.note?`<span class="note">📝 ${hlHtml(esc(t.note),fQ)}</span>`:''}</div>${(isAluna()||isResponsavel())?`<button class="notice-date" data-move-notice="${t.id}" aria-label="Mudar dia do aviso" title="Mudar dia do aviso">📆</button>`:''}</div></div>`;
   }
   const moved = (t.day!==t.origin&&!t.wiz) ? `<span class="st mv">Mudou de dia</span>` : '';
   const dchip = inImp ? `<span class="dchip ${t.day===diaHojeK()?'hoje':''}" style="background:${dayCss(t.day)}">${DAYMETA[t.day][0]}</span>` : '';
@@ -5298,7 +5306,7 @@ function taskHtml(t,inImp){
 ${isAluna()?`    <div class="sw sw-r st-done ${NEXT_R[t.status]?'':'ja'}">${NEXT_R[t.status]?swLbl(NEXT_R[t.status]):'<span><i class="swi" aria-hidden="true">'+ICO.feito+'</i>Já feita</span>'}</div>
     <div class="sw sw-l st-${(NEXT_L[t.status]||'todo')}">${swLbl(NEXT_L[t.status]||'todo')}</div>`: ''}
     <div class="tin">
-      <div class="t"><div class="tg">${dchip}${subj}${gradeTag}${status}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
+      <div class="t"><div class="tg">${subj}${dchip}${ehProva(t)?'<span class="st prova-st">Prova</span>':''}${gradeTag}${status}</div><div class="tx">${provaNegrito(hlHtml(semEmoji(t.text),fQ))}</div>
 ${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}</div>
       ${(t.reacts&&Object.keys(t.reacts).length)?(()=>{ const rs=Object.values(t.reacts); const som=rs.some(r=>r.a); const qtd=rs.length;
         return `<button type="button" class="star rea ${som?'audio':''}" data-rea="${t.id}" aria-label="Ver quem reagiu" title="Ver quem reagiu">${som?ICO.tocar:`<span class="emo">${rs[0].e||'💛'}</span>`}${qtd>1?`<b class="qtd">${qtd}</b>`:''}</button>`; })():''}
@@ -5655,6 +5663,8 @@ function bindTasks(root=document.getElementById('app')){
 
 /* ================= SHEETS ================= */
 const veil=document.getElementById('veil'), sheet=document.getElementById('sheet');
+sheet.addEventListener('click',e=>{ const tk=e.target.closest&&e.target.closest('.ctick'); if(!tk) return; e.preventDefault(); e.stopPropagation();
+  vibrate(8); toast(tk.getAttribute('aria-label')||''); });   // tocar no certinho: quem viu e quando
 let scrollY0=0;
 function show(html){if(sheet._aoFechar){const f=sheet._aoFechar;sheet._aoFechar=null;try{f();}catch(e){}}fitSearchViewport.cleanup?.();initChatJump.cleanup?.();
   sheet.classList.remove('telacheia','cmtsheet','notassheet','ttsheet','tlsheet');   // cada tela escolhe o seu tamanho de novo
@@ -5738,8 +5748,8 @@ function openReagir(id){
   if(!isResponsavel()) return; const t=findTask(id); if(!t) return;
   show(`<h2>${ICO.reagir} Reagir <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
-    <button class="opt" id="rgCar"><span class="ic">${ICO.coracao}</span>Deixar um carinho</button>
-    <button class="opt" id="rgAud"><span class="ic">${ICO.som}</span>Mandar um áudio engraçado</button>`);
+    <button class="opt" id="rgCar"><span class="ic">${ICO.coracao}</span>Deixar uma reação</button>
+    <button class="opt" id="rgAud"><span class="ic">${ICO.som}</span>Mandar um áudio</button>`);
   document.getElementById('rgCar').addEventListener('click',()=>openTaskReact(id));
   document.getElementById('rgAud').addEventListener('click',()=>openTaskAudio(id));
 }
@@ -5757,10 +5767,10 @@ function nomeCarinho(e){ const par=(typeof TREACTS!=='undefined'?TREACTS:[]).fin
 function openTaskReact(id){
   if(!isResponsavel()) return;
   const t=findTask(id); if(!t) return; const mine=(t.reacts&&USER)?t.reacts[USER.id]:null;
-  show(`<h2>${ICO.coracao} Um carinho para a Maria <button class="x">✕</button></h2>
+  show(`<h2>${ICO.coracao} Uma reação para a Maria <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc(plain(t.text))}</p>
     <div class="rgrid">${TREACTS.map(([e,n])=>`<button data-e="${e}" class="${mine&&mine.e===e?'on':''}"><span>${e}</span>${n}</button>`).join('')}</div>
-    ${mine?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar meu carinho</button>':''}`);
+    ${mine?'<button class="opt danger" id="reaDel" style="justify-content:center">Tirar minha reação</button>':''}`);
   sheet.querySelectorAll('[data-e]').forEach(b=>bindReactionTap(b,()=>{
     writeTaskReaction(id,b.dataset.e); }));
   const del=document.getElementById('reaDel'); if(del) bindReactionTap(del,()=>{ writeTaskReaction(id,null); });
@@ -5843,7 +5853,7 @@ async function writeTaskReaction(id,emoji,extra){
       try{ famRef.child('chat').push({by:actor,text:'',t:firebase.database.ServerValue.TIMESTAMP,
         att:{kind:'evento',tipo:(extra&&extra.a)?'audio_rea':'carinho',id,det:semEmoji(plain(current?current.text:t.text||'')),emoji:confirmed.e||emoji||'',nome:(extra&&extra.a)?(extra.an||''):nomeCarinho(confirmed.e||emoji)}}); }catch(e){}
     }
-    toast(confirmed?((extra&&extra.a)?'Áudio enviado':'Carinho salvo '+(confirmed.e||emoji)):'Tirei sua reação');
+    toast(confirmed?((extra&&extra.a)?'Áudio enviado':'Reação salva '+(confirmed.e||emoji)):'Tirei sua reação');
 
     // Se o listener não chegar imediatamente, mantém uma pequena janela de proteção.
     setTimeout(()=>{ const p=TASK_REACTION_PENDING.get(key); if(p&&p.confirmed&&reaEq(p.expected,confirmed)) TASK_REACTION_PENDING.delete(key); },3000);
@@ -5891,7 +5901,7 @@ function updateReaFab(){ const mobile=matchMedia('(max-width:599px)').matches; c
 }
 function openReacts(){
   const list=allNotifs(), aluna=isAluna();
-  show(`<h2>${ICO.coracao} ${aluna?'Carinhos que você recebeu':'Carinhos enviados'} <button class="x">✕</button></h2>
+  show(`<h2>${ICO.coracao} ${aluna?'Reações que você recebeu':'Reações enviadas'} <button class="x">✕</button></h2>
     ${list.length?`<div class="realist">${list.map(r=>{ const d=DB.weeks[r.week].days.find(x=>x.k===r.task.day); const novo=(r.t||0)>reaSeen;
       if(r.tipo) return `<button class="it2 it2-foto ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}" data-foto="${esc(r.foto||'')}"><span class="em ico-em ${r.tipo==='comentou_foto'?'com':'like'}">${r.tipo==='comentou_foto'?ICO.msg:(r.tipo==='reagiu_foto'?`<span class="rea-emo">${esc(r.texto||'💛')}</span>`:ICO.coracao)}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}</span>${novo?'<span class="rea-novo">Novo</span>':''}<span class="rea-activity">${r.tipo==='curtiu_foto'?'Curtiu a foto da tarefa':(r.tipo==='reagiu_foto'?'Reagiu à foto da tarefa':'Comentou a foto da tarefa')}${(r.texto&&r.tipo==='comentou_foto')?`: “${esc(corta(r.texto,80))}”`:''}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${esc(corta(plain(r.task.text||''),40))}</span></span></span></button>`;
       return `<button class="it2 ${novo?'novo':''}" data-w="${r.week}" data-id="${r.task.id}"><span class="em">${r.e}</span><span class="tx2"><span class="rea-sender">${esc(r.n||uname(r.uid))} · ${r.t?fmtSeen(r.t).replace('visto ',''):''}</span>${novo?'<span class="rea-novo">Novo</span>':''}<span class="rea-activity">${esc(plain(r.task.text))}</span><span class="rea-meta">${SUBJ[r.task.subj]?`<span class="rea-subject">${subjectVisual(SUBJ[r.task.subj])}</span>`:''}<span class="rea-date">${DAYMETA[r.task.day][0]} ${d?fmt(d.date):''}</span></span></span></button>`; }).join('')}</div>`
@@ -6926,12 +6936,12 @@ function openMain(){
   const n=unread();
   show(`<h2>${ICO.menu} Menu <button class="x">✕</button></h2>
    ${famRef?`<button class="opt mobile-menu-chat" data-m="chat"><span class="ic">${ICO.msg}</span>Conversa${n?` (${n})`:""}</button>`:""}
-   <button class="opt" data-m="summary"><span class="ic">${ICO.resumo}</span>Resumo</button>
+   <button class="opt${provasNotasVisiveis?'':' menu-dock-duplicate'}" data-m="summary"><span class="ic">${ICO.resumo}</span>Resumo</button>
    <button class="opt menu-dock-duplicate" data-m="tt"><span class="ic">${ICO.aulas}</span>Aulas da semana</button>
    <button class="opt" data-m="share"><span class="ic">${ICO.compart}</span>Compartilhar tarefas</button>
    <button class="opt" data-m="wk"><span class="ic">${ICO.semanas}</span>Ver semana</button>
    <button class="opt" data-m="tema"><span class="ic">${ICO.paleta}</span>Tema do app</button>
-   <button class="opt" data-m="rea"><span class="ic">${ICO.coracao}</span>${isAluna()?'Carinhos recebidos':'Carinhos enviados'}</button>
+   <button class="opt" data-m="rea"><span class="ic">${ICO.coracao}</span>${isAluna()?'Reações recebidas':'Reações enviadas'}</button>
    ${CLOUD_CFG?`<button class="opt" data-m="nudge"><span class="ic">${ICO.sino}</span>Chamar atenção</button>`:''}
 `);
   sheet.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m; if(m==='summary')openSummary(); if(m==='notas')openNotas(); if(m==='tema')openTema(); if(m==='rea')openReacts(); if(m==='tt')openTimetable(); if(m==='share')openShare(); if(m==='wk')openWeeks(); if(m==='foto')openFoto(); if(m==='nudge'){ hide(); chamarAtencao(); } if(m==='user')openLogin(); if(m==='chat')openChat();}));
@@ -7457,7 +7467,7 @@ const dockAlt=(function(){
              {k:'share',ico:ICO.compart,nome:'Compartilhar',go:()=>openShare()},
              {k:'wk',ico:ICO.semanas,nome:'Ver semana',go:()=>openWeeks()},
              {k:'tema',ico:ICO.paleta,nome:'Tema do app',go:()=>openTema()},
-             {k:'rea',ico:ICO.coracao,nome:()=>isAluna()?'Carinhos recebidos':'Carinhos enviados',go:()=>openReacts()},
+             {k:'rea',ico:ICO.coracao,nome:()=>isAluna()?'Reações recebidas':'Reações enviadas',go:()=>openReacts()},
              {k:'nudge',ico:ICO.sino,nome:'Chamar atenção',go:()=>chamarAtencao(),so:()=>mid.classList.contains('aluna')}];   // so entra quando o circulo esta mostrando o coracao
   let idx=0, timer=null, p0=null, arrast=false, passo=0, suprime=false;
   const PASSO=()=>Math.max(48,Math.min(80,dock.clientWidth*0.16));   // quanto o dedo anda para trocar um icone
@@ -7564,10 +7574,15 @@ document.getElementById('qAll').addEventListener('click',()=>openSearch(fQ));
   window.__telas={telaAgora,vaiPara};
 })();
 document.getElementById('fab').addEventListener('click',openMain);
-[['mobileDockTimeline',ICO.aulas,openTimetable],['mobileDockSearch',SV('<path d="M5 4.5h11.5L19 7v12.5H5z"/><path d="M8.5 9.5h7"/><path d="M8.5 13h7"/><path d="M8.5 16.5h4"/>'),openNotas],['mobileDockClasses',ICO.historico,openMobileTimeline],['mobileDockChat',ICO.msg,openChat]].forEach(([id,icon,action])=>{
+const ICO_NOTAS_DOCK=SV('<path d="M5 4.5h11.5L19 7v12.5H5z"/><path d="M8.5 9.5h7"/><path d="M8.5 13h7"/><path d="M8.5 16.5h4"/>');
+[['mobileDockTimeline',ICO.aulas,openTimetable],['mobileDockSearch',ICO_NOTAS_DOCK,()=>provasNotasVisiveis?openNotas():openSummary()],['mobileDockClasses',ICO.historico,openMobileTimeline],['mobileDockChat',ICO.msg,openChat]].forEach(([id,icon,action])=>{
   const button=document.getElementById(id); button.querySelector('.mobile-dock-icon').innerHTML=icon;
   button.addEventListener('click',()=>action());
 });
+// nota oculta: o lugar das Notas na barra de baixo mostra o Resumo
+function ajustaDockNotas(){ const b=document.getElementById('mobileDockSearch'); if(!b) return; const nota=provasNotasVisiveis, rot=nota?'Notas':'Resumo';
+  b.querySelector('.mobile-dock-icon').innerHTML=nota?ICO_NOTAS_DOCK:ICO.resumo; b.querySelector('.mobile-dock-label').textContent=rot; b.setAttribute('aria-label',rot); b.title=rot; }
+ajustaDockNotas();
 
 document.getElementById('chatFab').addEventListener('click',openChat);
 document.getElementById('chatFab').classList.toggle('on',!!CLOUD_CFG); marcaTopo();
