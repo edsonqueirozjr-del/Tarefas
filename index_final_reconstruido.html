@@ -3000,7 +3000,7 @@ const SEED_WEEKS = [
 
 /* ================= ARMAZENAMENTO ================= */
 const KEY='minha-semana-7D-v1';
-let cloudRef=null, famRef=null, cloudReady=false, lastPushed='', pushTimer=null, cloudOnline=false, cloudErr='';
+let cloudRef=null, famRef=null, cloudReady=false, lastPushed='', pushTimer=null, cloudOnline=false, cloudErr='', pushAndando=false;
 let ONLINE={}, PERFIS={}, CHAT=[], READS={}, seenTimer=null, TYPING={}, typingTimer=null, typingOn=false; try{PERFIS=JSON.parse(localStorage.getItem(KEY+'-perfis')||'{}');}catch(e){} aplicaApelidos();
 // Reações de tarefas: proteção contra snapshots antigos do backend.
 // A chave é tarefa|usuário; enquanto existir aqui, o estado local vence snapshots defasados.
@@ -3029,7 +3029,7 @@ function unificaTarefas(){
   Object.keys(DB.weeks||{}).sort().forEach(wid=>((DB.weeks[wid]||{}).days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{ if(t&&t.id) (onde[t.id]=onde[t.id]||[]).push({d,t}); })));
   Object.values(onde).forEach(lista=>{
     if(lista.length<2) return;
-    const fica=lista[lista.length-1].t;
+    lista.sort((a,b)=>((a.t.moveU||0)-(b.t.moveU||0))); const fica=lista[lista.length-1].t;   // a mudanca mais recente; empate: semana mais nova (ordem estavel)
     lista.slice(0,-1).forEach(({d,t})=>{
       if((t.statusU||0)>(fica.statusU||0)){ fica.status=t.status; fica.statusU=t.statusU; fica.statusBy=t.statusBy||''; }
       if((t.impU||0)>(fica.impU||0)){ fica.important=!!t.important; fica.impU=t.impU; fica.impBy=t.impBy||''; }
@@ -3079,6 +3079,14 @@ function juntaApagados(remotos,locais,vivos){
   const tem=new Set((vivos||[]).map(c=>c&&c.k).filter(Boolean));
   return [...new Set([...(remotos||[]),...(locais||[])])].filter(k=>!tem.has(k));
 }
+// A Maria grava o pacote inteiro (demora: sobe tudo e pode repetir se alguem gravar junto). Para o celular
+// dos pais ver na hora, grava tambem so os campos que mudaram naquela tarefa. A leitura vem do cache local.
+function gravaNaHora(id,campos){
+  if(!isAluna()||!cloudRef||!cloudReady||!campos) return;
+  const ref=cloudRef, limpo={};
+  Object.keys(campos).forEach(k=>{ const v=campos[k]; limpo[k]=(v===undefined)?null:v; });
+  ref.once('value').then(sn=>{ if(cloudRef!==ref||!isAluna()) return; const path=achaCaminhoTarefa(sn.val(),id); if(path) return ref.child(path).update(limpo); }).catch(()=>{});
+}
 function achaCaminhoTarefa(val,id){ let path=null;
   Object.entries((val&&val.weeks)||{}).forEach(([week,w])=>(w.days||[]).forEach((d,di)=>(d.tasks||[]).forEach((x,ti)=>{ if(x&&x.id===id) path='weeks/'+week+'/days/'+di+'/tasks/'+ti; })));
   return path; }
@@ -3090,33 +3098,32 @@ function tiraDaFila(id){ COM_FILA=COM_FILA.filter(x=>x!==id); try{localStorage.s
 async function gravaComents(id,quieto){
   const t=findTask(id); if(!t) return false;
   t.u=Date.now();
-  if(isAluna()){ save(); return true; }
-  persistLocalOnly();
-  if(!isResponsavel()) return false;
-  if(!cloudRef||!cloudReady||!cloudOnline){ guardaNaFila(id); if(!quieto) toast('Sem internet agora. Gravo assim que conectar'); return false; }
+  if(isAluna()) save(); else persistLocalOnly();          // a Maria tambem manda direto: chega na hora para os pais
+  if(!isAluna()&&!isResponsavel()) return false;
+  if(!cloudRef||!cloudReady||!cloudOnline){ if(isAluna()) return true; guardaNaFila(id); if(!quieto) toast('Sem internet agora. Gravo assim que conectar'); return false; }
   const ref=cloudRef, actor=USER?USER.id:'';
   const locais=Array.isArray(t.coments)?JSON.parse(JSON.stringify(t.coments)):[];
   const apagadosLocais=(t.comApagados||[]).slice();
   try{
     const snap=await ref.once('value');
-    if(!isResponsavel()||!USER||USER.id!==actor||cloudRef!==ref) return false;
+    if(!USER||USER.id!==actor||cloudRef!==ref) return false;
     const path=achaCaminhoTarefa(snap.val(),id);
-    if(!path){ guardaNaFila(id); if(!quieto) toast('Essa tarefa ainda nao esta na nuvem'); return false; }
+    if(!path){ if(isAluna()) return true; guardaNaFila(id); if(!quieto) toast('Essa tarefa ainda nao esta na nuvem'); return false; }
     const res=await ref.child(path).transaction(remote=>{
       if(!remote) return;
       const ap=juntaApagados(remote.comApagados,apagadosLocais,locais);
       const juntos=juntaComents(remote.coments,locais,ap);
       const ult=juntos[juntos.length-1];
       return Object.assign({},remote,{coments:juntos.length?juntos:null,comApagados:ap.length?ap:null,
-        note:ult?ult.txt:'',noteBy:ult?ult.by:'',noteU:ult?ult.t:0,u:Date.now()});
+        note:ult?ult.txt:'',noteBy:ult?ult.by:'',noteU:ult?ult.t:0});   // sem mexer no u: o u decide o status no celular da Maria
     });
-    if(!res.committed){ guardaNaFila(id); if(!quieto) toast('Nao consegui gravar agora. Tento de novo'); return false; }
+    if(!res.committed){ if(isAluna()) return true; guardaNaFila(id); if(!quieto) toast('Nao consegui gravar agora. Tento de novo'); return false; }
     const val=res.snapshot.val()||{};
     const atual=findTask(id);
     if(atual){ atual.coments=Array.isArray(val.coments)?val.coments:[]; atual.comApagados=val.comApagados||[]; resumoComents(atual); persistLocalOnly(); }
     tiraDaFila(id);
     return true;
-  }catch(e){ guardaNaFila(id); if(!quieto) toast('Nao consegui gravar o comentario. Tento de novo'); return false; }
+  }catch(e){ if(isAluna()) return true; guardaNaFila(id); if(!quieto) toast('Nao consegui gravar o comentario. Tento de novo'); return false; }
 }
 // observacao escrita na mao (sem comentario): mesmo caminho, campos proprios
 async function gravaNota(id){
@@ -3126,7 +3133,7 @@ async function gravaNota(id){
   persistLocalOnly();
   if(!isResponsavel()) return false;
   if(!cloudRef||!cloudReady||!cloudOnline){ guardaNaFila(id); toast('Sem internet agora. Gravo assim que conectar'); return false; }
-  const ref=cloudRef, actor=USER?USER.id:'', nota={note:t.note||'',noteBy:t.noteBy||'',noteU:t.noteU||0,u:t.u};
+  const ref=cloudRef, actor=USER?USER.id:'', nota={note:t.note||'',noteBy:t.noteBy||'',noteU:t.noteU||0};
   try{
     const snap=await ref.once('value');
     if(!isResponsavel()||!USER||USER.id!==actor||cloudRef!==ref) return false;
@@ -3359,6 +3366,11 @@ function mergeRemote(remote){
         if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
         lt.day=rt.day;lt.moveU=rt.moveU;lt.moveBy=rt.moveBy||'';lt.moveWhy=rt.moveWhy||'';changed=true;
       }
+      // mudou de semana em outro aparelho: aqui a tarefa tambem troca de lista (antes ficava na semana antiga)
+      if((rt.moveU||0)>=(lt.moveU||0)&&(rt.moveU||0)>0&&!lw.days.some(x=>x.tasks.includes(lt))){
+        const alvo=lw.days.find(x=>x.k===d.k);
+        if(alvo){ Object.values(DB.weeks).forEach(xw=>xw.days.forEach(x=>{ if(x.tasks.includes(lt)) x.tasks=x.tasks.filter(y=>y!==lt); })); alvo.tasks.push(lt); changed=true; }
+      }
       // comentarios: junta os dois lados sempre, sem perder nenhum
       { const meus=Array.isArray(lt.coments)?lt.coments:[], deles=Array.isArray(rt.coments)?rt.coments:[];
         if(meus.length||deles.length){
@@ -3377,7 +3389,8 @@ function mergeRemote(remote){
         else if(!!rt.off!==!!lt.off) MERGE_EVT.push(rt.off?('🚫 '+(ela?ela+'cancelou '+curto:curto+' foi cancelada')):('↩️ '+curto+' voltou a valer'));
         else if(rt.day!==lt.day) MERGE_EVT.push('📆 '+curto+' mudou de dia');
         else if((rt.pics||0)>(lt.pics||0)) MERGE_EVT.push('📸 Foto nova em '+curto);
-        lt.status=rt.status; lt.statusU=rt.statusU||lt.statusU||0; lt.statusBy=rt.statusBy||lt.statusBy||''; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rtReacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; changed=true; }
+        const meuStatus=(isAluna()&&(lt.statusU||0)>(rt.statusU||0))?{status:lt.status,statusU:lt.statusU,statusBy:lt.statusBy,feitoEm:lt.feitoEm||''}:null;   // status mais novo da Maria nao e desfeito por um mais velho da nuvem
+        lt.status=rt.status; lt.statusU=rt.statusU||lt.statusU||0; lt.statusBy=rt.statusBy||lt.statusBy||''; lt.feitoEm=rt.feitoEm||''; lt.offU=rt.offU||lt.offU||0; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rtReacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; if(meuStatus) Object.assign(lt,meuStatus); changed=true; }
     }));
   });
   if(unificaTarefas()) changed=true;
@@ -3386,14 +3399,14 @@ function mergeRemote(remote){
 function cloudPush(now){
   if(!cloudRef||!cloudReady||!isAluna()) return;
   clearTimeout(pushTimer);
-  const doIt=()=>{ if(!isAluna()||!cloudRef||!cloudReady) return; const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; cloudRef.transaction(remote=>{ if(!isAluna()) return; const next=JSON.parse(json); const reactions={}, estrelas={}, datas={}, conversas={}; Object.values(remote?.weeks||{}).forEach(w=>(w.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{reactions[t.id]=t.reacts||null; datas[t.id]={day:t.day,u:t.moveU||0,by:t.moveBy||''}; estrelas[t.id]={imp:!!t.important,u:t.impU||0,by:t.impBy||''}; conversas[t.id]={c:t.coments||null,ap:t.comApagados||null};}))); Object.values(next.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{if(Object.prototype.hasOwnProperty.call(reactions,t.id)) t.reacts=reactions[t.id];
+  const doIt=()=>{ if(!isAluna()||!cloudRef||!cloudReady) return; const json=JSON.stringify(DB); if(json===lastPushed) return; lastPushed=json; pushAndando=true; cloudRef.transaction(remote=>{ if(!isAluna()) return; const next=JSON.parse(json); const reactions={}, estrelas={}, datas={}, conversas={}; Object.values(remote?.weeks||{}).forEach(w=>(w.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{reactions[t.id]=t.reacts||null; datas[t.id]={day:t.day,u:t.moveU||0,by:t.moveBy||''}; estrelas[t.id]={imp:!!t.important,u:t.impU||0,by:t.impBy||''}; conversas[t.id]={c:t.coments||null,ap:t.comApagados||null};}))); Object.values(next.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{if(Object.prototype.hasOwnProperty.call(reactions,t.id)) t.reacts=reactions[t.id];
       const date=datas[t.id];if(date&&date.u>(t.moveU||0)){t.day=date.day;t.moveU=date.u;t.moveBy=date.by;}
       const e=estrelas[t.id]; if(e && e.u>(t.impU||0)){ t.important=e.imp; t.impU=e.u; t.impBy=e.by; }
       const cv=conversas[t.id];                                          // comentario do pai ou da mae continua valendo
       if(cv){ const ap=juntaApagados(cv.ap,t.comApagados,t.coments);
         const juntos=juntaComents(cv.c,t.coments,ap); const ult=juntos[juntos.length-1];
         t.coments=juntos.length?juntos:null; t.comApagados=ap.length?ap:null;
-        t.note=ult?ult.txt:''; t.noteBy=ult?ult.by:''; t.noteU=ult?ult.t:0; } }))); return next; }).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
+        t.note=ult?ult.txt:''; t.noteBy=ult?ult.by:''; t.noteU=ult?ult.t:0; } }))); return next; }).then(()=>{ pushAndando=false; },e=>{ pushAndando=false; throw e; }).catch(e=>{cloudErr=e&&e.code||'erro';lastPushed='';updateSyncBadge();toast('Não consegui gravar na nuvem. Confira as regras do Firebase.');}); };
   if(now) doIt(); else pushTimer=setTimeout(doIt,400);
 }
 function updateSyncBadge(){ const b=document.getElementById('syncBadge'); if(!b) return;
@@ -3515,13 +3528,7 @@ function sitTask(t){
 }
 // Usa no Compartilhar a mesma regra visual da tela principal:
 // tarefas atrasadas saem do dia antigo e aparecem no dia de hoje como Esquecidas.
-function tarefasCompartilharDia(w,d){
-  if(!w||!d) return [];
-  if(d.date===TODAY){
-    return allTasks(w).filter(t=>t.day===d.k||vemParaHoje(t)).concat(atrasadasDeSemanasAnteriores(w));
-  }
-  return allTasks(w).filter(t=>t.day===d.k&&!vemParaHoje(t));
-}
+function tarefasCompartilharDia(w,d){ return tarefasDoDia(w,d); }
 function blocoDia(w,d,compacto){
   const ts=tarefasCompartilharDia(w,d);
   const L=[]; L.push(compacto?`*${DAYMETA[d.k][0]} ${fmt(d.date)}*`:`*Tarefas de ${DAYMETA[d.k][0]} ${fmt(d.date)}*`);
@@ -4868,6 +4875,23 @@ function semanaDe(t){ if(!t) return null;
   const dono=Object.values(DB.weeks).find(x=>x.days.some(d=>d.tasks.includes(t))); if(dono) return dono;
   return DB.weeks[String(t.id||'').slice(0,10)]||null; }
 function diaDe(t){ const w=semanaDe(t); return w?w.days.find(x=>x.k===t.day):null; }
+// Feita depois que o dia dela passou (estava esquecida): aparece no dia em que foi concluida, como feita.
+function feitaDepois(t,dataDoDia){ return !t.wiz&&t.status==='done'&&!!t.feitoEm&&t.feitoEm>dataDoDia; }
+// As tarefas de um dia, com a mesma regra na tela e no Compartilhar:
+// o que e do dia; no dia de hoje, tambem as pendentes de dias que ja passaram; e as feitas neste dia
+// que eram de um dia anterior (de qualquer semana).
+function tarefasDoDia(w,d){
+  if(!w||!d) return [];
+  const fica=t=>!(t.day===d.k&&feitaDepois(t,d.date));
+  const base=(d.date===TODAY
+    ? allTasks(w).filter(t=>t.day===d.k||vemParaHoje(t)).concat(atrasadasDeSemanasAnteriores(w))
+    : allTasks(w).filter(t=>t.day===d.k&&!vemParaHoje(t))).filter(fica);
+  const chegou=[];
+  Object.values(DB.weeks).forEach(xw=>allTasks(xw).forEach(t=>{
+    if(t.status!=='done'||t.feitoEm!==d.date||t.wiz||base.includes(t)) return;
+    const dd=xw.days.find(x=>x.k===t.day); if(dd&&dd.date<d.date) chegou.push(t); }));
+  return base.concat(chegou);
+}
 // tarefa de casa de um dia que ja passou, ainda sem fazer: ela sai do dia antigo e aparece no dia de hoje
 // (vale para a semana atual e tambem para as semanas anteriores)
 function vemParaHoje(t){
@@ -4985,9 +5009,7 @@ function render(){
   w.days.forEach(d=>{
     const [name,cv]=DAYMETA[d.k];
     const isHoje=x=>x.date===TODAY;
-    const tasksAll=isHoje(d)
-      ? allTasks(w).filter(t=>t.day===d.k||vemParaHoje(t)).concat(atrasadasDeSemanasAnteriores(w))
-      : allTasks(w).filter(t=>t.day===d.k&&!vemParaHoje(t));
+    const tasksAll=tarefasDoDia(w,d);
     const live=tasksAll.filter(t=>t.type===H&&!t.off); const complete=live.length>0&&live.every(t=>t.status==='done');
     const isToday=d.date===TODAY, isTomorrow=d.date===tomorrowDate, past=d.date<TODAY;
     const homePend=tasksAll.filter(t=>t.type===H&&t.status!=='done'&&!t.off).length;
@@ -5339,7 +5361,9 @@ function setStatus(id,status,el,semDesfazer){
     else festaFeito(null);
   }
   if(status==='doing'&&!semDesfazer){vibrate(25);SFX.doing(); festaFeito(taskEl?.isConnected?taskEl:null,'fazendo');}
-  t.status=status; t.statusU=Date.now(); t.statusBy=USER?USER.nome:''; t.u=Date.now(); save(); logEvt(status,{id,det:plain(t.text||'')});
+  t.status=status; t.statusU=Date.now(); t.statusBy=USER?USER.nome:''; t.u=Date.now();
+  t.feitoEm=status==='done'?iso(new Date()):'';        // esquecida feita hoje: fica no dia de hoje, como feita
+  save(); gravaNaHora(id,{status:t.status,statusU:t.statusU,statusBy:t.statusBy,feitoEm:t.feitoEm,u:t.u}); logEvt(status,{id,det:plain(t.text||'')});
   if(semDesfazer) vibrate(15);
   const dayLive=allTasks(w).filter(x=>x.day===t.day&&!x.off);
   const complete=dayLive.length>0&&dayLive.every(x=>x.status==='done');
@@ -5600,7 +5624,7 @@ function openMenu(id){
       if(a==='imp'){ hide(); setTimeout(()=>confirmaImp(id),220); }
       if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
       if(a==='del') openCancel(id);
-      if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.u=Date.now(); save(); logEvt('undel',{id,det:plain(t.text||'')}); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
+      if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.offU=Date.now(); t.u=Date.now(); save(); gravaNaHora(id,{off:false,offWhy:'',offBy:'',offU:t.offU,u:t.u}); logEvt('undel',{id,det:plain(t.text||'')}); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
       if(a==='rea') openReagir(id);
       if(a==='pics') verFotosTarefa(id);
       if(a==='pics-org') openPics(id);
@@ -5652,7 +5676,7 @@ function openTaskReact(id){
 async function writeImportant(id,val,btn){
   const t=findTask(id); if(!t) return false;
   const quando=Date.now(), quem=USER?USER.nome:'';
-  if(isAluna()){ t.important=val; t.impU=quando; t.impBy=quem; t.u=quando; save(); logEvt(val?'imp_on':'imp_off',{id,det:plain(t.text||'')}); return true; }
+  if(isAluna()){ t.important=val; t.impU=quando; t.impBy=quem; t.u=quando; save(); gravaNaHora(id,{important:!!val,impU:quando,impBy:quem,u:quando}); logEvt(val?'imp_on':'imp_off',{id,det:plain(t.text||'')}); return true; }
   if(!isResponsavel()||!cloudRef||!cloudReady){ toast('Espera a nuvem conectar para mudar as importantes'); return false; }
   if(!cloudOnline){ toast('Conecte à internet para mudar as importantes'); return false; }
   const actor=USER.id, ref=cloudRef;
@@ -6160,7 +6184,7 @@ function openCancel(id){ if(!isAluna()) return;
   document.getElementById('cancelOk').addEventListener('click',()=>{
     if(!isAluna()) return; const v=document.getElementById('cancelTxt').value.trim();
     if(v.length<3){ vibrate([40,40,40]); SFX.err(); toast('Escreve o motivo para cancelar'); document.getElementById('cancelTxt').focus(); return; }
-    t.off=true; t.offWhy=v; t.offBy=USER?USER.nome:''; t.offU=Date.now(); t.status='todo'; t.u=Date.now(); save(); logEvt('cancel',{id,det:plain(t.text||'')}); hide(); render(); refreshReminder(); vibrate(20); toast('Tarefa cancelada'); });
+    t.off=true; t.offWhy=v; t.offBy=USER?USER.nome:''; t.offU=Date.now(); t.status='todo'; t.feitoEm=''; t.u=Date.now(); save(); gravaNaHora(id,{off:true,offWhy:t.offWhy,offBy:t.offBy,offU:t.offU,status:'todo',feitoEm:'',u:t.u}); logEvt('cancel',{id,det:plain(t.text||'')}); hide(); render(); refreshReminder(); vibrate(20); toast('Tarefa cancelada'); });
 }
 async function writeMove(id,day){
   if(!isAluna()&&!isResponsavel()) return false;
@@ -6204,7 +6228,7 @@ async function writeMoveSemana(id,weekId,day,moveU,moveBy,moveWhy){
       if(!obj) return;
       const alvo=remote[weekId]; if(!alvo) return;
       const dia=(alvo.days||[]).find(x=>x&&x.k===day); if(!dia) return;
-      obj.day=day; obj.moveU=moveU; obj.moveBy=moveBy; obj.moveWhy=moveWhy||''; obj.u=Date.now();
+      obj.day=day; obj.moveU=moveU; obj.moveBy=moveBy; obj.moveWhy=moveWhy||'';
       dia.tasks=(dia.tasks||[]).concat([obj]);
       return remote;
     });
@@ -7619,6 +7643,20 @@ if(CLOUD_CFG && !USER){ tiraCarregando(); setTimeout(()=>openLogin(remSeen?null:
 else { cloudStart(); startReminders(); if(!remSeen) setTimeout(openReminder,350); }
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 
+// Voltou para o app (tela acesa de novo, trocou de aplicativo): o celular congela a conexao em segundo plano
+// e o Firebase pode levar dezenas de segundos para perceber. Reconecta na hora para trazer o que mudou.
+(()=>{
+  let saiuEm=0, ultimo=0;
+  const reconecta=()=>{
+    if(!CLOUD_ON||!cloudRef||document.hidden) return;
+    const agora=Date.now(); if(agora-ultimo<4000) return; ultimo=agora;
+    const longe=saiuEm&&agora-saiuEm>15000;
+    if((longe||!cloudOnline)&&!pushAndando){ try{ const db=firebase.database(); db.goOffline(); db.goOnline(); }catch(e){} }
+  };
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden){ saiuEm=Date.now(); return; } reconecta(); saiuEm=0; });
+  window.addEventListener('online',()=>{ ultimo=0; saiuEm=saiuEm||1; reconecta(); });
+  window.addEventListener('pageshow',e=>{ if(e.persisted){ ultimo=0; saiuEm=saiuEm||1; reconecta(); } });
+})();
 // Atualiza Hoje/Ontem na virada do dia e ao voltar ao aplicativo instalado.
 (()=>{
   let day=iso(new Date()), timer;
