@@ -770,6 +770,9 @@
   .cmt .ctxt{font-size:16px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
   .cmt .cpe{display:flex;align-items:center;gap:8px;margin-top:4px;min-height:21px}
   .cmt .chora{font-size:10.5px;font-weight:700;color:var(--soft);margin-right:auto;line-height:1}
+  .cmt .chora{display:inline-flex;align-items:center;gap:4px}
+  .ctick{display:inline-flex;line-height:0} .ctick svg{width:16px;height:10px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .cmt.meu .ctick{color:rgba(255,255,255,.62)} .cmt.meu .ctick.lido{color:#7FD8FF}   /* cinza: ninguem viu; azul: ja viram */
   .cmt.meu .chora{color:rgba(255,255,255,.85)}
   .cmt .crea,.cmt .ccur{border:0;background:transparent;padding:0;font:inherit;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;color:var(--soft);opacity:.76;transition:transform .12s,opacity .15s}
   .cmt.meu .crea,.cmt.meu .ccur{color:rgba(255,255,255,.88)}
@@ -3064,7 +3067,17 @@ function vistoHtml(t){
   const quem=USERS.filter(u=>(!autor||u.id!==autor.id)&&(v[u.id]||0)>=(ult.t||0)).map(u=>esc(USER&&u.id===USER.id?'Você':u.nome)+' '+fmtHora(v[u.id]));
   return quem.length?'<span class="cv-ic" aria-hidden="true">'+ICO.feito+'</span>Visto por '+quem.join(' · '):'';
 }
-function atualizaVistoAberto(){ const el=document.getElementById('cVisto'); if(!el||!sheet._cmtId) return; const t=findTask(sheet._cmtId); if(t){ el.innerHTML=vistoHtml(t); el.hidden=!el.innerHTML; } }
+// certinho do comentario, como no WhatsApp: cinza = ainda ninguem abriu; azul = ja viram (o nome aparece ao tocar e na linha Visto por)
+function tickHtml(t,c){
+  const autor=autorDe(c), v=(VISTOS&&VISTOS[t.id])||{};
+  const viram=USERS.filter(u=>(!autor||u.id!==autor.id)&&(v[u.id]||0)>=(c.t||0));
+  const titulo=viram.length?'Visto por '+viram.map(u=>u.nome).join(', '):'Enviado. Ainda ninguem viu';
+  return '<span class="ctick'+(viram.length?' lido':'')+'" data-tick="'+esc(c.k)+'" role="img" aria-label="'+esc(titulo)+'" title="'+esc(titulo)+'">'
+    +'<svg viewBox="0 0 18 11" aria-hidden="true"><path d="M1 6.2 4.2 9.3 11 1.8"/><path d="M7.2 9.3 14 1.8"/><path d="M6.5 8.6 7.2 9.3"/></svg></span>';
+}
+function atualizaVistoAberto(){ const el=document.getElementById('cVisto'); if(!sheet._cmtId) return; const t=findTask(sheet._cmtId); if(!t) return;
+  if(el){ el.innerHTML=vistoHtml(t); el.hidden=!el.innerHTML; }
+  comentarios(t).forEach(c=>{ const tk=document.querySelector('.ctick[data-tick="'+CSS.escape(c.k)+'"]'); if(tk) tk.outerHTML=tickHtml(t,c); }); }
 function juntaComents(a,b,apagados){
   const fora=new Set(apagados||[]), out={};
   [...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])].forEach(c=>{
@@ -4879,7 +4892,9 @@ function semanaDe(t){ if(!t) return null;
   return DB.weeks[String(t.id||'').slice(0,10)]||null; }
 function diaDe(t){ const w=semanaDe(t); return w?w.days.find(x=>x.k===t.day):null; }
 // Feita depois que o dia dela passou (estava esquecida): aparece no dia em que foi concluida, como feita.
-function feitaDepois(t,dataDoDia){ return !t.wiz&&t.status==='done'&&!!t.feitoEm&&t.feitoEm>dataDoDia; }
+// dia em que ficou feita: o registro (feitoEm) ou, para as feitas antes dele existir, o horario da conclusao
+function diaFeito(t){ if(!t||t.status!=='done') return ''; if(t.feitoEm) return t.feitoEm; return t.statusU?iso(new Date(t.statusU)):''; }
+function feitaDepois(t,dataDoDia){ const f=diaFeito(t); return !t.wiz&&!!f&&f>dataDoDia; }
 // As tarefas de um dia, com a mesma regra na tela e no Compartilhar:
 // o que e do dia; no dia de hoje, tambem as pendentes de dias que ja passaram; e as feitas neste dia
 // que eram de um dia anterior (de qualquer semana).
@@ -4891,7 +4906,7 @@ function tarefasDoDia(w,d){
     : allTasks(w).filter(t=>t.day===d.k&&!vemParaHoje(t))).filter(fica);
   const chegou=[];
   Object.values(DB.weeks).forEach(xw=>allTasks(xw).forEach(t=>{
-    if(t.status!=='done'||t.feitoEm!==d.date||t.wiz||base.includes(t)) return;
+    if(t.status!=='done'||diaFeito(t)!==d.date||t.wiz||base.includes(t)) return;
     const dd=xw.days.find(x=>x.k===t.day); if(dd&&dd.date<d.date) chegou.push(t); }));
   return base.concat(chegou);
 }
@@ -6409,7 +6424,7 @@ function openComentarios(id){
           <div class="cbolha">
             <span class="cquem">${esc(meu?'Eu':(autor?autor.nome:(c.by||'Alguém')))}</span>
             <div class="ctxt">${esc(c.txt)}</div>
-            <div class="cpe"><span class="chora">${fmtHora(c.t)}</span>
+            <div class="cpe"><span class="chora">${fmtHora(c.t)}${meu?tickHtml(t,c):''}</span>
               <button type="button" class="crea" data-crea="${c.k}" aria-label="Reagir" title="Reagir">${ICO.sorriso}</button>
               <button type="button" class="ccur ${curtiu?'on':''}" data-cur="${c.k}" aria-label="${curtiu?'Descurtir':'Curtir'}" title="${curtiu?'Descurtir':'Curtir'}"><svg viewBox="0 0 24 24" fill="${curtiu?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.6-7-9.3A4 4 0 0 1 12 8a4 4 0 0 1 7 2.7C19 15.4 12 20 12 20Z"/></svg>${n?`<b>${n}</b>`:''}</button>
             </div>
