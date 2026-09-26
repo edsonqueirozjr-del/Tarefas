@@ -701,7 +701,7 @@
   @media screen and (max-width:599px), screen and (max-height:599px){ .sw{font-size:13px} }   /* celular: rotulo do arrastar 3px menor */
   .sw-r{justify-content:flex-start}
   .sw-l{justify-content:flex-end}
-  .sw.st-done{background:var(--ok)} .sw.st-doing{background:var(--t55)} .sw.st-todo{background:var(--t59)}
+  .sw.st-done{background:var(--ok)} .sw.st-doing{background:var(--t55)} .sw.st-todo{background:var(--t59)} .sw.ja{background:var(--t55)}
   .task.show-r .sw-r,.task.show-l .sw-l{opacity:1}
   .tin{position:relative;display:flex;gap:10px;align-items:center;padding:9px 8px;background:var(--tbg,#fff);transition:transform .25s ease;will-change:transform}
   .task{touch-action:pan-y}
@@ -762,6 +762,8 @@
   .cmt.fim:not(.meu) .cbolha::after{left:-8px;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M8 0H12V17H0Q8 14 8 0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M8 0H12V17H0Q8 14 8 0Z'/%3E%3C/svg%3E")}
   .cmt.fim.meu .cbolha::after{right:-8px;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M0 0H4Q4 14 12 17H0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 17'%3E%3Cpath d='M0 0H4Q4 14 12 17H0Z'/%3E%3C/svg%3E")}
   .cmt:not(.fim) .cav{visibility:hidden;height:0!important;min-height:0!important;border-width:0;box-shadow:none}
+  .cvisto{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:4px;margin:2px 4px 6px;font-size:12px;font-weight:800;color:var(--soft);text-align:right}
+  .cvisto .cv-ic{display:inline-flex;width:14px;height:14px;color:var(--ok)} .cvisto .cv-ic svg{width:14px;height:14px}
   .cmt .cquem{display:block;font-size:14px;font-weight:900;color:var(--uc);margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .cmt.meu .cquem{color:rgba(255,255,255,.68);font-weight:800}
   .cmt.cont .cquem,.cmt.mesmo .cquem{display:none}
@@ -1108,7 +1110,7 @@
   .puxa.pronto .pz-bar i{background:linear-gradient(90deg,#4FA877,#2F7D4F)}
   @media(prefers-reduced-motion:reduce){.puxa .pz-ic{transition:none}}
   /* trocar de semana: bolinha no meio, arrasta para um lado ou para o outro */
-  .prox-semana{position:relative;display:flex;align-items:center;justify-content:center;gap:50px;height:34px;padding:0 14px;overflow:hidden;border-style:solid;border-color:var(--t18);background:var(--t12);touch-action:pan-y}
+  .prox-semana{position:relative;display:flex;align-items:center;justify-content:center;gap:56px;height:50px;padding:0 14px;overflow:hidden;border-style:solid;border-color:var(--t18);background:var(--t12);touch-action:pan-y}
   .prox-semana .ps-fill{position:absolute;top:0;bottom:0;width:0;z-index:1;pointer-events:none}
   /* a cor e forte junto da bolinha e vai sumindo para tras, como um rastro */
   .prox-semana .ps-dir{left:50%;background:linear-gradient(90deg,var(--seg),var(--ter),var(--qua),var(--qui),var(--sex));
@@ -1117,11 +1119,11 @@
     -webkit-mask-image:linear-gradient(270deg,transparent,#000 45%);mask-image:linear-gradient(270deg,transparent,#000 45%)}
   .prox-semana .ps-rot{position:relative;z-index:2;font-size:14.5px;font-weight:900;color:var(--lilas-ink);pointer-events:none;transition:color .15s,opacity .15s;white-space:nowrap}
   .prox-semana .ps-rot.claro{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.35)}
-  .prox-semana .ps-pux{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;
+  .prox-semana .ps-pux{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;
     background:var(--lilas);border:0;color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;
-    box-shadow:0 1px 4px rgba(124,77,196,.18);touch-action:none;cursor:grab}
+    box-shadow:0 3px 10px rgba(124,77,196,.38);touch-action:none;cursor:grab}
   .prox-semana .ps-pux:active{cursor:grabbing}
-  .prox-semana .ps-pux svg{width:13px;height:13px}
+  .prox-semana .ps-pux svg{width:22px;height:22px}
   @media(prefers-reduced-motion:reduce){.prox-semana .ps-pux{animation:none}}
   .prox-semana .n.claro{text-shadow:0 1px 3px rgba(0,0,0,.35)}
   .prox-semana .n.claro{color:#fff}
@@ -1684,7 +1686,7 @@
   .cropasp button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:13px;color:var(--ink)}
   .cropasp button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   /* avisos: faixa na largura do app, texto a esquerda (mesmo modelo do aviso com Desfazer) */
-  .toast{position:fixed;left:16px;right:16px;bottom:100px;margin:0 auto;max-width:528px;box-sizing:border-box;background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;font-weight:600;font-size:14px;line-height:1.3;text-align:left;box-shadow:0 6px 18px rgba(var(--r01),.28);z-index:70;opacity:0;transition:opacity .25s;pointer-events:none}
+  .toast{position:fixed;left:16px;right:16px;bottom:100px;margin:0 auto;max-width:528px;box-sizing:border-box;background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;font-weight:600;font-size:14px;line-height:1.3;text-align:left;box-shadow:0 6px 18px rgba(var(--r01),.28);z-index:130;opacity:0;transition:opacity .25s;pointer-events:none}   /* acima da folha (veil 120): a mensagem da acao aparece inteira mesmo com a folha aberta */
   .toast.on{opacity:1;pointer-events:auto;touch-action:none}   /* visivel = da para empurrar para fechar */
   /* aviso com Desfazer: uma linha so, texto a esquerda e o botao sempre a direita */
   .toast.acao{pointer-events:auto;display:flex;flex-direction:row;align-items:center;gap:12px;padding:8px 6px 8px 16px;white-space:normal}
@@ -3019,7 +3021,50 @@ function effectiveTaskReacts(id,remoteReacts){
   return Object.keys(out).length?out:null;
 }
 function persistLocalOnly(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} }
+// A mesma tarefa (mesmo id) nunca mora em dois lugares. Acontecia ao mudar de semana: a semana antiga trazia
+// a tarefa de volta do roteiro e ela aparecia duas vezes. Fica a copia da semana mais nova (mudar de semana
+// so vai para a frente) e ela herda o que ha de mais recente nas outras copias.
+function unificaTarefas(){
+  const onde={}; let mudou=false;
+  Object.keys(DB.weeks||{}).sort().forEach(wid=>((DB.weeks[wid]||{}).days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{ if(t&&t.id) (onde[t.id]=onde[t.id]||[]).push({d,t}); })));
+  Object.values(onde).forEach(lista=>{
+    if(lista.length<2) return;
+    const fica=lista[lista.length-1].t;
+    lista.slice(0,-1).forEach(({d,t})=>{
+      if((t.statusU||0)>(fica.statusU||0)){ fica.status=t.status; fica.statusU=t.statusU; fica.statusBy=t.statusBy||''; }
+      if((t.impU||0)>(fica.impU||0)){ fica.important=!!t.important; fica.impU=t.impU; fica.impBy=t.impBy||''; }
+      if((t.offU||0)>(fica.offU||0)){ fica.off=!!t.off; fica.offWhy=t.offWhy||''; fica.offBy=t.offBy||''; fica.offU=t.offU; }
+      if((t.pics||0)>(fica.pics||0)){ fica.pics=t.pics; fica.thumbs=t.thumbs||null; }
+      if(t.reacts){ const r=Object.assign({},fica.reacts||{}); Object.entries(t.reacts).forEach(([u,x])=>{ if(!r[u]||((x&&x.t)||0)>((r[u]&&r[u].t)||0)) r[u]=x; }); fica.reacts=Object.keys(r).length?r:null; }
+      const ap=[...new Set([...(fica.comApagados||[]),...(t.comApagados||[])])];
+      const juntos=juntaComents(fica.coments,t.coments,ap);
+      fica.coments=juntos; if(ap.length) fica.comApagados=ap;
+      const ult=juntos[juntos.length-1]; if(ult){ fica.note=ult.txt; fica.noteBy=ult.by; fica.noteU=ult.t; }
+      fica.u=Math.max(fica.u||0,t.u||0,Date.now());
+      d.tasks=d.tasks.filter(x=>x!==t); mudou=true;
+    });
+  });
+  return mudou;
+}
 // Comentarios de tarefa: junta as duas listas sem perder nada. Mesma chave, vale a versao mudada por ultimo (c.u).
+// quem escreveu: pelo id (comentario novo) ou pelo nome de agora, o nome original ou o apelido
+function autorDe(c){
+  if(!c) return null;
+  if(c.byId){ const u=USERS.find(x=>x.id===c.byId); if(u) return u; }
+  const n=String(c.by||'').trim(); if(!n) return null;
+  return USERS.find(x=>x.nome===n||x.nomeBase===n||x.id===n||limpaNome(PERFIS[x.id]&&PERFIS[x.id].apelido)===n)||null;
+}
+const ehMeu=c=>{ const u=autorDe(c); return !!(USER&&(u?u.id===USER.id:c.by===USER.nome)); };
+// visto nos comentarios: quem abriu a conversa da tarefa e quando
+let VISTOS={};
+function marcaVisto(id){ if(!famRef||!USER||!id) return; try{ famRef.child('vistos/'+id+'/'+USER.id).set(Date.now()); }catch(e){} }
+function vistoHtml(t){
+  const lista=comentarios(t); const ult=lista[lista.length-1]; if(!ult) return '';
+  const autor=autorDe(ult), v=(VISTOS&&VISTOS[t.id])||{};
+  const quem=USERS.filter(u=>(!autor||u.id!==autor.id)&&(v[u.id]||0)>=(ult.t||0)).map(u=>esc(USER&&u.id===USER.id?'Você':u.nome)+' '+fmtHora(v[u.id]));
+  return quem.length?'<span class="cv-ic" aria-hidden="true">'+ICO.feito+'</span>Visto por '+quem.join(' · '):'';
+}
+function atualizaVistoAberto(){ const el=document.getElementById('cVisto'); if(!el||!sheet._cmtId) return; const t=findTask(sheet._cmtId); if(t){ el.innerHTML=vistoHtml(t); el.hidden=!el.innerHTML; } }
 function juntaComents(a,b,apagados){
   const fora=new Set(apagados||[]), out={};
   [...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])].forEach(c=>{
@@ -3112,6 +3157,9 @@ let mem=null;
 function load(){ try{const s=localStorage.getItem(KEY); if(s) return JSON.parse(s);}catch(e){} return mem||{weeks:{}}; }
 function save(){ mem=DB; try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){} cloudPush(); }
 let DB=load();
+// a nuvem apaga lista vazia (sabado sem tarefa): sem isso a abertura quebrava em aparelho que baixou a semana da nuvem
+function arrumaDias(w){ if(!w) return; w.days=Array.isArray(w.days)?w.days:[]; w.days.forEach(d=>{ if(d&&!Array.isArray(d.tasks)) d.tasks=[]; }); }
+Object.values(DB.weeks||{}).forEach(arrumaDias);
 SEED_WEEKS.forEach(w=>{
   const seedTasks={};
   w.days.forEach((d,di)=>d.tasks.forEach((t,ti)=>{seedTasks[`${w.id}-${di}-${ti}`]={...t,day:d.k,origin:d.k};}));
@@ -3142,12 +3190,13 @@ SEED_WEEKS.forEach(w=>{
     sw.days.forEach(d=>{ d.tasks=d.tasks.filter(t=>{
       if(t.wiz||seedTasks[t.id]||!String(t.id||'').startsWith(w.id+'-')||!/^\d{4}-\d{2}-\d{2}-\d+-\d+$/.test(String(t.id||''))) return true;
       return t.status!=='todo'||t.note||(t.pics||0)||t.important||t.day!==t.origin; }); });
-    Object.keys(seedTasks).forEach(id=>{ if(sw.days.some(d=>d.tasks.some(t=>t.id===id))) return;
+    Object.keys(seedTasks).forEach(id=>{ if(Object.values(DB.weeks).some(xw=>(xw.days||[]).some(d=>(d.tasks||[]).some(t=>t&&t.id===id)))) return;
       const s=seedTasks[id], d=sw.days.find(x=>x.k===s.day)||sw.days[0];
       if(d) d.tasks.push({...s,id,status:'todo',note:''}); });
     sw.days.forEach(d=>{const sd=w.days.find(x=>x.k===d.k); if(sd&&sd.feriado) d.feriado=sd.feriado;});
   }
 });
+unificaTarefas();
 Object.values(DB.weeks).forEach(w=>w.days.forEach(d=>d.tasks.forEach(t=>{ if(!t.u && (t.status!=='todo'||t.note||t.day!==t.origin)) t.u=1; })));
 save();
 
@@ -3155,6 +3204,7 @@ save();
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const TODAY=iso(new Date());
 const NOW_H=new Date().getHours()+new Date().getMinutes()/60;
+const FIM_AULA_H=(()=>{ const h=TIMETABLE.hours[TIMETABLE.hours.length-1].split(':'); return +h[0]+(+h[1]+45)/60; })();   // ultima aula comeca 11:25 e dura 45 min
 const MORNING=NOW_H<12.5;            // até 12h30 o foco é "levar hoje"; depois, "fazer em casa para amanhã"
 const DIAS_AULA=['seg','ter','qua','qui','sex'];
 // o sabado entrou na semana depois: toda semana ganha o dia, sem tarefa nenhuma
@@ -3238,6 +3288,7 @@ function cloudStart(){
     EVENTOS=Object.keys(v).map(k=>Object.assign({k},v[k])); renderTimeline(); updateReaFab(); });
   setTimeout(podaEventos,8000);
   famRef.child('reads').on('value',sn=>{ READS=sn.val()||{}; refreshChat(); });
+  famRef.child('vistos').on('value',sn=>{ VISTOS=sn.val()||{}; atualizaVistoAberto(); });
   famRef.child('perfis/'+USER.id+'/lastSeen').onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
   famRef.child('perfis/'+USER.id).update({nome:USER.nomeBase||USER.nome,lastSeen:firebase.database.ServerValue.TIMESTAMP});
   clearInterval(seenTimer); seenTimer=setInterval(()=>{ if(famRef&&USER&&!document.hidden) famRef.child('perfis/'+USER.id).update({lastSeen:firebase.database.ServerValue.TIMESTAMP}); },60*1000);
@@ -3286,8 +3337,8 @@ function mergeRemote(remote){
   let changed=false; MERGE_EVT=[];
   Object.keys(remote.weeks).forEach(id=>{
     const rw=remote.weeks[id], lw=DB.weeks[id];
-    if(!lw){ DB.weeks[id]=rw; garanteSabado(rw); changed=true; return; }
-    const local={}; lw.days.forEach(d=>d.tasks.forEach(t=>local[t.id]=t));
+    if(!lw){ arrumaDias(rw); DB.weeks[id]=rw; garanteSabado(rw); changed=true; return; }
+    const local={}; Object.values(DB.weeks).forEach(xw=>(xw.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{ if(t&&t.id) local[t.id]=t; })));   // em qualquer semana: tarefa que mudou de semana continua sendo a mesma
     (rw.days||[]).forEach(d=>(d.tasks||[]).forEach(rt=>{
       const lt=local[rt.id]; if(!lt) return;
       const ptxt=plain(lt.text||'').trim(); const curto='"'+(ptxt.length>42?ptxt.slice(0,42).trim()+'…':ptxt)+'"';
@@ -3329,6 +3380,7 @@ function mergeRemote(remote){
         lt.status=rt.status; lt.statusU=rt.statusU||lt.statusU||0; lt.statusBy=rt.statusBy||lt.statusBy||''; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rtReacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; changed=true; }
     }));
   });
+  if(unificaTarefas()) changed=true;
   return changed;
 }
 function cloudPush(now){
@@ -4765,7 +4817,7 @@ function htmlCalendario(qual){
   const dm=x=>{ const [y,m,d]=x.split('-'); return d+'/'+m; };
   const dias=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000);
   const quando=e=>{ const fimTudo=e.ate||e.fim||e.ini;
-    if(fimTudo<TODAY) return {cls:'passou',txt:'Já passou'};
+    if(fimTudo<TODAY||(fimTudo===TODAY&&NOW_H>=FIM_AULA_H)) return {cls:'passou',txt:'Já passou'};   // a prova e de manha: acabou a aula, ja passou
     if(e.ini<=TODAY) return {cls:'agora',txt:(e.fim&&e.fim>=TODAY)?'É agora':(e.ini===TODAY?'É hoje':'Em andamento')};
     const n=dias(TODAY,e.ini); return {cls:'vem',txt:n===1?'Amanhã':'Em '+n+' dias'}; };
   const w=DB.weeks[current], dias15=(()=>{ if(!w||!w.days.length) return null;
@@ -5127,8 +5179,8 @@ function taskHtml(t,inImp){
   const prazoTag=(t.type===H&&t.ate&&!t.wiz)?`<span class="st pics">${late?'Era para':'Para'} ${comoFalaDia(t.ate)}</span>`:'';   // se o prazo passou, a mensagem muda para o passado
   const status=moved+prazoTag+(t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="st no">Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(!late&&t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'');
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''} ${t.wiz?'wizt':''}" data-id="${t.id}">
-${isAluna()?`    <div class="sw sw-r st-${(NEXT_R[t.status]||'done')}">${swLbl(NEXT_R[t.status]||'done')}</div>
-    <div class="sw sw-l st-${(NEXT_L[t.status]||'doing')}">${swLbl(NEXT_L[t.status]||'doing')}</div>`: ''}
+${isAluna()?`    <div class="sw sw-r st-done ${NEXT_R[t.status]?'':'ja'}">${NEXT_R[t.status]?swLbl(NEXT_R[t.status]):'<span><i class="swi" aria-hidden="true">'+ICO.feito+'</i>Já feita</span>'}</div>
+    <div class="sw sw-l st-${(NEXT_L[t.status]||'todo')}">${swLbl(NEXT_L[t.status]||'todo')}</div>`: ''}
     <div class="tin">
       <div class="t"><div class="tg">${dchip}${subj}${gradeTag}${status}</div><div class="tx">${hlHtml(semEmoji(t.text),fQ)}</div>
 ${t.off?`<span class="note">${ICO.proibido} <b>${esc(t.offBy||'')}:</b> ${esc(t.offWhy||'')}</span>`:''}</div>
@@ -5301,8 +5353,9 @@ function setStatus(id,status,el,semDesfazer){
     for(let k=0;k<6;k++)setTimeout(()=>sparks(window.innerWidth*Math.random(),120+Math.random()*200,c),k*90);
   }
 }
-// Para a direita: falta → fazendo → concluída → reabrir (falta) → ...  Para a esquerda: o caminho inverso.
-const NEXT_R={todo:'doing',doing:'done',done:'todo'}, NEXT_L={todo:'done',done:'doing',doing:'todo'};
+// Para a direita: sempre concluir (ja feita: nao muda). Para a esquerda: sempre voltar,
+// feita ou fazendo reabre (falta fazer); se ainda falta fazer, marca como fazendo.
+const NEXT_R={todo:'done',doing:'done'}, NEXT_L={todo:'doing',doing:'todo',done:'todo'};
 const SWLBL={doing:['Fazendo','doing'],done:['Concluir','done'],todo:['Reabrir','todo']};
 const SWICO={doing:'ampulheta',done:'feito',todo:'voltar'};   // cada acao tem o seu simbolo, no mesmo traco do texto
 function swLbl(k){ return '<span><i class="swi" aria-hidden="true">'+(ICO[SWICO[k]]||'')+'</i>'+SWLBL[k][0]+'</span>'; }   // rotulo do arrastar: simbolo + palavra, centrados na faixa
@@ -5312,7 +5365,8 @@ function swipeAction(id,dir,el){
   const t=findTask(id);
   if(!t||t.type!==H) return;
   if(t.off){ el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast('Essa tarefa está cancelada. Segura nela para voltar a valer'); return; }
-  const status = dir>0 ? NEXT_R[t.status]||'done' : NEXT_L[t.status]||'doing';
+  const status = dir>0 ? NEXT_R[t.status] : NEXT_L[t.status]||'todo';
+  if(!status){ el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast('Já está feita. Arrasta para a esquerda para reabrir'); return; }
   setStatus(id,status,el);
 }
 function confirmaImp(id,btn){ toggleImp(id,btn); }   // sem pergunta: marca na hora e oferece desfazer
@@ -6251,11 +6305,7 @@ function openComentarios(id){
   const listaInicial=comentarios(t);
   resumoComents(t);
 
-  const userByName=nome=>{
-    if(USER&&nome===USER.nome) return USER;
-    const achou=(USERS||[]).find(u=>u.nome===nome||u.id===nome);
-    return achou||null;
-  };
+  const userByName=nome=>autorDe({by:nome});
   const corByName=nome=>{
     const u=userByName(nome);
     return u?corDe(u):'var(--lilas)';
@@ -6318,18 +6368,19 @@ function openComentarios(id){
   const desenha=()=>{
     const lista=comentarios(t);
     const corpo=lista.length?lista.map((c,i,arr)=>{
-      const meu=USER&&c.by===USER.nome;
+      const meu=ehMeu(c), autor=autorDe(c);
       const curtiu=USER&&c.likes&&c.likes[USER.id];
       const n=c.likes?Object.keys(c.likes).length:0;
       const prev=arr[i-1], prox=arr[i+1];
-      const cont=prev&&prev.by===c.by&&(c.t||0)-(prev.t||0)<5*60*1000;
-      const mesmo=!!(prev&&prev.by===c.by);
-      const fim=!(prox&&prox.by===c.by);
-      return `<div class="cmt ${meu?'meu':''} ${cont?'cont':''} ${mesmo?'mesmo':''} ${fim?'fim':''}" data-c="${c.k}" style="--uc:${corByName(c.by)}">
-        ${meu?'':avatarByName(c.by)}
+      const mesmaPessoa=x=>!!x&&(autorDe(x)&&autor?autorDe(x).id===autor.id:x.by===c.by);
+      const cont=mesmaPessoa(prev)&&(c.t||0)-(prev.t||0)<5*60*1000;
+      const mesmo=mesmaPessoa(prev);
+      const fim=!mesmaPessoa(prox);
+      return `<div class="cmt ${meu?'meu':''} ${cont?'cont':''} ${mesmo?'mesmo':''} ${fim?'fim':''}" data-c="${c.k}" style="--uc:${autor?corDe(autor):'var(--lilas)'}">
+        ${meu?'':(autor?`<span class="cav">${avatarHtml(autor)}</span>`:avatarByName(c.by))}
         <div class="cmain">
           <div class="cbolha">
-            <span class="cquem">${esc(meu?'Eu':(c.by||'Alguém'))}</span>
+            <span class="cquem">${esc(meu?'Eu':(autor?autor.nome:(c.by||'Alguém')))}</span>
             <div class="ctxt">${esc(c.txt)}</div>
             <div class="cpe"><span class="chora">${fmtHora(c.t)}</span>
               <button type="button" class="crea" data-crea="${c.k}" aria-label="Reagir" title="Reagir">${ICO.sorriso}</button>
@@ -6339,16 +6390,16 @@ function openComentarios(id){
           ${reactsComentHtml(c)}
           <span class="cquem-cur" data-quem="${c.k}"${n?'':' hidden'}>${esc(quemCurtiu(c))}</span>
         </div>
-        ${meu?avatarByName(c.by):''}
+        ${meu?(autor?`<span class="cav">${avatarHtml(autor)}</span>`:avatarByName(c.by)):''}
       </div>`; }).join('')
       : '<p class="quiet cvazio">Nenhum comentário ainda. Escreve o primeiro!</p>';
     show(`<div class="cmts"><h2>${ICO.msg} Comentários <button class="x">✕</button></h2>
       <p class="quiet ctarefa">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]} · ${esc(plain(t.text))}</p>
-      <div class="clista" id="cLista">${corpo}</div>
+      <div class="clista" id="cLista">${corpo}<p class="cvisto" id="cVisto"${vistoHtml(t)?'':' hidden'}>${vistoHtml(t)}</p></div>
       <div class="cpicker nodrag" id="cPicker"><div class="cpbusca"><span class="pklupa" aria-hidden="true">${ICO.lupa}</span><input id="cpTxt" type="search" autocomplete="off" placeholder="Procurar emoji" aria-label="Procurar emoji"></div><div class="cpgrade" id="cpGrade">${EMOJIS.map(e=>`<button type="button" data-ce="${e}" aria-label="Emoji ${e}">${e}</button>`).join('')}</div></div>
       <div class="cbar"><div class="ccompose"><button type="button" class="cemo" id="cEmo" aria-label="Emojis" title="Emojis">${ICO.sorriso}</button><textarea id="cTxt" rows="1" placeholder="Escreve aqui…" maxlength="600"></textarea></div>
         <button class="cenv" id="cEnv" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m3 20 18-8L3 4l4 8-4 8Z"/></svg></button></div></div>`);
-    sheet.classList.add('cmtsheet');
+    sheet.classList.add('cmtsheet'); sheet._cmtId=id; marcaVisto(id);
     const lst=document.getElementById('cLista'); if(lst) lst.scrollTop=lst.scrollHeight;
     const ta=document.getElementById('cTxt');
     const cresce=()=>{ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight+2,140)+'px'; };
@@ -6364,7 +6415,7 @@ function openComentarios(id){
       v=String(v||'').trim();
       if(!v) return;
       const agoraC=Date.now();
-      comentarios(t).push({k:'c'+agoraC.toString(36)+Math.random().toString(36).slice(2,5), by:USER?USER.nome:'', txt:v, t:agoraC, u:agoraC, likes:{}, reacts:{}});
+      comentarios(t).push({k:'c'+agoraC.toString(36)+Math.random().toString(36).slice(2,5), by:USER?USER.nome:'', byId:USER?USER.id:'', txt:v, t:agoraC, u:agoraC, likes:{}, reacts:{}});
       resumoComents(t); t.u=agoraC; gravaComents(id);
       logEvt('nota',{id,det:plain(t.text||''),vazia:false});
       vibrate(15); SFX.send();
@@ -6410,7 +6461,7 @@ function openComentarios(id){
     // segurar o comentario abre o Apagar, como na conversa
     sheet.querySelectorAll('.cmt[data-c]').forEach(el=>{
       const c=comentarios(t).find(x=>x.k===el.dataset.c); if(!c) return;
-      const meu=USER&&c.by===USER.nome; if(!meu&&!isResponsavel()) return;
+      const meu=ehMeu(c); if(!meu&&!isResponsavel()) return;
       const apaga=()=>{ closePop();
         const wrap=document.createElement('div'); wrap.className='popwrap';
         wrap.innerHTML=`<div class="lidopop minipop" id="cmtPop"><button class="mini danger" id="cmtDel">${ICO.lixeira}<span>Apagar</span></button></div>`;
@@ -7164,7 +7215,7 @@ function reminderHtml(){
   const doing=allTasks(w).filter(t=>t.type===H&&t.status==='doing'&&!t.off&&!secs[0][1].includes(t));
   if(doing.length) secs.push(['O que você está fazendo', doing]);
   const total=secs.reduce((a,[,l])=>a+l.length,0);
-  const nome=USER?', '+USER.nome:''; const dica=isAluna()?'Arrasta para a direita quando terminar. Arrasta para a esquerda se ainda está fazendo.':'Você está acompanhando as tarefas da Maria. Toque em uma tarefa para ver fotos ou deixar um carinho.';
+  const nome=USER?', '+USER.nome:''; const dica=isAluna()?'Arrasta para a direita para concluir. Para a esquerda, reabre a tarefa (ou marca como fazendo).':'Você está acompanhando as tarefas da Maria. Toque em uma tarefa para ver fotos ou deixar um carinho.';
   return `<div class="rem"><h2>${greet}${nome}! 👋 <button class="x">✕</button></h2>
     ${total?secs.filter(([,l])=>l.length).map(([h,l])=>`<div class="sec"><h3>${h}</h3>${l.map(t=>`<div class="rw" style="--c:${dayCss(t.day)}">${taskHtml(t,true)}</div>`).join('')}</div>`).join(''):'<div class="ok">Tudo em dia! 🎉<br><small class="quiet">Não tem nada para fazer agora.</small></div>'}
     <p class="quiet" style="margin:4px 0 10px;font-size:13px;text-align:center">${dica}</p>
