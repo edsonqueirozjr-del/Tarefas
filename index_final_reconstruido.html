@@ -2024,7 +2024,7 @@
   .evgrupo{display:flex;flex-direction:column;align-items:center;width:100%}
   .evgrupo .evg-cab{cursor:pointer;font:inherit;border:0;flex-wrap:wrap;align-items:center;row-gap:2px}
   .evgrupo .evg-res{display:block;font-size:11.5px;font-weight:700;color:var(--soft);margin-top:1px}
-  .evgrupo .evg-ver{flex:none;margin-left:6px;font-size:12px;font-weight:900;color:var(--uc,var(--lilas-ink));white-space:nowrap}
+  .evgrupo .evg-ver{flex:1 0 100%;text-align:center;margin:3px 0 0;font-size:12px;font-weight:900;color:var(--uc,var(--lilas-ink));white-space:nowrap}   /* linha propria: nao fica embaixo do botao de descer */
   .evgrupo .evg-lista{width:100%;display:flex;flex-direction:column;align-items:center}
   .evgrupo .evg-lista[hidden]{display:none}
   .nudge-msg{align-self:center;display:inline-flex;align-items:baseline;justify-content:center;gap:6px;max-width:96%;margin:10px auto 0;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--uc,var(--t53)) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,var(--t53)) 35%,#fff);color:var(--ink);font-size:13px;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap}
@@ -4102,7 +4102,7 @@ function bindMsgs(){
     const g=b.closest('.evgrupo'); if(!g) return; const ab=!g.classList.contains('aberto'); g.classList.toggle('aberto',ab);
     if(ab) EVG_ABERTOS.add(g.dataset.evg); else EVG_ABERTOS.delete(g.dataset.evg);
     const l=g.querySelector('.evg-lista'); if(l) l.hidden=!ab; b.setAttribute('aria-expanded',ab?'true':'false');
-    const v=b.querySelector('.evg-ver'); if(v) v.textContent=ab?'Fechar':'Ver todas'; vibrate(8); }));
+    const v=b.querySelector('.evg-ver'); if(v) v.textContent=ab?'Fechar':'Ver todas'; vibrate(8); if(ab) requestAnimationFrame(()=>g.scrollIntoView({behavior:'smooth',block:'start'})); }));   // abriu: leva ao comeco do grupo, para ler desde a primeira acao
   box.addEventListener('scroll',()=>{ clearTimeout(window.__db); window.__db=setTimeout(marcaDiaNaBarra,80); },{passive:true});
   renderDayBar();
   box.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',e=>{e.stopPropagation(); openAtt(a.dataset.open);}));
@@ -6857,16 +6857,22 @@ function limpaAcende(){
 function tlAbreTarefa(id){
   const semana=Object.keys(DB.weeks).find(x=>allTasks(DB.weeks[x]).some(t=>t.id===id));
   if(!semana){ toast('Essa tarefa não está mais aqui'); renderMobileTimeline(); render(); return; }   // some com o registro velho da lista
-  current=semana;
-  const w=DB.weeks[current], t=allTasks(w).find(x=>x.id===id);
-  const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true;
+  // onde o cartao aparece de verdade (mesma regra da tela): a feita depois do prazo fica no dia em que foi feita,
+  // a esquecida vem para hoje. Procura primeiro na semana dela, depois nas outras.
+  const t=findTask(id); let achou=null; const antes=current;
+  for(const wid of [semana,...weekIds().filter(x=>x!==semana)]){ current=wid; const w=DB.weeks[wid];
+    const d=w.days.find(x=>tarefasDoDia(w,x).includes(t)); if(d){ achou={wid,d}; break; } }
+  current=achou?achou.wid:semana;
+  if(achou) openState[achou.d.date]=true; else { const w=DB.weeks[current], d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; }
   fType='all'; fSubj='all'; fQ=''; filtroTocado=true;   // limpa os filtros: a pessoa quer ver justamente essa tarefa
   { const bar=document.getElementById('searchBar'), bt=document.getElementById('filterSearch'), qi=document.getElementById('qTxt'), qa=document.getElementById('qAll');
     if(bar){ bar.classList.remove('on'); bt&&bt.classList.remove('on'); qi&&(qi.value=''); qa&&qa.classList.remove('on'); } }
   render();
-  setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${id}"]`);
+  setTimeout(()=>{ const el=document.querySelector(`#app .days .task[data-id="${id}"]`)||document.querySelector(`#app .task[data-id="${id}"]`);
     if(!el){ toast('Não achei a tarefa na tela'); return; }
+    for(let p=el.closest('details');p;p=p.parentElement&&p.parentElement.closest('details')){ p.open=true; if(p.dataset.date) openState[p.dataset.date]=true; }   // abre o dia onde ela esta
     el.scrollIntoView({behavior:'smooth',block:'center'});
+    setTimeout(()=>{ if(!el.isConnected) return; const r=el.getBoundingClientRect(); if(r.top<0||r.bottom>innerHeight) el.scrollIntoView({block:'center'}); },650);   // o dia acabou de abrir e a altura mudou: garante que chegou
     acendeSoEssa(el); },240);
 }
 function bindTimelineItems(corpo,refresh){
