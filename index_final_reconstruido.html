@@ -5304,7 +5304,7 @@ function taskHtml(t,inImp){
   const prazoTag=(t.type===H&&t.ate&&!t.wiz)?`<span class="st pics">${late?'Era para':'Para'} ${comoFalaDia(t.ate)}</span>`:'';   // se o prazo passou, a mensagem muda para o passado
   const status=moved+prazoTag+(t.wiz?`<span class="st wiz">Para ${DAYMETA[WIZ_DIA][0].toLowerCase()}</span>`:'')+(t.off?`<span class="st canc">Cancelada</span>`:'')+(late?'<span class="st no">Esquecido</span>':'')+(!t.off&&!late&&t.status==='todo'?'<span class="st todo">Falta fazer</span>':'')+(!late&&t.status==='doing'?'<span class="st">Fazendo</span>':'')+(t.status==='done'?'<span class="st ok">Feito</span>':'');
   return `<div class="task ${t.status} ${late?'late':''} ${t.off?'off':''} ${t.wiz?'wizt':''}" data-id="${t.id}">
-${isAluna()?`    <div class="sw sw-r st-done ${NEXT_R[t.status]?'':'ja'}">${NEXT_R[t.status]?swLbl(NEXT_R[t.status]):'<span><i class="swi" aria-hidden="true">'+ICO.feito+'</i>Já feita</span>'}</div>
+${isAluna()?`    ${NEXT_R[t.status]?`<div class="sw sw-r st-done">${swLbl(NEXT_R[t.status])}</div>`:''}
     <div class="sw sw-l st-${(NEXT_L[t.status]||'todo')}">${swLbl(NEXT_L[t.status]||'todo')}</div>`: ''}
     <div class="tin">
       <div class="t"><div class="tg">${subj}${dchip}${ehProva(t)?'<span class="st prova-st">Prova</span>':''}${gradeTag}${status}</div><div class="tx">${provaNegrito(hlHtml(semEmoji(t.text),fQ))}</div>
@@ -5631,7 +5631,7 @@ function bindTasks(root=document.getElementById('app')){
       }
       if(mode!=='h') return;
       if(ev.cancelable) ev.preventDefault();
-      dx=Math.max(-150,Math.min(150,x));
+      dx=Math.max(-150,Math.min(el.classList.contains('done')?0:150,x));   // feita: so arrasta para a esquerda (reabrir)
       tin.style.transform='translateX('+dx+'px)';
       el.classList.toggle('show-r',dx>8); el.classList.toggle('show-l',dx<-8);
       if(Math.abs(dx)>=62&&!el._armed){ el._armed=true; vibrate(15); }
