@@ -2021,6 +2021,12 @@
   @keyframes msnshake{0%,100%{transform:translate(0,0)}10%{transform:translate(-9px,4px)}20%{transform:translate(8px,-6px)}30%{transform:translate(-7px,-4px)}40%{transform:translate(9px,5px)}50%{transform:translate(-8px,6px)}60%{transform:translate(7px,-5px)}70%{transform:translate(-6px,3px)}80%{transform:translate(5px,-3px)}90%{transform:translate(-3px,2px)}}
   body.shake .wrap,body.shake .dock,body.shake .sheet>*,body.shake .toast{animation:msnshake .8s cubic-bezier(.36,.07,.19,.97)}
   @media(prefers-reduced-motion:reduce){body.shake .wrap,body.shake .dock,body.shake .sheet>*,body.shake .toast{animation:none}}
+  .evgrupo{display:flex;flex-direction:column;align-items:center;width:100%}
+  .evgrupo .evg-cab{cursor:pointer;font:inherit;border:0;flex-wrap:wrap;align-items:center;row-gap:2px}
+  .evgrupo .evg-res{display:block;font-size:11.5px;font-weight:700;color:var(--soft);margin-top:1px}
+  .evgrupo .evg-ver{flex:none;margin-left:6px;font-size:12px;font-weight:900;color:var(--uc,var(--lilas-ink));white-space:nowrap}
+  .evgrupo .evg-lista{width:100%;display:flex;flex-direction:column;align-items:center}
+  .evgrupo .evg-lista[hidden]{display:none}
   .nudge-msg{align-self:center;display:inline-flex;align-items:baseline;justify-content:center;gap:6px;max-width:96%;margin:10px auto 0;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--uc,var(--t53)) 14%,#fff);border:1px solid color-mix(in srgb,var(--uc,var(--t53)) 35%,#fff);color:var(--ink);font-size:13px;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap}
   /* Avisos da conversa: 1 px menores que o texto dos balões. */
   body .chat .msgs .nudge-msg{font-size:15px}
@@ -3192,6 +3198,7 @@ SEED_WEEKS.forEach(w=>{
     const chave=t=>String(t.text||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim().toLowerCase();
     const antes={}; DB.weeks[w.id].days.forEach(d=>d.tasks.forEach(t=>{ if(!t.wiz) antes[chave(t)]=t; }));
     const wiz=[]; DB.weeks[w.id].days.forEach(d=>d.tasks.forEach(t=>{ if(t.wiz) wiz.push(t); }));
+    const deFora=[]; DB.weeks[w.id].days.forEach(d=>d.tasks.forEach(t=>{ if(t&&!t.wiz&&!String(t.id||'').startsWith(w.id+'-')) deFora.push({t,k:d.k,date:d.date}); }));
     const copy=JSON.parse(JSON.stringify(w));
     copy.days.forEach((d,di)=>d.tasks.forEach((t,ti)=>{
       t.id=`${w.id}-${di}-${ti}`; t.status='todo'; t.note=''; t.day=d.k; t.origin=d.k;
@@ -3202,6 +3209,7 @@ SEED_WEEKS.forEach(w=>{
              t.u=Date.now(); }
     }));
     wiz.forEach(t=>{ const d=copy.days.find(x=>x.k===t.day)||copy.days[0]; if(d) d.tasks.push(t); });
+    deFora.forEach(({t,k,date})=>{ let d=copy.days.find(x=>x.date===date); if(!d){ d={k,date,tasks:[]}; copy.days.push(d); } d.tasks.push(t); });
     copy.ver=w.ver||0; DB.weeks[w.id]=copy;
   } else { // migração: atualiza texto/matéria/importante sem perder progresso
     const sw=DB.weeks[w.id]; sw.label=w.label; sw.roteiro=w.roteiro; sw.topics=w.topics; sw.ver=w.ver||0; delete sw.alerts;
@@ -3211,7 +3219,8 @@ SEED_WEEKS.forEach(w=>{
       if(t.wiz||seedTasks[t.id]||!String(t.id||'').startsWith(w.id+'-')||!/^\d{4}-\d{2}-\d{2}-\d+-\d+$/.test(String(t.id||''))) return true;
       return t.status!=='todo'||t.note||(t.pics||0)||t.important||t.day!==t.origin; }); });
     Object.keys(seedTasks).forEach(id=>{ if(Object.values(DB.weeks).some(xw=>(xw.days||[]).some(d=>(d.tasks||[]).some(t=>t&&t.id===id)))) return;
-      const s=seedTasks[id], d=sw.days.find(x=>x.k===s.day)||sw.days[0];
+      const s=seedTasks[id], sd=w.days.find(x=>x.k===s.day), data=sd?sd.date:null;
+      let d=data?sw.days.find(x=>x.date===data):null; if(!d&&data){ d={k:s.day,date:data,tasks:[]}; sw.days.push(d); } if(!d) d=sw.days.find(x=>x.k===s.day)||sw.days[0];
       if(d) d.tasks.push({...s,id,status:'todo',note:''}); });
     sw.days.forEach(d=>{const sd=w.days.find(x=>x.k===d.k); if(sd&&sd.feriado) d.feriado=sd.feriado;});
   }
@@ -3228,6 +3237,42 @@ const FIM_AULA_H=(()=>{ const h=TIMETABLE.hours[TIMETABLE.hours.length-1].split(
 const MORNING=NOW_H<12.5;            // até 12h30 o foco é "levar hoje"; depois, "fazer em casa para amanhã"
 const DIAS_AULA=['seg','ter','qua','qui','sex'];
 // o sabado entrou na semana depois: toda semana ganha o dia, sem tarefa nenhuma
+// Semana na tela = sabado anterior + domingo a sexta. Cada dia mora na semana dona da sua data (o sabado
+// e da semana que comeca no dia seguinte). E uma regra de data: vale para semana nova do roteiro, para dado
+// antigo da nuvem e para tarefa mudada de dia; rodar de novo nao muda nada.
+function diaMais(dIso,n){ const d=new Date(dIso+'T12:00:00'); d.setDate(d.getDate()+n); return iso(d); }
+function rotuloSemana(wid){ const MES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const a=new Date(diaMais(wid,1)+'T12:00:00'), b=new Date(diaMais(wid,5)+'T12:00:00');
+  return a.getMonth()===b.getMonth()?a.getDate()+' a '+b.getDate()+' de '+MES[b.getMonth()]:a.getDate()+' de '+MES[a.getMonth()]+' a '+b.getDate()+' de '+MES[b.getMonth()]; }
+function novaSemanaVazia(wid){ const ks=['dom','seg','ter','qua','qui','sex'];
+  return {id:wid,label:rotuloSemana(wid),roteiro:'',topics:'',ver:-1,days:[{k:'sab',date:diaMais(wid,-1),tasks:[]}].concat(ks.map((k,i)=>({k,date:diaMais(wid,i),tasks:[]})))}; }
+function organizaSemanas(){
+  let mudou=false;
+  Object.keys(DB.weeks||{}).sort().forEach(wid=>{
+    const w=DB.weeks[wid]; if(!w||!Array.isArray(w.days)) return;
+    // sabado seguinte (modelo antigo): o dia e as tarefas marcadas para ele vao para a semana seguinte
+    const velho=w.days.find(d=>d&&d.k==='sab'&&d.date>wid);
+    if(!velho) return;
+    const dono=weekIdFor(velho.date);
+    const vaoJunto=(velho.tasks||[]).length||w.days.some(d=>!(d.k==='sab'&&d.date<wid)&&d!==velho&&(d.tasks||[]).some(t=>t&&t.day==='sab'&&!t.wiz));
+    if(!DB.weeks[dono]&&!vaoJunto){ w.days=w.days.filter(d=>d!==velho); mudou=true; return; }   // sabado vazio: nao cria semana so para ele
+    if(!DB.weeks[dono]) DB.weeks[dono]=novaSemanaVazia(dono);
+    const alvoW=DB.weeks[dono]; if(!Array.isArray(alvoW.days)) alvoW.days=[];
+    let alvoD=alvoW.days.find(d=>d.date===velho.date); if(!alvoD){ alvoD={k:'sab',date:velho.date,tasks:[]}; alvoW.days.push(alvoD); }
+    w.days.forEach(d=>{ if(d.k==='sab'&&d.date<wid) return;          // o sabado anterior desta semana fica
+      d.tasks=(d.tasks||[]).filter(t=>{ if(t&&t.day==='sab'&&!t.wiz){ alvoD.tasks.push(t); return false; } return true; }); });
+    // o que sobrou no dia velho (tarefa dele mudada para outro dia desta semana): vai para a lista do dia dela
+    (velho.tasks||[]).forEach(t=>{ const d=w.days.find(x=>x!==velho&&x.k===t.day)||w.days.find(x=>x!==velho&&x.k==='dom')||w.days.find(x=>x!==velho); if(d) d.tasks.push(t); });
+    w.days=w.days.filter(d=>d!==velho); mudou=true;
+  });
+  Object.keys(DB.weeks||{}).forEach(wid=>{ const w=DB.weeks[wid]; if(!w) return; if(!Array.isArray(w.days)) w.days=[];
+    const sab=diaMais(wid,-1);
+    if(!w.days.some(d=>d.k==='sab'&&d.date===sab)){ w.days.push({k:'sab',date:sab,tasks:[]}); mudou=true; }
+    const antes=w.days.map(d=>d.date).join();
+    w.days.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+    if(w.days.map(d=>d.date).join()!==antes) mudou=true; });
+  return mudou;
+}
 function garanteSabado(w){
   if(!w||!w.days||w.days.some(d=>d.k==='sab')) return false;
   const dom=w.days.find(d=>d.k==='dom'); const base=dom?dom.date:w.id;
@@ -3235,7 +3280,7 @@ function garanteSabado(w){
   w.days.push({k:'sab',date:iso(dt),tasks:[]});
   return true;
 }
-{ let mudou=false; Object.values(DB.weeks).forEach(w=>{ if(garanteSabado(w)) mudou=true; }); if(mudou) save(); }
+{ let mudou=organizaSemanas(); if(unificaTarefas()) mudou=true; if(mudou) save(); }   // semana: sabado anterior + domingo a sexta
 // nome curto da semana em relacao a hoje: "Semana atual", "Proxima semana", "Semana anterior"; as outras mostram os dias
 function nomeSemana(w){
   if(!w) return '';
@@ -3245,7 +3290,7 @@ function nomeSemana(w){
   if(w.id===d(atual,-7)) return 'Semana anterior';
   return w.label||w.id;
 }
-function weekIdFor(dateIso){ const d=new Date(dateIso+'T12:00:00'); d.setDate(d.getDate()-d.getDay()); return iso(d); }
+function weekIdFor(dateIso){ const d=new Date(dateIso+'T12:00:00'); const dow=d.getDay(); d.setDate(d.getDate()-dow+(dow===6?7:0)); return iso(d); }   // sabado ja e da semana seguinte
 const weekIds=()=>Object.keys(DB.weeks).sort();
 let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(i=>i<=weekIdFor(TODAY)).pop() || weekIds()[0]);
 { let mudou=false; Object.values(DB.weeks).forEach(w=>{ if(garanteWizard(w)) mudou=true; }); if(mudou) save(); }   // Wizard em todas as semanas
@@ -3357,7 +3402,7 @@ function mergeRemote(remote){
   let changed=false; MERGE_EVT=[];
   Object.keys(remote.weeks).forEach(id=>{
     const rw=remote.weeks[id], lw=DB.weeks[id];
-    if(!lw){ arrumaDias(rw); DB.weeks[id]=rw; garanteSabado(rw); changed=true; return; }
+    if(!lw){ arrumaDias(rw); DB.weeks[id]=rw; changed=true; return; }
     const local={}; Object.values(DB.weeks).forEach(xw=>(xw.days||[]).forEach(d=>(d.tasks||[]).forEach(t=>{ if(t&&t.id) local[t.id]=t; })));   // em qualquer semana: tarefa que mudou de semana continua sendo a mesma
     (rw.days||[]).forEach(d=>(d.tasks||[]).forEach(rt=>{
       const lt=local[rt.id]; if(!lt) return;
@@ -3406,6 +3451,7 @@ function mergeRemote(remote){
         lt.status=rt.status; lt.statusU=rt.statusU||lt.statusU||0; lt.statusBy=rt.statusBy||lt.statusBy||''; lt.feitoEm=rt.feitoEm||''; lt.offU=rt.offU||lt.offU||0; lt.note=rt.note||''; lt.noteBy=rt.noteBy||''; lt.off=!!rt.off; lt.offWhy=rt.offWhy||''; lt.offBy=rt.offBy||''; lt.pics=rt.pics||0; lt.thumbs=rt.thumbs||null; lt.reacts=rtReacts||null; if(!(lt.moveU||rt.moveU)) lt.day=rt.day; lt.u=rt.u; if(meuStatus) Object.assign(lt,meuStatus); changed=true; }
     }));
   });
+  if(organizaSemanas()) changed=true;
   if(unificaTarefas()) changed=true;
   return changed;
 }
@@ -3621,7 +3667,7 @@ function openShare(diaInicial){
     else { sel.delete('all'); if(sel.has(k)) sel.delete(k); else sel.add(k); }
     atualiza();
   }));
-  if(!sel.size){ const hoje=w.days.find(d=>d.date===TODAY); sel.add(hoje?hoje.k:w.days[0].k); }
+  if(!sel.size){ const hoje=w.days.find(d=>d.date===TODAY); sel.add(hoje?hoje.k:(w.days.find(d=>d.k==='seg')||w.days[0]).k); }
   atualiza();
 }
 
@@ -3803,10 +3849,32 @@ const EMO_ANIM=[
 function emoClass(e){ const base=e.replace(/[\ufe0f\u200d]/g,'').replace(/[\u{1F3FB}-\u{1F3FF}]/gu,''); for(const [c,set] of EMO_ANIM){ if(set.includes(base[0]+(base[1]||''))||set.includes(base)) return c; } return 'idle'; }
 function animaEmojis(html){ if(!html) return ''; return html.replace(/(\p{Extended_Pictographic}(?:\ufe0f|\p{Emoji_Modifier}|\u200d\p{Extended_Pictographic})*)/gu,e=>`<span class="em ${emoClass(e)}">${e}</span>`); }
 // Agrupa somente sequencias reais de tres ou mais chamados no mesmo dia.
+// mais de 3 acoes seguidas (mesmo dia) viram um grupo; abre com "Ver todas" e continua aberto ao redesenhar
+const EVG_ABERTOS=new Set();
+function grupoEvtHtml(lista,i0,arr){
+  const chave=lista[0].k, aberto=EVG_ABERTOS.has(chave);
+  const hm=t=>{ const d=new Date(t||0); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); };
+  const ini=hm(lista[0].t), fim=hm(lista[lista.length-1].t), faixa=ini===fim?ini:ini+' às '+fim;
+  const ids=[...new Set(lista.map(m=>m.by))];
+  const quem=ids.map(id=>USER&&id===USER.id?'Você':esc((USERS.find(x=>x.id===id)||{nome:id}).nome));
+  const NOMES={done:['feita','feitas'],doing:['começada','começadas'],todo:['reaberta','reabertas'],carinho:['carinho','carinhos'],audio_rea:['áudio','áudios'],imp_on:['importante','importantes'],imp_off:['tirada das importantes','tiradas das importantes'],cancel:['cancelada','canceladas'],undel:['voltou a valer','voltaram a valer'],move:['mudança de dia','mudanças de dia'],nota:['observação','observações'],foto:['foto','fotos'],curtiu_foto:['curtida em foto','curtidas em foto'],comentou_foto:['comentário em foto','comentários em foto'],reagiu_foto:['reação em foto','reações em foto']};
+  const cont={}; lista.forEach(m=>{ const k=m.att&&m.att.tipo||'outro'; cont[k]=(cont[k]||0)+1; });
+  const resumo=Object.keys(cont).map(k=>{ const n=cont[k], nm=NOMES[k]||['ação','ações']; return n+' '+(n>1?nm[1]:nm[0]); }).join(' · ');
+  const u=ids.length===1?(USERS.find(x=>x.id===ids[0])||null):null;
+  return `<div class="evgrupo${aberto?' aberto':''}" data-evg="${chave}"><button type="button" class="nudge-msg evg-cab" aria-expanded="${aberto}" style="--uc:${u?corDe(u):'var(--lilas)'}">`
+    +`<span class="hand" aria-hidden="true">${ICO.lapis}</span><span class="nt"><small class="evt-hora">${faixa}</small> <b>${quem.join(' e ')}</b> · <b>${lista.length} ações</b><span class="evg-res">${resumo}</span></span>`
+    +`<span class="evg-ver">${aberto?'Fechar':'Ver todas'}</span></button>`
+    +`<div class="evg-lista"${aberto?'':' hidden'}>${lista.map((m,j)=>msgHtml(m,i0+j,arr)).join('')}</div></div>`;
+}
 function chatMessagesHtml(messages,withDate=false){
   const parts=[];
   for(let i=0;i<messages.length;i++){
     const m=messages[i]; let last=i;
+    if(m.att?.kind==='evento'&&!evtOculto(m)){
+      const dia=iso(new Date(m.t||0)); let f=i;
+      while(f+1<messages.length&&messages[f+1].att?.kind==='evento'&&!evtOculto(messages[f+1])&&iso(new Date(messages[f+1].t||0))===dia) f++;
+      if(f-i+1>3){ const pre=withDate?`<div class="daysep">${dayLabel(dia)}</div>`:''; parts.push(pre+grupoEvtHtml(messages.slice(i,f+1),i,messages)); i=f; continue; }
+    }
     if(m.att?.kind==='nudge'){
       const day=iso(new Date(m.t||0));
       while(last+1<messages.length && messages[last+1].att?.kind==='nudge' && iso(new Date(messages[last+1].t||0))===day) last++;
@@ -4026,7 +4094,15 @@ function marcaDiaNaBarra(){
 }
 function bindMsgs(){
   const box=document.getElementById('msgs'); if(!box) return;
+  // liga uma vez so por desenho: abrir a conversa marcava como lida, isso redesenhava e ligava, e depois ligava de novo
+  // (cada toque rodava duas vezes: a reacao era posta e tirada no mesmo toque)
+  { const marca=box.firstElementChild; if(marca&&marca.dataset.lig==='1') return; if(marca) marca.dataset.lig='1'; }
   box.querySelectorAll('.react').forEach(b=>b.addEventListener('click',()=>toggleReact(b.dataset.k,b.dataset.r)));
+  box.querySelectorAll('.evg-cab').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation();
+    const g=b.closest('.evgrupo'); if(!g) return; const ab=!g.classList.contains('aberto'); g.classList.toggle('aberto',ab);
+    if(ab) EVG_ABERTOS.add(g.dataset.evg); else EVG_ABERTOS.delete(g.dataset.evg);
+    const l=g.querySelector('.evg-lista'); if(l) l.hidden=!ab; b.setAttribute('aria-expanded',ab?'true':'false');
+    const v=b.querySelector('.evg-ver'); if(v) v.textContent=ab?'Fechar':'Ver todas'; vibrate(8); }));
   box.addEventListener('scroll',()=>{ clearTimeout(window.__db); window.__db=setTimeout(marcaDiaNaBarra,80); },{passive:true});
   renderDayBar();
   box.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',e=>{e.stopPropagation(); openAtt(a.dataset.open);}));
@@ -5039,7 +5115,7 @@ function render(){
     const pendTotal=pendNoPrazo+pendAtrasadas;                                   // uma etiqueta so, juntando o que falta fazer
     const cntTag=pendTotal>0?`<span class="tag">${pendTotal} tarefa${pendTotal>1?'s':''}</span>`:'';
     if(filtering && !tasksAll.some(pass)) return;   // com filtro ativo, dia sem resultado não aparece
-    const open = openState[d.date]!==undefined ? openState[d.date] : (isToday || fQ.length>=2);
+    const open = filtering ? true : (openState[d.date]!==undefined ? openState[d.date] : isToday);   // com filtro: os dias que tem resultado ja vem abertos
     const box=(type,title,emptyTxt,filtro)=>{
       const cabe=t=>t.type===type&&(filtro?filtro(t):true);
       const ordem=t=>t.off?3:(t.status==='done'?2:(t.status==='doing'?1:0));   // falta fazer, fazendo, feito, cancelada
@@ -5135,7 +5211,7 @@ function render(){
   ajustaProgressoTablet();
   if(typeof appBadge==='function') appBadge();
   if(typeof updateReaFab==='function') updateReaFab();
-  document.querySelectorAll('.day,.imp,.cal,#provasTopo .cal').forEach(el=>el.addEventListener('toggle',()=>openState[el.dataset.date]=el.open));
+  document.querySelectorAll('.day,.imp,.cal,#provasTopo .cal').forEach(el=>el.addEventListener('toggle',()=>{ if(el.classList.contains('day')&&(fType!=='all'||fSubj!=='all'||fQ.length>=2)) return; openState[el.dataset.date]=el.open; }));   // abertos pelo filtro nao ficam lembrados
   aplicaVisNotasProvas();
   document.querySelectorAll('[data-provas-eye]').forEach(b=>b.addEventListener('click',e=>{
     e.preventDefault(); e.stopPropagation();
@@ -6662,17 +6738,17 @@ function tlEventos(){
     out.push({tipo:k,by:m.by,t:m.t||0,k:m.k,det:k==='msg'?plain(m.text||''):(m.text?plain(m.text):'')});
   });
   // 2) o que esta marcado nas tarefas: carinhos, importante, mudanca de dia, observacao e cancelamento
-  const idPorNome=n=>{ const u=USERS.find(x=>x.nome===n||x.nomeBase===n); return u?u.id:(n||''); };
+  const idPorNome=n=>{ const u=autorDe({by:n}); return u?u.id:(n||''); };   // nome de agora, nome original ou apelido
   Object.keys(DB.weeks).forEach(id=>allTasks(DB.weeks[id]).forEach(t=>{
     if(t.reacts) Object.keys(t.reacts).forEach(uid=>{ const r=t.reacts[uid]; if(!r||!r.t) return;
       out.push({tipo:r.a?'audio_rea':'carinho',by:uid,t:r.t,id:t.id,det:plain(t.text||''),emoji:r.e,nome:r.a?r.an:nomeCarinho(r.e)}); });
     const txt=plain(t.text||'');
     if(t.impU&&t.impBy) out.push({tipo:t.important?'imp_on':'imp_off',by:idPorNome(t.impBy),t:t.impU,id:t.id,det:txt});
     if(t.moveU&&t.moveBy&&!t.wiz&&t.day!==t.origin) out.push({tipo:'move',by:idPorNome(t.moveBy),t:t.moveU,id:t.id,det:txt,dia:(DAYMETA[t.day]||[''])[0]});
-    if(t.note&&(t.noteU||t.u)) out.push({tipo:'nota',by:idPorNome(t.noteBy),t:t.noteU||t.u,id:t.id,det:txt});
-    const qs=t.statusU||t.u;   // situacao: hora exata quando existe, senao a ultima mexida na tarefa
-    if(qs&&!t.off&&TL_TIPOS[t.status]) out.push({tipo:t.status,by:idPorNome(t.statusBy)||'maria',t:qs,id:t.id,det:txt});
-    if(t.off&&(t.offU||t.u)) out.push({tipo:'cancel',by:idPorNome(t.offBy),t:t.offU||t.u,id:t.id,det:txt});
+    if(t.note&&t.noteU&&t.noteBy) out.push({tipo:'nota',by:idPorNome(t.noteBy),t:t.noteU,id:t.id,det:txt});   // so com hora e autor gravados
+    // situacao e cancelamento: so quando a hora e quem fez estao gravados (antes inventava "reabriu" pela ultima mexida)
+    if(t.statusU&&t.statusBy&&!t.off&&TL_TIPOS[t.status]) out.push({tipo:t.status,by:idPorNome(t.statusBy),t:t.statusU,id:t.id,det:txt});
+    if(t.off&&t.offU) out.push({tipo:'cancel',by:idPorNome(t.offBy),t:t.offU,id:t.id,det:txt});
   }));
   // 3) registro proprio
   EVENTOS.forEach(e=>{ if(e&&e.t&&TL_TIPOS[e.tipo]) out.push(e); });
