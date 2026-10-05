@@ -3112,12 +3112,12 @@ const CALENDARIO_TRI={titulo:'Avisos',etapas:[
   {nome:'Prova',subj:'por',ini:'2026-09-29',det:'Conto de terror, concordância verbal e verbo "ser"'},
   {nome:'Test 1',subj:'ing',ini:'2026-09-29',det:'Chapter 6 (They made it!)'},
   {nome:'Prova',subj:'his',ini:'2026-09-30',det:'Economia e sociedade colonial'},
-  {nome:'2ª chamada da Avaliação 1',ini:'2026-10-05'},
+  {nome:'2ª chamada da Avaliação 1',ini:'2026-10-05',det:'No período da tarde'},
   {nome:'Simulado',ini:'2026-10-23'},
-  {nome:'2ª chamada do Simulado',ini:'2026-10-26'},
-  {nome:'Mostra Vicentina',ini:'2026-11-07'},
+  {nome:'2ª chamada do Simulado',ini:'2026-10-26',det:'No período da tarde'},
+  {nome:'Mostra Vicentina',ini:'2026-11-07',det:'Sábado letivo'},
   {nome:'Avaliação 2',ini:'2026-11-10',fim:'2026-11-17'},
-  {nome:'2ª chamada da Avaliação 2',ini:'2026-11-19'},
+  {nome:'2ª chamada da Avaliação 2',ini:'2026-11-19',det:'No período da tarde'},
   {nome:'Recuperação 1',ini:'2026-11-24',det:'Português, História, Inglês'},
   {nome:'Recuperação 2',ini:'2026-11-26',det:'Matemática, Geografia e Ciências'},
   {nome:'Entrega dos boletins',ini:'2026-12-08'},
@@ -3273,6 +3273,89 @@ const SEED_WEEKS = [
      P('his','Fazer a atividade da <b>página 65</b> de História: o Brasil Colônia em quadros e um mapa mental no caderno sobre as dinâmicas comerciais internas da colônia. É para a próxima aula, quarta 07/10','2026-10-07')]},
    {k:'sex',date:'2026-10-02',tasks:[
      P('esp','Realizar as atividades das <b>páginas 24 e 25</b> de Espanhol, a partir do estudo do gênero textual tabela nutricional. É para a próxima aula, quarta 07/10','2026-10-07')]}
+  ]
+ },
+ {
+  id:'2026-10-04', label:'5 a 9 de outubro', roteiro:'Roteiro 16 · semana 1 · 7º ano D',
+  topics:'Português: o texto científico (páginas 7 a 11), tipos de textos científicos (páginas 12 a 16), exercícios (páginas 18 e 19), produção de resumos no caderno, produção de texto (páginas 19 a 21) e exercícios (páginas 23 a 27).<br>Matemática: desigualdade triangular, exercícios em sala e correção de tarefas.<br>História: escravização indígena, escravização dos negros e as condições de vida e de trabalho dos escravizados (volume 3, capítulo 9: resistência, trabalho e mercadoria no período colonial).<br>Geografia: localização da região Sudeste (página 8), o processo histórico de ocupação (página 9) e atividades no caderno (volume 4, capítulo 10: entre as serras e o mar).<br>Ciências: desmatamento e queimadas (página 52), mineração (página 54) e o agravamento das mudanças climáticas (página 56), do capítulo 7 (degradação dos ambientes).<br>Inglês: Chapter 7 (No pain, no gain), com os Jogos Olímpicos, biografias de atletas e atividade de ouvir e responder.<br>Espanhol: unidade 2, capítulo 5 (Salud y bienestar), com pesquisa em grupo no laboratório de informática sobre a saúde na adolescência. É atividade avaliativa de 50 pontos.<br>Filosofia: fim do capítulo 4 (A alegria de estar com o outro), com a devolutiva da atividade avaliativa sobre amizade.<br>Ed. Física: minijogos de vôlei, 3x3 ou 4x4, com rodízio entre as equipes, e jogo com desafios: 3 toques, direcionar o saque e construir a jogada.<br>Ens. Religioso: a revolução da empatia.<br>Arte: projeto Natal Cooperativo, a decoração de Natal da escola feita nas aulas.<br>Projeto de Vida: trabalhando e refletindo sobre o trabalho.',
+  days:[
+   {k:'dom',date:'2026-10-04',tasks:[]},
+   {k:'seg',date:'2026-10-05',tasks:[
+     P('cie','Conferir se as <b>páginas 41, 46, 48, 50, 54, 56 e 58</b> de Ciências estão todas feitas. O visto é na última aula da semana, quinta 08/10','2026-10-08'),
+     P('mat','Fazer as <b>páginas 130 e 131</b> do volume 3 de Matemática. É para sexta 09/10','2026-10-09'),
+     P('art','Separar enfeites de Natal para fazer as guirlandas na aula de Arte de quinta 08/10','2026-10-08'),
+     T(H,'por','Livro de literatura do 3º trimestre: <b>Prisioneiros na Biblioteca</b>, de Manuel Filho (Editora Melhoramentos). Conferir se já tem o livro')]},
+   {k:'ter',date:'2026-10-06',tasks:[
+     P('ing','Pesquisar a biografia do atleta sorteado na aula de Inglês. A professora confere na última aula da semana, sexta 09/10','2026-10-09')]},
+   {k:'qua',date:'2026-10-07',tasks:[
+     T(B,'esp','Hoje tem pesquisa em grupo no laboratório de informática sobre a saúde na adolescência. É atividade avaliativa de <b>50 pontos</b>',1),
+     P('esp','Trazer imagens impressas e coloridas sobre o tema do seu grupo, para montar o cartaz na próxima aula de Espanhol, quarta 14/10','2026-10-14')]},
+   {k:'qui',date:'2026-10-08',tasks:[
+     T(B,'cie','Páginas 41, 46, 48, 50, 54, 56 e 58 de Ciências feitas para o visto',1),
+     T(B,'art','Enfeites de Natal para fazer as guirlandas. É atividade avaliativa',1),
+     P('fil','Terminar as atividades do capítulo 4 de Filosofia. O visto é na aula de quinta 15/10','2026-10-15')]},
+   {k:'sex',date:'2026-10-09',tasks:[
+     T(B,'mat','Páginas 130 e 131 do volume 3 de Matemática feitas'),
+     T(B,'ing','Pesquisa da biografia do atleta sorteado. A professora confere hoje'),
+     P('por','Fazer no caderno o resumo do conteúdo de Português desta semana: o texto científico. É para a próxima aula, terça 13/10','2026-10-13'),
+     P('his','Fazer a tarefa das <b>páginas 82 e 87</b> de História. É para a próxima aula, quarta 14/10','2026-10-14'),
+     P('geo','Fazer a tarefa das <b>páginas 6 e 7</b> de Geografia. É para a próxima aula, quarta 14/10','2026-10-14')]}
+  ]
+ },
+ {
+  id:'2026-10-11', label:'12 a 16 de outubro', roteiro:'Roteiro 16 · semana 2 · 7º ano D',
+  topics:'Português: termos integrantes da oração (páginas 27 a 30), complemento nominal (páginas 31 a 34), resumo do conteúdo no caderno e exercícios (páginas 35 a 40).<br>Matemática: tipos de pesquisa e amostra, frequência absoluta e relativa e exercícios em sala.<br>História: resistência e liberdade e os quilombos (volume 3, capítulo 9).<br>Geografia: aspectos naturais do Sudeste, relevo e hidrografia (página 13), e o clima do Sudeste (página 17), do volume 4, capítulo 10.<br>Ciências: a produção de lixo e seus tipos (páginas 58 a 60) e os resíduos e a coleta seletiva (páginas 61 a 68), do capítulo 7.<br>Inglês: Chapter 7 (No pain, no gain), com o projeto das biografias de atletas.<br>Filosofia: capítulo 5 (Liberdade), com liberdade e determinismo (páginas 4 e 5) e o visto final nas atividades do capítulo 4.<br>Ed. Física: brincadeiras antigas para comemorar a semana da criança.<br>Ens. Religioso: o poder transformador da gratidão.<br>Arte: projeto Natal Cooperativo, com as guirlandas de Natal.<br>Projeto de Vida: riquezas e pobrezas.',
+  days:[
+   {k:'dom',date:'2026-10-11',tasks:[]},
+   {k:'seg',date:'2026-10-12',feriado:'Nossa Senhora Aparecida',tasks:[]},
+   {k:'ter',date:'2026-10-13',tasks:[
+     T(B,'por','Resumo do conteúdo de Português da semana passada feito no caderno'),
+     T(B,'ing','Pesquisa da biografia do atleta, para o projeto de Inglês'),
+     P('mat','Fazer as <b>páginas 49 e 50</b> do volume 4 de Matemática. É para sexta 16/10','2026-10-16'),
+     P('pdv','Escrever um parágrafo no caderno dizendo o que você considera uma "riqueza" que o dinheiro não pode comprar. É para a próxima aula, terça 20/10','2026-10-20')]},
+   {k:'qua',date:'2026-10-14',tasks:[
+     T(B,'esp','Imagens impressas e coloridas sobre o tema do grupo, para o cartaz de Espanhol',1),
+     T(B,'his','Páginas 82 e 87 de História feitas'),
+     T(B,'geo','Páginas 6 e 7 de Geografia feitas'),
+     P('cie','Responder as <b>páginas 65 e 68</b> de Ciências. Deixar pronto até a última aula da semana, quinta 15/10','2026-10-15')]},
+   {k:'qui',date:'2026-10-15',tasks:[
+     T(B,'fil','Atividades do capítulo 4 de Filosofia terminadas para o visto final',1),
+     T(B,'cie','Páginas 65 e 68 de Ciências feitas'),
+     T(B,'art','Enfeites de Natal para as guirlandas'),
+     T(H,'fil','Anotar a tarefa de Filosofia que a professora passar na sala (capítulo 5, páginas 4 e 5). A data do visto ainda vai ser marcada')]},
+   {k:'sex',date:'2026-10-16',tasks:[
+     T(B,'mat','Páginas 49 e 50 do volume 4 de Matemática feitas'),
+     P('por','Fazer no caderno o resumo do conteúdo de Português desta semana: termos integrantes da oração e complemento nominal. É para a próxima aula, segunda 19/10','2026-10-19'),
+     P('his','Fazer a tarefa da <b>página 91</b> de História. É para a próxima aula, quarta 21/10','2026-10-21'),
+     P('geo','Fazer a tarefa da <b>página 12</b> de Geografia. É para a próxima aula, quarta 21/10','2026-10-21')]}
+  ]
+ },
+ {
+  id:'2026-10-18', label:'19 a 23 de outubro', roteiro:'Roteiro 16 · semana 3 · 7º ano D',
+  topics:'Português: produção de texto, história em quadrinhos (páginas 41 a 44), seminário (páginas 45 a 49), apresentação do seminário e Aprimorando (páginas 50 a 57).<br>Matemática: gráficos, gráficos de setores, exercícios em sala, revisão de conteúdos e simulado.<br>História: alforria e a busca pela liberdade, exercícios (páginas 100 e 101) e Testando (páginas 106 e 107).<br>Geografia: vegetação do Sudeste (página 19) e atividades (página 11), atividades das páginas 16, 17 e 21 e as transformações na paisagem e as relações socioeconômicas (página 23).<br>Ciências: extinção das espécies (páginas 71 a 75), estados físicos da água e suas mudanças (páginas 92 a 95) e o ciclo da água (página 95).<br>Inglês: Chapter 7 (No pain, no gain), com o projeto das biografias de atletas e Can x Could.<br>Espanhol: unidade 2, capítulo 5 (Salud y bienestar), criando um cartaz sobre o tema ¿Estamos cuidando nuestra salud?<br>Filosofia: capítulo 5 (Liberdade), com a liberdade como uso da razão (páginas 6 e 7).<br>Ed. Física: ultimate frisbee adaptado e badminton adaptado.<br>Ens. Religioso: a importância da solidariedade para um mundo mais fraterno.<br>Arte: projeto Natal Cooperativo, com as guirlandas de Natal.',
+  days:[
+   {k:'dom',date:'2026-10-18',tasks:[]},
+   {k:'seg',date:'2026-10-19',tasks:[
+     T(B,'por','Resumo do conteúdo de Português da semana passada feito no caderno'),
+     T(H,'por','Preparar a sua parte do seminário de Português (páginas 45 a 49). A apresentação é nesta semana',1),
+     P('mat','Fazer a <b>Lista 9</b> de Matemática. É para sexta 23/10','2026-10-23'),
+     P('cie','Responder as <b>páginas 76, 77, 91, 92 e 95</b> de Ciências. Deixar pronto até a última aula da semana, quinta 22/10','2026-10-22')]},
+   {k:'ter',date:'2026-10-20',tasks:[
+     T(B,'pdv','Parágrafo no caderno sobre a "riqueza" que o dinheiro não pode comprar')]},
+   {k:'qua',date:'2026-10-21',tasks:[
+     T(B,'his','Página 91 de História feita'),
+     T(B,'geo','Página 12 de Geografia feita'),
+     T(B,'esp','Hoje é a aula de montar o cartaz de Espanhol sobre o tema do grupo'),
+     P('esp','Terminar o cartaz de Espanhol (¿Estamos cuidando nuestra salud?) e trazer para apresentar na próxima aula, quarta 28/10','2026-10-28')]},
+   {k:'qui',date:'2026-10-22',tasks:[
+     T(B,'cie','Páginas 76, 77, 91, 92 e 95 de Ciências feitas'),
+     T(B,'art','Enfeites de Natal para as guirlandas'),
+     T(H,'fil','Anotar a tarefa de Filosofia que a professora passar na sala (capítulo 5, páginas 6 e 7). A data do visto ainda vai ser marcada')]},
+   {k:'sex',date:'2026-10-23',tasks:[
+     T(B,'mat','Lista 9 de Matemática pronta para entregar',1),
+     P('ing','Terminar o Let’s practice II, <b>páginas 75 e 76</b> de Inglês. É para a próxima aula, terça 27/10','2026-10-27'),
+     P('por','Fazer no caderno o resumo do conteúdo de Português desta semana. É para a próxima aula, segunda 26/10','2026-10-26'),
+     P('geo','Fazer a tarefa da <b>página 22</b> de Geografia. É para a próxima aula, quarta 28/10','2026-10-28')]}
   ]
  }
 ];
