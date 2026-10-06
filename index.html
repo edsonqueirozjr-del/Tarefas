@@ -3655,6 +3655,7 @@ let current = DB.weeks[weekIdFor(TODAY)] ? weekIdFor(TODAY) : (weekIds().filter(
 const openState={};
 const tabletFiltersMedia=matchMedia('(min-width:600px) and (min-height:600px)');
 let fType='all', fSubj='all', fQ='', subjOpen=false, subjAnim=null, filtroTocado=false;
+let fAmanha=false;   // filtro "Para amanhã": so as tarefas que vencem amanha (vale nos dois filtros)
 let mobileStatusOpen=false;  // celular e tablet: o filtro de situacao comeca fechado e o botao branco ("Todas" ja vem marcado)
 const fSet=()=>fType==='all'?[]:fType.split('+');
 const fHas=k=>fType!=='all'&&fSet().includes(k);
@@ -3945,7 +3946,7 @@ function openSearch(q0){
     if(!hits.length){ res.innerHTML=vazioBusca('lupa','Nada encontrado','Não achei nenhuma tarefa com “'+esc(q)+'”. Tenta outra palavra.'); return; }
     res.innerHTML=hits.slice(0,60).map(h=>{ const d=DB.weeks[h.w].days.find(x=>x.k===h.t.day); const est=h.t.off?ICO.proibido:(h.t.status==='done'?ICO.feito:(h.t.status==='doing'?ICO.fazendo:ICO.lapis));
       return `<button class="hit" data-w="${h.w}" data-id="${h.t.id}"><b>${est} ${subjectVisual(SUBJ[h.t.subj]||'')} · ${DAYMETA[h.t.day][0]} ${d?fmt(d.date):''} · ${DB.weeks[h.w].label}</b>${hl(h.txt,q)}</button>`; }).join('');
-    res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; fType='all';fSubj='all'; fQ=''; filtroTocado=true; { const bar=document.getElementById('searchBar'),bt=document.getElementById('filterSearch'),qi=document.getElementById('qTxt'),qa=document.getElementById('qAll'); if(bar){bar.classList.remove('on');bt.classList.remove('on');qi.value='';qa.classList.remove('on');} } const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
+    res.querySelectorAll('.hit').forEach(b=>b.addEventListener('click',()=>{ current=b.dataset.w; fType='all';fSubj='all'; fQ=''; fAmanha=false; filtroTocado=true; { const bar=document.getElementById('searchBar'),bt=document.getElementById('filterSearch'),qi=document.getElementById('qTxt'),qa=document.getElementById('qAll'); if(bar){bar.classList.remove('on');bt.classList.remove('on');qi.value='';qa.classList.remove('on');} } const w=DB.weeks[current]; const t=allTasks(w).find(x=>x.id===b.dataset.id);
       const d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; hide(); render();
       setTimeout(()=>{ const el=document.querySelector(`#app .task[data-id="${t.id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); acendeSoEssa(el); } },200); }));
   };
@@ -5239,7 +5240,11 @@ function allTasks(w){return w.days.flatMap(d=>d.tasks).filter(t=>!t.skip&&t.type
 function liveTasks(w){return allTasks(w).filter(t=>!t.off);}
 function qMatch(t){ if(fQ.length<2) return true; const ql=fQ.toLowerCase();
   return plain(t.text||'').toLowerCase().includes(ql)||(SUBJ[t.subj]||'').toLowerCase().includes(ql)||(t.note||'').toLowerCase().includes(ql); }
-function pass(t){ if(!qMatch(t)) return false; if(t.type===B) return fType==='all'&&(fSubj==='all'||t.subj===fSubj); const st = fType==='all' || fSet().some(k=>passaSituacao(t,k)); return st && (fSubj==='all' || t.subj===fSubj); }
+const amanhaIso=()=>diaMais(TODAY,1);
+// prazo da tarefa: o proprio (ate) quando vence depois do dia em que ela esta; senao, o dia dela
+function prazoDe(t){ const d=diaDe(t); if(!d) return ''; return (t.type===H&&t.ate&&t.ate>d.date)?t.ate:d.date; }
+function passaAmanha(t){ return !fAmanha || prazoDe(t)===amanhaIso(); }   // so o que vence amanha
+function pass(t){ if(!qMatch(t)||!passaAmanha(t)) return false; if(t.type===B) return fType==='all'&&(fSubj==='all'||t.subj===fSubj); const st = fType==='all' || fSet().some(k=>passaSituacao(t,k)); return st && (fSubj==='all' || t.subj===fSubj); }
 const addDays=(dIso,n)=>{const d=new Date(dIso+'T12:00:00');d.setDate(d.getDate()+n);return iso(d);};
 function venceEm(w,d){                                                     // proximo dia de aula depois de d: quando a caixa "para amanha" vence
   const i=w.days.indexOf(d);
@@ -5382,15 +5387,19 @@ function podeSerImportante(t){
   if(!t||t.type!==H) return false;
   const w=semanaDe(t)||DB.weeks[current];
   const d=w&&w.days.find(x=>x.k===t.day);
-  return !!(d&&d.date>TODAY);   // importante so vale a partir de amanha
+  const prazo=d?((t.ate&&t.ate>d.date)?t.ate:d.date):'';   // tarefa com prazo proprio vale pelo prazo (ex.: posta na segunda, para quinta)
+  return !!(d&&prazo>TODAY);   // importante so vale para o que vence a partir de amanha
 }
 function findTask(id){for(const w of Object.values(DB.weeks)){const t=allTasks(w).find(t=>t.id===id);if(t)return t;}}
 function dayCss(k){return `var(${DAYMETA[k][1]})`;}
 function shareDayDot(d){ const base=dayCss(d.k); return d&&d.date===TODAY ? base : 'color-mix(in srgb,'+base+' 58%, #fff)'; }
 
 function contaTipo(k,w){
-  return allTasks(w).filter(t=>{
+  // com "Para amanhã": conta o que aparece na tela (inclui as da semana passada que vencem amanha)
+  const base=fAmanha?[...new Set(w.days.flatMap(d=>tarefasDoDia(w,d)).concat(allTasks(w)))]:allTasks(w);
+  return base.filter(t=>{
     if(fSubj!=='all' && t.subj!==fSubj) return false;
+    if(!passaAmanha(t)) return false;
     if(k==='all') return true;
     if(t.type!==H) return false;
     if(k==='canc') return !!t.off;
@@ -5399,24 +5408,28 @@ function contaTipo(k,w){
     return t.status===k && !(t.status==='todo' && taskPassed(t));
   }).length;
 }
+// opcao "Para amanhã": conta as tarefas de casa que vencem amanha (sem as canceladas)
+function chipAmanha(comConta){ const a=amanhaIso(), ws=[DB.weeks[current],DB.weeks[weekIdFor(a)]].filter((x,i,l)=>x&&l.indexOf(x)===i);
+  const vistas=new Set(); let n=0; ws.forEach(w=>w.days.flatMap(d=>tarefasDoDia(w,d)).concat(allTasks(w)).forEach(t=>{ if(vistas.has(t)||t.type!==H||t.off) return; vistas.add(t); if(prazoDe(t)===a&&(fSubj==='all'||t.subj===fSubj)) n++; }));
+  return `<button class="chip amanha ${fAmanha?'on':''}" data-amanha="1" aria-pressed="${fAmanha}">Para amanhã${comConta?`<span class="cnt ${n?'':'zero'}">${n}</span>`:''}</button>`; }
 function renderFilters(){
   const types=[['all','Todas'],['todo','Falta fazer'],['doing','Fazendo'],['done','Feito'],['late','Esquecido'],['canc','Cancelada']];
   const ws=DB.weeks[current];
   document.getElementById('fType').innerHTML=types.map(([k,l])=>{ const n=contaTipo(k,ws);
     if(!n&&k!=='all'&&!fHas(k)) return '';   // chip zerado nem aparece
-    return `<button class="chip ${k} ${(k==='all'?fType==='all':fHas(k))?'on':''}" data-t="${k}" aria-pressed="${(k==='all'?fType==='all':fHas(k))}">${l}<span class="cnt ${n?'':'zero'}">${n}</span></button>`; }).join('');
+    return `<button class="chip ${k} ${(k==='all'?fType==='all':fHas(k))?'on':''}" data-t="${k}" aria-pressed="${(k==='all'?fType==='all':fHas(k))}">${l}<span class="cnt ${n?'':'zero'}">${n}</span></button>`; }).join('')+chipAmanha(true);
   const w=DB.weeks[current]; const used=[...new Set(allTasks(w).map(t=>t.subj))];
   const lista=Object.keys(SUBJ).filter(k=>used.includes(k));
   const el=document.getElementById('fSubj');
     el.innerHTML=`<button class="chip ${fSubj==='all'?'on':''}" data-s="all">Todas</button>`+
-      lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${subjectVisual(SUBJ[k])}</button>`).join('');
+      lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${subjectVisual(SUBJ[k])}</button>`).join('')+chipAmanha(false);
   document.getElementById('fType').classList.toggle('mobile-collapsed',!mobileStatusOpen);
   el.classList.toggle('mobile-collapsed',!subjOpen);
   const statusToggle=document.getElementById('mobileStatusToggle'), subjectToggle=document.getElementById('mobileSubjectToggle');
   statusToggle.setAttribute('aria-expanded',String(mobileStatusOpen));
   subjectToggle.setAttribute('aria-expanded',String(subjOpen));
-  statusToggle.classList.toggle('on',mobileStatusOpen||fType!=='all');   // igual ao Ver materias: branco quando nada esta marcado
-  subjectToggle.classList.toggle('on',subjOpen||fSubj!=='all');
+  statusToggle.classList.toggle('on',mobileStatusOpen||fType!=='all'||fAmanha);   // igual ao Ver materias: branco quando nada esta marcado
+  subjectToggle.classList.toggle('on',subjOpen||fSubj!=='all'||fAmanha);
   statusToggle.onclick=()=>{ mobileStatusOpen=!mobileStatusOpen; vibrate(15); SFX.pop(); renderFilters(); };
   subjectToggle.onclick=()=>{ subjOpen=!subjOpen; vibrate(15); SFX.pop(); renderFilters(); };
   el.querySelectorAll('[data-open-subj]').forEach(b=>b.addEventListener('click',()=>{ subjOpen=b.dataset.openSubj==='1'; vibrate(15); SFX.pop(); subjAnim=subjOpen?'opening':'closing'; render(); }));
@@ -5425,6 +5438,9 @@ function renderFilters(){
     if(k==='all'){ fType='all'; } else { const set=fSet(); const i=set.indexOf(k); if(i>=0) set.splice(i,1); else set.push(k); fType=set.length?set.join('+'):'all'; }
     render(); });
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ fSubj=(fSubj===b.dataset.s&&b.dataset.s!=='all')?'all':b.dataset.s; subjOpen=false; vibrate(15); render(); });
+  document.querySelectorAll('[data-amanha]').forEach(b=>b.onclick=()=>{ fAmanha=!fAmanha; filtroTocado=true; vibrate(15);
+    if(fAmanha){ const wa=weekIdFor(amanhaIso()); if(DB.weeks[wa]) current=wa; }   // amanha e de outra semana (sexta para sabado): vai para ela
+    if(b.closest('#fSubj')) subjOpen=false; render(); });
   esticaChips();
 }
 // opcoes do filtro: todas com a mesma largura, ocupando a largura inteira; quebra em mais linhas quando nao cabem
@@ -5458,7 +5474,7 @@ function render(){
     const deOndeEstava=pctNaTela();   // continua de onde a barrinha esta (0 quando o app abre)
     document.getElementById('prog').innerHTML=`<div class="${pct===100?'done':''}"><div class="row"><span class="wk-line"><b>${esc(nomeSemana(w))}</b><i class="sep" aria-hidden="true">·</i><span class="wk-dias">${esc(rotuloCurto(w.label||''))}</span><i class="sep" aria-hidden="true">·</i><span class="wk-cnt"><b>${dn}</b> de ${hs.length} feitas</span><img class="sapo-prog" src="${Date.now()<sapoAte?'sapinho-pulo.webp?v=3':'sapinho-pulo-parado.png?v=4'}" alt="" role="button" tabindex="0" aria-label="Sapinho" onclick="acordaSapo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acordaSapo();}" onerror="this.remove()"></span></div><div class="bar"><i style="width:${pct}%"></i><span class="frase" data-pct="${pct}">${esc(fraseProg(pct))}</span><span class="pctin ${pct>=92?'claro':''}">${pct}%</span></div><div class="frase-baixo"></div></div>`; animaBarra(deOndeEstava,pct); sapoProg(); posicionaFrase(); }
   renderFilters();
-  const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2;
+  const filtering = fType!=='all' || fSubj!=='all' || fQ.length>=2 || fAmanha;
   { const qc=document.getElementById('qCnt'), qa=document.getElementById('qAll');
     const achadas=fQ.length>=2?allTasks(w).filter(t=>t.type===H&&pass(t)).length:0;
     if(qc) qc.textContent=fQ.length>=2?(achadas?achadas+(achadas>1?' achadas':' achada'):'nada aqui'):'';
@@ -5586,7 +5602,7 @@ function render(){
   ajustaProgressoTablet();
   if(typeof appBadge==='function') appBadge();
   if(typeof updateReaFab==='function') updateReaFab();
-  document.querySelectorAll('.day,.imp,.cal,#provasTopo .cal').forEach(el=>el.addEventListener('toggle',()=>{ if(el.classList.contains('day')&&(fType!=='all'||fSubj!=='all'||fQ.length>=2)) return; openState[el.dataset.date]=el.open; }));   // abertos pelo filtro nao ficam lembrados
+  document.querySelectorAll('.day,.imp,.cal,#provasTopo .cal').forEach(el=>el.addEventListener('toggle',()=>{ if(el.classList.contains('day')&&(fType!=='all'||fSubj!=='all'||fQ.length>=2||fAmanha)) return; openState[el.dataset.date]=el.open; }));   // abertos pelo filtro nao ficam lembrados
   aplicaVisNotasProvas();
   document.querySelectorAll('[data-provas-eye]').forEach(b=>b.addEventListener('click',e=>{
     e.preventDefault(); e.stopPropagation();
@@ -5908,7 +5924,7 @@ function festaFeito(el,tipo,icone){
 }
 function toggleImp(id,btn,semDesfazer){
   const t=findTask(id); if(!t||t.type!==H) return;
-  if(!podeSerImportante(t)){ toast('Importante só pode ser marcado a partir de amanhã'); return; }
+  if(!podeSerImportante(t)){ toast('Só dá para marcar como importante uma tarefa com prazo a partir de amanhã'); return; }
   const val=!t.important; vibrate(20); SFX.pop();
   if(btn){ btn.classList.toggle('on',val); btn.setAttribute('aria-pressed',val?'true':'false'); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); }
   if(val){ festaEstrela(btn); vibrate([20,40,30]); SFX.done(); }
@@ -7254,7 +7270,7 @@ function tlAbreTarefa(id){
     const d=w.days.find(x=>tarefasDoDia(w,x).includes(t)); if(d){ achou={wid,d}; break; } }
   current=achou?achou.wid:semana;
   if(achou) openState[achou.d.date]=true; else { const w=DB.weeks[current], d=w.days.find(x=>x.k===t.day); if(d) openState[d.date]=true; }
-  fType='all'; fSubj='all'; fQ=''; filtroTocado=true;   // limpa os filtros: a pessoa quer ver justamente essa tarefa
+  fType='all'; fSubj='all'; fQ=''; fAmanha=false; filtroTocado=true;   // limpa os filtros: a pessoa quer ver justamente essa tarefa
   { const bar=document.getElementById('searchBar'), bt=document.getElementById('filterSearch'), qi=document.getElementById('qTxt'), qa=document.getElementById('qAll');
     if(bar){ bar.classList.remove('on'); bt&&bt.classList.remove('on'); qi&&(qi.value=''); qa&&qa.classList.remove('on'); } }
   render();
