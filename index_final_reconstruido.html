@@ -2992,6 +2992,14 @@
   :root[data-tema="noite"] .tl-l1 b,:root[data-tema="noite"] .nudge-msg .nt b,:root[data-tema="noite"] .msg:not(.me) .b .hd b,:root[data-tema="noite"] .evgrupo .evg-ver{color:#C9B8FF;color:color-mix(in srgb,var(--uc,#8B6CF0) 45%,#fff)}
   :root[data-tema="noite"] .tag{color:#C9B8FF;color:color-mix(in srgb,var(--c,#8B6CF0) 45%,#fff)}
   :root[data-tema="noite"] .grade-delta.down,:root[data-tema="noite"] .gdelta.down{color:#FF8A8A} :root[data-tema="noite"] .grade-delta.up,:root[data-tema="noite"] .gdelta.up{color:#6EDFA3}
+  /* fileira dos filtros: Ver status | Ver matérias | Para amanhã | lupa */
+  @media screen{
+    body .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 40px}
+    body .filter-row>#amanhaToggle{grid-column:3;grid-row:1}
+    body .filter-row>.filter-search{grid-column:4}
+  }
+  @media screen and (max-width:599px){ body .filter-row .mobile-filter-toggle{padding-left:4px;padding-right:4px} }   /* celular: os tres cabem inteiros */
+  @media screen and (min-width:600px) and (min-height:600px){ body .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 43px} }
 </style>
 </head>
 <body class="carregando">
@@ -3013,7 +3021,7 @@
     <div class="prog" id="prog"></div>
   </div>
   <div id="provasTopo"></div>
-  <div class="filter-row"><button class="chip mobile-filter-toggle" id="mobileStatusToggle" aria-expanded="false" aria-controls="fType">Ver status</button><button class="chip mobile-filter-toggle" id="mobileSubjectToggle" aria-expanded="false" aria-controls="fSubj">Ver matérias</button><div class="filters" id="fType"></div><button class="filter-search" id="filterSearch" aria-label="Buscar tarefa" title="Buscar tarefa" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button></div>
+  <div class="filter-row"><button class="chip mobile-filter-toggle" id="mobileStatusToggle" aria-expanded="false" aria-controls="fType">Ver status</button><button class="chip mobile-filter-toggle" id="mobileSubjectToggle" aria-expanded="false" aria-controls="fSubj">Ver matérias</button><button class="chip mobile-filter-toggle" id="amanhaToggle" aria-pressed="false" title="Só o que vence amanhã">Para amanhã</button><div class="filters" id="fType"></div><button class="filter-search" id="filterSearch" aria-label="Buscar tarefa" title="Buscar tarefa" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button></div>
   <div class="searchbar" id="searchBar"><span class="qlupa" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="qTxt" type="search" placeholder="Procurar tarefa…" autocomplete="off" aria-label="Procurar tarefa nesta semana"><span class="qcnt" id="qCnt"></span><button class="qx" id="qClose" aria-label="Fechar busca">✕</button></div>
   <button class="qall" id="qAll">🔎 Procurar em todas as semanas</button>
   <div class="chips" id="fSubj"></div>
@@ -5408,28 +5416,25 @@ function contaTipo(k,w){
     return t.status===k && !(t.status==='todo' && taskPassed(t));
   }).length;
 }
-// opcao "Para amanhã": conta as tarefas de casa que vencem amanha (sem as canceladas)
-function chipAmanha(comConta){ const a=amanhaIso(), ws=[DB.weeks[current],DB.weeks[weekIdFor(a)]].filter((x,i,l)=>x&&l.indexOf(x)===i);
-  const vistas=new Set(); let n=0; ws.forEach(w=>w.days.flatMap(d=>tarefasDoDia(w,d)).concat(allTasks(w)).forEach(t=>{ if(vistas.has(t)||t.type!==H||t.off) return; vistas.add(t); if(prazoDe(t)===a&&(fSubj==='all'||t.subj===fSubj)) n++; }));
-  return `<button class="chip amanha ${fAmanha?'on':''}" data-amanha="1" aria-pressed="${fAmanha}">Para amanhã${comConta?`<span class="cnt ${n?'':'zero'}">${n}</span>`:''}</button>`; }
 function renderFilters(){
   const types=[['all','Todas'],['todo','Falta fazer'],['doing','Fazendo'],['done','Feito'],['late','Esquecido'],['canc','Cancelada']];
   const ws=DB.weeks[current];
   document.getElementById('fType').innerHTML=types.map(([k,l])=>{ const n=contaTipo(k,ws);
     if(!n&&k!=='all'&&!fHas(k)) return '';   // chip zerado nem aparece
-    return `<button class="chip ${k} ${(k==='all'?fType==='all':fHas(k))?'on':''}" data-t="${k}" aria-pressed="${(k==='all'?fType==='all':fHas(k))}">${l}<span class="cnt ${n?'':'zero'}">${n}</span></button>`; }).join('')+chipAmanha(true);
+    return `<button class="chip ${k} ${(k==='all'?fType==='all':fHas(k))?'on':''}" data-t="${k}" aria-pressed="${(k==='all'?fType==='all':fHas(k))}">${l}<span class="cnt ${n?'':'zero'}">${n}</span></button>`; }).join('');
   const w=DB.weeks[current]; const used=[...new Set(allTasks(w).map(t=>t.subj))];
   const lista=Object.keys(SUBJ).filter(k=>used.includes(k));
   const el=document.getElementById('fSubj');
     el.innerHTML=`<button class="chip ${fSubj==='all'?'on':''}" data-s="all">Todas</button>`+
-      lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${subjectVisual(SUBJ[k])}</button>`).join('')+chipAmanha(false);
+      lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${subjectVisual(SUBJ[k])}</button>`).join('');
   document.getElementById('fType').classList.toggle('mobile-collapsed',!mobileStatusOpen);
   el.classList.toggle('mobile-collapsed',!subjOpen);
   const statusToggle=document.getElementById('mobileStatusToggle'), subjectToggle=document.getElementById('mobileSubjectToggle');
   statusToggle.setAttribute('aria-expanded',String(mobileStatusOpen));
   subjectToggle.setAttribute('aria-expanded',String(subjOpen));
-  statusToggle.classList.toggle('on',mobileStatusOpen||fType!=='all'||fAmanha);   // igual ao Ver materias: branco quando nada esta marcado
-  subjectToggle.classList.toggle('on',subjOpen||fSubj!=='all'||fAmanha);
+  statusToggle.classList.toggle('on',mobileStatusOpen||fType!=='all');   // igual ao Ver materias: branco quando nada esta marcado
+  subjectToggle.classList.toggle('on',subjOpen||fSubj!=='all');
+  { const am=document.getElementById('amanhaToggle'); am.classList.toggle('on',fAmanha); am.setAttribute('aria-pressed',String(fAmanha)); }
   statusToggle.onclick=()=>{ mobileStatusOpen=!mobileStatusOpen; vibrate(15); SFX.pop(); renderFilters(); };
   subjectToggle.onclick=()=>{ subjOpen=!subjOpen; vibrate(15); SFX.pop(); renderFilters(); };
   el.querySelectorAll('[data-open-subj]').forEach(b=>b.addEventListener('click',()=>{ subjOpen=b.dataset.openSubj==='1'; vibrate(15); SFX.pop(); subjAnim=subjOpen?'opening':'closing'; render(); }));
@@ -5438,9 +5443,9 @@ function renderFilters(){
     if(k==='all'){ fType='all'; } else { const set=fSet(); const i=set.indexOf(k); if(i>=0) set.splice(i,1); else set.push(k); fType=set.length?set.join('+'):'all'; }
     render(); });
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ fSubj=(fSubj===b.dataset.s&&b.dataset.s!=='all')?'all':b.dataset.s; subjOpen=false; vibrate(15); render(); });
-  document.querySelectorAll('[data-amanha]').forEach(b=>b.onclick=()=>{ fAmanha=!fAmanha; filtroTocado=true; vibrate(15);
+  document.getElementById('amanhaToggle').onclick=()=>{ fAmanha=!fAmanha; filtroTocado=true; vibrate(15); SFX.pop();
     if(fAmanha){ const wa=weekIdFor(amanhaIso()); if(DB.weeks[wa]) current=wa; }   // amanha e de outra semana (sexta para sabado): vai para ela
-    if(b.closest('#fSubj')) subjOpen=false; render(); });
+    render(); };
   esticaChips();
 }
 // opcoes do filtro: todas com a mesma largura, ocupando a largura inteira; quebra em mais linhas quando nao cabem
