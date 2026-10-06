@@ -2228,8 +2228,6 @@
   .sapo{position:fixed;z-index:400;font-size:22px;line-height:1;pointer-events:none;transform-origin:50% 100%;animation:sapoEntra 2.4s ease-in-out forwards;filter:drop-shadow(0 3px 4px rgba(0,0,0,.22))}
   .sapo img{display:block;width:80px;height:80px;object-fit:contain}
   @keyframes sapoEntra{0%{transform:scale(.5);opacity:0}8%{transform:scale(1);opacity:1}88%{transform:scale(1);opacity:1}100%{transform:scale(.6);opacity:0}}
-  .sapo-h{display:inline-block;vertical-align:middle;margin-left:2px;line-height:1}
-  .sapo-h img{display:block;width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
   @keyframes sapoPula{0%{transform:translateY(8px) scale(.6);opacity:0}10%{transform:translateY(0) scale(1);opacity:1}25%{transform:translateY(-14px) scaleX(1.05)}40%{transform:translateY(0) scale(1.1,.85)}55%{transform:translateY(-10px)}70%{transform:translateY(0) scale(1.08,.9)}82%{transform:translateY(-5px)}92%{transform:translateY(0);opacity:1}100%{transform:translateY(0) scale(.6);opacity:0}}
   @media(prefers-reduced-motion:reduce){.sapo{animation:sapoSimples 1.4s ease-out forwards}}
   @keyframes sapoSimples{0%{opacity:0}15%,80%{opacity:1}100%{opacity:0}}
@@ -6105,7 +6103,7 @@ veil.addEventListener('click',e=>{if(e.target===veil)hide();});
 // Feedback visual dos botoes do menu de tarefa: aplicado no clique real para nao disputar o toque com o gesto da folha.
 function openMenu(id){
   const t=findTask(id); if(!t) return; if(t.type===B){openMove(id);return;}
-  show(`<h2>${ICO.lapis} Tarefa <span class="sapo-h" aria-hidden="true"><img src="sapinho-pulo.webp?v=3" alt="" onerror="this.parentNode.textContent='🐸'"></span> <button class="x">✕</button></h2>
+  show(`<h2>${ICO.lapis} Tarefa <button class="x">✕</button></h2>
    <p class="quiet tinfo" style="margin:0 0 12px">${subjectVisual(SUBJ[t.subj])} · ${DAYMETA[t.day][0]} · ${t.text}</p>
    <button class="opt" data-a="note"><span class="ic">${ICO.msg}</span>${comentarios(t).length?'Ver os comentários':'Escrever um comentário'}</button>
    ${(CLOUD_CFG&&isAluna())?`<button class="opt" data-a="foto"><span class="ic">${ICO.camera}</span>Tirar foto do que fez</button>`:''}
