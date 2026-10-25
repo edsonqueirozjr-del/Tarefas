@@ -5419,23 +5419,24 @@ function semanaDe(t){ if(!t) return null;
   const dono=Object.values(DB.weeks).find(x=>x.days.some(d=>d.tasks.includes(t))); if(dono) return dono;
   return DB.weeks[String(t.id||'').slice(0,10)]||null; }
 function diaDe(t){ const w=semanaDe(t); return w?w.days.find(x=>x.k===t.day):null; }
-// Feita depois que o dia dela passou (estava esquecida): aparece no dia em que foi concluida, como feita.
+// Feita: fica gravada no dia em que foi marcada como feita (antes ou depois do dia dela), como feita.
 // dia em que ficou feita: o registro (feitoEm) ou, para as feitas antes dele existir, o horario da conclusao
 function diaFeito(t){ if(!t||t.status!=='done') return ''; if(t.feitoEm) return t.feitoEm; return t.statusU?iso(new Date(t.statusU)):''; }
-function feitaDepois(t,dataDoDia){ const f=diaFeito(t); return !t.wiz&&!!f&&f>dataDoDia; }
+const temDia=dataIso=>Object.values(DB.weeks).some(xw=>(xw.days||[]).some(x=>x.date===dataIso));   // o dia existe em alguma semana (senao a tarefa sumiria da tela)
+function feitaEmOutroDia(t,dataDoDia){ const f=diaFeito(t); return !t.wiz&&!!f&&f!==dataDoDia&&temDia(f); }
 // As tarefas de um dia, com a mesma regra na tela e no Compartilhar:
 // o que e do dia; no dia de hoje, tambem as pendentes de dias que ja passaram; e as feitas neste dia
-// que eram de um dia anterior (de qualquer semana).
+// que eram de outro dia (de qualquer semana).
 function tarefasDoDia(w,d){
   if(!w||!d) return [];
-  const fica=t=>!(t.day===d.k&&feitaDepois(t,d.date));
+  const fica=t=>!(t.day===d.k&&feitaEmOutroDia(t,d.date));
   const base=(d.date===TODAY
     ? allTasks(w).filter(t=>t.day===d.k||vemParaHoje(t)).concat(atrasadasDeSemanasAnteriores(w))
     : allTasks(w).filter(t=>t.day===d.k&&!vemParaHoje(t))).filter(fica);
   const chegou=[];
   Object.values(DB.weeks).forEach(xw=>allTasks(xw).forEach(t=>{
     if(t.status!=='done'||diaFeito(t)!==d.date||t.wiz||base.includes(t)) return;
-    const dd=xw.days.find(x=>x.k===t.day); if(dd&&dd.date<d.date) chegou.push(t); }));
+    const dd=xw.days.find(x=>x.k===t.day); if(dd&&dd.date!==d.date) chegou.push(t); }));
   return base.concat(chegou);
 }
 // tarefa de casa de um dia que ja passou, ainda sem fazer: ela sai do dia antigo e aparece no dia de hoje
