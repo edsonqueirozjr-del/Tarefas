@@ -2265,8 +2265,6 @@
   @media screen{
     .filter-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 40px;gap:6px;align-items:stretch}
     .filter-row .mobile-filter-toggle{display:flex;align-items:center;justify-content:center;min-width:0;min-height:34px;padding:4px 8px;font-size:14px;white-space:nowrap;margin:0}
-    #mobileStatusToggle{grid-column:1;grid-row:1}
-    #mobileSubjectToggle{grid-column:2;grid-row:1}
     .filter-row>.filter-search{grid-column:3;grid-row:1;align-self:stretch;height:34px}
     .filter-row>#fType{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;overflow:visible;gap:6px;margin:0;padding:2px 0 0}
     .filter-row>#fType .chip{flex:0 0 auto}
@@ -2990,14 +2988,16 @@
   :root[data-tema="noite"] .tl-l1 b,:root[data-tema="noite"] .nudge-msg .nt b,:root[data-tema="noite"] .msg:not(.me) .b .hd b,:root[data-tema="noite"] .evgrupo .evg-ver{color:#C9B8FF;color:color-mix(in srgb,var(--uc,#8B6CF0) 45%,#fff)}
   :root[data-tema="noite"] .tag{color:#C9B8FF;color:color-mix(in srgb,var(--c,#8B6CF0) 45%,#fff)}
   :root[data-tema="noite"] .grade-delta.down,:root[data-tema="noite"] .gdelta.down{color:#FF8A8A} :root[data-tema="noite"] .grade-delta.up,:root[data-tema="noite"] .gdelta.up{color:#6EDFA3}
-  /* fileira dos filtros: Ver status | Ver matérias | Para amanhã | lupa */
+  /* fileira dos filtros: Falta fazer | Para amanhã | lupa */
   @media screen{
-    body .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 40px}
-    body .filter-row>#amanhaToggle{grid-column:3;grid-row:1}
-    body .filter-row>.filter-search{grid-column:4}
+    body .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 40px}
+    body .filter-row>#faltaToggle{grid-column:1;grid-row:1}
+    body .filter-row>#amanhaToggle{grid-column:2;grid-row:1}
+    body .filter-row>.filter-search{grid-column:3}
+    body .filter-row>#fType,body #fSubj{display:none!important}   /* sem a lista de situacoes e sem o filtro de materias */
   }
-  @media screen and (max-width:599px){ body .filter-row .mobile-filter-toggle{padding-left:4px;padding-right:4px} }   /* celular: os tres cabem inteiros */
-  @media screen and (min-width:600px) and (min-height:600px){ body .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 43px} }
+  @media screen and (max-width:599px){ body .filter-row .mobile-filter-toggle{padding-left:4px;padding-right:4px} }
+  @media screen and (min-width:600px) and (min-height:600px){ body .filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 43px} }
 </style>
 </head>
 <body class="carregando">
@@ -3019,7 +3019,7 @@
     <div class="prog" id="prog"></div>
   </div>
   <div id="provasTopo"></div>
-  <div class="filter-row"><button class="chip mobile-filter-toggle" id="mobileStatusToggle" aria-expanded="false" aria-controls="fType">Ver status</button><button class="chip mobile-filter-toggle" id="mobileSubjectToggle" aria-expanded="false" aria-controls="fSubj">Ver matérias</button><button class="chip mobile-filter-toggle" id="amanhaToggle" aria-pressed="false" title="Só o que vence amanhã">Para amanhã</button><div class="filters" id="fType"></div><button class="filter-search" id="filterSearch" aria-label="Buscar tarefa" title="Buscar tarefa" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button></div>
+  <div class="filter-row"><button class="chip mobile-filter-toggle" id="faltaToggle" aria-pressed="false" title="Só o que ainda falta fazer">Falta fazer</button><button class="chip mobile-filter-toggle" id="amanhaToggle" aria-pressed="false" title="Só o que vence amanhã">Para amanhã</button><div class="filters" id="fType"></div><button class="filter-search" id="filterSearch" aria-label="Buscar tarefa" title="Buscar tarefa" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button></div>
   <div class="searchbar" id="searchBar"><span class="qlupa" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="qTxt" type="search" placeholder="Procurar tarefa…" autocomplete="off" aria-label="Procurar tarefa nesta semana"><span class="qcnt" id="qCnt"></span><button class="qx" id="qClose" aria-label="Fechar busca">✕</button></div>
   <button class="qall" id="qAll">🔎 Procurar em todas as semanas</button>
   <div class="chips" id="fSubj"></div>
@@ -3121,8 +3121,15 @@ const CALENDARIO_TRI={titulo:'Avisos',etapas:[
   {nome:'2ª chamada da Avaliação 1',ini:'2026-10-05',det:'No período da tarde'},
   {nome:'Simulado',ini:'2026-10-23'},
   {nome:'2ª chamada do Simulado',ini:'2026-10-26',det:'No período da tarde'},
-  {nome:'Mostra Vicentina',ini:'2026-11-07',det:'Sábado letivo'},
+  {nome:'Avaliação na aula',subj:'mat',ini:'2026-10-28',det:'No lugar da parte de Matemática do simulado, que saiu com o gabarito'},
+  {nome:'Mostra Vicentina',ini:'2026-11-07',det:'Sábado letivo. Abertura às 8h, mostra das 8h30 às 11h'},
   {nome:'Avaliação 2',ini:'2026-11-10',fim:'2026-11-17'},
+  {nome:'Prova',subj:'geo',ini:'2026-11-10'},
+  {nome:'Prova',subj:'mat',ini:'2026-11-11'},
+  {nome:'Prova',subj:'cie',ini:'2026-11-12'},
+  {nome:'Prova',subj:'ing',ini:'2026-11-13'},
+  {nome:'Prova',subj:'his',ini:'2026-11-16'},
+  {nome:'Prova',subj:'por',ini:'2026-11-17'},
   {nome:'2ª chamada da Avaliação 2',ini:'2026-11-19',det:'No período da tarde'},
   {nome:'Recuperação 1',ini:'2026-11-24',det:'Português, História, Inglês'},
   {nome:'Recuperação 2',ini:'2026-11-26',det:'Matemática, Geografia e Ciências'},
@@ -3352,7 +3359,7 @@ const SEED_WEEKS = [
      T(B,'his','Página 91 de História feita'),
      T(B,'geo','Página 12 de Geografia feita'),
      T(B,'esp','Hoje é a aula de montar o cartaz de Espanhol sobre o tema do grupo'),
-     P('esp','Terminar o cartaz de Espanhol (¿Estamos cuidando nuestra salud?) e trazer para apresentar na próxima aula, quarta 28/10','2026-10-28')]},
+     P('esp','Terminar o cartaz de Espanhol (¿Estamos cuidando nuestra salud?) e trazer na próxima aula, quarta 28/10, para concluir o trabalho','2026-10-28')]},
    {k:'qui',date:'2026-10-22',tasks:[
      T(B,'cie','Páginas 76, 77, 91, 92 e 95 de Ciências feitas'),
      T(B,'art','Enfeites de Natal para as guirlandas'),
@@ -3362,6 +3369,62 @@ const SEED_WEEKS = [
      P('ing','Terminar o Let’s practice II, <b>páginas 75 e 76</b> de Inglês. É para a próxima aula, terça 27/10','2026-10-27'),
      P('por','Fazer no caderno o resumo do conteúdo de Português desta semana. É para a próxima aula, segunda 26/10','2026-10-26'),
      P('geo','Fazer a tarefa da <b>página 22</b> de Geografia. É para a próxima aula, quarta 28/10','2026-10-28')]}
+  ]
+ },
+ {
+  id:'2026-10-25', label:'26 a 30 de outubro', roteiro:'Roteiro 17 · semana 1 · 7º ano D',
+  topics:'Português: revisão de transitividade verbal e nominal e de agente da passiva, objeto direto e indireto (no caderno), seminário (páginas 45 a 49), Testando (páginas 58 a 65), textos normativos: definindo regras e diretrizes (páginas 70 a 79) e características dos textos normativos (páginas 80 a 83).<br>Matemática: amplitude e média aritmética, cálculo probabilístico, resolução de exercícios e correção das tarefas (volume 4, capítulo 10: estatística e probabilidade).<br>História: invasões holandesas no Brasil, a invasão de Pernambuco e o governo de Maurício de Nassau no Brasil holandês (volume 4: as invasões estrangeiras no Brasil colonial).<br>Geografia: o espaço industrial (página 27), o sistema de transporte no Sudeste (página 30) e atividades das páginas 26, 31 e 32 (volume 4, capítulo 10: entre as serras e o mar, o Sudeste do Brasil).<br>Ciências: estações de tratamento da água (páginas 100 a 104), a importância das ETEs na conservação (páginas 105 a 108) e doenças transmitidas pela água e pelo solo contaminados (páginas 109 a 117) (volume 4, capítulo 8: tratamento da água).<br>Inglês: Food Groups, Subject Pronouns x Object Pronouns e Let’s practice I (chapter 8: Are you nuts?).<br>Espanhol: trabalho trimestral de 100 pontos sobre Salud y bienestar: conclusão das etapas do trabalho, registros escritos, cartazes, estudos para a apresentação oral e organização das ideias.<br>Filosofia: liberdade como vontade (página 7), capítulo 5: liberdade.<br>Educação Física: tênis de mesa: controle, saque, minijogos e jogos.<br>Ensino Religioso: a importância da solidariedade para um mundo mais fraterno.<br>Projeto de Vida: lixo, consumo e sustentabilidade.',
+  days:[
+   {k:'dom',date:'2026-10-25',tasks:[
+     P('mat','Estudar para a avaliação de Matemática na aula de quarta 28/10. Ela substitui a parte de Matemática do simulado, que foi impressa junto com o gabarito','2026-10-28')]},
+   {k:'seg',date:'2026-10-26',tasks:[
+     T(B,'por','Resumo do conteúdo de Português da semana passada feito no caderno'),
+     P('mat','Fazer os <b>exercícios 1 a 5</b> do Aprimorando, <b>páginas 49 e 50</b> de Matemática. É para sexta 30/10','2026-10-30'),
+     P('cie','Fazer o Exercitando de Ciências: <b>páginas 91, 92, 95, 98, 103, 108, 110, 115, 116 e 118</b>. Deixar pronto até a última aula da semana, quinta 29/10','2026-10-29'),
+     P('art','Atividade da guirlanda natalina: pesquisar o significado da guirlanda de Natal e escrever no caderno, com suas palavras, o que ela simboliza e como é usada no Natal. Depois, desenhar no caderno o esboço da guirlanda que você quer fazer (cores, formas, enfeites e materiais). Levar na aula de Arte, quinta 29/10','2026-10-29')]},
+   {k:'ter',date:'2026-10-27',tasks:[
+     T(B,'ing','Let’s practice II, páginas 75 e 76 de Inglês feitas'),
+     T(B,'por','Hoje tem seminário na aula de Português (páginas 45 a 49). Levar o material da sua parte'),
+     P('pdv','Responder no caderno: o que é um aterro sanitário e qual é a diferença entre ele, a incineração e a reciclagem no destino do nosso lixo? É para a próxima aula, terça 03/11','2026-11-03')]},
+   {k:'qua',date:'2026-10-28',tasks:[
+     T(B,'mat','Hoje tem avaliação de Matemática na aula, no lugar da parte de Matemática do simulado',1),
+     T(B,'geo','Página 22 de Geografia feita'),
+     T(B,'esp','Hoje é a aula de terminar o trabalho trimestral de Espanhol (Salud y bienestar), que vale <b>100 pontos</b>. Levar o cartaz, as anotações e o material do grupo',1),
+     P('esp','Estudar para a apresentação do trabalho de Espanhol (Salud y bienestar). É na próxima aula, quarta 04/11','2026-11-04')]},
+   {k:'qui',date:'2026-10-29',tasks:[
+     T(B,'cie','Exercitando de Ciências feito (páginas 91, 92, 95, 98, 103, 108, 110, 115, 116 e 118)'),
+     T(B,'art','Caderno com a pesquisa e o esboço da guirlanda natalina'),
+     P('fil','Fazer os <b>exercícios 1 a 3</b>, <b>páginas 5 a 8</b> de Filosofia. É para a próxima aula, quinta 05/11','2026-11-05')]},
+   {k:'sex',date:'2026-10-30',tasks:[
+     T(B,'mat','Exercícios 1 a 5 do Aprimorando (páginas 49 e 50) de Matemática feitos'),
+     P('his','Fazer a tarefa das <b>páginas 19, 23 e 24</b> de História. É para a próxima aula, quarta 04/11','2026-11-04'),
+     P('por','Fazer a Produção de texto em família, <b>páginas 84 e 85</b> de Português, junto com a família. Levar pronta na próxima aula de Português, terça 03/11','2026-11-03')]}
+  ]
+ },
+ {
+  id:'2026-11-01', label:'2 a 6 de novembro', roteiro:'Roteiro 17 · semana 2 · 7º ano D',
+  topics:'Português: Exercitando (páginas 89 a 91), produção de texto (páginas 91 e 92), conjunções coordenativas e subordinadas (páginas 93 a 95) e continuidade no caderno.<br>Matemática: circunferência, círculo e lugar geométrico, o número pi e o comprimento da circunferência, com resolução de exercícios (volume 4, capítulo 11: circunferência e círculo).<br>História: as reformas em Recife, a restauração da monarquia portuguesa (1640) e a insurreição pernambucana (volume 4: as invasões estrangeiras no Brasil colonial).<br>Geografia: o espaço agrário (página 33), Aprimorando e revisão para a avaliação 2 (volume 4, capítulo 10: entre as serras e o mar, o Sudeste do Brasil).<br>Ciências: alimentação, calorias e informações nutricionais (páginas 9 a 13), guia alimentar e macronutrientes (página 14) e carboidratos e proteínas (páginas 19 a 23) (volume 4: o papel dos nutrientes no nosso organismo).<br>Inglês: Listening and writing e Food Idioms (chapter 8: Are you nuts?).<br>Espanhol: apresentação final dos trabalhos sobre Salud y bienestar.<br>Filosofia: liberdade como autonomia, liberdade filosófica e liberdade política (páginas 8 a 11).<br>Educação Física: jogo dos 10 passes, ginástica laboral (postura, alongamento, pausas ativas e circuito) e momento mindfulness.<br>Ensino Religioso: o cuidado de si, do outro, da coletividade e da natureza, como expressão de valor de vida.<br>Projeto de Vida: atividade avaliativa em sala.',
+  days:[
+   {k:'dom',date:'2026-11-01',tasks:[]},
+   {k:'seg',date:'2026-11-02',feriado:'Finados',tasks:[]},
+   {k:'ter',date:'2026-11-03',tasks:[
+     T(B,'pdv','Resposta no caderno sobre o aterro sanitário, a incineração e a reciclagem'),
+     T(B,'pdv','Hoje tem atividade avaliativa de Projeto de Vida na sala',1),
+     T(B,'por','Produção de texto em família (páginas 84 e 85) de Português pronta'),
+     P('mat','Estudar para a apresentação de Matemática na Mostra Vicentina, sábado 07/11','2026-11-07')]},
+   {k:'qua',date:'2026-11-04',tasks:[
+     T(B,'esp','Hoje é a apresentação final do trabalho de Espanhol (Salud y bienestar), <b>100 pontos</b>. Levar o cartaz terminado (título, subtítulo, imagens, fontes e identificação do grupo), a ficha de entrevista completa, as anotações do que vai falar e o material do grupo organizado. São 3 a 4 minutos por grupo. Perde pontos quem só ler o cartaz, passar do tempo, não trouxer a ficha ou não citar as fontes',1),
+     T(B,'his','Páginas 19, 23 e 24 de História feitas'),
+     P('cie','Fazer o Exercitando de Ciências: <b>páginas 10, 11, 14, 17 e 19</b>. Deixar pronto até a última aula da semana, quinta 05/11','2026-11-05'),
+     P('edf','Pesquisar e assistir vídeos sobre Mindfulness, para a aula de Educação Física. É para a próxima aula, segunda 09/11','2026-11-09')]},
+   {k:'qui',date:'2026-11-05',tasks:[
+     T(B,'fil','Exercícios 1 a 3 (páginas 5 a 8) de Filosofia feitos'),
+     T(B,'cie','Exercitando de Ciências feito (páginas 10, 11, 14, 17 e 19)'),
+     P('fil','Fazer os <b>exercícios 4 e 5</b>, <b>página 11</b> de Filosofia. É para a próxima aula, quinta 12/11','2026-11-12')]},
+   {k:'sex',date:'2026-11-06',tasks:[
+     P('his','Fazer a tarefa das <b>páginas 27 e 28</b> de História. É para a próxima aula, quarta 11/11','2026-11-11'),
+     P('geo','Estudar para a avaliação de Geografia, terça 10/11 (volume 4, capítulo 10: o Sudeste do Brasil)','2026-11-10'),
+     P('ing','Finalizar o Let’s practice II de Inglês (chapter 8: Are you nuts?). É para a próxima aula, terça 10/11','2026-11-10')]}
   ]
  }
 ];
@@ -3645,6 +3708,9 @@ function garanteSabado(w){
   return true;
 }
 { let mudou=organizaSemanas(); if(unificaTarefas()) mudou=true; if(mudou) save(); }   // semana: sabado anterior + domingo a sexta
+// sem roteiro para a semana de hoje: cria a semana vazia, para as pendentes virem para hoje (o roteiro, quando chegar, refaz a semana e guarda o que veio de fora)
+{ const hj=weekIdFor(TODAY), ids=Object.keys(DB.weeks||{}).sort();
+  if(ids.length&&!DB.weeks[hj]&&hj>ids[ids.length-1]){ DB.weeks[hj]=novaSemanaVazia(hj); save(); } }
 // nome curto da semana em relacao a hoje: "Semana atual", "Proxima semana", "Semana anterior"; as outras mostram os dias
 function nomeSemana(w){
   if(!w) return '';
@@ -5427,14 +5493,10 @@ function renderFilters(){
       lista.map(k=>`<button class="chip ${fSubj===k?'on':''}" data-s="${k}">${subjectVisual(SUBJ[k])}</button>`).join('');
   document.getElementById('fType').classList.toggle('mobile-collapsed',!mobileStatusOpen);
   el.classList.toggle('mobile-collapsed',!subjOpen);
-  const statusToggle=document.getElementById('mobileStatusToggle'), subjectToggle=document.getElementById('mobileSubjectToggle');
-  statusToggle.setAttribute('aria-expanded',String(mobileStatusOpen));
-  subjectToggle.setAttribute('aria-expanded',String(subjOpen));
-  statusToggle.classList.toggle('on',mobileStatusOpen||fType!=='all');   // igual ao Ver materias: branco quando nada esta marcado
-  subjectToggle.classList.toggle('on',subjOpen||fSubj!=='all');
+  // "Falta fazer": liga e desliga direto; mostra o que ainda nao foi feito (inclusive as esquecidas)
+  { const ft=document.getElementById('faltaToggle'), on=fType==='todo+late'; ft.classList.toggle('on',on); ft.setAttribute('aria-pressed',String(on));
+    ft.onclick=()=>{ fType=fType==='todo+late'?'all':'todo+late'; fSubj='all'; filtroTocado=true; vibrate(15); SFX.pop(); render(); }; }
   { const am=document.getElementById('amanhaToggle'); am.classList.toggle('on',fAmanha); am.setAttribute('aria-pressed',String(fAmanha)); }
-  statusToggle.onclick=()=>{ mobileStatusOpen=!mobileStatusOpen; vibrate(15); SFX.pop(); renderFilters(); };
-  subjectToggle.onclick=()=>{ subjOpen=!subjOpen; vibrate(15); SFX.pop(); renderFilters(); };
   el.querySelectorAll('[data-open-subj]').forEach(b=>b.addEventListener('click',()=>{ subjOpen=b.dataset.openSubj==='1'; vibrate(15); SFX.pop(); subjAnim=subjOpen?'opening':'closing'; render(); }));
   if(subjAnim){ el.classList.add(subjAnim); const a=subjAnim; subjAnim=null; setTimeout(()=>el.classList.remove(a),600); }
   document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ const k=b.dataset.t; filtroTocado=true; vibrate(15);
@@ -5873,7 +5935,9 @@ const SWICO={doing:'ampulheta',done:'feito',todo:'voltar'};   // cada acao tem o
 function swLbl(k){ return '<span><i class="swi" aria-hidden="true">'+(ICO[SWICO[k]]||'')+'</i>'+SWLBL[k][0]+'</span>'; }   // rotulo do arrastar: simbolo + palavra, centrados na faixa
 const SWMSG={doing:'Marcada como fazendo',done:'Concluída! Mandou bem',todo:'Reaberta. Ficou como falta fazer'};
 function swipeAction(id,dir,el){
-  if(!isAluna()){ el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast('Só a Maria marca as tarefas 😉'); return; }
+  if(!isAluna()){ const tf=findTask(id);
+    if(isResponsavel()&&dir<0&&tf&&tf.type===H&&tf.status==='done'&&!tf.off){ confirmaReabrir(id,el); return; }   // o pai e a mae podem reabrir uma feita
+    el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast(isResponsavel()?'Vocês podem reabrir uma tarefa feita: arrasta para a esquerda':'Só a Maria marca as tarefas 😉'); return; }
   const t=findTask(id);
   if(!t||t.type!==H) return;
   if(t.off){ el.querySelector('.tin').style.transform=''; el.classList.remove('show-r','show-l'); vibrate(20); toast('Essa tarefa está cancelada. Segura nela para voltar a valer'); return; }
@@ -5892,7 +5956,24 @@ function confirmaReabrir(id,el){
     <p style="margin:0 0 14px">Tem certeza que quer reabrir essa tarefa? Ela deixa de estar feita e volta para <b>falta fazer</b>.</p>
     <div class="row"><button class="opt" id="rbNao">Cancelar</button><button class="opt primary" id="rbSim">Reabrir</button></div>`);
   document.getElementById('rbNao').addEventListener('click',()=>{ hide(); vibrate(8); });
-  document.getElementById('rbSim').addEventListener('click',()=>{ hide(); setTimeout(()=>setStatus(id,'todo',document.querySelector(`#app .task[data-id="${id}"]`)),220); });
+  document.getElementById('rbSim').addEventListener('click',()=>{ hide(); setTimeout(()=>{ if(isAluna()) setStatus(id,'todo',document.querySelector(`#app .task[data-id="${id}"]`)); else reabrePeloResponsavel(id); },220); });
+}
+// o pai e a mae reabrem direto na nuvem, so naquela tarefa; o u e o statusU novos fazem o celular da Maria aceitar a mudanca
+async function reabrePeloResponsavel(id){
+  if(!isResponsavel()) return;
+  const t=findTask(id); if(!t||t.type!==H||t.off||t.status!=='done') return;
+  if(!cloudRef||!cloudReady||!cloudOnline){ toast('Conecte à nuvem para reabrir a tarefa'); return; }
+  const ref=cloudRef, actor=USER.id, agora=Date.now();
+  const campos={status:'todo',statusU:agora,statusBy:USER.nome,feitoEm:'',u:agora};
+  try{
+    const snap=await ref.once('value');
+    if(!isResponsavel()||!USER||USER.id!==actor||cloudRef!==ref) return;
+    const path=achaCaminhoTarefa(snap.val(),id);
+    if(!path){ toast('Essa tarefa ainda não está na nuvem'); return; }
+    await ref.child(path).update(campos);
+    Object.assign(t,campos); persistLocalOnly(); logEvt('todo',{id,det:plain(t.text||'')});
+    render(); refreshReminder(); vibrate(20); SFX.undo(); toast(SWMSG.todo);
+  }catch(e){ toast('Não consegui reabrir agora. Tente de novo'); }
 }
 function confirmaImp(id,btn){ toggleImp(id,btn); }   // sem pergunta: marca na hora e oferece desfazer
 function festaEstrela(btn){
@@ -6111,6 +6192,7 @@ function openMenu(id){
    ${((isAluna()||isResponsavel())&&!t.wiz)?`<button class="opt" data-a="move"><span class="ic">${ICO.aulas}</span>Mudar de dia</button>`:''}
    ${CLOUD_CFG?`<button class="opt" data-a="chat"><span class="ic">${ICO.enviar}</span>Mandar para a conversa</button>`:''}
    ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">${ICO.reagir}</span>Reagir</button>`:''}
+   ${(CLOUD_CFG&&isResponsavel()&&t.type===H&&t.status==='done'&&!t.off)?`<button class="opt" data-a="reabrir"><span class="ic">${ICO.voltar}</span>Reabrir a tarefa</button>`:''}
    ${isAluna()?(t.off?`<button class="opt" data-a="undel"><span class="ic">${ICO.voltar}</span>Voltar a valer</button>`:`<button class="opt danger" data-a="del"><span class="ic">${ICO.proibido}</span>Cancelar a tarefa</button>`):''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',e=>{
     e.preventDefault(); e.stopPropagation();
@@ -6129,6 +6211,7 @@ function openMenu(id){
       if(a==='del') openCancel(id);
       if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.offU=Date.now(); t.u=Date.now(); save(); gravaNaHora(id,{off:false,offWhy:'',offBy:'',offU:t.offU,u:t.u}); logEvt('undel',{id,det:plain(t.text||'')}); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
       if(a==='rea') openReagir(id);
+      if(a==='reabrir'&&isResponsavel()) confirmaReabrir(id);
       if(a==='pics') verFotosTarefa(id);
       if(a==='pics-org') openPics(id);
       if(a==='foto'){ if(isAluna()){ picTaskId=id; document.getElementById('taskFoto').click(); } }
