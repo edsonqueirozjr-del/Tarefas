@@ -3630,7 +3630,8 @@ SEED_WEEKS.forEach(w=>{
     copy.days.forEach((d,di)=>d.tasks.forEach((t,ti)=>{
       t.id=`${w.id}-${di}-${ti}`; t.status='todo'; t.note=''; t.day=d.k; t.origin=d.k;
       const v=antes[chave(t)];
-      if(v){ t.status=v.status||'todo'; t.note=v.note||''; t.noteBy=v.noteBy||''; t.off=!!v.off; t.offWhy=v.offWhy||''; t.pics=v.pics||0; t.thumbs=v.thumbs||null; t.reacts=v.reacts||null;
+      if(v){ t.status=v.status||'todo'; t.note=v.note||''; t.noteBy=v.noteBy||''; t.off=!!v.off; t.offWhy=v.offWhy||'';
+             ['statusU','statusBy','feitoEm','offU','offBy'].forEach(c=>{ if(v[c]) t[c]=v[c]; });   // guarda o dia em que ficou feita ou cancelada t.pics=v.pics||0; t.thumbs=v.thumbs||null; t.reacts=v.reacts||null;
              if(v.impU){ t.important=!!v.important; t.impU=v.impU; t.impBy=v.impBy||''; }
              if(v.moveU){ t.day=v.day||t.day; t.moveU=v.moveU; t.moveBy=v.moveBy||''; t.moveWhy=v.moveWhy||''; }
              t.u=Date.now(); }
@@ -5422,8 +5423,11 @@ function diaDe(t){ const w=semanaDe(t); return w?w.days.find(x=>x.k===t.day):nul
 // Feita: fica gravada no dia em que foi marcada como feita (antes ou depois do dia dela), como feita.
 // dia em que ficou feita: o registro (feitoEm) ou, para as feitas antes dele existir, o horario da conclusao
 function diaFeito(t){ if(!t||t.status!=='done') return ''; if(t.feitoEm) return t.feitoEm; return t.statusU?iso(new Date(t.statusU)):''; }
+// cancelada: fica no dia em que foi cancelada (offU e a hora do cancelamento)
+function diaCancelada(t){ if(!t||!t.off||!t.offU) return ''; return iso(new Date(t.offU)); }
+const diaMarcado=t=>diaCancelada(t)||diaFeito(t);   // feita ou cancelada: o dia em que isso aconteceu
 const temDia=dataIso=>Object.values(DB.weeks).some(xw=>(xw.days||[]).some(x=>x.date===dataIso));   // o dia existe em alguma semana (senao a tarefa sumiria da tela)
-function feitaEmOutroDia(t,dataDoDia){ const f=diaFeito(t); return !t.wiz&&!!f&&f!==dataDoDia&&temDia(f); }
+function feitaEmOutroDia(t,dataDoDia){ const f=diaMarcado(t); return !t.wiz&&!!f&&f!==dataDoDia&&temDia(f); }
 // As tarefas de um dia, com a mesma regra na tela e no Compartilhar:
 // o que e do dia; no dia de hoje, tambem as pendentes de dias que ja passaram; e as feitas neste dia
 // que eram de outro dia (de qualquer semana).
@@ -5435,7 +5439,7 @@ function tarefasDoDia(w,d){
     : allTasks(w).filter(t=>t.day===d.k&&!vemParaHoje(t))).filter(fica);
   const chegou=[];
   Object.values(DB.weeks).forEach(xw=>allTasks(xw).forEach(t=>{
-    if(t.status!=='done'||diaFeito(t)!==d.date||t.wiz||base.includes(t)) return;
+    if(diaMarcado(t)!==d.date||t.wiz||base.includes(t)) return;
     const dd=xw.days.find(x=>x.k===t.day); if(dd&&dd.date!==d.date) chegou.push(t); }));
   return base.concat(chegou);
 }
@@ -5963,18 +5967,26 @@ function confirmaReabrir(id,el){
 async function reabrePeloResponsavel(id){
   if(!isResponsavel()) return;
   const t=findTask(id); if(!t||t.type!==H||t.off||t.status!=='done') return;
-  if(!cloudRef||!cloudReady||!cloudOnline){ toast('Conecte à nuvem para reabrir a tarefa'); return; }
-  const ref=cloudRef, actor=USER.id, agora=Date.now();
-  const campos={status:'todo',statusU:agora,statusBy:USER.nome,feitoEm:'',u:agora};
+  const agora=Date.now();
+  if(!await gravaPeloResponsavel(id,{status:'todo',statusU:agora,statusBy:USER.nome,feitoEm:'',u:agora},'reabrir')) return;
+  logEvt('todo',{id,det:plain(t.text||'')});
+  render(); refreshReminder(); vibrate(20); SFX.undo(); toast(SWMSG.todo);
+}
+// o pai e a mae gravam so os campos daquela tarefa, direto na nuvem (o u novo faz o celular da Maria aceitar)
+async function gravaPeloResponsavel(id,campos,oque){
+  if(!isResponsavel()) return false;
+  const t=findTask(id); if(!t) return false;
+  if(!cloudRef||!cloudReady||!cloudOnline){ toast('Conecte à nuvem para '+oque+' a tarefa'); return false; }
+  const ref=cloudRef, actor=USER.id;
   try{
     const snap=await ref.once('value');
-    if(!isResponsavel()||!USER||USER.id!==actor||cloudRef!==ref) return;
+    if(!isResponsavel()||!USER||USER.id!==actor||cloudRef!==ref) return false;
     const path=achaCaminhoTarefa(snap.val(),id);
-    if(!path){ toast('Essa tarefa ainda não está na nuvem'); return; }
+    if(!path){ toast('Essa tarefa ainda não está na nuvem'); return false; }
     await ref.child(path).update(campos);
-    Object.assign(t,campos); persistLocalOnly(); logEvt('todo',{id,det:plain(t.text||'')});
-    render(); refreshReminder(); vibrate(20); SFX.undo(); toast(SWMSG.todo);
-  }catch(e){ toast('Não consegui reabrir agora. Tente de novo'); }
+    Object.assign(t,campos); persistLocalOnly();
+    return true;
+  }catch(e){ toast('Não consegui '+oque+' agora. Tente de novo'); return false; }
 }
 function confirmaImp(id,btn){ toggleImp(id,btn); }   // sem pergunta: marca na hora e oferece desfazer
 function festaEstrela(btn){
@@ -6194,11 +6206,11 @@ function openMenu(id){
    ${CLOUD_CFG?`<button class="opt" data-a="chat"><span class="ic">${ICO.enviar}</span>Mandar para a conversa</button>`:''}
    ${(CLOUD_CFG&&isResponsavel())?`<button class="opt" data-a="rea"><span class="ic">${ICO.reagir}</span>Reagir</button>`:''}
    ${(CLOUD_CFG&&isResponsavel()&&t.type===H&&t.status==='done'&&!t.off)?`<button class="opt" data-a="reabrir"><span class="ic">${ICO.voltar}</span>Reabrir a tarefa</button>`:''}
-   ${isAluna()?(t.off?`<button class="opt" data-a="undel"><span class="ic">${ICO.voltar}</span>Voltar a valer</button>`:`<button class="opt danger" data-a="del"><span class="ic">${ICO.proibido}</span>Cancelar a tarefa</button>`):''}`);
+   ${(isAluna()||(CLOUD_CFG&&isResponsavel()))?(t.off?`<button class="opt" data-a="undel"><span class="ic">${ICO.voltar}</span>Voltar a valer</button>`:`<button class="opt danger" data-a="del"><span class="ic">${ICO.proibido}</span>Cancelar a tarefa</button>`):''}`);
   sheet.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',e=>{
     e.preventDefault(); e.stopPropagation();
     const a=b.dataset.a;
-    if(['del','undel'].includes(a)&&!isAluna()) return;
+    if(['del','undel'].includes(a)&&!isAluna()&&!isResponsavel()) return;
     if(['note','delnote'].includes(a)&&!isAluna()&&!isResponsavel()) return;   // observação: a Maria e os pais
     if(b.dataset.abrindo==='1') return;
     b.dataset.abrindo='1';
@@ -6210,7 +6222,8 @@ function openMenu(id){
       if(a==='imp'){ hide(); setTimeout(()=>confirmaImp(id),220); }
       if(a==='chat'){ hide(); setTimeout(()=>{ openChat(); replyTo={task:{id:t.id,text:(t.text||'').replace(/<[^>]+>/g,''),subj:t.subj,day:t.day}}; const eb=document.getElementById('editbar'); eb.classList.add('on'); eb.querySelector('span').innerHTML='<b>Sobre a tarefa:</b> '+esc((t.text||'').replace(/<[^>]+>/g,'').slice(0,60)); document.getElementById('chatTxt').focus(); },250); }
       if(a==='del') openCancel(id);
-      if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.offU=Date.now(); t.u=Date.now(); save(); gravaNaHora(id,{off:false,offWhy:'',offBy:'',offU:t.offU,u:t.u}); logEvt('undel',{id,det:plain(t.text||'')}); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
+      if(a==='undel'&&!isAluna()){ const agora=Date.now(); gravaPeloResponsavel(id,{off:false,offWhy:'',offBy:'',offU:agora,u:agora},'voltar a valer').then(ok=>{ if(!ok) return; logEvt('undel',{id,det:plain(t.text||'')}); hide(); render(); refreshReminder(); vibrate(20); toast('A tarefa voltou a valer'); }); }
+      else if(a==='undel'){ t.off=false; t.offWhy=''; t.offBy=''; t.offU=Date.now(); t.u=Date.now(); save(); gravaNaHora(id,{off:false,offWhy:'',offBy:'',offU:t.offU,u:t.u}); logEvt('undel',{id,det:plain(t.text||'')}); hide(); render(); vibrate(20); toast('A tarefa voltou a valer'); }
       if(a==='rea') openReagir(id);
       if(a==='reabrir'&&isResponsavel()) confirmaReabrir(id);
       if(a==='pics') verFotosTarefa(id);
@@ -6760,7 +6773,7 @@ function askPhotoAfterDone(id){
   document.getElementById('npNo').addEventListener('click',hide);
   document.getElementById('npYes').addEventListener('click',()=>{ picTaskId=id; document.getElementById('taskFoto').click(); });
 }
-function openCancel(id){ if(!isAluna()) return;
+function openCancel(id){ if(!isAluna()&&!isResponsavel()) return;
   const t=findTask(id);
   show(`<h2>${ICO.proibido} Cancelar a tarefa <button class="x">✕</button></h2>
     <p class="quiet" style="margin:0 0 10px">${esc((t.text||'').replace(/<[^>]+>/g,''))}</p>
@@ -6769,8 +6782,12 @@ function openCancel(id){ if(!isAluna()) return;
   document.getElementById('cancelTxt').focus();
   document.getElementById('cancelNo').addEventListener('click',()=>openMenu(id));
   document.getElementById('cancelOk').addEventListener('click',()=>{
-    if(!isAluna()) return; const v=document.getElementById('cancelTxt').value.trim();
+    if(!isAluna()&&!isResponsavel()) return; const v=document.getElementById('cancelTxt').value.trim();
     if(v.length<3){ vibrate([40,40,40]); SFX.err(); toast('Escreve o motivo para cancelar'); document.getElementById('cancelTxt').focus(); return; }
+    if(!isAluna()){ const agora=Date.now();
+      gravaPeloResponsavel(id,{off:true,offWhy:v,offBy:USER.nome,offU:agora,status:'todo',statusU:agora,statusBy:USER.nome,feitoEm:'',u:agora},'cancelar')
+        .then(ok=>{ if(!ok) return; logEvt('cancel',{id,det:plain(t.text||'')}); hide(); render(); refreshReminder(); vibrate(20); toast('Tarefa cancelada'); });
+      return; }
     t.off=true; t.offWhy=v; t.offBy=USER?USER.nome:''; t.offU=Date.now(); t.status='todo'; t.feitoEm=''; t.u=Date.now(); save(); gravaNaHora(id,{off:true,offWhy:t.offWhy,offBy:t.offBy,offU:t.offU,status:'todo',feitoEm:'',u:t.u}); logEvt('cancel',{id,det:plain(t.text||'')}); hide(); render(); refreshReminder(); vibrate(20); toast('Tarefa cancelada'); });
 }
 async function writeMove(id,day){
